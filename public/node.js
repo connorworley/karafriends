@@ -1,1 +1,0 @@
-window.dgram = require('dgram');
