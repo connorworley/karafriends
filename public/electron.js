@@ -9,7 +9,11 @@ const isDev = require('electron-is-dev');
 let mainWindow;
 
 function createWindow() {
-  mainWindow = new BrowserWindow({ frame: false, fullscreen: true });
+  mainWindow = new BrowserWindow({
+    frame: isDev,
+    fullscreen: true,
+    webPreferences: { nodeIntegration: true },
+  });
   mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`);
   mainWindow.on('closed', () => mainWindow = null);
 }

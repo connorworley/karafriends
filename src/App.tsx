@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import './App.css';
 import Hls from 'hls.js';
+import QRCode from './QRCode';
+import './App.css';
 
 function App() {
   const inputRef: React.RefObject<HTMLInputElement> = useRef(null);
@@ -31,6 +32,7 @@ function App() {
       <div className="inputBar">
         <input className="input" ref={inputRef} />
         <button onClick={setStream}>Set stream</button>
+        <QRCode/>
       </div>
     </div>
   );
