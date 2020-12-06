@@ -37,8 +37,7 @@
   "build": {
     "appId": "com.karafriends.kara",
     "files": [
-      "dist/**/**",
-      "node_nodules/**/**"
+      "dist/**/**"
     ],
     "win": {
       "target": "portable"
