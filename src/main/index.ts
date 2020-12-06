@@ -1,6 +1,6 @@
-import { app, BrowserWindow } from "electron";
-
 import path from "path";
+
+import { app, BrowserWindow } from "electron"; // tslint:disable-line:no-implicit-dependencies
 import isDev from "electron-is-dev";
 
 let mainWindow: BrowserWindow | null;
@@ -8,13 +8,16 @@ let mainWindow: BrowserWindow | null;
 function createWindow() {
   mainWindow = new BrowserWindow({
     frame: isDev,
-    fullscreen: true,
-    webPreferences: { nodeIntegration: true },
+    fullscreen: !isDev,
+    webPreferences: {
+      enableRemoteModule: true,
+      nodeIntegration: true,
+    },
   });
   mainWindow.loadURL(
     isDev
-      ? "http://localhost:3000"
-      : `file://${path.join(__dirname, "renderer.html")}`
+      ? "http://localhost:3000/renderer/"
+      : `file://${path.join(__dirname, "..", "renderer", "index.html")}`
   );
   mainWindow.on("closed", () => (mainWindow = null));
 }

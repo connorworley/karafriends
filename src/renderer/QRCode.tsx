@@ -1,6 +1,7 @@
+import dgram from "dgram";
+
 import React, { useEffect, useRef } from "react";
 import * as libqrcode from "qrcode";
-const dgram = __non_webpack_require__("dgram");
 
 function QRCode() {
   const canvasRef: React.RefObject<HTMLCanvasElement> = useRef(null);
@@ -12,7 +13,7 @@ function QRCode() {
     const sock = dgram.createSocket({ type: "udp4" });
     sock.connect(1, "1.1.1.1", () => {
       const localAddr = sock.address().address;
-      libqrcode.toCanvas(canvasRef.current, `https://${localAddr}:3000`);
+      libqrcode.toCanvas(canvasRef.current, `http://${localAddr}:8080`);
     });
   });
   return <canvas ref={canvasRef} />;

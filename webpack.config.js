@@ -22,9 +22,6 @@ const COMMON_CONFIG = {
       },
     ],
   },
-  output: {
-    path: path.resolve(__dirname, "dist"),
-  },
 };
 
 module.exports = [
@@ -32,26 +29,24 @@ module.exports = [
     target: "electron-main",
     entry: "./src/main/index.ts",
     output: {
-      filename: "main.js",
+      path: path.resolve(__dirname, "build", "main"),
     },
   }),
   merge(COMMON_CONFIG, {
-    target: "electron-renderer",
+    // Technically this should be electron-renderer, but we want to be able to import nodejs stuff
+    // so we have to target electron-main insted.
+    target: "electron-main",
     entry: "./src/renderer/index.tsx",
     output: {
-      filename: "renderer.js",
+      path: path.resolve(__dirname, "build", "renderer"),
     },
     plugins: [
       new HtmlWebpackPlugin({
-        filename: "renderer.html",
-        template: "src/renderer/index.html",
+        template: "./src/renderer/index.html",
       }),
-      new MiniCssExtractPlugin({
-        filename: "renderer.css",
-      }),
+      new MiniCssExtractPlugin(),
     ],
     devServer: {
-      index: "renderer.html",
       port: 3000,
     },
   }),
@@ -59,12 +54,8 @@ module.exports = [
     target: "web",
     entry: "./src/remocon/index.tsx",
     output: {
-      filename: "remocon.js",
+      path: path.resolve(__dirname, "build", "remocon"),
     },
-    plugins: [
-      new HtmlWebpackPlugin({
-        filename: "remocon.html",
-      }),
-    ],
+    plugins: [new HtmlWebpackPlugin()],
   }),
 ];

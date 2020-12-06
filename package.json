@@ -2,9 +2,10 @@
   "name": "karafriends",
   "version": "0.1.0",
   "private": true,
+  "main": "build/main/main.js",
   "scripts": {
-    "build": "webpack && electron-builder -c.extraMetadata.main=dist/main.js",
-    "start": "webpack && concurrently \"webpack serve\" \"wait-on http://localhost:3000 && electron dist/main.js\"",
+    "build": "webpack && electron-builder -c.extraMetadata.main=build/main/main.js",
+    "start": "webpack && concurrently \"webpack serve\" \"wait-on http://localhost:3000 && electron .\"",
     "postinstall": "husky install"
   },
   "dependencies": {
@@ -14,16 +15,18 @@
     "@types/react": "^16.9.53",
     "@types/react-dom": "^16.9.8",
     "@types/webpack-env": "^1.15.3",
-    "electron": "^11.0.3",
     "electron-is-dev": "^1.2.0",
+    "express": "^4.17.1",
     "hls.js": "^0.14.16",
     "qrcode": "^1.4.4",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },
   "devDependencies": {
+    "@types/express": "^4.17.9",
     "concurrently": "^5.3.0",
     "css-loader": "^5.0.1",
+    "electron": "^11.0.3",
     "electron-builder": "^22.9.1",
     "html-webpack-plugin": "^4.5.0",
     "husky": "^5.0.4",
@@ -42,8 +45,9 @@
   },
   "build": {
     "appId": "com.karafriends.kara",
+    "asar": false,
     "files": [
-      "dist/**/**"
+      "build/**/**"
     ],
     "win": {
       "target": "portable"
