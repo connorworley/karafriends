@@ -3,10 +3,14 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { merge } = require("webpack-merge");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const RelayCompilerWebpackPlugin = require("relay-compiler-webpack-plugin");
+const RelayCompilerLanguageTypescript = require("relay-compiler-language-typescript")
+  .default;
 
 const COMMON_CONFIG = {
+  mode: "development",
   resolve: {
-    extensions: [".js", ".ts", ".tsx"],
+    extensions: [".js", ".ts", ".tsx", ".graphql"],
   },
   module: {
     rules: [
@@ -17,7 +21,12 @@ const COMMON_CONFIG = {
       },
       {
         test: /\.tsx?$/,
-        use: "ts-loader",
+        use: ["babel-loader", "ts-loader"],
+        exclude: /node_modules/,
+      },
+      {
+        test: /\.graphql$/,
+        use: "raw-loader",
         exclude: /node_modules/,
       },
     ],
@@ -33,9 +42,7 @@ module.exports = [
     },
   }),
   merge(COMMON_CONFIG, {
-    // Technically this should be electron-renderer, but we want to be able to import nodejs stuff
-    // so we have to target electron-main insted.
-    target: "electron-main",
+    target: "electron-renderer",
     entry: "./src/renderer/index.tsx",
     output: {
       path: path.resolve(__dirname, "build", "renderer"),
@@ -45,9 +52,17 @@ module.exports = [
         template: "./src/renderer/index.html",
       }),
       new MiniCssExtractPlugin(),
+      new RelayCompilerWebpackPlugin({
+        src: "./src/renderer",
+        schema: "./src/common/schema.graphql",
+        languagePlugin: RelayCompilerLanguageTypescript,
+      }),
     ],
     devServer: {
       port: 3000,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
     },
   }),
   merge(COMMON_CONFIG, {
@@ -56,6 +71,13 @@ module.exports = [
     output: {
       path: path.resolve(__dirname, "build", "remocon"),
     },
-    plugins: [new HtmlWebpackPlugin()],
+    plugins: [
+      new HtmlWebpackPlugin(),
+      new RelayCompilerWebpackPlugin({
+        src: "./src/remocon",
+        schema: "./src/common/schema.graphql",
+        languagePlugin: RelayCompilerLanguageTypescript,
+      }),
+    ],
   }),
 ];

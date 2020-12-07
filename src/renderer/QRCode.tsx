@@ -1,22 +1,50 @@
-import dgram from "dgram";
-
 import React, { useEffect, useRef } from "react";
 import * as libqrcode from "qrcode";
 
-function QRCode() {
-  const canvasRef: React.RefObject<HTMLCanvasElement> = useRef(null);
+import { Environment, Network, RecordSource, Store } from "relay-runtime";
+import { graphql, QueryRenderer } from "react-relay";
+import { QRCodeQuery } from "./__generated__/QRCodeQuery.graphql";
 
-  useEffect(() => {
-    if (!canvasRef || !canvasRef.current) return;
-    // Trick to get the IP address of the iface we would use to access the internet
-    // This address should be usable except in rare cases where LAN and WAN go through different ifaces
-    const sock = dgram.createSocket({ type: "udp4" });
-    sock.connect(1, "1.1.1.1", () => {
-      const localAddr = sock.address().address;
-      libqrcode.toCanvas(canvasRef.current, `http://${localAddr}:8080`);
-    });
+function fetchQuery(operation: any, variables: any) {
+  return fetch("http://localhost:8080/graphql", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      query: operation.text,
+      variables,
+    }),
+  }).then((response) => {
+    return response.json();
   });
-  return <canvas ref={canvasRef} />;
+}
+
+const environment = new Environment({
+  network: Network.create(fetchQuery),
+  store: new Store(new RecordSource()),
+});
+
+function QRCode() {
+  return (
+    <div>
+      <QueryRenderer<QRCodeQuery>
+        environment={environment}
+        query={graphql`
+          query QRCodeQuery {
+            wanIpAddress
+          }
+        `}
+        variables={{}}
+        render={({ error, props }) => {
+          if (!props) {
+            return <div>Loading...</div>;
+          }
+          return <div>{props.wanIpAddress as string}</div>;
+        }}
+      />
+    </div>
+  );
 }
 
 export default QRCode;
