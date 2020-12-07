@@ -72,7 +72,9 @@ module.exports = [
       path: path.resolve(__dirname, "build", "remocon"),
     },
     plugins: [
-      new HtmlWebpackPlugin(),
+      new HtmlWebpackPlugin({
+        template: "./src/remocon/index.html",
+      }),
       new RelayCompilerWebpackPlugin({
         src: "./src/remocon",
         schema: "./src/common/schema.graphql",
