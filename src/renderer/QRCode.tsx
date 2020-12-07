@@ -27,23 +27,21 @@ const environment = new Environment({
 
 function QRCode() {
   return (
-    <div>
-      <QueryRenderer<QRCodeQuery>
-        environment={environment}
-        query={graphql`
-          query QRCodeQuery {
-            wanIpAddress
-          }
-        `}
-        variables={{}}
-        render={({ error, props }) => {
-          if (!props) {
-            return <div>Loading...</div>;
-          }
-          return <div>{props.wanIpAddress as string}</div>;
-        }}
-      />
-    </div>
+    <QueryRenderer<QRCodeQuery>
+      environment={environment}
+      query={graphql`
+        query QRCodeQuery {
+          wanIpAddress
+        }
+      `}
+      variables={{}}
+      render={({ error, props }) => {
+        if (!props) {
+          return <div>Loading...</div>;
+        }
+        return <div>{props.wanIpAddress}</div>;
+      }}
+    />
   );
 }
 

@@ -5,7 +5,7 @@
 import { ConcreteRequest } from "relay-runtime";
 export type QRCodeQueryVariables = {};
 export type QRCodeQueryResponse = {
-    readonly wanIpAddress: string | null;
+    readonly wanIpAddress: string;
 };
 export type QRCodeQuery = {
     readonly response: QRCodeQueryResponse;

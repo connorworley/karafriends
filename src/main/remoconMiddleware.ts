@@ -20,9 +20,7 @@ function remoconMiddleware() {
         ]),
       }).then((proxiedRes) => {
         res.status(proxiedRes.status);
-        Object.entries(proxiedRes.headers).forEach((header) =>
-          res.append(...header)
-        );
+        proxiedRes.headers.forEach((value, name) => res.set(name, value));
         proxiedRes.arrayBuffer().then((buf) => {
           res.send(Buffer.from(buf));
         });
