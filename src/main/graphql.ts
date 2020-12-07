@@ -2,6 +2,8 @@ import dgram from "dgram";
 
 import { graphqlHTTP } from "express-graphql";
 import { buildSchema } from "graphql";
+import fetch from "node-fetch";
+
 import rawSchema from "../common/schema.graphql";
 
 const root = {
@@ -14,6 +16,34 @@ const root = {
         resolve(sock.address().address);
       });
     });
+  },
+  songsByName: (args: {
+    name: string;
+  }): Promise<[{ name: string; requestNo: number }]> => {
+    return fetch("https://denmoku.clubdam.com/dkdenmoku/DkDamSearchServlet", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        deviceId: "abcdef123456789",
+        categoryCd: "020000",
+        songName: args.name,
+        songMatchType: "0",
+        page: "1",
+      }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((json) => {
+        return json.searchResult.map((songResult: any) => {
+          return {
+            id: songResult.reqNo,
+            name: songResult.songName,
+          };
+        });
+      });
   },
 };
 
