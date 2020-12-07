@@ -3,29 +3,31 @@
 // @ts-nocheck
 
 import { ConcreteRequest } from "relay-runtime";
-export type AppQueryVariables = {
-    name: string;
+export type SongSearchQueryVariables = {
+    name?: string | null;
 };
-export type AppQueryResponse = {
+export type SongSearchQueryResponse = {
     readonly songsByName: ReadonlyArray<{
         readonly id: string;
         readonly name: string;
+        readonly artistName: string;
     }>;
 };
-export type AppQuery = {
-    readonly response: AppQueryResponse;
-    readonly variables: AppQueryVariables;
+export type SongSearchQuery = {
+    readonly response: SongSearchQueryResponse;
+    readonly variables: SongSearchQueryVariables;
 };
 
 
 
 /*
-query AppQuery(
-  $name: String!
+query SongSearchQuery(
+  $name: String
 ) {
   songsByName(name: $name) {
     id
     name
+    artistName
   }
 }
 */
@@ -66,6 +68,13 @@ v1 = [
         "kind": "ScalarField",
         "name": "name",
         "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "artistName",
+        "storageKey": null
       }
     ],
     "storageKey": null
@@ -76,7 +85,7 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "AppQuery",
+    "name": "SongSearchQuery",
     "selections": (v1/*: any*/),
     "type": "Query",
     "abstractKey": null
@@ -85,18 +94,18 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "AppQuery",
+    "name": "SongSearchQuery",
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "55524e3b36899c1800960f78c199d53a",
+    "cacheID": "0b27a6c86db86a7f3dd01abb720e6fed",
     "id": null,
     "metadata": {},
-    "name": "AppQuery",
+    "name": "SongSearchQuery",
     "operationKind": "query",
-    "text": "query AppQuery(\n  $name: String!\n) {\n  songsByName(name: $name) {\n    id\n    name\n  }\n}\n"
+    "text": "query SongSearchQuery(\n  $name: String\n) {\n  songsByName(name: $name) {\n    id\n    name\n    artistName\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = '7ffb3ac369e0e1a36d15cb98fae698b3';
+(node as any).hash = '6d0d10e1b6fb01560fcf6881122dc3ad';
 export default node;

@@ -1,6 +1,6 @@
 type Query {
   wanIpAddress: String!
-  songsByName(name: String!): [Song!]!
+  songsByName(name: String): [Song!]!
 }
 
 type Artist {
@@ -11,4 +11,5 @@ type Artist {
 type Song {
   id: ID!
   name: String!
+  artistName: String!
 }

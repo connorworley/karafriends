@@ -1,42 +1,55 @@
 import React, { useEffect, useRef, useState } from "react";
 import { graphql, QueryRenderer } from "react-relay";
+import { HashRouter, Switch, Route, Link } from "react-router-dom";
 
-import environment from "../common/graphqlEnvironment";
-import { AppQuery } from "./__generated__/AppQuery.graphql";
+import M from "materialize-css";
+import "materialize-css/dist/css/materialize.css"; // tslint:disable-line:no-submodule-imports
+
+import Song from "./Song";
+import SongSearch from "./SongSearch";
 
 function App() {
-  const [songName, setSongName] = useState("");
+  useEffect(() => {
+    const elems = document.querySelectorAll(".sidenav");
+    M.Sidenav.init(elems, {});
+  });
 
   return (
-    <div>
-      <input onChange={(e) => setSongName(e.target.value)} />
-      <QueryRenderer<AppQuery>
-        environment={environment}
-        query={graphql`
-          query AppQuery($name: String!) {
-            songsByName(name: $name) {
-              id
-              name
-            }
-          }
-        `}
-        variables={{
-          name: songName,
-        }}
-        render={({ error, props }) => {
-          if (!props) {
-            return <div>Loading...</div>;
-          }
-          return (
-            <ul>
-              {props.songsByName.map((song) => (
-                <li key={song.id}>{song.name}</li>
-              ))}
+    <HashRouter>
+      <div>
+        <nav>
+          <div className="nav-wrapper">
+            <a href="#" data-target="mobile-demo" className="sidenav-trigger">
+              <i className="material-icons">menu</i>
+            </a>
+            <ul id="nav-mobile" className="hide-on-med-and-down">
+              <li>
+                <Link to="/search">Search Songs</Link>
+              </li>
+              <li>
+                <Link to="/controls">Controls</Link>
+              </li>
             </ul>
-          );
-        }}
-      />
-    </div>
+          </div>
+        </nav>
+        <ul className="sidenav" id="mobile-demo">
+          <li>
+            <Link to="/search">Search Songs</Link>
+          </li>
+          <li>
+            <Link to="/">Controls</Link>
+          </li>
+        </ul>
+
+        <Switch>
+          <Route path="/song/:id" component={Song} />
+          <Route path="/search">
+            <SongSearch />
+          </Route>
+          <Route path="/">controls</Route>
+        </Switch>
+      </div>
+    </HashRouter>
   );
 }
 

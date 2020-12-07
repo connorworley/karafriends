@@ -17,7 +17,6 @@ const COMMON_CONFIG = {
       {
         test: /\.css$/,
         use: [MiniCssExtractPlugin.loader, "css-loader"],
-        exclude: /node_modules/,
       },
       {
         test: /\.tsx?$/,
@@ -75,6 +74,7 @@ module.exports = [
       new HtmlWebpackPlugin({
         template: "./src/remocon/index.html",
       }),
+      new MiniCssExtractPlugin(),
       new RelayCompilerWebpackPlugin({
         src: "./src/remocon",
         schema: "./src/common/schema.graphql",
