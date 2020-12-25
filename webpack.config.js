@@ -10,6 +10,9 @@ const RelayCompilerLanguageTypescript = require("relay-compiler-language-typescr
 const COMMON_CONFIG = {
   mode: "development",
   resolve: {
+    alias: {
+      graphql$: path.resolve(__dirname, "./node_modules/graphql/index.js"),
+    },
     extensions: [".js", ".ts", ".tsx", ".graphql"],
   },
   module: {

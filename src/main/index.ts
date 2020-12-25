@@ -5,22 +5,11 @@ import isDev from "electron-is-dev";
 import express from "express";
 
 import remoconMiddleware from "./remoconMiddleware";
-import graphqlHandler from "./graphql";
+import setupGraphQL from "./graphql";
 
 const expressApp = express();
 expressApp.use(remoconMiddleware());
-if (isDev) {
-  expressApp.use("/graphql", (req, res, next) => {
-    res.append("Access-Control-Allow-Origin", "*");
-    res.append("Access-Control-Allow-Headers", "*");
-    if (req.method === "OPTIONS") {
-      res.sendStatus(200);
-      return;
-    }
-    next();
-  });
-}
-expressApp.use("/graphql", graphqlHandler());
+setupGraphQL(expressApp);
 expressApp.listen(8080);
 
 let mainWindow: BrowserWindow | null;

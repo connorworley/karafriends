@@ -9,9 +9,9 @@
     "postinstall": "husky install"
   },
   "dependencies": {
+    "apollo-server-express": "^2.19.1",
     "electron-is-dev": "^1.2.0",
     "express": "^4.17.1",
-    "express-graphql": "^0.12.0",
     "graphql": "^15.4.0",
     "hls.js": "^0.14.16",
     "materialize-css": "^1.0.0-rc.2",
@@ -65,7 +65,7 @@
     "webpack-merge": "^5.4.0"
   },
   "resolutions": {
-    "relay-compiler-webpack-plugin/graphql": "^15.4.0"
+    "graphql": "^15.4.0"
   },
   "build": {
     "appId": "com.karafriends.kara",
