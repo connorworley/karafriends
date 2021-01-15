@@ -1,0 +1,15 @@
+type Query {
+  wanIpAddress: String!
+  songsByName(name: String): [Song!]!
+}
+
+type Artist {
+  id: ID!
+  name: String!
+}
+
+type Song {
+  id: ID!
+  name: String!
+  artistName: String!
+}

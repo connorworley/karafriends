@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
-import Hls from 'hls.js';
-import QRCode from './QRCode';
-import './App.css';
+import React, { useEffect, useRef, useState } from "react";
+import Hls from "hls.js";
+import QRCode from "./QRCode";
+import "./App.css";
 
 function App() {
   const inputRef: React.RefObject<HTMLInputElement> = useRef(null);
   const videoRef: React.RefObject<HTMLVideoElement> = useRef(null);
-  const [streamUrl, setStreamUrl] = useState('');
+  const [streamUrl, setStreamUrl] = useState("");
 
   useEffect(() => {
     if (!videoRef || !videoRef.current || !streamUrl) return;
@@ -15,7 +15,7 @@ function App() {
     hls.attachMedia(videoRef.current);
 
     hls.on(Hls.Events.MANIFEST_PARSED, () => {
-      videoRef && videoRef.current && videoRef.current.play();
+      if (videoRef && videoRef.current) videoRef.current.play();
     });
   }, [streamUrl]);
 
@@ -32,7 +32,7 @@ function App() {
       <div className="inputBar">
         <input className="input" ref={inputRef} />
         <button onClick={setStream}>Set stream</button>
-        <QRCode/>
+        <QRCode />
       </div>
     </div>
   );
