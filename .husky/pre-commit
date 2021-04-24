@@ -1,5 +1,7 @@
 #!/bin/sh
 . "$(dirname $0)/_/husky.sh"
 
+cargo fmt
+cargo clippy
 yarn lint-staged
 yarn tslint --project .

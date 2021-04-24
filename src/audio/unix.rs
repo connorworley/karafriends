@@ -15,7 +15,8 @@ impl futures::Stream for InputStream {
     }
 }
 
-pub fn input_stream() -> Result<(impl futures::Stream<Item=f32>, u32), Box<dyn std::error::Error>> {
+pub fn input_stream() -> Result<(impl futures::Stream<Item = f32>, u32), Box<dyn std::error::Error>>
+{
     let host = cpal::default_host();
 
     let input_device = host
@@ -38,5 +39,11 @@ pub fn input_stream() -> Result<(impl futures::Stream<Item=f32>, u32), Box<dyn s
 
     stream.play()?;
 
-    Ok((InputStream { _stream: stream, rx }, sample_rate))
+    Ok((
+        InputStream {
+            _stream: stream,
+            rx,
+        },
+        sample_rate,
+    ))
 }
