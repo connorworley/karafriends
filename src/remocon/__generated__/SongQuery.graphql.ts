@@ -8,7 +8,6 @@ export type SongQueryVariables = {
 };
 export type SongQueryResponse = {
     readonly songsByIds: ReadonlyArray<{
-        readonly id: string;
         readonly name: string;
         readonly artistName: string;
         readonly lyricsPreview: string | null;
@@ -26,10 +25,10 @@ query SongQuery(
   $id: String!
 ) {
   songsByIds(ids: [$id]) {
-    id
     name
     artistName
     lyricsPreview
+    id
   }
 }
 */
@@ -44,64 +43,60 @@ var v0 = [
 ],
 v1 = [
   {
-    "alias": null,
-    "args": [
+    "items": [
       {
-        "items": [
-          {
-            "kind": "Variable",
-            "name": "ids.0",
-            "variableName": "id"
-          }
-        ],
-        "kind": "ListValue",
-        "name": "ids"
+        "kind": "Variable",
+        "name": "ids.0",
+        "variableName": "id"
       }
     ],
-    "concreteType": "Song",
-    "kind": "LinkedField",
-    "name": "songsByIds",
-    "plural": true,
-    "selections": [
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "id",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "name",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "artistName",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "lyricsPreview",
-        "storageKey": null
-      }
-    ],
-    "storageKey": null
+    "kind": "ListValue",
+    "name": "ids"
   }
-];
+],
+v2 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "name",
+  "storageKey": null
+},
+v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "artistName",
+  "storageKey": null
+},
+v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "lyricsPreview",
+  "storageKey": null
+};
 return {
   "fragment": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
     "name": "SongQuery",
-    "selections": (v1/*: any*/),
+    "selections": [
+      {
+        "alias": null,
+        "args": (v1/*: any*/),
+        "concreteType": "Song",
+        "kind": "LinkedField",
+        "name": "songsByIds",
+        "plural": true,
+        "selections": [
+          (v2/*: any*/),
+          (v3/*: any*/),
+          (v4/*: any*/)
+        ],
+        "storageKey": null
+      }
+    ],
     "type": "Query",
     "abstractKey": null
   },
@@ -110,17 +105,39 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "SongQuery",
-    "selections": (v1/*: any*/)
+    "selections": [
+      {
+        "alias": null,
+        "args": (v1/*: any*/),
+        "concreteType": "Song",
+        "kind": "LinkedField",
+        "name": "songsByIds",
+        "plural": true,
+        "selections": [
+          (v2/*: any*/),
+          (v3/*: any*/),
+          (v4/*: any*/),
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "id",
+            "storageKey": null
+          }
+        ],
+        "storageKey": null
+      }
+    ]
   },
   "params": {
-    "cacheID": "7fa68f8678b5eaaef240a8a19a25b40c",
+    "cacheID": "eadd96a908c4854187ad344b41488aea",
     "id": null,
     "metadata": {},
     "name": "SongQuery",
     "operationKind": "query",
-    "text": "query SongQuery(\n  $id: String!\n) {\n  songsByIds(ids: [$id]) {\n    id\n    name\n    artistName\n    lyricsPreview\n  }\n}\n"
+    "text": "query SongQuery(\n  $id: String!\n) {\n  songsByIds(ids: [$id]) {\n    name\n    artistName\n    lyricsPreview\n    id\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = 'bce3e15ca1bea147697e09268f3f3683';
+(node as any).hash = '7e38c217f0af5103d1fee0c6b9443102';
 export default node;

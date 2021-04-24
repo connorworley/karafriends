@@ -2,6 +2,7 @@ type Query {
   wanIpAddress: String!
   songsByName(name: String): [Song!]!
   songsByIds(ids: [String!]!): [Song!]!
+  songsInQueue: [Song!]!
 }
 
 type Mutation {

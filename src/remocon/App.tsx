@@ -5,6 +5,7 @@ import { HashRouter, Switch, Route, Link } from "react-router-dom";
 import M from "materialize-css";
 import "materialize-css/dist/css/materialize.css"; // tslint:disable-line:no-submodule-imports
 
+import Controls from "./Controls";
 import Song from "./Song";
 import SongSearch from "./SongSearch";
 
@@ -47,7 +48,9 @@ function App() {
             <Route path="/search">
               <SongSearch />
             </Route>
-            <Route path="/">controls</Route>
+            <Route path="/">
+              <Controls />
+            </Route>
           </Switch>
         </div>
       </div>

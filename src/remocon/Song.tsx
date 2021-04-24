@@ -9,7 +9,6 @@ import { SongQuery } from "./__generated__/SongQuery.graphql";
 const songQuery = graphql`
   query SongQuery($id: String!) {
     songsByIds(ids: [$id]) {
-      id
       name
       artistName
       lyricsPreview

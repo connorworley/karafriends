@@ -65,6 +65,15 @@ const resolvers = {
         }))
       );
     },
+    songsInQueue: () =>
+      dkDamIsExistServlet(db.songQueue).then((json) =>
+        json.isExist.map((song) => ({
+          id: song.reqNo,
+          name: song.songName,
+          artistName: song.artistName,
+          lyricsPreview: song.firstBars,
+        }))
+      ),
   },
   Mutation: {
     queueSong: (_: any, args: { id: string }): Promise<boolean> => {
