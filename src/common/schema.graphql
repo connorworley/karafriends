@@ -1,6 +1,12 @@
 type Query {
   wanIpAddress: String!
   songsByName(name: String): [Song!]!
+  songsByIds(ids: [String!]!): [Song!]!
+  songsInQueue: [Song!]!
+}
+
+type Mutation {
+  queueSong(id: String!): Boolean!
 }
 
 type Artist {
@@ -12,4 +18,5 @@ type Song {
   id: ID!
   name: String!
   artistName: String!
+  lyricsPreview: String
 }
