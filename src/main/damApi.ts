@@ -1,5 +1,31 @@
 import fetch from "node-fetch";
 
+const BASE_DK_DENMOKU_REQUEST = {
+  appVer: "2.1.0",
+  deviceId: "deviceId",
+};
+
+interface DkdenmokuResponse {
+  // There are literally no useful fields
+  appVer: string;
+}
+
+function makeDkdenmokuRequest<T extends DkdenmokuResponse>(
+  url: string,
+  data: any
+) {
+  return fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      ...BASE_DK_DENMOKU_REQUEST,
+      ...data,
+    }),
+  })
+    .then((res) => res.json())
+    .then((json: T) => json);
+}
+
 const BASE_DKWEBSYS_REQUEST = {
   modelTypeCode: "2",
   minseiModelNum: "M1",
@@ -60,4 +86,24 @@ function searchMusicByKeyword(keyword: string) {
   );
 }
 
-export { searchMusicByKeyword };
+interface DkDamIsExistServletResponse extends DkdenmokuResponse {
+  isExist: {
+    artistName: string;
+    firstBars: string;
+    reqNo: string;
+    songName: string;
+  }[];
+}
+
+function dkDamIsExistServlet(reqNos: string[]) {
+  return makeDkdenmokuRequest<DkDamIsExistServletResponse>(
+    "https://denmoku.clubdam.com/dkdenmoku/DkDamIsExistServlet",
+    {
+      isExist: reqNos.map((reqNo) => ({
+        reqNo: reqNo.replace("-", ""),
+      })),
+    }
+  );
+}
+
+export { dkDamIsExistServlet, searchMusicByKeyword };

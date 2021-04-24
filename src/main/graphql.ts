@@ -6,7 +6,15 @@ import { Application } from "express";
 import isDev from "electron-is-dev";
 
 import rawSchema from "../common/schema.graphql";
-import { searchMusicByKeyword } from "./damApi";
+import { dkDamIsExistServlet, searchMusicByKeyword } from "./damApi";
+
+type NotARealDb = {
+  songQueue: string[];
+};
+
+const db: NotARealDb = {
+  songQueue: [],
+};
 
 const resolvers = {
   Query: {
@@ -38,6 +46,30 @@ const resolvers = {
           };
         });
       });
+    },
+    songsByIds: (
+      _: any,
+      args: { ids: string[] }
+    ): Promise<
+      { id: string; name: string; artistName: string; lyricsPreview: string }[]
+    > => {
+      if (args.ids.length === 0) {
+        return Promise.resolve([]);
+      }
+      return dkDamIsExistServlet(args.ids).then((json) =>
+        json.isExist.map((song) => ({
+          id: song.reqNo,
+          name: song.songName,
+          artistName: song.artistName,
+          lyricsPreview: song.firstBars,
+        }))
+      );
+    },
+  },
+  Mutation: {
+    queueSong: (_: any, args: { id: string }): Promise<boolean> => {
+      db.songQueue.push(args.id);
+      return Promise.resolve(true);
     },
   },
 };

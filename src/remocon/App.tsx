@@ -41,13 +41,15 @@ function App() {
           </li>
         </ul>
 
-        <Switch>
-          <Route path="/song/:id" component={Song} />
-          <Route path="/search">
-            <SongSearch />
-          </Route>
-          <Route path="/">controls</Route>
-        </Switch>
+        <div className="container">
+          <Switch>
+            <Route path="/song/:id" component={Song} />
+            <Route path="/search">
+              <SongSearch />
+            </Route>
+            <Route path="/">controls</Route>
+          </Switch>
+        </div>
       </div>
     </HashRouter>
   );
