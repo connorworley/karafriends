@@ -5,9 +5,10 @@ import { HashRouter, Switch, Route, Link } from "react-router-dom";
 import M from "materialize-css";
 import "materialize-css/dist/css/materialize.css"; // tslint:disable-line:no-submodule-imports
 
+import Artist from "./Artist";
 import Controls from "./Controls";
+import Search from "./Search";
 import Song from "./Song";
-import SongSearch from "./SongSearch";
 
 function App() {
   useEffect(() => {
@@ -44,10 +45,9 @@ function App() {
 
         <div className="container">
           <Switch>
+            <Route path="/artist/:id" component={Artist} />
             <Route path="/song/:id" component={Song} />
-            <Route path="/search">
-              <SongSearch />
-            </Route>
+            <Route path="/search" component={Search} />
             <Route path="/">
               <Controls />
             </Route>

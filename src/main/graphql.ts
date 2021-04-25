@@ -6,7 +6,12 @@ import { Application } from "express";
 import isDev from "electron-is-dev";
 
 import rawSchema from "../common/schema.graphql";
-import { dkDamIsExistServlet, searchMusicByKeyword } from "./damApi";
+import {
+  findArtistsByName,
+  getSongsByArtistId,
+  getSongsByReqNos,
+  searchMusicByKeyword,
+} from "./damApi";
 
 type NotARealDb = {
   songQueue: string[];
@@ -56,7 +61,7 @@ const resolvers = {
       if (args.ids.length === 0) {
         return Promise.resolve([]);
       }
-      return dkDamIsExistServlet(args.ids).then((json) =>
+      return getSongsByReqNos(args.ids).then((json) =>
         json.isExist.map((song) => ({
           id: song.reqNo,
           name: song.songName,
@@ -65,20 +70,62 @@ const resolvers = {
         }))
       );
     },
-    songsInQueue: () =>
-      dkDamIsExistServlet(db.songQueue).then((json) =>
+    songsInQueue: () => {
+      if (!db.songQueue.length) return [];
+      return getSongsByReqNos(db.songQueue).then((json) =>
         json.isExist.map((song) => ({
           id: song.reqNo,
           name: song.songName,
           artistName: song.artistName,
           lyricsPreview: song.firstBars,
         }))
-      ),
+      );
+    },
+    artistsByName: (
+      _: any,
+      args: { name: string }
+    ): Promise<{ id: string; name: string }[]> => {
+      if (args.name === null) {
+        return Promise.resolve([]);
+      }
+      return findArtistsByName(args.name).then((json) =>
+        json.searchResult.map((searchResult) => ({
+          id: searchResult.artistId,
+          name: searchResult.artistName,
+        }))
+      );
+    },
+    artistById: (
+      _: any,
+      args: { id: string }
+    ): Promise<{ id: string; name: string }> => {
+      return getSongsByArtistId(args.id).then((json) => ({
+        id: json.searchResult[0].artistId,
+        name: json.searchResult[0].artistName,
+      }));
+    },
   },
   Mutation: {
     queueSong: (_: any, args: { id: string }): Promise<boolean> => {
       db.songQueue.push(args.id);
       return Promise.resolve(true);
+    },
+  },
+  Artist: {
+    songs: (parent: {
+      id: string;
+      name: string;
+    }): Promise<
+      { id: string; name: string; artistName: string; lyricsPreview: string }[]
+    > => {
+      return getSongsByArtistId(parent.id).then((json) =>
+        json.searchResult.map((searchResult) => ({
+          id: searchResult.reqNo,
+          name: searchResult.songName,
+          artistName: searchResult.artistName,
+          lyricsPreview: searchResult.firstBars,
+        }))
+      );
     },
   },
 };

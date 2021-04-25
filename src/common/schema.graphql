@@ -3,6 +3,8 @@ type Query {
   songsByName(name: String): [Song!]!
   songsByIds(ids: [String!]!): [Song!]!
   songsInQueue: [Song!]!
+  artistsByName(name: String): [Artist!]!
+  artistById(id: String!): Artist!
 }
 
 type Mutation {
@@ -12,6 +14,7 @@ type Mutation {
 type Artist {
   id: ID!
   name: String!
+  songs: [Song!]!
 }
 
 type Song {

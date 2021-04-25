@@ -1,8 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { graphql, QueryRenderer } from "react-relay";
 import { Link } from "react-router-dom";
 
 import environment from "../common/graphqlEnvironment";
+import DebouncedInput from "./components/DebouncedInput";
+import Loader from "./components/Loader";
 import { SongSearchQuery } from "./__generated__/SongSearchQuery.graphql";
 
 function SongSearch() {
@@ -10,7 +12,9 @@ function SongSearch() {
 
   return (
     <div>
-      <input
+      <h5>Searching by song title</h5>
+      <DebouncedInput
+        period={500}
         onChange={(e) =>
           setSongName(e.target.value === "" ? null : e.target.value)
         }
@@ -34,7 +38,7 @@ function SongSearch() {
             return;
           }
           if (!props) {
-            return <div>Loading...</div>;
+            return <Loader />;
           }
           return (
             <div className="collection">

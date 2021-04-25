@@ -52,7 +52,7 @@ function Song(props: Props) {
       </div>
       <div className="card-action">
         <button
-          className={`waves-effect waves-light btn ${queued ? "disabled" : ""}`}
+          className={`btn ${queued ? "disabled" : ""}`}
           onClick={onClickQueueSong}
         >
           {queued ? "Queued!" : "Queue song"}
