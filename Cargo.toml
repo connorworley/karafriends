@@ -18,4 +18,7 @@ futures = "0.3.14"
 cpal = "0.13.3"
 
 [target.'cfg(windows)'.dependencies]
-winrt = "0.8.0"
+windows = "0.8.0"
+
+[target.'cfg(windows)'.build-dependencies]
+windows = "0.8.0"
