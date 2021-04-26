@@ -1,15 +1,15 @@
-#[cfg(not(windows))]
-mod non_windows;
-#[cfg(windows)]
-mod windows;
+#[cfg(not(feature = "winrt"))]
+mod cpal;
+#[cfg(feature = "winrt")]
+mod winrt;
 
 use futures::StreamExt;
 
 fn main() {
-    #[cfg(not(windows))]
-    let (input_stream, sample_rate) = non_windows::input_stream().unwrap();
-    #[cfg(windows)]
-    let (input_stream, sample_rate) = windows::input_stream().unwrap();
+    #[cfg(not(feature = "winrt"))]
+    let (input_stream, sample_rate) = cpal::input_stream().unwrap();
+    #[cfg(feature = "winrt")]
+    let (input_stream, sample_rate) = winrt::input_stream().unwrap();
 
     // the lowest i could sing was arond 80hz  = 12.5ms period
     // we should have a 25ms period for pd
