@@ -1,13 +1,13 @@
-#[cfg(unix)]
-mod unix;
+#[cfg(not(windows))]
+mod non_windows;
 #[cfg(windows)]
 mod windows;
 
 use futures::StreamExt;
 
 fn main() {
-    #[cfg(unix)]
-    let (input_stream, sample_rate) = unix::input_stream().unwrap();
+    #[cfg(not(windows))]
+    let (input_stream, sample_rate) = non_windows::input_stream().unwrap();
     #[cfg(windows)]
     let (input_stream, sample_rate) = windows::input_stream().unwrap();
 
