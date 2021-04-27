@@ -34,7 +34,7 @@ pub fn input_stream() -> Result<(impl futures::Stream<Item = f32>, u32), Box<dyn
                 tx.start_send(*sample).unwrap();
             }
         },
-        |e| std::panic::panic_any(e),
+        |e| std::panic!("{}", e),
     )?;
 
     stream.play()?;

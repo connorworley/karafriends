@@ -7,6 +7,9 @@ import express from "express";
 import remoconMiddleware from "./remoconMiddleware";
 import setupGraphQL from "./graphql";
 
+const rust = require("../../native"); // tslint:disable-line:no-var-requires
+rust.hi();
+
 const expressApp = express();
 expressApp.use(remoconMiddleware());
 setupGraphQL(expressApp);

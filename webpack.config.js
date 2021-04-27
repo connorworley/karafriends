@@ -13,7 +13,7 @@ const COMMON_CONFIG = {
     alias: {
       graphql$: path.resolve(__dirname, "./node_modules/graphql/index.js"),
     },
-    extensions: [".js", ".ts", ".tsx", ".graphql"],
+    extensions: [".js", ".ts", ".tsx", ".graphql", ".node"],
   },
   module: {
     rules: [
@@ -30,6 +30,10 @@ const COMMON_CONFIG = {
         test: /\.graphql$/,
         use: "raw-loader",
         exclude: /node_modules/,
+      },
+      {
+        test: /\.node$/,
+        loader: "node-loader",
       },
     ],
   },
