@@ -95,7 +95,7 @@ interface DkDamIsExistServletResponse extends DkdenmokuResponse {
   }[];
 }
 
-function dkDamIsExistServlet(reqNos: string[]) {
+function getSongsByReqNos(reqNos: string[]) {
   return makeDkdenmokuRequest<DkDamIsExistServletResponse>(
     "https://denmoku.clubdam.com/dkdenmoku/DkDamIsExistServlet",
     {
@@ -106,4 +106,55 @@ function dkDamIsExistServlet(reqNos: string[]) {
   );
 }
 
-export { dkDamIsExistServlet, searchMusicByKeyword };
+interface DkDamSearchServletResponse extends DkdenmokuResponse {
+  searchResult: {
+    artistId: string;
+    artistName: string;
+    firstBars: string;
+    reqNo: string;
+    songName: string;
+  }[];
+  totalCount: string;
+  totalPage: string;
+}
+
+function findArtistsByName(name: string, matchType: number = 1) {
+  return makeDkdenmokuRequest<DkDamSearchServletResponse>(
+    "https://denmoku.clubdam.com/dkdenmoku/DkDamSearchServlet",
+    {
+      categoryCd: "010000",
+      page: "1",
+      artistMatchType: matchType.toString(),
+      artistName: name,
+    }
+  );
+}
+
+function getSongsByArtistId(artistId: string) {
+  return makeDkdenmokuRequest<DkDamSearchServletResponse>(
+    "https://denmoku.clubdam.com/dkdenmoku/DkDamSearchServlet",
+    {
+      categoryCd: "010000",
+      page: "1",
+      artistId,
+    }
+  ).then((firstPage) =>
+    firstPage.totalPage === "1"
+      ? firstPage
+      : makeDkdenmokuRequest<DkDamSearchServletResponse>(
+          "https://denmoku.clubdam.com/dkdenmoku/DkDamSearchServlet",
+          {
+            categoryCd: "010000",
+            page: firstPage.totalPage,
+            artistId,
+          }
+        )
+  );
+}
+
+export {
+  findArtistsByName,
+  getSongsByArtistId,
+  getSongsByReqNos,
+  searchMusicByKeyword,
+};
