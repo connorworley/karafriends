@@ -23,7 +23,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+*.node
 
 # Added by cargo
-
-/target
+/native/target
