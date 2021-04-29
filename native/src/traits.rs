@@ -6,5 +6,5 @@ pub trait AudioSystemTrait {
 }
 
 pub trait InputDeviceTrait {
-    fn get_pitch(&mut self) -> f32;
+    fn get_pitch(&mut self) -> (f32, f32);
 }

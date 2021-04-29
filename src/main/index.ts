@@ -7,23 +7,16 @@ import express from "express";
 import remoconMiddleware from "./remoconMiddleware";
 import setupGraphQL from "./graphql";
 
-const AudioSystem = require("../../native"); // tslint:disable-line:no-var-requires
-
-class InputDevice {
-  boxed: any;
-
-  constructor(name: string) {
-    this.boxed = AudioSystem.inputDevice_new(name);
-  }
-  getPitch() {
-    return AudioSystem.inputDevice_getPitch(this.boxed);
-  }
-}
+import * as AudioSystem from "../common/AudioSystem";
 
 const inputDevices = AudioSystem.inputDevices();
-const mic = new InputDevice(inputDevices[0]);
-// TODO: surface sample rate so that we know how often we can get pitch
-setInterval(() => console.log(`Pitch: ${mic.getPitch()}`), 100); // tslint:disable-line:no-console
+const mic = new AudioSystem.InputDevice(inputDevices[0]);
+setInterval(() => {
+  const pitch = mic.getPitch();
+  if (pitch.confidence > 0.8 && pitch.frequency !== 0) {
+    console.log(`Pitch: ${pitch.frequency}`); // tslint:disable-line:no-console
+  }
+}, 25);
 
 const expressApp = express();
 expressApp.use(remoconMiddleware());

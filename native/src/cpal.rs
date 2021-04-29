@@ -37,8 +37,7 @@ impl crate::traits::AudioSystemTrait for AudioSystem {
         let device = host
             .input_devices()
             .unwrap()
-            .filter(|device| device.name().unwrap() == name)
-            .next()
+            .find(|device| device.name().unwrap() == name)
             .unwrap();
         let config = device.default_input_config().unwrap();
 
@@ -59,7 +58,7 @@ impl crate::traits::AudioSystemTrait for AudioSystem {
             .build_input_stream(
                 &config.into(),
                 move |samples: &[f32], _| {
-                    tx.push_iter(&mut samples.iter().map(|f| *f));
+                    tx.push_iter(&mut samples.iter().copied());
                 },
                 |e| std::panic!("{}", e),
             )
@@ -77,15 +76,11 @@ impl crate::traits::AudioSystemTrait for AudioSystem {
 impl Finalize for InputDevice {}
 
 impl crate::traits::InputDeviceTrait for InputDevice {
-    fn get_pitch(&mut self) -> f32 {
+    fn get_pitch(&mut self) -> (f32, f32) {
         let mut samples = vec![0.0; self.sample_count];
         self.rx.pop_slice(&mut samples);
-        let pitch = self
-            .pitch_detector
-            .lock()
-            .unwrap()
-            .do_result(&samples)
-            .unwrap();
-        pitch
+        let mut pd = self.pitch_detector.lock().unwrap();
+        let frequency = pd.do_result(&samples).unwrap();
+        (frequency, pd.get_confidence())
     }
 }

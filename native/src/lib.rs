@@ -1,3 +1,5 @@
+#![allow(non_snake_case)]
+
 #[cfg(not(feature = "winrt"))]
 mod cpal;
 #[cfg(not(feature = "winrt"))]
@@ -41,10 +43,16 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
     Ok(cx.boxed(RefCell::new(AudioSystem::new_input_device(&name))))
 }
 
-fn input_device__get_pitch(mut cx: FunctionContext) -> JsResult<JsNumber> {
+fn input_device__get_pitch(mut cx: FunctionContext) -> JsResult<JsObject> {
     let device = cx.argument::<JsBox<RefCell<InputDevice>>>(0)?;
     let mut device = device.borrow_mut();
-    Ok(cx.number(device.get_pitch()))
+    let (frequency, confidence) = device.get_pitch();
+    let js_object = JsObject::new(&mut cx);
+    let frequency = cx.number(frequency);
+    let confidence = cx.number(confidence);
+    js_object.set(&mut cx, "frequency", frequency)?;
+    js_object.set(&mut cx, "confidence", confidence)?;
+    Ok(js_object)
 }
 
 register_module!(mut m, {
