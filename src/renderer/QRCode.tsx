@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from "react";
-import * as libqrcode from "qrcode";
 import { graphql, QueryRenderer } from "react-relay";
 
 import environment from "../common/graphqlEnvironment";
@@ -11,7 +10,7 @@ function QRCode() {
       environment={environment}
       query={graphql`
         query QRCodeQuery {
-          wanIpAddress
+          wanIpQrCode
         }
       `}
       variables={{}}
@@ -19,7 +18,11 @@ function QRCode() {
         if (!props) {
           return <div>Loading...</div>;
         }
-        return <div>{props.wanIpAddress}</div>;
+        return (
+          <div>
+            <img src={props.wanIpQrCode} />
+          </div>
+        );
       }}
     />
   );

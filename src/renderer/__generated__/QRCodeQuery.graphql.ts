@@ -5,7 +5,7 @@
 import { ConcreteRequest } from "relay-runtime";
 export type QRCodeQueryVariables = {};
 export type QRCodeQueryResponse = {
-    readonly wanIpAddress: string;
+    readonly wanIpQrCode: string;
 };
 export type QRCodeQuery = {
     readonly response: QRCodeQueryResponse;
@@ -16,7 +16,7 @@ export type QRCodeQuery = {
 
 /*
 query QRCodeQuery {
-  wanIpAddress
+  wanIpQrCode
 }
 */
 
@@ -26,7 +26,7 @@ var v0 = [
     "alias": null,
     "args": null,
     "kind": "ScalarField",
-    "name": "wanIpAddress",
+    "name": "wanIpQrCode",
     "storageKey": null
   }
 ];
@@ -48,14 +48,14 @@ return {
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "50411393b257b584f25303c86a171d3d",
+    "cacheID": "145d9d8da5aa6b158b066cfe77108411",
     "id": null,
     "metadata": {},
     "name": "QRCodeQuery",
     "operationKind": "query",
-    "text": "query QRCodeQuery {\n  wanIpAddress\n}\n"
+    "text": "query QRCodeQuery {\n  wanIpQrCode\n}\n"
   }
 };
 })();
-(node as any).hash = 'aca1dc4391dd073d951f1607bc7b9519';
+(node as any).hash = 'f854d0ab78aa46f47b5d3a4ead66e8d8';
 export default node;
