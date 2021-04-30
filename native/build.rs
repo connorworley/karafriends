@@ -3,15 +3,6 @@
 pub fn main() {
     neon_build::setup();
 
-    #[cfg(target_os = "macos")]
-    {
-        println!("cargo:rustc-link-search=../prebuilt/macos");
-        println!("cargo:rustc-link-lib=aubio");
-        println!("cargo:rustc-link-lib=fftw3f");
-
-        return;
-    }
-
     #[cfg(windows)]
     {
         println!("cargo:rustc-link-search=../prebuilt/windows");
@@ -35,6 +26,4 @@ pub fn main() {
 
         return;
     }
-
-    println!("cargo:rustc-link-lib=aubio");
 }

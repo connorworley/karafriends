@@ -7,6 +7,17 @@ import express from "express";
 import remoconMiddleware from "./remoconMiddleware";
 import setupGraphQL from "./graphql";
 
+import * as AudioSystem from "../common/AudioSystem.ts";
+
+const inputDevices = AudioSystem.inputDevices();
+const mic = new AudioSystem.InputDevice(inputDevices[0]);
+setInterval(() => {
+  const pitch = mic.getPitch();
+  if (pitch.confidence > 0.8 && pitch.frequency !== 0) {
+    console.log(`Pitch: ${pitch.frequency}`); // tslint:disable-line:no-console
+  }
+}, 25);
+
 const expressApp = express();
 expressApp.use(remoconMiddleware());
 setupGraphQL(expressApp);
