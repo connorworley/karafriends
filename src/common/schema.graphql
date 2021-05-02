@@ -1,5 +1,5 @@
 type Query {
-  wanIpAddress: String!
+  wanIpQrCode: String!
   songsByName(name: String): [Song!]!
   songsByIds(ids: [String!]!): [Song!]!
   songsInQueue: [Song!]!

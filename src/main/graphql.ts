@@ -5,6 +5,8 @@ import { ApolloServer, makeExecutableSchema } from "apollo-server-express";
 import { Application } from "express";
 import isDev from "electron-is-dev";
 
+import * as qrcode from "qrcode";
+
 import rawSchema from "../common/schema.graphql";
 import {
   findArtistsByName,
@@ -23,13 +25,19 @@ const db: NotARealDb = {
 
 const resolvers = {
   Query: {
-    wanIpAddress: () => {
+    wanIpQrCode: () => {
       // Trick to get the IP address of the iface we would use to access the internet
       // This address should be usable except in rare cases where LAN and WAN go through different ifaces
       const sock = dgram.createSocket({ type: "udp4" });
       return new Promise((resolve) => {
         sock.connect(1, "1.1.1.1", () => {
-          resolve(sock.address().address);
+          qrcode.toDataURL(
+            `${sock.address().address}:8080`,
+            {
+              errorCorrectionLevel: "L",
+            },
+            (error, url) => resolve(url)
+          );
         });
       });
     },
