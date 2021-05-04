@@ -6,6 +6,7 @@ import { Application } from "express";
 import isDev from "electron-is-dev";
 
 import * as qrcode from "qrcode";
+import promiseRetry from "promise-retry";
 
 import rawSchema from "../common/schema.graphql";
 import {
@@ -13,6 +14,8 @@ import {
   getSongsByArtistId,
   getSongsByReqNos,
   searchMusicByKeyword,
+  getMusicStreamingUrls,
+  getScoringData,
 } from "./damApi";
 
 type NotARealDb = {
@@ -25,7 +28,7 @@ const db: NotARealDb = {
 
 const resolvers = {
   Query: {
-    wanIpQrCode: () => {
+    wanIpQrCode: (): Promise<string> => {
       // Trick to get the IP address of the iface we would use to access the internet
       // This address should be usable except in rare cases where LAN and WAN go through different ifaces
       const sock = dgram.createSocket({ type: "udp4" });
@@ -112,11 +115,25 @@ const resolvers = {
         name: json.searchResult[0].artistName,
       }));
     },
+    streamingUrl: (_: any, args: { id: string }): Promise<string> => {
+      // Minsei requests seem to be a bit flaky, so let's retry them if needed
+      return promiseRetry((retry) =>
+        getMusicStreamingUrls(args.id.match(/.{1,4}/g)!.join("-")).catch(retry)
+      ).then((json) => json.list[0].highBitrateUrl);
+    },
+    scoringData: (_: any, args: { id: string }): Promise<number[]> => {
+      return promiseRetry((retry) =>
+        getScoringData(args.id.match(/.{1,4}/g)!.join("-")).catch(retry)
+      ).then((scoringData) => Array.from(new Uint8Array(scoringData)));
+    },
   },
   Mutation: {
-    queueSong: (_: any, args: { id: string }): Promise<boolean> => {
+    queueSong: (_: any, args: { id: string }): boolean => {
       db.songQueue.push(args.id);
-      return Promise.resolve(true);
+      return true;
+    },
+    popSong: (_: any, args: {}): string | null => {
+      return db.songQueue.shift() || null;
     },
   },
   Artist: {
