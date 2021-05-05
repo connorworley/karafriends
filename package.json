@@ -82,6 +82,7 @@
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown",
-    "**/*.(ts|tsx)": "tslint --fix"
+    "**/*.(ts|tsx)": "tslint --fix",
+    "**/*.rs": "rustfmt"
   }
 }
