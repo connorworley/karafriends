@@ -12,7 +12,6 @@ import rawSchema from "../common/schema.graphql";
 import {
   findArtistsByName,
   getMusicStreamingUrls,
-  getMusicStreamingUrls,
   getScoringData,
   getSongsByArtistId,
   getSongsByReqNos,
