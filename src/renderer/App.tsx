@@ -1,7 +1,7 @@
 import React from "react";
+import "./App.css";
 import Player from "./Player";
 import QRCode from "./QRCode";
-import "./App.css";
 
 function App() {
   return (

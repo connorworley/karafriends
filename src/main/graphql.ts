@@ -2,20 +2,21 @@ import dgram from "dgram";
 
 import { ApolloServer, makeExecutableSchema } from "apollo-server-express";
 
-import { Application } from "express";
 import isDev from "electron-is-dev";
+import { Application } from "express";
 
-import * as qrcode from "qrcode";
 import promiseRetry from "promise-retry";
+import * as qrcode from "qrcode";
 
 import rawSchema from "../common/schema.graphql";
 import {
   findArtistsByName,
+  getMusicStreamingUrls,
+  getMusicStreamingUrls,
+  getScoringData,
   getSongsByArtistId,
   getSongsByReqNos,
   searchMusicByKeyword,
-  getMusicStreamingUrls,
-  getScoringData,
 } from "./damApi";
 
 type NotARealDb = {

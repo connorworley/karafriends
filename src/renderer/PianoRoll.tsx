@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import noteVertShaderRaw from "./shaders/PianoRollNote.vert.glsl";
 import noteFragShaderRaw from "./shaders/PianoRollNote.frag.glsl";
+import noteVertShaderRaw from "./shaders/PianoRollNote.vert.glsl";
 
 import "./PianoRoll.css";
 

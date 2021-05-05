@@ -4,32 +4,51 @@ import { app, BrowserWindow } from "electron"; // tslint:disable-line:no-implici
 import isDev from "electron-is-dev";
 import express from "express";
 
-import remoconMiddleware from "./remoconMiddleware";
 import setupGraphQL from "./graphql";
+import remoconMiddleware from "./remoconMiddleware";
 
 const expressApp = express();
 expressApp.use(remoconMiddleware());
 setupGraphQL(expressApp);
 expressApp.listen(8080);
 
-let mainWindow: BrowserWindow | null;
+let rendererWindow: BrowserWindow | null;
 
 function createWindow() {
-  mainWindow = new BrowserWindow({
+  rendererWindow = new BrowserWindow({
     frame: isDev,
     fullscreen: !isDev,
     webPreferences: {
-      enableRemoteModule: true,
-      nodeIntegration: true,
-      webSecurity: false,
+      allowRunningInsecureContent: false,
+      contextIsolation: true,
+      enableRemoteModule: false,
+      nodeIntegration: false,
+      nodeIntegrationInSubFrames: false,
+      nodeIntegrationInWorker: false,
+      webSecurity: true,
     },
   });
-  mainWindow.loadURL(
+
+  // Ignore CORS when fetching ipcasting HLS
+  const session = rendererWindow.webContents.session;
+  const ipcastingFilter = {
+    urls: ["https://*.ipcasting.jp/*"],
+  };
+
+  session.webRequest.onBeforeSendHeaders(
+    ipcastingFilter,
+    (details, callback) => {
+      delete details.requestHeaders.Origin;
+      callback({ requestHeaders: details.requestHeaders });
+    }
+  );
+
+  rendererWindow.loadURL(
     isDev
       ? "http://localhost:3000/renderer/"
       : `file://${path.join(__dirname, "..", "renderer", "index.html")}`
   );
-  mainWindow.on("closed", () => (mainWindow = null));
+  rendererWindow.on("closed", () => (rendererWindow = null));
 }
 
 app.on("ready", createWindow);
@@ -41,7 +60,7 @@ app.on("window-all-closed", () => {
 });
 
 app.on("activate", () => {
-  if (mainWindow === null) {
+  if (rendererWindow === null) {
     createWindow();
   }
 });

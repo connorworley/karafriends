@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
-import { graphql, commitMutation, fetchQuery } from "react-relay";
 import Hls from "hls.js";
-import { PlayerPopSongMutation } from "./__generated__/PlayerPopSongMutation.graphql";
-import { PlayerStreamingUrlQuery } from "./__generated__/PlayerStreamingUrlQuery.graphql";
-import { PlayerScoringDataQuery } from "./__generated__/PlayerScoringDataQuery.graphql";
+import React, { useEffect, useRef, useState } from "react";
+import { commitMutation, fetchQuery, graphql } from "react-relay";
 import environment from "../common/graphqlEnvironment";
 import PianoRoll from "./PianoRoll";
 import "./Player.css";
+import { PlayerPopSongMutation } from "./__generated__/PlayerPopSongMutation.graphql";
+import { PlayerScoringDataQuery } from "./__generated__/PlayerScoringDataQuery.graphql";
+import { PlayerStreamingUrlQuery } from "./__generated__/PlayerStreamingUrlQuery.graphql";
 
 const streamingUrlQuery = graphql`
   query PlayerStreamingUrlQuery($id: String!) {

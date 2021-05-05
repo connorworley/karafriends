@@ -1,6 +1,7 @@
 {
   "extends": ["tslint:latest", "tslint-config-prettier"],
   "rules": {
-    "no-console": false
+    "no-console": false,
+    "ordered-imports": true
   }
 }

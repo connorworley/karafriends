@@ -48,7 +48,7 @@ module.exports = [
     },
   }),
   merge(COMMON_CONFIG, {
-    target: "electron-renderer",
+    target: "web", // our renderer is rather locked down
     entry: "./src/renderer/index.tsx",
     output: {
       path: path.resolve(__dirname, "build", "renderer"),

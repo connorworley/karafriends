@@ -4,4 +4,3 @@
 cargo fmt --manifest-path native/Cargo.toml
 cargo clippy --manifest-path native/Cargo.toml
 yarn lint-staged
-yarn tslint --project .
