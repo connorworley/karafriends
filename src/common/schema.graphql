@@ -5,10 +5,13 @@ type Query {
   songsInQueue: [Song!]!
   artistsByName(name: String): [Artist!]!
   artistById(id: String!): Artist!
+  streamingUrl(id: String!): String!
+  scoringData(id: String!): [Int!]!
 }
 
 type Mutation {
   queueSong(id: String!): Boolean!
+  popSong: String
 }
 
 type Artist {

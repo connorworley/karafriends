@@ -13,7 +13,7 @@ const COMMON_CONFIG = {
     alias: {
       graphql$: path.resolve(__dirname, "./node_modules/graphql/index.js"),
     },
-    extensions: [".js", ".ts", ".tsx", ".graphql", ".node"],
+    extensions: [".js", ".ts", ".tsx", ".graphql", ".glsl", ".node"],
   },
   module: {
     rules: [
@@ -27,7 +27,7 @@ const COMMON_CONFIG = {
         exclude: /node_modules/,
       },
       {
-        test: /\.graphql$/,
+        test: /\.(graphql|glsl)$/,
         use: "raw-loader",
         exclude: /node_modules/,
       },
@@ -48,7 +48,7 @@ module.exports = [
     },
   }),
   merge(COMMON_CONFIG, {
-    target: "electron-renderer",
+    target: "web", // our renderer is rather locked down
     entry: "./src/renderer/index.tsx",
     output: {
       path: path.resolve(__dirname, "build", "renderer"),

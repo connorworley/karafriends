@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { graphql, QueryRenderer } from "react-relay";
-import { HashRouter, Switch, Route, Link } from "react-router-dom";
+import { HashRouter, Link, Route, Switch } from "react-router-dom";
 
 import M from "materialize-css";
 import "materialize-css/dist/css/materialize.css"; // tslint:disable-line:no-submodule-imports

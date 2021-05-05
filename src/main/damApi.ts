@@ -1,8 +1,56 @@
 import fetch from "node-fetch";
 
+const BASE_MINSEI_REQUEST = {
+  charset: "UTF-8",
+  compAuthKey: "2/Qb9R@8s*",
+  compId: "1",
+  deviceId: "22",
+  format: "json",
+  serviceId: "1",
+  contractId: "1",
+};
+
+interface MinseiResponse {
+  message: string;
+  status: string;
+  statusCode: string;
+}
+
+function makeMinseiRequestRaw(url: string, data: any) {
+  // Minsei requests kind of look like dkwebsys requests, but are slightly different
+  const body = Object.entries({
+    ...BASE_MINSEI_REQUEST,
+    ...data,
+  })
+    .map(([k, v]) => `${k}=${v}`)
+    .join("&");
+  console.debug(`Minsei request: curl ${url} -d '${body}'`);
+  return fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body,
+  });
+}
+
+function makeMinseiRequest<T extends MinseiResponse>(url: string, data: any) {
+  // Minsei requests kind of look like dkwebsys requests, but are slightly different
+  return makeMinseiRequestRaw(url, data)
+    .then((res) => {
+      return res.json();
+    })
+    .then((json: T) => {
+      if (json.statusCode !== "0000") {
+        throw new Error(`${json.status}: ${json.message}`);
+      }
+      return json;
+    });
+}
+
 const BASE_DK_DENMOKU_REQUEST = {
   appVer: "2.1.0",
-  deviceId: "deviceId",
+  deviceId: "22",
 };
 
 interface DkdenmokuResponse {
@@ -75,6 +123,7 @@ interface SearchMusicByKeywordResponse extends DkwebsysReponse {
 }
 
 function searchMusicByKeyword(keyword: string) {
+  // replace me with a dkdenmoku request and remove dkwebsys code?
   return makeDkwebsysRequest<SearchMusicByKeywordResponse>(
     "https://csgw.clubdam.com/dkwebsys/search-api/SearchMusicByKeywordApi",
     {
@@ -152,9 +201,90 @@ function getSongsByArtistId(artistId: string) {
   );
 }
 
+interface MinseiMusicDetails extends MinseiResponse {
+  data: {
+    artistCode: string;
+    artistName: string;
+    contentsId: string;
+    contentsYomi: string;
+    firstLine: string;
+    guideVocalList: {
+      contentsId: string;
+      duet: string;
+      playtime: string;
+    }[];
+    musicTypeList: {
+      musicTypeCode: string;
+      musicTypeId: string;
+      musicTypeName: string;
+    }[];
+    mylist: string;
+    requestNo: string;
+    songDifficulty: string;
+    songTechDifficulty: string;
+    thumbnailPathList: {
+      thumbnailPath: string;
+      thumbnailType: string;
+    }[];
+    value: string;
+  };
+}
+
+function getMusicDetails(reqNo: string) {
+  return makeMinseiRequest<MinseiMusicDetails>(
+    "https://csgw.clubdam.com/cwa/win/minsei/music/search/GetMusicDetail.api",
+    {
+      requestNo: reqNo,
+    }
+  );
+}
+
+interface MinseiStreamingUrls extends MinseiResponse {
+  data: {
+    karaokeContentsId: string;
+  };
+  list: {
+    contentsId: string;
+    duet: string;
+    highBitrateUrl: string;
+    lowBitrateUrl: string;
+  }[];
+}
+
+function getMusicStreamingUrls(reqNo: string) {
+  return makeMinseiRequest<MinseiStreamingUrls>(
+    "https://csgw.clubdam.com/cwa/win/minsei/music/playLog/GetMusicStreamingURL.api",
+    {
+      requestNo: reqNo,
+      authToken: process.env.AUTH_TOKEN,
+      userCode: process.env.USER_CODE,
+    }
+  );
+}
+
+function getScoringData(reqNo: string) {
+  return makeMinseiRequestRaw(
+    "https://csgw.clubdam.com/cwa/win/minsei/scoring/GetScoringReferenceData.api",
+    {
+      requestNo: reqNo,
+      authToken: process.env.AUTH_TOKEN,
+      userCode: process.env.USER_CODE,
+    }
+  ).then((res) => {
+    if (res.headers.get("Content-Type") === "application/octet-stream") {
+      return res.arrayBuffer();
+    } else {
+      return Promise.reject("Scoring data was not returned in binary format");
+    }
+  });
+}
+
 export {
   findArtistsByName,
   getSongsByArtistId,
   getSongsByReqNos,
   searchMusicByKeyword,
+  getMusicDetails,
+  getMusicStreamingUrls,
+  getScoringData,
 };

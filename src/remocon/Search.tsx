@@ -1,8 +1,8 @@
 import React from "react";
-import { Route, Link, RouteComponentProps } from "react-router-dom";
+import { Link, Route, RouteComponentProps } from "react-router-dom";
 
-import SongSearch from "./SongSearch";
 import ArtistSearch from "./ArtistSearch";
+import SongSearch from "./SongSearch";
 
 const buttonStyle = {
   height: "auto",
