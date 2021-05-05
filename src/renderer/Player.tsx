@@ -31,6 +31,7 @@ const POLL_INTERVAL_MS = 5 * 1000;
 function Player() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [scoringData, setScoringData] = useState<number[]>([]);
+  const pollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   let hls: Hls | null = null;
 
   useEffect(() => {
@@ -67,13 +68,16 @@ function Player() {
                 setScoringData(data.scoringData);
               });
           } else {
-            setTimeout(pollQueue, POLL_INTERVAL_MS);
+            pollTimeoutRef.current = setTimeout(pollQueue, POLL_INTERVAL_MS);
           }
         },
       });
     };
     videoRef.current.onended = pollQueue;
     pollQueue();
+    return () => {
+      if (pollTimeoutRef.current) clearTimeout(pollTimeoutRef.current);
+    };
   }, []);
 
   return (
