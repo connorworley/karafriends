@@ -16,6 +16,11 @@ interface MinseiResponse {
   statusCode: string;
 }
 
+interface MinseiCredentials {
+  userCode: string;
+  authToken: string;
+}
+
 function makeMinseiRequestRaw(url: string, data: any) {
   // Minsei requests kind of look like dkwebsys requests, but are slightly different
   const body = Object.entries({
@@ -230,17 +235,12 @@ interface MinseiMusicDetails extends MinseiResponse {
   };
 }
 
-function getMusicDetails(
-  reqNo: string,
-  username: string,
-  minseiAuthToken: string
-) {
+function getMusicDetails(reqNo: string, creds: MinseiCredentials) {
   return makeMinseiRequest<MinseiMusicDetails>(
     "https://csgw.clubdam.com/cwa/win/minsei/music/search/GetMusicDetail.api",
     {
+      ...creds,
       requestNo: reqNo,
-      userCode: username,
-      authToken: minseiAuthToken,
     }
   );
 }
@@ -257,17 +257,12 @@ interface MinseiStreamingUrls extends MinseiResponse {
   }[];
 }
 
-function getMusicStreamingUrls(
-  reqNo: string,
-  username: string,
-  minseiAuthToken: string
-) {
+function getMusicStreamingUrls(reqNo: string, creds: MinseiCredentials) {
   return makeMinseiRequest<MinseiStreamingUrls>(
     "https://csgw.clubdam.com/cwa/win/minsei/music/playLog/GetMusicStreamingURL.api",
     {
+      ...creds,
       requestNo: reqNo,
-      userCode: username,
-      authToken: minseiAuthToken,
     }
   );
 }
@@ -289,17 +284,12 @@ function login(username: string, password: string) {
   );
 }
 
-function getScoringData(
-  reqNo: string,
-  username: string,
-  minseiAuthToken: string
-) {
+function getScoringData(reqNo: string, creds: MinseiCredentials) {
   return makeMinseiRequestRaw(
     "https://csgw.clubdam.com/cwa/win/minsei/scoring/GetScoringReferenceData.api",
     {
+      ...creds,
       requestNo: reqNo,
-      userCode: username,
-      authToken: minseiAuthToken,
     }
   ).then((res) => {
     if (res.headers.get("Content-Type") === "application/octet-stream") {
@@ -319,4 +309,5 @@ export {
   getMusicStreamingUrls,
   login,
   getScoringData,
+  MinseiCredentials,
 };

@@ -13,8 +13,13 @@ import {
   getScoringData,
   getSongsByArtistId,
   getSongsByReqNos,
+  MinseiCredentials,
   searchMusicByKeyword,
 } from "./damApi";
+
+interface Context {
+  creds: MinseiCredentials;
+}
 
 type NotARealDb = {
   songQueue: string[];
@@ -116,27 +121,25 @@ const resolvers = {
     streamingUrl: (
       _: any,
       args: { id: string },
-      context: { username: string; minseiAuthToken: string }
+      context: Context
     ): Promise<string> => {
       // Minsei requests seem to be a bit flaky, so let's retry them if needed
       return promiseRetry((retry) =>
         getMusicStreamingUrls(
           args.id.match(/.{1,4}/g)!.join("-"),
-          context.username,
-          context.minseiAuthToken
+          context.creds
         ).catch(retry)
       ).then((json) => json.list[0].highBitrateUrl);
     },
     scoringData: (
       _: any,
       args: { id: string },
-      context: { username: string; minseiAuthToken: string }
+      context: Context
     ): Promise<number[]> => {
       return promiseRetry((retry) =>
         getScoringData(
           args.id.match(/.{1,4}/g)!.join("-"),
-          context.username,
-          context.minseiAuthToken
+          context.creds
         ).catch(retry)
       ).then((scoringData) => Array.from(new Uint8Array(scoringData)));
     },
@@ -169,19 +172,14 @@ const resolvers = {
   },
 };
 
-function setupGraphQL(
-  app: Application,
-  username: string,
-  minseiAuthToken: string
-) {
+function setupGraphQL(app: Application, creds: MinseiCredentials) {
   const server = new ApolloServer({
     schema: makeExecutableSchema({
       typeDefs: rawSchema,
       resolvers,
     }),
     context: {
-      username,
-      minseiAuthToken,
+      creds,
     },
   });
   if (isDev) {

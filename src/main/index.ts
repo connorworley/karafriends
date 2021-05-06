@@ -10,20 +10,23 @@ import {
   getCredentials,
   setCredentials,
 } from "../common/auth";
-import { login } from "./damApi";
+import { login, MinseiCredentials } from "./damApi";
 import setupGraphQL from "./graphql";
 import remoconMiddleware from "./remoconMiddleware";
 
 function attemptLogin(creds: Credentials) {
   return login(creds.account, creds.password)
-    .then((json) => [creds.account, json.data.authToken])
+    .then((json) => ({
+      userCode: creds.account,
+      authToken: json.data.authToken,
+    }))
     .catch(() =>
       deleteCredentials().then(() => Promise.reject("credentials were invalid"))
     )
-    .then(([account, minseiAuthToken]) => {
+    .then((minseiCreds: MinseiCredentials) => {
       const expressApp = express();
       expressApp.use(remoconMiddleware());
-      setupGraphQL(expressApp, account, minseiAuthToken);
+      setupGraphQL(expressApp, minseiCreds);
       expressApp.listen(8080);
     });
 }
