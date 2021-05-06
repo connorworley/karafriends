@@ -1,10 +1,8 @@
 import dgram from "dgram";
 
 import { ApolloServer, makeExecutableSchema } from "apollo-server-express";
-
 import isDev from "electron-is-dev";
 import { Application } from "express";
-
 import promiseRetry from "promise-retry";
 import * as qrcode from "qrcode";
 
@@ -115,15 +113,31 @@ const resolvers = {
         name: json.searchResult[0].artistName,
       }));
     },
-    streamingUrl: (_: any, args: { id: string }): Promise<string> => {
+    streamingUrl: (
+      _: any,
+      args: { id: string },
+      context: { username: string; minseiAuthToken: string }
+    ): Promise<string> => {
       // Minsei requests seem to be a bit flaky, so let's retry them if needed
       return promiseRetry((retry) =>
-        getMusicStreamingUrls(args.id.match(/.{1,4}/g)!.join("-")).catch(retry)
+        getMusicStreamingUrls(
+          args.id.match(/.{1,4}/g)!.join("-"),
+          context.username,
+          context.minseiAuthToken
+        ).catch(retry)
       ).then((json) => json.list[0].highBitrateUrl);
     },
-    scoringData: (_: any, args: { id: string }): Promise<number[]> => {
+    scoringData: (
+      _: any,
+      args: { id: string },
+      context: { username: string; minseiAuthToken: string }
+    ): Promise<number[]> => {
       return promiseRetry((retry) =>
-        getScoringData(args.id.match(/.{1,4}/g)!.join("-")).catch(retry)
+        getScoringData(
+          args.id.match(/.{1,4}/g)!.join("-"),
+          context.username,
+          context.minseiAuthToken
+        ).catch(retry)
       ).then((scoringData) => Array.from(new Uint8Array(scoringData)));
     },
   },
@@ -155,12 +169,20 @@ const resolvers = {
   },
 };
 
-function setupGraphQL(app: Application) {
+function setupGraphQL(
+  app: Application,
+  username: string,
+  minseiAuthToken: string
+) {
   const server = new ApolloServer({
     schema: makeExecutableSchema({
       typeDefs: rawSchema,
       resolvers,
     }),
+    context: {
+      username,
+      minseiAuthToken,
+    },
   });
   if (isDev) {
     app.use("/graphql", (req, res, next) => {

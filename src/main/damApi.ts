@@ -230,11 +230,17 @@ interface MinseiMusicDetails extends MinseiResponse {
   };
 }
 
-function getMusicDetails(reqNo: string) {
+function getMusicDetails(
+  reqNo: string,
+  username: string,
+  minseiAuthToken: string
+) {
   return makeMinseiRequest<MinseiMusicDetails>(
     "https://csgw.clubdam.com/cwa/win/minsei/music/search/GetMusicDetail.api",
     {
       requestNo: reqNo,
+      userCode: username,
+      authToken: minseiAuthToken,
     }
   );
 }
@@ -251,24 +257,49 @@ interface MinseiStreamingUrls extends MinseiResponse {
   }[];
 }
 
-function getMusicStreamingUrls(reqNo: string) {
+function getMusicStreamingUrls(
+  reqNo: string,
+  username: string,
+  minseiAuthToken: string
+) {
   return makeMinseiRequest<MinseiStreamingUrls>(
     "https://csgw.clubdam.com/cwa/win/minsei/music/playLog/GetMusicStreamingURL.api",
     {
       requestNo: reqNo,
-      authToken: process.env.AUTH_TOKEN,
-      userCode: process.env.USER_CODE,
+      userCode: username,
+      authToken: minseiAuthToken,
     }
   );
 }
 
-function getScoringData(reqNo: string) {
+interface MinseiLogin extends MinseiResponse {
+  data: {
+    authToken: string;
+    damtomoId: string;
+  };
+}
+
+function login(username: string, password: string) {
+  return makeMinseiRequest<MinseiLogin>(
+    "https://csgw.clubdam.com/cwa/win/minsei/auth/LoginByDamtomoMemberId.api",
+    {
+      loginId: username,
+      password,
+    }
+  );
+}
+
+function getScoringData(
+  reqNo: string,
+  username: string,
+  minseiAuthToken: string
+) {
   return makeMinseiRequestRaw(
     "https://csgw.clubdam.com/cwa/win/minsei/scoring/GetScoringReferenceData.api",
     {
       requestNo: reqNo,
-      authToken: process.env.AUTH_TOKEN,
-      userCode: process.env.USER_CODE,
+      userCode: username,
+      authToken: minseiAuthToken,
     }
   ).then((res) => {
     if (res.headers.get("Content-Type") === "application/octet-stream") {
@@ -286,5 +317,6 @@ export {
   searchMusicByKeyword,
   getMusicDetails,
   getMusicStreamingUrls,
+  login,
   getScoringData,
 };
