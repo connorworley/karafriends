@@ -58,7 +58,7 @@ export default function PianoRoll(props: {
     if (!canvasRef.current || !props.videoRef.current) return;
 
     const view = new Uint32Array(Uint8Array.from(props.scoringData).buffer);
-    const noteCount = view[1] - 1; // last note seems to be crap
+    const noteCount = view[1];
 
     const notes: {
       startTime: number;
@@ -71,9 +71,9 @@ export default function PianoRoll(props: {
 
     for (let i = 0; i < noteCount * 4; i += 4) {
       notes.push({
-        startTime: view[8 + i + 2] / 1000,
-        endTime: view[8 + i + 3] / 1000,
-        midiNumber: view[8 + i],
+        startTime: view[6 + i] / 1000,
+        endTime: view[6 + i + 1] / 1000,
+        midiNumber: view[6 + i + 2],
       });
     }
 
