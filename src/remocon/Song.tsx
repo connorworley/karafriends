@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { graphql, useLazyLoadQuery, useMutation } from "react-relay";
 import { RouteComponentProps } from "react-router-dom";
 
-import { withLoader } from "./components/Loader";
+import { withLoader } from "../common/components/Loader";
 import { SongMutation } from "./__generated__/SongMutation.graphql";
 import { SongQuery } from "./__generated__/SongQuery.graphql";
 

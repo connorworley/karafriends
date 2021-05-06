@@ -72,6 +72,13 @@ module.exports = [
     },
   }),
   merge(COMMON_CONFIG, {
+    target: "electron-preload",
+    entry: "./src/preload/index.ts",
+    output: {
+      path: path.resolve(__dirname, "build", "preload"),
+    },
+  }),
+  merge(COMMON_CONFIG, {
     target: "web",
     entry: "./src/remocon/index.tsx",
     output: {
