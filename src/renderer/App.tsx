@@ -1,45 +1,52 @@
+import "materialize-css/dist/css/materialize.css"; // tslint:disable-line:no-submodule-imports
 import React, { useEffect, useState } from "react";
 
+import Loader from "../common/components/Loader";
 import "./App.css";
+import Login from "./Login";
 import Player from "./Player";
 import QRCode from "./QRCode";
 
-declare global {
-  interface Window {
-      karafriends: {
-      hasCredentials(): Promise<boolean>;
-      setCredentials(username: string, password: string): void;
-      }
-  }
+enum AppState {
+  Loading,
+  NotLoggedIn,
+  LoggedIn,
 }
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [creds, setCreds] = useState({ username: "", password: "" });
+  const [appState, setAppState] = useState(AppState.Loading);
 
   useEffect(() => {
-    window.karafriends.hasCredentials().then(hasCreds => setIsLoggedIn(hasCreds));
+    window.karafriends
+      .isLoggedIn()
+      .then((loggedIn) =>
+        setAppState(loggedIn ? AppState.LoggedIn : AppState.NotLoggedIn)
+      );
   }, []);
-  
-  if (isLoggedIn) {
-    return (
-      <div className="mainContainer">
-        <Player />
-        <div className="inputBar">
-          <QRCode />
+
+  switch (appState) {
+    case AppState.Loading:
+    default:
+      return (
+        <div className="mainContainer">
+          <Loader />
         </div>
-      </div>
-    );
-  } else {  
-    return (
-      <div className="mainContainer">
-        <form onSubmit={() => window.karafriends.setCredentials(creds.username, creds.password)}>
-          <input type="text" value={creds.username} onChange={(e) => setCreds({ username: e.target.value, password: creds.password })} />
-          <input type="password" value={creds.password} onChange={(e) => setCreds({ username: creds.username, password: e.target.value })} />
-          <input type="submit" />
-        </form>
-      </div>
-    );
+      );
+    case AppState.NotLoggedIn:
+      return (
+        <div className="mainContainer">
+          <Login />
+        </div>
+      );
+    case AppState.LoggedIn:
+      return (
+        <div className="mainContainer">
+          <Player />
+          <div className="inputBar">
+            <QRCode />
+          </div>
+        </div>
+      );
   }
 }
 

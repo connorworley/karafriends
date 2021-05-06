@@ -1,3 +1,4 @@
+import "materialize-css/dist/css/materialize.css"; // tslint:disable-line:no-submodule-imports
 import React, { Suspense } from "react";
 
 const Loader = () => (

@@ -143,7 +143,7 @@ export default function PianoRoll(props: {
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
 
     const draw = () => {
-      if (canvasRef.current && props.videoRef.current) {
+      if (canvasRef.current && props.videoRef.current && positions.length > 0) {
         gl.clear(gl.COLOR_BUFFER_BIT);
         gl.uniform1f(
           timeUniformLocation,

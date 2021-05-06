@@ -2,7 +2,7 @@ import React from "react";
 import { graphql, useLazyLoadQuery } from "react-relay";
 import { Link, RouteComponentProps } from "react-router-dom";
 
-import { withLoader } from "./components/Loader";
+import { withLoader } from "../common/components/Loader";
 import { ArtistQuery } from "./__generated__/ArtistQuery.graphql";
 
 const artistQuery = graphql`

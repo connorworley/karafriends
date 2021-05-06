@@ -2,6 +2,11 @@ import keytar from "keytar";
 
 const SERVICE_NAME = "karafriends";
 
+export interface Credentials {
+  account: string;
+  password: string;
+}
+
 export function hasCredentials() {
   return keytar.findCredentials(SERVICE_NAME).then((creds) => creds.length > 0);
 }
@@ -16,8 +21,8 @@ export function getCredentials() {
   });
 }
 
-export function setCredentials(username: string, password: string) {
-  return keytar.setPassword(SERVICE_NAME, username, password);
+export function setCredentials(creds: Credentials) {
+  return keytar.setPassword(SERVICE_NAME, creds.account, creds.password);
 }
 
 export function deleteCredentials() {

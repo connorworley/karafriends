@@ -2,7 +2,7 @@ import React from "react";
 import { graphql, useLazyLoadQuery, useMutation } from "react-relay";
 import { Link } from "react-router-dom";
 
-import { withLoader } from "./components/Loader";
+import { withLoader } from "../common/components/Loader";
 import { ControlsQuery } from "./__generated__/ControlsQuery.graphql";
 
 const controlsQuery = graphql`

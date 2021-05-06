@@ -1,34 +1,32 @@
 import path from "path";
 
-import { app, BrowserWindow, ipcMain } from "electron"; // tslint:disable-line:no-implicit-dependencies
+import { app, BrowserWindow, dialog, ipcMain, IpcMainEvent } from "electron"; // tslint:disable-line:no-implicit-dependencies
 import isDev from "electron-is-dev";
 import express from "express";
 
-import { deleteCredentials, getCredentials } from "../common/auth";
+import {
+  Credentials,
+  deleteCredentials,
+  getCredentials,
+  setCredentials,
+} from "../common/auth";
 import { login } from "./damApi";
 import setupGraphQL from "./graphql";
 import remoconMiddleware from "./remoconMiddleware";
 
-getCredentials()
-  .then((creds: { account: string; password: string }) =>
-    login(creds.account, creds.password)
-      .then((json) => [creds.account, json.data.authToken])
-      .catch(() =>
-        deleteCredentials().then(() => {
-          // credentials were invalid, delete them and restart back to login page
-          app.relaunch();
-          app.exit();
-          throw new Error(); // unreachable
-        })
-      )
-  )
-  .catch(() => ["", ""]) // no credentials found, go straight to login page
-  .then(([username, minseiAuthToken]) => {
-    const expressApp = express();
-    expressApp.use(remoconMiddleware());
-    setupGraphQL(expressApp, username, minseiAuthToken);
-    expressApp.listen(8080);
-  });
+function attemptLogin(creds: Credentials) {
+  return login(creds.account, creds.password)
+    .then((json) => [creds.account, json.data.authToken])
+    .catch(() =>
+      deleteCredentials().then(() => Promise.reject("credentials were invalid"))
+    )
+    .then(([account, minseiAuthToken]) => {
+      const expressApp = express();
+      expressApp.use(remoconMiddleware());
+      setupGraphQL(expressApp, account, minseiAuthToken);
+      expressApp.listen(8080);
+    });
+}
 
 let rendererWindow: BrowserWindow | null;
 
@@ -62,12 +60,28 @@ function createWindow() {
     }
   );
 
-  rendererWindow.loadURL(
-    isDev
-      ? "http://localhost:3000/renderer/"
-      : `file://${path.join(__dirname, "..", "renderer", "index.html")}`
-  );
+  getCredentials()
+    .then(attemptLogin)
+    .catch((e) => console.debug(`Error logging in: ${e}`))
+    .then(() => {
+      if (rendererWindow)
+        rendererWindow.loadURL(
+          isDev
+            ? "http://localhost:3000/renderer/"
+            : `file://${path.join(__dirname, "..", "renderer", "index.html")}`
+        );
+    });
   rendererWindow.on("closed", () => (rendererWindow = null));
+
+  ipcMain.on("attemptLogin", (event: IpcMainEvent, creds: Credentials) =>
+    attemptLogin(creds)
+      .then(() =>
+        setCredentials(creds).then(() => {
+          if (rendererWindow) rendererWindow.reload();
+        })
+      )
+      .catch((e) => dialog.showErrorBox("Error logging in", e))
+  );
 }
 
 app.on("ready", createWindow);
@@ -82,9 +96,4 @@ app.on("activate", () => {
   if (rendererWindow === null) {
     createWindow();
   }
-});
-
-ipcMain.on("relaunch", () => {
-  app.relaunch();
-  app.exit();
 });

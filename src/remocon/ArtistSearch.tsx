@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { graphql, QueryRenderer } from "react-relay";
 import { Link } from "react-router-dom";
 
+import Loader from "../common/components/Loader";
 import environment from "../common/graphqlEnvironment";
 import DebouncedInput from "./components/DebouncedInput";
-import Loader from "./components/Loader";
 import { ArtistSearchQuery } from "./__generated__/ArtistSearchQuery.graphql";
 
 const artistSearchQuery = graphql`
