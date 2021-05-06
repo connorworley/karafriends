@@ -38,7 +38,7 @@ function Song(props: Props) {
 
   const onClickQueueSong = () => {
     commit({
-      variables: { id },
+      variables: { id: id.replace("-", "") },
       onCompleted: ({ queueSong }) => setQueued(queueSong),
     });
   };
