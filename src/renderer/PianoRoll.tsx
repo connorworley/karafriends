@@ -95,11 +95,6 @@ export default function PianoRoll(props: {
       )
       .flat();
 
-    canvasRef.current.width =
-      canvasRef.current.clientWidth * window.devicePixelRatio;
-    canvasRef.current.height =
-      canvasRef.current.clientHeight * window.devicePixelRatio;
-
     const gl = canvasRef.current.getContext("webgl", {
       premultipliedAlpha: false,
     })!;
@@ -156,7 +151,23 @@ export default function PianoRoll(props: {
     };
 
     animationFrameRequestRef.current = window.requestAnimationFrame(draw);
-    return () => cancelAnimationFrame(animationFrameRequestRef.current);
+
+    function updateSize() {
+      if (!canvasRef.current) return;
+      canvasRef.current.width =
+        canvasRef.current.clientWidth * window.devicePixelRatio;
+      canvasRef.current.height =
+        canvasRef.current.clientHeight * window.devicePixelRatio;
+      gl.viewport(0, 0, canvasRef.current.width, canvasRef.current.height);
+    }
+
+    updateSize();
+    window.addEventListener("resize", updateSize);
+
+    return () => {
+      cancelAnimationFrame(animationFrameRequestRef.current);
+      window.removeEventListener("resize", updateSize);
+    };
   }, [props]);
 
   return <canvas className="karaVidPianoRoll" ref={canvasRef}></canvas>;
