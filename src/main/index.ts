@@ -63,6 +63,11 @@ function createWindow() {
     }
   );
 
+  session.webRequest.onHeadersReceived(ipcastingFilter, (details, callback) => {
+    details.responseHeaders!["Access-Control-Allow-Origin"] = ["*"];
+    callback({ responseHeaders: details.responseHeaders });
+  });
+
   getCredentials()
     .then(attemptLogin)
     .catch((e) => console.debug(`Error logging in: ${e}`))

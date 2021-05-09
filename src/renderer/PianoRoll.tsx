@@ -183,7 +183,7 @@ function midiNumberToYCoord(midiNumber: number, medianMidiNumber: number) {
   // notes in-between rows, so we have 41 positions. We want to return
   // positions that correspond to the center of a bar or in-between two bars.
   // If we're at the median MIDI number, we should be dead-center.
-  return 0.5 + (midiNumber - medianMidiNumber) / (41 + 1);
+  return 0.5 + (midiNumber - medianMidiNumber) / 42;
 }
 
 export default function PianoRoll(props: {
