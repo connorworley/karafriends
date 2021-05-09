@@ -1,14 +1,5 @@
 import React, { useState } from "react";
 
-declare global {
-  interface Window {
-    karafriends: {
-      isLoggedIn(): Promise<boolean>;
-      attemptLogin(creds: { account: string; password: string }): void;
-    };
-  }
-}
-
 export default function Login() {
   const [creds, setCreds] = useState({ account: "", password: "" });
 

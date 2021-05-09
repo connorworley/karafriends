@@ -70,7 +70,8 @@ impl crate::traits::AudioSystemTrait for AudioSystem {
                 sample_count,
                 sample_rate,
             )
-            .unwrap();
+            .unwrap()
+            .with_unit(aubio_rs::PitchUnit::Midi);
 
             let stream = device
                 .build_input_stream(

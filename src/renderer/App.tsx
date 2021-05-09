@@ -3,7 +3,9 @@ import React, { useEffect, useState } from "react";
 
 import Loader from "../common/components/Loader";
 import "./App.css";
+import { InputDevice } from "./audioSystem";
 import Login from "./Login";
+import MicrophoneSetting from "./MicrophoneSetting";
 import Player from "./Player";
 import QRCode from "./QRCode";
 
@@ -15,6 +17,7 @@ enum AppState {
 
 function App() {
   const [appState, setAppState] = useState(AppState.Loading);
+  const [mic, setMic] = useState<InputDevice | null>(null);
 
   useEffect(() => {
     window.karafriends
@@ -22,28 +25,28 @@ function App() {
       .then((loggedIn) =>
         setAppState(loggedIn ? AppState.LoggedIn : AppState.NotLoggedIn)
       );
-  }, []);
+  }, [mic]);
 
   switch (appState) {
     case AppState.Loading:
     default:
       return (
-        <div className="mainContainer">
+        <div className="container">
           <Loader />
         </div>
       );
     case AppState.NotLoggedIn:
       return (
-        <div className="mainContainer">
+        <div className="container">
           <Login />
         </div>
       );
     case AppState.LoggedIn:
       return (
         <div className="mainContainer">
-          <Player />
+          <Player mic={mic} />
           <div className="inputBar">
-            <QRCode />
+            <MicrophoneSetting cb={(name) => setMic(new InputDevice(name))} />
           </div>
         </div>
       );
