@@ -6,6 +6,7 @@ import { PlayerScoringDataQuery } from "./__generated__/PlayerScoringDataQuery.g
 import { PlayerStreamingUrlQuery } from "./__generated__/PlayerStreamingUrlQuery.graphql";
 
 import environment from "../common/graphqlEnvironment";
+import { InputDevice } from "./audioSystem";
 import PianoRoll from "./PianoRoll";
 import "./Player.css";
 
@@ -29,7 +30,7 @@ const popSongMutation = graphql`
 
 const POLL_INTERVAL_MS = 5 * 1000;
 
-function Player() {
+function Player(props: { mic: InputDevice | null }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [scoringData, setScoringData] = useState<number[]>([]);
   const pollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -74,6 +75,7 @@ function Player() {
         },
       });
     };
+    videoRef.current.onresize = () => console.log("wtf");
     videoRef.current.onended = pollQueue;
     pollQueue();
     return () => {
@@ -83,7 +85,11 @@ function Player() {
 
   return (
     <div className="karaVidContainer">
-      <PianoRoll scoringData={scoringData} videoRef={videoRef} />
+      <PianoRoll
+        scoringData={scoringData}
+        videoRef={videoRef}
+        mic={props.mic}
+      />
       <video className="karaVid" ref={videoRef} controls />
     </div>
   );
