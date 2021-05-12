@@ -5,15 +5,16 @@ import isDev from "electron-is-dev";
 import { Application } from "express";
 import promiseRetry from "promise-retry";
 import * as qrcode from "qrcode";
+import { isRomaji, toKana } from "wanakana";
 
 import rawSchema from "../common/schema.graphql";
 import {
-  findArtistsByName,
+  getMusicListByArtist,
   getMusicStreamingUrls,
   getScoringData,
-  getSongsByArtistId,
   getSongsByReqNos,
   MinseiCredentials,
+  searchArtistByKeyword,
   searchMusicByKeyword,
 } from "./damApi";
 
@@ -56,14 +57,36 @@ const resolvers = {
       if (args.name === null) {
         return Promise.resolve([]);
       }
-      return searchMusicByKeyword(args.name).then((json) => {
-        return json.list.map((songResult) => {
-          return {
-            id: songResult.requestNo,
-            name: songResult.title,
-            artistName: songResult.artist,
-          };
-        });
+      const searches = [searchMusicByKeyword(args.name)];
+      if (isRomaji(args.name)) {
+        searches.push(searchMusicByKeyword(toKana(args.name)));
+      }
+      return Promise.all(searches).then((results) => {
+        const { list } = results
+          .map((r) => r.list)
+          .flat()
+          .reduce(
+            (acc, cur) => {
+              if (!acc.set.has(cur.requestNo)) {
+                acc.list.push({
+                  id: cur.requestNo,
+                  name: cur.title,
+                  artistName: cur.artist,
+                });
+                acc.set.add(cur.requestNo);
+              }
+              return acc;
+            },
+            {
+              list: new Array<{
+                id: string;
+                name: string;
+                artistName: string;
+              }>(),
+              set: new Set<string>(),
+            }
+          );
+        return list;
       });
     },
     songsByIds: (
@@ -98,24 +121,60 @@ const resolvers = {
     artistsByName: (
       _: any,
       args: { name: string }
-    ): Promise<{ id: string; name: string }[]> => {
+    ): Promise<{ id: string; name: string; songCount: number }[]> => {
       if (args.name === null) {
         return Promise.resolve([]);
       }
-      return findArtistsByName(args.name).then((json) =>
-        json.searchResult.map((searchResult) => ({
-          id: searchResult.artistId,
-          name: searchResult.artistName,
-        }))
-      );
+      const searches = [searchArtistByKeyword(args.name)];
+      if (isRomaji(args.name)) {
+        searches.push(searchArtistByKeyword(toKana(args.name)));
+      }
+      return Promise.all(searches).then((results) => {
+        const { list } = results
+          .map((r) => r.list)
+          .flat()
+          .reduce(
+            (acc, cur) => {
+              if (!acc.set.has(cur.artistCode)) {
+                acc.list.push({
+                  id: cur.artistCode.toString(),
+                  name: cur.artist,
+                  songCount: cur.holdMusicCount,
+                });
+                acc.set.add(cur.artistCode);
+              }
+              return acc;
+            },
+            {
+              list: new Array<{
+                id: string;
+                name: string;
+                songCount: number;
+              }>(),
+              set: new Set<number>(),
+            }
+          );
+        return list;
+      });
     },
     artistById: (
       _: any,
       args: { id: string }
-    ): Promise<{ id: string; name: string }> => {
-      return getSongsByArtistId(args.id).then((json) => ({
-        id: json.searchResult[0].artistId,
-        name: json.searchResult[0].artistName,
+    ): Promise<{
+      id: string;
+      name: string;
+      songCount: number;
+      songs: { id: string; name: string; artistName: string }[];
+    }> => {
+      return getMusicListByArtist(args.id).then((json) => ({
+        id: json.data.artistCode.toString(),
+        name: json.data.artist,
+        songCount: json.data.totalCount,
+        songs: json.list.map((artistSong) => ({
+          id: artistSong.requestNo,
+          name: artistSong.title,
+          artistName: artistSong.artist,
+        })),
       }));
     },
     streamingUrl: (
@@ -151,23 +210,6 @@ const resolvers = {
     },
     popSong: (_: any, args: {}): string | null => {
       return db.songQueue.shift() || null;
-    },
-  },
-  Artist: {
-    songs: (parent: {
-      id: string;
-      name: string;
-    }): Promise<
-      { id: string; name: string; artistName: string; lyricsPreview: string }[]
-    > => {
-      return getSongsByArtistId(parent.id).then((json) =>
-        json.searchResult.map((searchResult) => ({
-          id: searchResult.reqNo,
-          name: searchResult.songName,
-          artistName: searchResult.artistName,
-          lyricsPreview: searchResult.firstBars,
-        }))
-      );
     },
   },
 };
