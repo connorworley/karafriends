@@ -8,12 +8,12 @@ import * as qrcode from "qrcode";
 
 import rawSchema from "../common/schema.graphql";
 import {
-  findArtistsByName,
   getMusicStreamingUrls,
   getScoringData,
   getSongsByArtistId,
   getSongsByReqNos,
   MinseiCredentials,
+  searchArtistByKeyword,
   searchMusicByKeyword,
 } from "./damApi";
 
@@ -98,14 +98,15 @@ const resolvers = {
     artistsByName: (
       _: any,
       args: { name: string }
-    ): Promise<{ id: string; name: string }[]> => {
+    ): Promise<{ id: string; name: string; songCount: number }[]> => {
       if (args.name === null) {
         return Promise.resolve([]);
       }
-      return findArtistsByName(args.name).then((json) =>
-        json.searchResult.map((searchResult) => ({
-          id: searchResult.artistId,
-          name: searchResult.artistName,
+      return searchArtistByKeyword(args.name).then((json) =>
+        json.list.map((artistResult) => ({
+          id: artistResult.artistCode.toString(),
+          name: artistResult.artist,
+          songCount: artistResult.holdMusicCount,
         }))
       );
     },

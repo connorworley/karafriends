@@ -17,6 +17,7 @@ type Mutation {
 type Artist {
   id: ID!
   name: String!
+  songCount: Int!
   songs: [Song!]!
 }
 

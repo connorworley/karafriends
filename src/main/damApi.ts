@@ -128,9 +128,28 @@ interface SearchMusicByKeywordResponse extends DkwebsysReponse {
 }
 
 function searchMusicByKeyword(keyword: string) {
-  // replace me with a dkdenmoku request and remove dkwebsys code?
   return makeDkwebsysRequest<SearchMusicByKeywordResponse>(
     "https://csgw.clubdam.com/dkwebsys/search-api/SearchMusicByKeywordApi",
+    {
+      keyword,
+      sort: "1",
+      pageNo: "1",
+      dispCount: "30",
+    }
+  );
+}
+
+interface SearchArtistByKeywordResponse extends DkwebsysReponse {
+  list: {
+    artist: string;
+    artistCode: number;
+    holdMusicCount: number;
+  }[];
+}
+
+function searchArtistByKeyword(keyword: string) {
+  return makeDkwebsysRequest<SearchArtistByKeywordResponse>(
+    "https://csgw.clubdam.com/dkwebsys/search-api/SearchArtistByKeywordApi",
     {
       keyword,
       sort: "1",
@@ -170,18 +189,6 @@ interface DkDamSearchServletResponse extends DkdenmokuResponse {
   }[];
   totalCount: string;
   totalPage: string;
-}
-
-function findArtistsByName(name: string, matchType: number = 1) {
-  return makeDkdenmokuRequest<DkDamSearchServletResponse>(
-    "https://denmoku.clubdam.com/dkdenmoku/DkDamSearchServlet",
-    {
-      categoryCd: "010000",
-      page: "1",
-      artistMatchType: matchType.toString(),
-      artistName: name,
-    }
-  );
 }
 
 function getSongsByArtistId(artistId: string) {
@@ -301,9 +308,9 @@ function getScoringData(reqNo: string, creds: MinseiCredentials) {
 }
 
 export {
-  findArtistsByName,
   getSongsByArtistId,
   getSongsByReqNos,
+  searchArtistByKeyword,
   searchMusicByKeyword,
   getMusicDetails,
   getMusicStreamingUrls,

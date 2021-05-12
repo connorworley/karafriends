@@ -12,6 +12,7 @@ const artistSearchQuery = graphql`
     artistsByName(name: $name) {
       id
       name
+      songCount
     }
   }
 `;
@@ -41,9 +42,15 @@ const ArtistSearch = () => {
                 <Link
                   key={artist.id}
                   className="collection-item"
+                  style={{ display: "flex" }}
                   to={`/artist/${artist.id}`}
                 >
-                  {artist.name}
+                  <span className="truncate" style={{ flex: 1 }}>
+                    {artist.name}
+                  </span>
+                  <span style={{ float: "right" }}>
+                    {artist.songCount} songs
+                  </span>
                 </Link>
               ))}
             </div>
