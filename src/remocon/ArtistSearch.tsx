@@ -48,9 +48,7 @@ const ArtistSearch = () => {
                   <span className="truncate" style={{ flex: 1 }}>
                     {artist.name}
                   </span>
-                  <span style={{ float: "right" }}>
-                    {artist.songCount} songs
-                  </span>
+                  <span>{artist.songCount} songs</span>
                 </Link>
               ))}
             </div>

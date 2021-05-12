@@ -159,6 +159,31 @@ function searchArtistByKeyword(keyword: string) {
   );
 }
 
+interface GetMusicListByArtistResponse extends DkwebsysReponse {
+  data: {
+    artistCode: number;
+    artist: string;
+    totalCount: number;
+  };
+  list: {
+    requestNo: string;
+    title: string;
+    artist: string;
+  }[];
+}
+
+function getMusicListByArtist(artistCode: string) {
+  return makeDkwebsysRequest<GetMusicListByArtistResponse>(
+    "https://csgw.clubdam.com/dkwebsys/search-api/GetMusicListByArtistApi",
+    {
+      artistCode,
+      sort: "1",
+      pageNo: "1",
+      dispCount: "30",
+    }
+  );
+}
+
 interface DkDamIsExistServletResponse extends DkdenmokuResponse {
   isExist: {
     artistName: string;
@@ -176,40 +201,6 @@ function getSongsByReqNos(reqNos: string[]) {
         reqNo: reqNo.replace("-", ""),
       })),
     }
-  );
-}
-
-interface DkDamSearchServletResponse extends DkdenmokuResponse {
-  searchResult: {
-    artistId: string;
-    artistName: string;
-    firstBars: string;
-    reqNo: string;
-    songName: string;
-  }[];
-  totalCount: string;
-  totalPage: string;
-}
-
-function getSongsByArtistId(artistId: string) {
-  return makeDkdenmokuRequest<DkDamSearchServletResponse>(
-    "https://denmoku.clubdam.com/dkdenmoku/DkDamSearchServlet",
-    {
-      categoryCd: "010000",
-      page: "1",
-      artistId,
-    }
-  ).then((firstPage) =>
-    firstPage.totalPage === "1"
-      ? firstPage
-      : makeDkdenmokuRequest<DkDamSearchServletResponse>(
-          "https://denmoku.clubdam.com/dkdenmoku/DkDamSearchServlet",
-          {
-            categoryCd: "010000",
-            page: firstPage.totalPage,
-            artistId,
-          }
-        )
   );
 }
 
@@ -308,7 +299,7 @@ function getScoringData(reqNo: string, creds: MinseiCredentials) {
 }
 
 export {
-  getSongsByArtistId,
+  getMusicListByArtist,
   getSongsByReqNos,
   searchArtistByKeyword,
   searchMusicByKeyword,
