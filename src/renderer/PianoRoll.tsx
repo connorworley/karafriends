@@ -269,14 +269,15 @@ export default function PianoRoll(props: {
         pitchDetectionPositions.splice(0, resolution * 12);
       }
 
-      if (pitchMidiNumbers.length > 1) {
-        const lastIndex = pitchMidiNumbers.length - 1;
+      if (pitchMidiNumbers.length >= 1) {
         const spline = new Spline(
           pitchMidiNumbers.map((obj) => obj.time),
           pitchMidiNumbers.map((obj) => obj.value)
         );
 
-        let currX = pitchMidiNumbers[lastIndex - 1].time;
+        const lastIndex = pitchMidiNumbers.length - 1;
+
+        let currX = pitchMidiNumbers[lastIndex].time;
         let currY = spline.at(currX);
 
         pitchDetectionPositions.push(
@@ -288,20 +289,24 @@ export default function PianoRoll(props: {
           )
         );
 
-        const timeGap =
-          pitchMidiNumbers[lastIndex].time -
-          pitchMidiNumbers[lastIndex - 1].time;
-        const pitchGap = Math.abs(
-          pitchMidiNumbers[lastIndex].value -
-            pitchMidiNumbers[lastIndex - 1].value
-        );
-
         for (let i = 1; i < resolution; i++) {
-          // We don't try to interpolate if the time gap between two notes is too large,
-          // or the pitch gap between two notes is too large.
-          if (timeGap < 0.1 && pitchGap < 4) {
-            currX += timeGap / resolution;
-            currY = spline.at(currX);
+          // We don't try to interpolate if there is only one note, the time gap between
+          // two notes is too large, or the pitch gap between two notes is too large.
+          if (pitchMidiNumbers.length > 1) {
+            const timeGap =
+              pitchMidiNumbers[lastIndex].time -
+              pitchMidiNumbers[lastIndex - 1].time;
+            const pitchGap = Math.abs(
+              pitchMidiNumbers[lastIndex].value -
+                pitchMidiNumbers[lastIndex - 1].value
+            );
+
+            if (timeGap < 0.1 && pitchGap < 8) {
+              currX =
+                pitchMidiNumbers[lastIndex - 1].time +
+                (i * timeGap) / resolution;
+              currY = spline.at(currX);
+            }
           }
 
           pitchDetectionPositions.push(
