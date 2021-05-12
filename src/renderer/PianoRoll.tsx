@@ -1,5 +1,9 @@
 /* tslint:disable:max-classes-per-file */
 
+// TODO: add stubs or something to make this work with tslint
+// tslint:disable-next-line
+const Spline = require("cubic-spline");
+
 import React, { useEffect, useRef, useState } from "react";
 
 import { InputDevice } from "./audioSystem";
@@ -233,24 +237,33 @@ export default function PianoRoll(props: {
     let currentNoteIndex = 0;
     let pitchOffset = 0;
 
-    const pitchDetectionPositions: number[] = [];
+    const pitchMidiNumbers: {
+      time: number;
+      value: number;
+    }[] = [];
 
     function pushPitchDetection(pitchMidiNumber: number) {
       if (!props.videoRef.current) return;
-      if (pitchDetectionPositions.length >= 200 * 12) {
-        for (let i = 0; i < 12; i++) {
-          pitchDetectionPositions.shift();
-        }
+
+      if (
+        pitchMidiNumbers.length === 0 ||
+        props.videoRef.current.currentTime >
+          pitchMidiNumbers[pitchMidiNumbers.length - 1].time
+      ) {
+        pitchMidiNumbers.push({
+          time: props.videoRef.current.currentTime,
+          value: pitchMidiNumber,
+        });
+      } else {
+        pitchMidiNumbers[pitchMidiNumbers.length - 1] = {
+          time: props.videoRef.current.currentTime,
+          value: pitchMidiNumber,
+        };
       }
 
-      pitchDetectionPositions.push(
-        ...quadToTriangles(
-          props.videoRef.current.currentTime - 0.025,
-          midiNumberToYCoord(pitchMidiNumber + 0.5, medianMidiNumber),
-          props.videoRef.current.currentTime,
-          midiNumberToYCoord(pitchMidiNumber - 0.5, medianMidiNumber)
-        )
-      );
+      if (pitchMidiNumbers.length > 200) {
+        pitchMidiNumbers.shift();
+      }
     }
 
     const pollPitch = setInterval(() => {
@@ -296,11 +309,52 @@ export default function PianoRoll(props: {
         noteProgram.draw(time, canvasWidth);
       }
 
-      if (pitchDetectionPositions.length > 0) {
-        pitchProgram.draw(time, canvasWidth, pitchDetectionPositions);
-      }
-
       animationFrameRequestRef.current = window.requestAnimationFrame(draw);
+
+      if (pitchMidiNumbers.length > 0) {
+        const spline = new Spline(
+          pitchMidiNumbers.map((obj) => obj.time),
+          pitchMidiNumbers.map((obj) => obj.value)
+        );
+
+        const resolution = 8;
+        const rectangles: number[] = [];
+
+        for (let i = 0; i < pitchMidiNumbers.length - 1; i++) {
+          // We don't try to interpolate if the time gap between two notes is too large,
+          // or the pitch gap between two notes is too large.
+          if (pitchMidiNumbers[i + 1].time - pitchMidiNumbers[i].time > 0.1) {
+            continue;
+          }
+
+          if (
+            Math.abs(
+              pitchMidiNumbers[i + 1].value - pitchMidiNumbers[i].value
+            ) >= 4
+          ) {
+            continue;
+          }
+
+          for (let j = 0; j < resolution; j++) {
+            const currX =
+              pitchMidiNumbers[i].time +
+              (j * (pitchMidiNumbers[i + 1].time - pitchMidiNumbers[i].time)) /
+                resolution;
+            const currY = spline.at(currX);
+
+            rectangles.push(
+              ...quadToTriangles(
+                currX - 0.025,
+                midiNumberToYCoord(currY + 0.5, medianMidiNumber),
+                currX,
+                midiNumberToYCoord(currY - 0.5, medianMidiNumber)
+              )
+            );
+          }
+        }
+
+        pitchProgram.draw(time, canvasWidth, rectangles);
+      }
     };
 
     animationFrameRequestRef.current = window.requestAnimationFrame(draw);
