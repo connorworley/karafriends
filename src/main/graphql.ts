@@ -23,7 +23,7 @@ interface Context {
 }
 
 type NotARealDb = {
-  songQueue: string[];
+  songQueue: { id: string; timestamp: string }[];
 };
 
 const db: NotARealDb = {
@@ -107,16 +107,9 @@ const resolvers = {
         }))
       );
     },
-    songsInQueue: () => {
+    queue: () => {
       if (!db.songQueue.length) return [];
-      return getSongsByReqNos(db.songQueue).then((json) =>
-        json.isExist.map((song) => ({
-          id: song.reqNo,
-          name: song.songName,
-          artistName: song.artistName,
-          lyricsPreview: song.firstBars,
-        }))
-      );
+      return db.songQueue;
     },
     artistsByName: (
       _: any,
@@ -205,11 +198,18 @@ const resolvers = {
   },
   Mutation: {
     queueSong: (_: any, args: { id: string }): boolean => {
-      db.songQueue.push(args.id);
+      db.songQueue.push({ id: args.id, timestamp: Date.now().toString() });
       return true;
     },
-    popSong: (_: any, args: {}): string | null => {
+    popSong: (_: any, args: {}): { id: string; timestamp: string } | null => {
       return db.songQueue.shift() || null;
+    },
+    removeSong: (_: any, args: { id: string; timestamp: string }): boolean => {
+      const { id, timestamp } = args;
+      db.songQueue = db.songQueue.filter(
+        (item) => !(item.id === id && item.timestamp === timestamp)
+      );
+      return true;
     },
   },
 };

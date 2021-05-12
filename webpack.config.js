@@ -1,5 +1,6 @@
 const path = require("path");
 
+const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { merge } = require("webpack-merge");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
@@ -93,6 +94,13 @@ module.exports = [
         src: "./src/remocon",
         schema: "./src/common/schema.graphql",
         languagePlugin: RelayCompilerLanguageTypescript,
+      }),
+      new CopyPlugin({
+        patterns: [
+          {
+            from: "icon.png",
+          },
+        ],
       }),
     ],
   }),

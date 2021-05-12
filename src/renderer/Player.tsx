@@ -24,7 +24,10 @@ const scoringDataQuery = graphql`
 
 const popSongMutation = graphql`
   mutation PlayerPopSongMutation {
-    popSong
+    popSong {
+      id
+      timestamp
+    }
   }
 `;
 
@@ -48,7 +51,7 @@ function Player(props: { mic: InputDevice | null }) {
             fetchQuery<PlayerStreamingUrlQuery>(
               environment,
               streamingUrlQuery,
-              { id: popSong }
+              { id: popSong.id }
             )
               // @ts-ignore: @types/react-relay has an incorrect return type for fetchQuery
               .toPromise()
@@ -62,7 +65,7 @@ function Player(props: { mic: InputDevice | null }) {
                 }
               });
             fetchQuery<PlayerScoringDataQuery>(environment, scoringDataQuery, {
-              id: popSong,
+              id: popSong.id,
             })
               // @ts-ignore: @types/react-relay has an incorrect return type for fetchQuery
               .toPromise()
@@ -75,7 +78,6 @@ function Player(props: { mic: InputDevice | null }) {
         },
       });
     };
-    videoRef.current.onresize = () => console.log("wtf");
     videoRef.current.onended = pollQueue;
     pollQueue();
     return () => {

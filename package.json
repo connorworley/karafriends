@@ -46,6 +46,7 @@
     "babel-loader": "^8.2.2",
     "babel-plugin-relay": "^10.1.0",
     "concurrently": "^5.3.0",
+    "copy-webpack-plugin": "^8.1.1",
     "cross-env": "^7.0.3",
     "css-loader": "^5.0.1",
     "electron": "^12.0.5",
@@ -76,12 +77,16 @@
   },
   "build": {
     "appId": "com.karafriends.kara",
-    "asar": false,
     "files": [
-      "build/**/**"
+      "build/**/**",
+      "icon.png"
     ],
     "win": {
-      "target": "portable"
+      "target": "portable",
+      "icon": "icon.png"
+    },
+    "mac": {
+      "icon": "icon.png"
     }
   },
   "lint-staged": {

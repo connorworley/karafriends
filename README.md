@@ -1,19 +1,20 @@
 # karafriends
 
+<img src="https://raw.githubusercontent.com/robertlai/karafriends/master/icon.png" width="128" />
+
+## Building
+
+Dependencies
+* Yarn
+* Rust (be sure to install `stable-x86_64-pc-windows-gnu` on Windows)
+* MinGW (Windows only, must be in PATH)
+
 ## Running
 
 Electron
 
 ```sh
 yarn install && yarn start
-```
-
-Pitch detector
-
-```sh
-rustup toolchain add stable-x86_64-pc-windows-gnu
-rustup default stable-x86_64-pc-windows-gnu
-cargo run
 ```
 
 ## Prebuilding third-party libraries
