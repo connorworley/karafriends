@@ -179,11 +179,11 @@ class PitchProgram extends ShaderProgram<[number, number, number[]]> {
 }
 
 function midiNumberToYCoord(midiNumber: number, medianMidiNumber: number) {
-  // We draw 21 rows behind the canvas, and we also want to be able to align
-  // notes in-between rows, so we have 41 positions. We want to return
+  // We draw 18 rows behind the canvas, and we also want to be able to align
+  // notes in-between rows, so we have 36 positions. We want to return
   // positions that correspond to the center of a bar or in-between two bars.
   // If we're at the median MIDI number, we should be dead-center.
-  return 0.5 + (midiNumber - medianMidiNumber) / 42;
+  return 0.5 + (midiNumber - medianMidiNumber) / 36;
 }
 
 export default function PianoRoll(props: {
@@ -206,7 +206,7 @@ export default function PianoRoll(props: {
       midiNumber: number;
     }[] = [];
 
-    const nBars = 42;
+    const nBars = 36;
     const barSize = 1 / nBars;
 
     for (let i = 0; i < noteCount * 4; i += 4) {
