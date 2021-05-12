@@ -75,7 +75,6 @@
   },
   "build": {
     "appId": "com.karafriends.kara",
-    "asar": false,
     "files": [
       "build/**/**"
     ],
