@@ -179,8 +179,8 @@ class PitchProgram extends ShaderProgram<[number, number, number[]]> {
 }
 
 function midiNumberToYCoord(midiNumber: number, medianMidiNumber: number) {
-  // We draw 20 rows behind the canvas, and we also want to be able to align
-  // notes in-between rows, so we have 41 positions. We want to return
+  // We draw 18 rows behind the canvas, and we also want to be able to align
+  // notes in-between rows, so we have 36 positions. We want to return
   // positions that correspond to the center of a bar or in-between two bars.
   // If we're at the median MIDI number, we should be dead-center.
   return 0.5 + (midiNumber - medianMidiNumber) / 36;
