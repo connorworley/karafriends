@@ -5,6 +5,7 @@ import isDev from "electron-is-dev";
 import { Application } from "express";
 import promiseRetry from "promise-retry";
 import * as qrcode from "qrcode";
+import { toKana } from "wanakana";
 
 import rawSchema from "../common/schema.graphql";
 import {
@@ -56,7 +57,7 @@ const resolvers = {
       if (args.name === null) {
         return Promise.resolve([]);
       }
-      return searchMusicByKeyword(args.name).then((json) => {
+      return searchMusicByKeyword(toKana(args.name)).then((json) => {
         return json.list.map((songResult) => {
           return {
             id: songResult.requestNo,
@@ -102,7 +103,7 @@ const resolvers = {
       if (args.name === null) {
         return Promise.resolve([]);
       }
-      return searchArtistByKeyword(args.name).then((json) =>
+      return searchArtistByKeyword(toKana(args.name)).then((json) =>
         json.list.map((artistResult) => ({
           id: artistResult.artistCode.toString(),
           name: artistResult.artist,
