@@ -17,7 +17,8 @@ enum AppState {
 
 function App() {
   const [appState, setAppState] = useState(AppState.Loading);
-  const [mic, setMic] = useState<InputDevice | null>(null);
+  const [mic1, setMic1] = useState<InputDevice | null>(null);
+  const [mic2, setMic2] = useState<InputDevice | null>(null);
 
   useEffect(() => {
     window.karafriends
@@ -25,7 +26,7 @@ function App() {
       .then((loggedIn) =>
         setAppState(loggedIn ? AppState.LoggedIn : AppState.NotLoggedIn)
       );
-  }, [mic]);
+  }, [mic1, mic2]);
 
   switch (appState) {
     case AppState.Loading:
@@ -43,11 +44,24 @@ function App() {
       );
     case AppState.LoggedIn:
       return (
-        <div className="mainContainer">
-          <Player mic={mic} />
-          <div className="inputBar">
-            <MicrophoneSetting cb={(name) => setMic(new InputDevice(name))} />
+        <div className="appMainContainer grey lighten-3">
+          <div className="row">
+            <div className="appPlayer col s10">
+              <Player mic={mic1} />
+            </div>
+            <div className="appSettings col s2">
+              <nav className="center-align">Settings</nav>
+              <div className="col s12">
+                <MicrophoneSetting
+                  cb={(name) => setMic1(new InputDevice(name))}
+                />
+                <MicrophoneSetting
+                  cb={(name) => setMic2(new InputDevice(name))}
+                />
+              </div>
+            </div>
           </div>
+          <div>a</div>
         </div>
       );
   }

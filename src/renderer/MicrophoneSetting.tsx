@@ -11,20 +11,18 @@ export default function MicrophoneSetting(props: {
   }, []);
 
   return (
-    <div className="row s12">
-      <div className="input-field">
-        <select value="" onChange={(e) => props.cb(e.target.value)}>
-          <option value="" disabled={true}>
-            Select a microphone
+    <div className="input-field">
+      <select value="" onChange={(e) => props.cb(e.target.value)}>
+        <option value="" disabled={true}>
+          Select a microphone
+        </option>
+        {window.karafriends.nativeAudio.inputDevices().map((name) => (
+          <option value={name} key={name}>
+            {name}
           </option>
-          {window.karafriends.nativeAudio.inputDevices().map((name) => (
-            <option value={name} key={name}>
-              {name}
-            </option>
-          ))}
-        </select>
-        <label>Microphone</label>
-      </div>
+        ))}
+      </select>
+      <label>Microphone</label>
     </div>
   );
 }

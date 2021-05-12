@@ -75,6 +75,7 @@ function Player(props: { mic: InputDevice | null }) {
         },
       });
     };
+    videoRef.current.onresize = () => console.log("wtf");
     videoRef.current.onended = pollQueue;
     pollQueue();
     return () => {
