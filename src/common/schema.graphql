@@ -2,7 +2,7 @@ type Query {
   wanIpQrCode: String!
   songsByName(name: String): [Song!]!
   songsByIds(ids: [String!]!): [Song!]!
-  songsInQueue: [Song!]!
+  queue: [QueueItem!]!
   artistsByName(name: String): [Artist!]!
   artistById(id: String!): Artist!
   streamingUrl(id: String!): String!
@@ -11,7 +11,8 @@ type Query {
 
 type Mutation {
   queueSong(id: String!): Boolean!
-  popSong: String
+  popSong: QueueItem
+  removeSong(id: String!, timestamp: String!): Boolean!
 }
 
 type Artist {
@@ -26,4 +27,9 @@ type Song {
   name: String!
   artistName: String!
   lyricsPreview: String
+}
+
+type QueueItem {
+  id: String!
+  timestamp: String!
 }
