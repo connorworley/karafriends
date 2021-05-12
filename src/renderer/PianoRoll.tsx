@@ -276,36 +276,33 @@ export default function PianoRoll(props: {
           pitchMidiNumbers.map((obj) => obj.value)
         );
 
-        for (let i = 0; i < resolution; i++) {
-          if (i > 0) {
-            // We don't try to interpolate if the time gap between two notes is too large,
-            // or the pitch gap between two notes is too large.
-            if (
-              pitchMidiNumbers[lastIndex].time -
-                pitchMidiNumbers[lastIndex - 1].time >
-              0.1
-            ) {
-              return;
-            }
+        let currX = pitchMidiNumbers[lastIndex - 1].time;
+        let currY = spline.at(currX);
 
-            if (
-              Math.abs(
-                pitchMidiNumbers[lastIndex].value -
-                  pitchMidiNumbers[lastIndex].value
-              ) >= 8
-            ) {
-              return;
-            }
+        pitchDetectionPositions.push(
+          ...quadToTriangles(
+            currX - 0.025,
+            midiNumberToYCoord(currY + 0.5, medianMidiNumber),
+            currX,
+            midiNumberToYCoord(currY - 0.5, medianMidiNumber)
+          )
+        );
+
+        const timeGap =
+          pitchMidiNumbers[lastIndex].time -
+          pitchMidiNumbers[lastIndex - 1].time;
+        const pitchGap = Math.abs(
+          pitchMidiNumbers[lastIndex].value -
+            pitchMidiNumbers[lastIndex - 1].value
+        );
+
+        for (let i = 1; i < resolution; i++) {
+          // We don't try to interpolate if the time gap between two notes is too large,
+          // or the pitch gap between two notes is too large.
+          if (timeGap < 0.1 && pitchGap < 4) {
+            currX += timeGap / resolution;
+            currY = spline.at(currX);
           }
-
-          const offX =
-            (i *
-              (pitchMidiNumbers[lastIndex].time -
-                pitchMidiNumbers[lastIndex - 1].time)) /
-            resolution;
-
-          const currX = pitchMidiNumbers[lastIndex - 1].time + offX;
-          const currY = spline.at(currX);
 
           pitchDetectionPositions.push(
             ...quadToTriangles(
