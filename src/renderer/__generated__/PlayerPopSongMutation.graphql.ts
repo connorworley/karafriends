@@ -5,7 +5,10 @@
 import { ConcreteRequest } from "relay-runtime";
 export type PlayerPopSongMutationVariables = {};
 export type PlayerPopSongMutationResponse = {
-    readonly popSong: string | null;
+    readonly popSong: {
+        readonly id: string;
+        readonly timestamp: string;
+    } | null;
 };
 export type PlayerPopSongMutation = {
     readonly response: PlayerPopSongMutationResponse;
@@ -16,7 +19,10 @@ export type PlayerPopSongMutation = {
 
 /*
 mutation PlayerPopSongMutation {
-  popSong
+  popSong {
+    id
+    timestamp
+  }
 }
 */
 
@@ -25,8 +31,26 @@ var v0 = [
   {
     "alias": null,
     "args": null,
-    "kind": "ScalarField",
+    "concreteType": "QueueItem",
+    "kind": "LinkedField",
     "name": "popSong",
+    "plural": false,
+    "selections": [
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "id",
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "timestamp",
+        "storageKey": null
+      }
+    ],
     "storageKey": null
   }
 ];
@@ -48,14 +72,14 @@ return {
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "d0719a11b00e19db1a8b26ccf4b75ca9",
+    "cacheID": "27a39306f5c21ffb460841e13b568c95",
     "id": null,
     "metadata": {},
     "name": "PlayerPopSongMutation",
     "operationKind": "mutation",
-    "text": "mutation PlayerPopSongMutation {\n  popSong\n}\n"
+    "text": "mutation PlayerPopSongMutation {\n  popSong {\n    id\n    timestamp\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = 'b4153f6840ef170fa46cb8d438948432';
+(node as any).hash = '6c8a50a2cc961c14410ad24f284cf20a';
 export default node;

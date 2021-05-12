@@ -3,27 +3,25 @@
 // @ts-nocheck
 
 import { ConcreteRequest } from "relay-runtime";
-export type ControlsQueryVariables = {};
-export type ControlsQueryResponse = {
-    readonly songsInQueue: ReadonlyArray<{
+export type ControlsQueueQueryVariables = {};
+export type ControlsQueueQueryResponse = {
+    readonly queue: ReadonlyArray<{
         readonly id: string;
-        readonly name: string;
-        readonly artistName: string;
+        readonly timestamp: string;
     }>;
 };
-export type ControlsQuery = {
-    readonly response: ControlsQueryResponse;
-    readonly variables: ControlsQueryVariables;
+export type ControlsQueueQuery = {
+    readonly response: ControlsQueueQueryResponse;
+    readonly variables: ControlsQueueQueryVariables;
 };
 
 
 
 /*
-query ControlsQuery {
-  songsInQueue {
+query ControlsQueueQuery {
+  queue {
     id
-    name
-    artistName
+    timestamp
   }
 }
 */
@@ -33,9 +31,9 @@ var v0 = [
   {
     "alias": null,
     "args": null,
-    "concreteType": "Song",
+    "concreteType": "QueueItem",
     "kind": "LinkedField",
-    "name": "songsInQueue",
+    "name": "queue",
     "plural": true,
     "selections": [
       {
@@ -49,14 +47,7 @@ var v0 = [
         "alias": null,
         "args": null,
         "kind": "ScalarField",
-        "name": "name",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "artistName",
+        "name": "timestamp",
         "storageKey": null
       }
     ],
@@ -68,7 +59,7 @@ return {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "ControlsQuery",
+    "name": "ControlsQueueQuery",
     "selections": (v0/*: any*/),
     "type": "Query",
     "abstractKey": null
@@ -77,18 +68,18 @@ return {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "ControlsQuery",
+    "name": "ControlsQueueQuery",
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "63da096f76b04898d06821f3c5256e23",
+    "cacheID": "b3f37a8956711dd458986cd841262613",
     "id": null,
     "metadata": {},
-    "name": "ControlsQuery",
+    "name": "ControlsQueueQuery",
     "operationKind": "query",
-    "text": "query ControlsQuery {\n  songsInQueue {\n    id\n    name\n    artistName\n  }\n}\n"
+    "text": "query ControlsQueueQuery {\n  queue {\n    id\n    timestamp\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = 'b4341b584fc0d83c8ab4a8fbc4cb09fd';
+(node as any).hash = '976ff26569a6aa0b29a3a2278f485bfd';
 export default node;
