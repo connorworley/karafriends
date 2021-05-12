@@ -242,6 +242,9 @@ export default function PianoRoll(props: {
       value: number;
     }[] = [];
 
+    const pitchDetectionPositions: number[] = [];
+    const resolution = 16;
+
     function pushPitchDetection(pitchMidiNumber: number) {
       if (!props.videoRef.current) return;
 
@@ -263,6 +266,58 @@ export default function PianoRoll(props: {
 
       if (pitchMidiNumbers.length > 200) {
         pitchMidiNumbers.shift();
+        pitchDetectionPositions.splice(0, resolution * 12);
+      }
+
+      if (pitchMidiNumbers.length >= 1) {
+        const spline = new Spline(
+          pitchMidiNumbers.map((obj) => obj.time),
+          pitchMidiNumbers.map((obj) => obj.value)
+        );
+
+        const lastIndex = pitchMidiNumbers.length - 1;
+
+        let currX = pitchMidiNumbers[lastIndex].time;
+        let currY = spline.at(currX);
+
+        pitchDetectionPositions.push(
+          ...quadToTriangles(
+            currX - 0.025,
+            midiNumberToYCoord(currY + 0.5, medianMidiNumber),
+            currX,
+            midiNumberToYCoord(currY - 0.5, medianMidiNumber)
+          )
+        );
+
+        for (let i = 1; i < resolution; i++) {
+          // We don't try to interpolate if there is only one note, the time gap between
+          // two notes is too large, or the pitch gap between two notes is too large.
+          if (pitchMidiNumbers.length > 1) {
+            const timeGap =
+              pitchMidiNumbers[lastIndex].time -
+              pitchMidiNumbers[lastIndex - 1].time;
+            const pitchGap = Math.abs(
+              pitchMidiNumbers[lastIndex].value -
+                pitchMidiNumbers[lastIndex - 1].value
+            );
+
+            if (timeGap < 0.1 && pitchGap < 8) {
+              currX =
+                pitchMidiNumbers[lastIndex - 1].time +
+                (i * timeGap) / resolution;
+              currY = spline.at(currX);
+            }
+          }
+
+          pitchDetectionPositions.push(
+            ...quadToTriangles(
+              currX - 0.025,
+              midiNumberToYCoord(currY + 0.5, medianMidiNumber),
+              currX,
+              midiNumberToYCoord(currY - 0.5, medianMidiNumber)
+            )
+          );
+        }
       }
     }
 
@@ -309,52 +364,11 @@ export default function PianoRoll(props: {
         noteProgram.draw(time, canvasWidth);
       }
 
-      animationFrameRequestRef.current = window.requestAnimationFrame(draw);
-
-      if (pitchMidiNumbers.length > 0) {
-        const spline = new Spline(
-          pitchMidiNumbers.map((obj) => obj.time),
-          pitchMidiNumbers.map((obj) => obj.value)
-        );
-
-        const resolution = 8;
-        const rectangles: number[] = [];
-
-        for (let i = 0; i < pitchMidiNumbers.length - 1; i++) {
-          // We don't try to interpolate if the time gap between two notes is too large,
-          // or the pitch gap between two notes is too large.
-          if (pitchMidiNumbers[i + 1].time - pitchMidiNumbers[i].time > 0.1) {
-            continue;
-          }
-
-          if (
-            Math.abs(
-              pitchMidiNumbers[i + 1].value - pitchMidiNumbers[i].value
-            ) >= 4
-          ) {
-            continue;
-          }
-
-          for (let j = 0; j < resolution; j++) {
-            const currX =
-              pitchMidiNumbers[i].time +
-              (j * (pitchMidiNumbers[i + 1].time - pitchMidiNumbers[i].time)) /
-                resolution;
-            const currY = spline.at(currX);
-
-            rectangles.push(
-              ...quadToTriangles(
-                currX - 0.025,
-                midiNumberToYCoord(currY + 0.5, medianMidiNumber),
-                currX,
-                midiNumberToYCoord(currY - 0.5, medianMidiNumber)
-              )
-            );
-          }
-        }
-
-        pitchProgram.draw(time, canvasWidth, rectangles);
+      if (pitchDetectionPositions.length > 0) {
+        pitchProgram.draw(time, canvasWidth, pitchDetectionPositions);
       }
+
+      animationFrameRequestRef.current = window.requestAnimationFrame(draw);
     };
 
     animationFrameRequestRef.current = window.requestAnimationFrame(draw);
