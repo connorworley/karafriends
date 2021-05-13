@@ -151,7 +151,9 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
                     .unwrap();
                 for sample in resampled_output_samples {
                     for _ in 0..output_channels {
-                        output_tx.push(sample).unwrap();
+                        if let Err(_) = output_tx.push(sample) {
+                            eprintln!("output fell behind!");
+                        }
                     }
                 }
             },
