@@ -1,6 +1,7 @@
 #![allow(non_snake_case)]
 
 use std::cell::RefCell;
+use std::cmp::Ordering;
 use std::sync::{Arc, Mutex};
 
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
@@ -80,6 +81,71 @@ fn input_devices(mut cx: FunctionContext) -> JsResult<JsArray> {
     Ok(js_array)
 }
 
+fn compare_configs(
+    a: &cpal::SupportedStreamConfigRange,
+    b: &cpal::SupportedStreamConfigRange,
+    desired_sample_rate: Option<cpal::SampleRate>,
+) -> Ordering {
+    // Our priorities in order are buffer size (lower is better), sample rate
+    // (higher is better), and channel count (lower is better).
+    // If we have a desired sample rate, just being in range is good enough.
+    if a.buffer_size() == &cpal::SupportedBufferSize::Unknown
+        && b.buffer_size() != &cpal::SupportedBufferSize::Unknown
+    {
+        return Ordering::Less;
+    }
+    if a.buffer_size() != &cpal::SupportedBufferSize::Unknown
+        && b.buffer_size() == &cpal::SupportedBufferSize::Unknown
+    {
+        return Ordering::Greater;
+    }
+    if let cpal::SupportedBufferSize::Range { min, max: _ } = a.buffer_size() {
+        let a_min = min;
+        if let cpal::SupportedBufferSize::Range { min, max: _ } = b.buffer_size() {
+            let b_min = min;
+            let buffer_size_cmp = a_min.cmp(b_min);
+            if buffer_size_cmp != Ordering::Equal {
+                return buffer_size_cmp.reverse();
+            }
+        }
+    }
+    if let Some(sample_rate) = desired_sample_rate {
+        let a_in_range = sample_rate >= a.min_sample_rate() && sample_rate <= a.max_sample_rate();
+        let b_in_range = sample_rate >= b.min_sample_rate() && sample_rate <= b.max_sample_rate();
+        if !a_in_range && b_in_range {
+            return Ordering::Less;
+        }
+        if a_in_range && !b_in_range {
+            return Ordering::Greater;
+        }
+    }
+
+    let sample_rate_cmp = a.max_sample_rate().cmp(&b.max_sample_rate());
+    if sample_rate_cmp != Ordering::Equal {
+        return sample_rate_cmp;
+    }
+
+    let channels_cmp = a.channels().cmp(&b.channels());
+    if channels_cmp != Ordering::Equal {
+        return channels_cmp.reverse();
+    }
+
+    a.cmp_default_heuristics(b)
+}
+
+fn supported_config_to_config(
+    config_range: &cpal::SupportedStreamConfigRange,
+) -> cpal::StreamConfig {
+    cpal::StreamConfig {
+        channels: config_range.channels(),
+        sample_rate: config_range.max_sample_rate(),
+        buffer_size: match config_range.buffer_size() {
+            cpal::SupportedBufferSize::Range { min, max: _ } => cpal::BufferSize::Fixed(*min),
+            cpal::SupportedBufferSize::Unknown => cpal::BufferSize::Default,
+        },
+    }
+}
+
 fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDevice>>> {
     let name = cx.argument::<JsString>(0)?.value(&mut cx);
     let device = match cpal_safe(move || -> Result<InputDevice> {
@@ -88,13 +154,30 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
             .input_devices()?
             .find(|device| device.name().unwrap() == name)
             .ok_or(format!("Could not find device: {}", name))?;
-        let input_config = input_device.default_input_config()?.config();
+        let mut supported_input_configs: Vec<_> = input_device.supported_input_configs()?.collect();
+        supported_input_configs.sort_by(|a, b| compare_configs(a, b, None));
+        let best_supported_input_config = supported_input_configs
+            .last()
+            .ok_or("No supported input configs")?;
+        let input_config = supported_config_to_config(best_supported_input_config);
         let input_channels = input_config.channels as usize;
 
         let output_device = host
             .default_output_device()
             .ok_or("No default output device")?;
-        let output_config = output_device.default_output_config()?.config();
+        let mut supported_output_configs: Vec<_> =
+            output_device.supported_output_configs()?.collect();
+        supported_output_configs
+            .sort_by(|a, b| compare_configs(a, b, Some(input_config.sample_rate)));
+        let best_supported_output_config = supported_output_configs
+            .last()
+            .ok_or("No supported output configs")?;
+        let mut output_config = supported_config_to_config(best_supported_output_config);
+        if input_config.sample_rate >= best_supported_output_config.min_sample_rate()
+            && input_config.sample_rate <= best_supported_output_config.max_sample_rate()
+        {
+            output_config.sample_rate = input_config.sample_rate;
+        }
         let output_channels = output_config.channels as usize;
 
         let sample_rate = input_config.sample_rate.0;
@@ -116,7 +199,10 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
 
         let sample_ratio = output_config.sample_rate.0 as f32 / sample_rate as f32;
         let mut resampler = Resampler {
-            resampler: aubio_rs::Resampler::new(sample_ratio, aubio_rs::ResampleMode::BestQuality)?,
+            resampler: aubio_rs::Resampler::new(
+                sample_ratio,
+                aubio_rs::ResampleMode::MediumQuality,
+            )?,
         };
 
         let pitch_detector = aubio_rs::Pitch::new(
@@ -153,12 +239,17 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
 
                 echo_tx.push_slice(output_samples.as_slice());
 
-                let mut resampled_output_samples =
-                    vec![0.0; (output_samples.len() as f32 * sample_ratio) as usize];
-                resampler
-                    .resampler
-                    .do_(output_samples, &mut resampled_output_samples)
-                    .unwrap();
+                let resampled_output_samples = if (sample_ratio - 1.0).abs() > f32::EPSILON {
+                    let mut resample_buffer =
+                        vec![0.0; (output_samples.len() as f32 * sample_ratio) as usize];
+                    resampler
+                        .resampler
+                        .do_(output_samples, &mut resample_buffer)
+                        .unwrap();
+                    resample_buffer
+                } else {
+                    output_samples
+                };
                 for sample in resampled_output_samples {
                     for _ in 0..output_channels {
                         if output_tx.push(sample).is_err() {
@@ -173,7 +264,10 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
         let output_stream = output_device.build_output_stream(
             &output_config,
             move |samples: &mut [f32], _| {
-                output_rx.pop_slice(samples);
+                let samples_read = output_rx.pop_slice(samples);
+                if samples_read < samples.len() {
+                    eprintln!("input fell behind");
+                }
             },
             |e| std::panic!("{}", e),
         )?;
