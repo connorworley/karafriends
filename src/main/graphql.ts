@@ -30,6 +30,10 @@ const db: NotARealDb = {
   songQueue: [],
 };
 
+function stripWhitespace(str: string) {
+  return str.replace(/\s+/g, "");
+}
+
 const resolvers = {
   Query: {
     wanIpQrCode: (): Promise<string> => {
@@ -59,7 +63,7 @@ const resolvers = {
       }
       const searches = [searchMusicByKeyword(args.name)];
       if (isRomaji(args.name)) {
-        searches.push(searchMusicByKeyword(toKana(args.name)));
+        searches.push(searchMusicByKeyword(toKana(stripWhitespace(args.name))));
       }
       return Promise.all(searches).then((results) => {
         const { list } = results
@@ -120,7 +124,9 @@ const resolvers = {
       }
       const searches = [searchArtistByKeyword(args.name)];
       if (isRomaji(args.name)) {
-        searches.push(searchArtistByKeyword(toKana(args.name)));
+        searches.push(
+          searchArtistByKeyword(toKana(stripWhitespace(args.name)))
+        );
       }
       return Promise.all(searches).then((results) => {
         const { list } = results
