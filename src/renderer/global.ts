@@ -11,6 +11,7 @@ declare global {
         inputDevice_getPitch: (
           deviceId: number
         ) => { midiNumber: number; confidence: number };
+        inputDevice_stop: (deviceId: number) => void;
       };
     };
   }

@@ -8,7 +8,6 @@ if [ -f /.dockerenv ]; then
         make -j4
         make install
     done
-    cp /usr/local/lib/libfftw3.a /out/libfftw3.lib
     cp /usr/local/lib/libfftw3f.a /out/libfftw3f.lib
     cd /opt/libsamplerate-0.2.1
     autoreconf --install

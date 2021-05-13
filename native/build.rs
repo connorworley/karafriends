@@ -12,6 +12,7 @@ pub fn main() {
         println!("cargo:rustc-link-search=../prebuilt/windows");
         println!("cargo:rustc-link-lib=static=libaubio");
         println!("cargo:rustc-link-lib=static=libfftw3f");
+        println!("cargo:rustc-link-lib=libsamplerate");
     } else {
         println!("cargo:rustc-link-lib=aubio");
     }

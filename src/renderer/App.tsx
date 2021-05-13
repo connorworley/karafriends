@@ -53,10 +53,16 @@ function App() {
               <nav className="center-align">Settings</nav>
               <div className="col s12">
                 <MicrophoneSetting
-                  cb={(name) => setMic1(new InputDevice(name))}
+                  cb={(name) => {
+                    if (mic1) mic1.stop();
+                    setMic1(new InputDevice(name));
+                  }}
                 />
                 <MicrophoneSetting
-                  cb={(name) => setMic2(new InputDevice(name))}
+                  cb={(name) => {
+                    if (mic2) mic2.stop();
+                    setMic2(new InputDevice(name));
+                  }}
                 />
               </div>
             </div>

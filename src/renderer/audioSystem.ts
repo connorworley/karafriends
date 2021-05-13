@@ -14,4 +14,8 @@ export class InputDevice {
   getPitch() {
     return window.karafriends.nativeAudio.inputDevice_getPitch(this.deviceId);
   }
+
+  stop() {
+    return window.karafriends.nativeAudio.inputDevice_stop(this.deviceId);
+  }
 }

@@ -14,7 +14,9 @@ contextBridge.exposeInMainWorld("karafriends", {
     inputDevices: nativeAudio.inputDevices,
     outputDevices: nativeAudio.outputDevices,
     inputDevice_new(name: string) {
-      console.debug(`preload: creating input device ${inputDeviceCount}: ${name}`);
+      console.debug(
+        `preload: creating input device ${inputDeviceCount}: ${name}`
+      );
       inputDevices[inputDeviceCount++] = nativeAudio.inputDevice_new(name);
       return inputDeviceCount - 1;
     },
@@ -23,7 +25,10 @@ contextBridge.exposeInMainWorld("karafriends", {
       delete inputDevices[deviceId];
     },
     inputDevice_getPitch(deviceId: number) {
-      return nativeAudio.inputDevice_getPitch(inputDevices[deviceId])
+      return nativeAudio.inputDevice_getPitch(inputDevices[deviceId]);
+    },
+    inputDevice_stop(deviceId: number) {
+      return nativeAudio.inputDevice_stop(inputDevices[deviceId]);
     },
   },
 });
