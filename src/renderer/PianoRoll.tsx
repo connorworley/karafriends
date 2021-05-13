@@ -438,6 +438,7 @@ export default function PianoRoll(props: {
     function clearPitchDetectionBuffers() {
       pitchMidiNumbers.length = 0;
       pitchDetectionPositions.length = 0;
+      currentNoteIndex = 0;
     }
 
     props.videoRef.current.addEventListener(
