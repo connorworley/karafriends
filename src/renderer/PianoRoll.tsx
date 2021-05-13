@@ -332,7 +332,7 @@ export default function PianoRoll(props: {
         while (
           notes[currentNoteIndex].endTime <
             props.videoRef.current.currentTime &&
-          currentNoteIndex < notes.length
+          currentNoteIndex < notes.length - 2
         ) {
           currentNoteIndex++;
         }
