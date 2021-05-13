@@ -8,9 +8,10 @@ import React, { useEffect, useRef, useState } from "react";
 
 import { InputDevice } from "./audioSystem";
 import "./PianoRoll.css";
-import vertShaderRaw from "./shaders/PianoRoll.vert.glsl";
+import midiVertShaderRaw from "./shaders/PianoRollMidi.vert.glsl";
 import noteFragShaderRaw from "./shaders/PianoRollNote.frag.glsl";
-import pitchFragShaderRaw from "./shaders/PianoRollPitch.frag.glsl";
+import seekVertShaderRaw from "./shaders/PianoRollSeek.vert.glsl";
+import singleColorFragShaderRaw from "./shaders/PianoRollSingleColor.frag.glsl";
 
 const TIME_WIDTH_SECS = 5.0;
 
@@ -101,7 +102,7 @@ class NoteProgram extends ShaderProgram<[number, number]> {
     super(
       gl,
       [
-        loadShader(gl, gl.VERTEX_SHADER, vertShaderRaw)!,
+        loadShader(gl, gl.VERTEX_SHADER, midiVertShaderRaw)!,
         loadShader(gl, gl.FRAGMENT_SHADER, noteFragShaderRaw)!,
       ],
       ["position"],
@@ -136,6 +137,55 @@ class NoteProgram extends ShaderProgram<[number, number]> {
   }
 }
 
+class SeekProgram extends ShaderProgram<[number, number]> {
+  readonly triangleCount: number;
+
+  constructor(gl: WebGLRenderingContext) {
+    super(
+      gl,
+      [
+        loadShader(gl, gl.VERTEX_SHADER, seekVertShaderRaw)!,
+        loadShader(gl, gl.FRAGMENT_SHADER, singleColorFragShaderRaw)!,
+      ],
+      ["position"],
+      ["time", "timeWidth", "canvasWidth", "color"],
+      ["positions"]
+    );
+    const positions = quadToTriangles(
+      -1.005,
+      1.0,
+      -0.995,
+      -1.0,
+    )
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.positions);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+    this.triangleCount = positions.length / 2;
+  }
+
+  draw(time: number, canvasWidth: number) {
+    if (this.gl.CURRENT_PROGRAM !== this.program) {
+      this.gl.useProgram(this.program);
+      this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffers.positions);
+      this.gl.vertexAttribPointer(
+        this.attributeLocations.position,
+        2,
+        this.gl.FLOAT,
+        false,
+        0,
+        0
+      );
+      this.gl.enableVertexAttribArray(this.attributeLocations.position);
+      this.gl.uniform1f(this.uniformLocations.timeWidth, TIME_WIDTH_SECS);
+      this.gl.uniform3fv(this.uniformLocations.color, [0.9, 0.9, 0.9]);
+    }
+
+    this.gl.uniform1f(this.uniformLocations.time, time);
+    this.gl.uniform1f(this.uniformLocations.canvasWidth, canvasWidth);
+
+    this.gl.drawArrays(this.gl.TRIANGLES, 0, this.triangleCount);
+  }
+}
+
 class PitchProgram extends ShaderProgram<[number, number, number[]]> {
   readonly color: [number, number, number];
 
@@ -143,8 +193,8 @@ class PitchProgram extends ShaderProgram<[number, number, number[]]> {
     super(
       gl,
       [
-        loadShader(gl, gl.VERTEX_SHADER, vertShaderRaw)!,
-        loadShader(gl, gl.FRAGMENT_SHADER, pitchFragShaderRaw)!,
+        loadShader(gl, gl.VERTEX_SHADER, midiVertShaderRaw)!,
+        loadShader(gl, gl.FRAGMENT_SHADER, singleColorFragShaderRaw)!,
       ],
       ["position"],
       ["time", "timeWidth", "color"],
@@ -350,6 +400,7 @@ export default function PianoRoll(props: {
     })!;
 
     const noteProgram = new NoteProgram(gl, positions);
+    const seekProgram = new SeekProgram(gl);
     const pitchProgram = new PitchProgram(gl, [1.0, 1.0, 0.0]);
 
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
@@ -369,6 +420,8 @@ export default function PianoRoll(props: {
       if (pitchDetectionPositions.length > 0) {
         pitchProgram.draw(time, canvasWidth, pitchDetectionPositions);
       }
+
+      seekProgram.draw(time, canvasWidth);
 
       animationFrameRequestRef.current = window.requestAnimationFrame(draw);
     };
