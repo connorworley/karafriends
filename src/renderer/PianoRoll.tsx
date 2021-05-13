@@ -389,7 +389,8 @@ export default function PianoRoll(props: {
       }
     }, 25);
 
-    const gl = canvasRef.current.getContext("webgl", {
+    const gl = canvasRef.current.getContext("webgl2", {
+      antialias: true,
       premultipliedAlpha: false,
     })!;
 
