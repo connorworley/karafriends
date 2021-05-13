@@ -330,8 +330,9 @@ export default function PianoRoll(props: {
         !props.videoRef.current.paused
       ) {
         while (
-          notes[currentNoteIndex + 1].startTime <
-          props.videoRef.current.currentTime
+          notes[currentNoteIndex].endTime <
+            props.videoRef.current.currentTime &&
+          currentNoteIndex < notes.length - 2
         ) {
           currentNoteIndex++;
         }
@@ -385,6 +386,16 @@ export default function PianoRoll(props: {
 
     updateSize();
     window.addEventListener("resize", updateSize);
+
+    function clearPitchDetectionBuffers() {
+      pitchMidiNumbers.length = 0;
+      pitchDetectionPositions.length = 0;
+    }
+
+    props.videoRef.current.addEventListener(
+      "seeked",
+      clearPitchDetectionBuffers
+    );
 
     return () => {
       cancelAnimationFrame(animationFrameRequestRef.current);
