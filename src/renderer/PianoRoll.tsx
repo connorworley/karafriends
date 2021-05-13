@@ -323,10 +323,10 @@ export default function PianoRoll(props: {
 
     const pollPitch = setInterval(() => {
       if (!props.mic || !props.videoRef.current) return;
-      const { frequency, confidence } = props.mic.getPitch();
+      const { midiNumber, confidence } = props.mic.getPitch();
       if (
         confidence > 0.8 &&
-        frequency !== 0 &&
+        midiNumber !== 0 &&
         !props.videoRef.current.paused
       ) {
         while (
@@ -337,9 +337,10 @@ export default function PianoRoll(props: {
         }
         const currentMidiNumber = notes[currentNoteIndex].midiNumber;
         pitchOffset +=
-          Math.round((currentMidiNumber - (frequency + pitchOffset)) / 12) * 12;
-        console.log(currentMidiNumber, frequency, pitchOffset);
-        pushPitchDetection(frequency + pitchOffset);
+          Math.round((currentMidiNumber - (midiNumber + pitchOffset)) / 12) *
+          12;
+        console.log(currentMidiNumber, midiNumber, pitchOffset);
+        pushPitchDetection(midiNumber + pitchOffset);
       }
     }, 25);
 

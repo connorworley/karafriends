@@ -10,7 +10,7 @@ declare global {
         inputDevice_delete: (deviceId: number) => void;
         inputDevice_getPitch: (
           deviceId: number
-        ) => { frequency: number; confidence: number };
+        ) => { midiNumber: number; confidence: number };
       };
     };
   }

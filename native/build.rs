@@ -3,38 +3,16 @@
 pub fn main() {
     neon_build::setup();
 
-    #[cfg(target_os = "macos")]
-    {
+    if cfg!(target_os = "macos") {
         println!("cargo:rustc-link-search=../prebuilt/macos");
         println!("cargo:rustc-link-lib=aubio");
         println!("cargo:rustc-link-lib=fftw3f");
-
-        return;
-    }
-
-    #[cfg(windows)]
-    {
+        println!("cargo:rustc-link-lib=samplerate");
+    } else if cfg!(windows) {
         println!("cargo:rustc-link-search=../prebuilt/windows");
         println!("cargo:rustc-link-lib=static=libaubio");
         println!("cargo:rustc-link-lib=static=libfftw3f");
-
-        #[cfg(feature = "winrt")]
-        windows::build!(
-            Windows::Foundation::IAsyncOperation,
-            Windows::Foundation::Collections::IVector,
-            Windows::Foundation::EventRegistrationToken,
-            Windows::Foundation::IMemoryBufferReference,
-            Windows::Foundation::TypedEventHandler,
-            Windows::Media::*,
-            Windows::Media::Audio::*,
-            Windows::Media::Capture::*,
-            Windows::Media::MediaProperties::*,
-            Windows::Media::Render::*,
-            Windows::Win32::WinRT::IMemoryBufferByteAccess,
-        );
-
-        return;
+    } else {
+        println!("cargo:rustc-link-lib=aubio");
     }
-
-    println!("cargo:rustc-link-lib=aubio");
 }
