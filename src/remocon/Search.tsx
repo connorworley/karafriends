@@ -25,12 +25,8 @@ const Search = (props: RouteComponentProps) => (
       </div>
     </div>
     <div className="row section">
-      <Route path="/search/song">
-        <SongSearch />
-      </Route>
-      <Route path="/search/artist">
-        <ArtistSearch />
-      </Route>
+      <Route path="/search/song/:query?" component={SongSearch} />
+      <Route path="/search/artist/:query?" component={ArtistSearch} />
     </div>
   </>
 );
