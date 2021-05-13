@@ -137,7 +137,7 @@ class NoteProgram extends ShaderProgram<[number, number]> {
   }
 }
 
-class SeekProgram extends ShaderProgram<[number, number]> {
+class SeekProgram extends ShaderProgram<[number]> {
   readonly triangleCount: number;
 
   constructor(gl: WebGLRenderingContext) {
@@ -148,21 +148,16 @@ class SeekProgram extends ShaderProgram<[number, number]> {
         loadShader(gl, gl.FRAGMENT_SHADER, singleColorFragShaderRaw)!,
       ],
       ["position"],
-      ["time", "timeWidth", "canvasWidth", "color"],
+      ["time", "timeWidth", "color"],
       ["positions"]
     );
-    const positions = quadToTriangles(
-      -1.005,
-      1.0,
-      -0.995,
-      -1.0,
-    )
+    const positions = quadToTriangles(-1.005, 1.0, -0.995, -1.0);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.positions);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
     this.triangleCount = positions.length / 2;
   }
 
-  draw(time: number, canvasWidth: number) {
+  draw(time: number) {
     if (this.gl.CURRENT_PROGRAM !== this.program) {
       this.gl.useProgram(this.program);
       this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffers.positions);
@@ -180,7 +175,6 @@ class SeekProgram extends ShaderProgram<[number, number]> {
     }
 
     this.gl.uniform1f(this.uniformLocations.time, time);
-    this.gl.uniform1f(this.uniformLocations.canvasWidth, canvasWidth);
 
     this.gl.drawArrays(this.gl.TRIANGLES, 0, this.triangleCount);
   }
@@ -421,7 +415,7 @@ export default function PianoRoll(props: {
         pitchProgram.draw(time, canvasWidth, pitchDetectionPositions);
       }
 
-      seekProgram.draw(time, canvasWidth);
+      seekProgram.draw(time);
 
       animationFrameRequestRef.current = window.requestAnimationFrame(draw);
     };
