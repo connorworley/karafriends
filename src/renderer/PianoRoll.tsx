@@ -369,7 +369,7 @@ export default function PianoRoll(props: {
       if (!props.mic || !props.videoRef.current) return;
       const { midiNumber, confidence } = props.mic.getPitch();
       if (
-        confidence > 0.8 &&
+        confidence >= 0.6 &&
         midiNumber !== 0 &&
         !props.videoRef.current.paused
       ) {
