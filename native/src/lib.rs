@@ -88,8 +88,8 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
             .input_devices()?
             .find(|device| device.name().unwrap() == name)
             .ok_or(format!("Could not find device: {}", name))?;
-        let mut input_config = input_device.default_input_config()?.config();
-        input_config.channels = 1;
+        let input_config = input_device.default_input_config()?.config();
+        let input_channels = input_config.channels as usize;
 
         let output_device = host
             .default_output_device()
@@ -112,7 +112,7 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
         }
 
         let (mut output_tx, mut output_rx) =
-            ringbuf::RingBuffer::new(1024 * output_channels).split();
+            ringbuf::RingBuffer::new(2048 * output_channels).split();
 
         let sample_ratio = output_config.sample_rate.0 as f32 / sample_rate as f32;
         let mut resampler = Resampler {
@@ -130,12 +130,22 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
         let input_stream = input_device.build_input_stream(
             &input_config,
             move |samples: &[f32], _| {
-                pitch_tx.push_slice(samples);
+                let mono_samples: Vec<_> = samples
+                    .chunks(input_channels)
+                    .map(|channel_samples| {
+                        channel_samples
+                            .iter()
+                            .fold(0.0, |total, sample| total + sample)
+                            / input_channels as f32
+                    })
+                    .collect();
 
-                let mut echo_samples = vec![0.0; samples.len()];
+                pitch_tx.push_slice(&mono_samples);
+
+                let mut echo_samples = vec![0.0; mono_samples.len()];
                 echo_rx.pop_slice(echo_samples.as_mut_slice());
 
-                let output_samples: Vec<_> = samples
+                let output_samples: Vec<_> = mono_samples
                     .iter()
                     .zip(echo_samples.iter().map(|sample| sample * ECHO_AMPLITUDE))
                     .map(|(incoming, echo)| incoming + echo)
@@ -151,7 +161,7 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
                     .unwrap();
                 for sample in resampled_output_samples {
                     for _ in 0..output_channels {
-                        if let Err(_) = output_tx.push(sample) {
+                        if output_tx.push(sample).is_err() {
                             eprintln!("output fell behind!");
                         }
                     }
