@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { graphql, QueryRenderer } from "react-relay";
-import { Link } from "react-router-dom";
+import { Link, RouteComponentProps } from "react-router-dom";
 
 import Loader from "../common/components/Loader";
 import environment from "../common/graphqlEnvironment";
@@ -17,17 +17,27 @@ const artistSearchQuery = graphql`
   }
 `;
 
-const ArtistSearch = () => {
-  const [searchQuery, setSearchQuery] = useState<string | null>(null);
+interface ArtistSearchParams {
+  query: string | undefined;
+}
+
+interface Props extends RouteComponentProps<ArtistSearchParams> {}
+
+const ArtistSearch = (outerProps: Props) => {
+  const [searchQuery, setSearchQuery] = useState<string | null>(
+    outerProps.match.params.query || null
+  );
 
   return (
     <>
       <h5>Searching by artist name</h5>
       <DebouncedInput
         period={500}
-        onChange={(e) =>
-          setSearchQuery(e.target.value === "" ? null : e.target.value)
-        }
+        onChange={(e) => {
+          setSearchQuery(e.target.value === "" ? null : e.target.value);
+          history.replaceState({}, "", `#/search/artist/${e.target.value}`);
+        }}
+        defaultValue={outerProps.match.params.query}
       />
       <QueryRenderer<ArtistSearchQuery>
         environment={environment}
