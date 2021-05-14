@@ -8,8 +8,10 @@ function QRCode() {
   const [imgSrc, setImgSrc] = useState<string | null>(null);
 
   useEffect(() => {
-    toDataURL(`${HOSTNAME}:8080`, { errorCorrectionLevel: "L" }, (error, url) =>
-      setImgSrc(url)
+    toDataURL(
+      `http://${HOSTNAME}:8080`,
+      { errorCorrectionLevel: "L" },
+      (error, url) => setImgSrc(url)
     );
   });
 
