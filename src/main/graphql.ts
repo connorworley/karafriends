@@ -2,9 +2,9 @@ import { ApolloServer, makeExecutableSchema } from "apollo-server-express";
 import isDev from "electron-is-dev";
 import { Application } from "express";
 import promiseRetry from "promise-retry";
-import * as qrcode from "qrcode";
 import { isRomaji, toKana } from "wanakana";
 
+import { HOSTNAME } from "../common/constants";
 import rawSchema from "../common/schema.graphql";
 import {
   getMusicListByArtist,
@@ -15,7 +15,6 @@ import {
   searchArtistByKeyword,
   searchMusicByKeyword,
 } from "./damApi";
-import { HOSTNAME } from "./mdns";
 
 interface Context {
   creds: MinseiCredentials;
@@ -35,24 +34,6 @@ function stripWhitespace(str: string) {
 
 const resolvers = {
   Query: {
-<<<<<<< HEAD
-    wanIpQrCode: (): Promise<string> => {
-      // Trick to get the IP address of the iface we would use to access the internet
-      // This address should be usable except in rare cases where LAN and WAN go through different ifaces
-      const sock = dgram.createSocket({ type: "udp4" });
-=======
-    wanIpQrCode: () => {
->>>>>>> 71c131b (Add an mDNS resolver to the electron main process for more resilient QR codes)
-      return new Promise((resolve) => {
-        qrcode.toDataURL(
-          `${HOSTNAME}:8080`,
-          {
-            errorCorrectionLevel: "L",
-          },
-          (error, url) => resolve(url)
-        );
-      });
-    },
     songsByName: (
       _: any,
       args: {

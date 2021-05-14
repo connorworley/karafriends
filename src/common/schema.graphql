@@ -1,5 +1,4 @@
 type Query {
-  wanIpQrCode: String!
   songsByName(name: String): [Song!]!
   songsByIds(ids: [String!]!): [Song!]!
   queue: [QueueItem!]!

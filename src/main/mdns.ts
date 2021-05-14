@@ -1,8 +1,8 @@
-import { networkInterfaces } from "os";
 // @ts-ignore: TODO: stub me
 import mdns from "multicast-dns";
+import { networkInterfaces } from "os";
 
-export const HOSTNAME = "karafriends.local";
+import { HOSTNAME } from "../common/constants";
 
 export default function setupMdns() {
   const mdnsObj = mdns();

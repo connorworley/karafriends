@@ -1,31 +1,23 @@
-import React, { useEffect, useRef } from "react";
-import { graphql, QueryRenderer } from "react-relay";
+import { toDataURL } from "qrcode";
+import React, { useEffect, useState } from "react";
 
-import environment from "../common/graphqlEnvironment";
-import { QRCodeQuery } from "./__generated__/QRCodeQuery.graphql";
+import Loader from "../common/components/Loader";
+import { HOSTNAME } from "../common/constants";
 
 function QRCode() {
-  return (
-    <QueryRenderer<QRCodeQuery>
-      environment={environment}
-      query={graphql`
-        query QRCodeQuery {
-          wanIpQrCode
-        }
-      `}
-      variables={{}}
-      render={({ error, props }) => {
-        if (!props) {
-          return <div>Loading...</div>;
-        }
-        return (
-          <div>
-            <img src={props.wanIpQrCode} />
-          </div>
-        );
-      }}
-    />
-  );
+  const [imgSrc, setImgSrc] = useState<string | null>(null);
+
+  useEffect(() => {
+    toDataURL(`${HOSTNAME}:8080`, { errorCorrectionLevel: "L" }, (error, url) =>
+      setImgSrc(url)
+    );
+  });
+
+  if (imgSrc) {
+    return <img src={imgSrc} />;
+  } else {
+    return <Loader />;
+  }
 }
 
 export default QRCode;
