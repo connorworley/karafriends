@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { graphql, QueryRenderer } from "react-relay";
 import { Link, RouteComponentProps } from "react-router-dom";
+import { isRomaji, toRomaji } from "wanakana";
 
 import Loader from "../common/components/Loader";
 import environment from "../common/graphqlEnvironment";
@@ -36,7 +37,9 @@ function SongSearch(outerProps: Props) {
             songsByName(name: $name) {
               id
               name
+              nameYomi
               artistName
+              artistNameYomi
             }
           }
         `}
@@ -58,9 +61,19 @@ function SongSearch(outerProps: Props) {
                   className="collection-item"
                   key={song.id}
                 >
-                  {song.name}
+                  {song.name}{" "}
+                  {isRomaji(song.name) ? null : (
+                    <span className="grey-text text-lighten-2">
+                      {toRomaji(song.nameYomi)}
+                    </span>
+                  )}
                   <br />
-                  {song.artistName}
+                  {song.artistName}{" "}
+                  {isRomaji(song.artistName) ? null : (
+                    <span className="grey-text text-lighten-2">
+                      {toRomaji(song.artistNameYomi)}
+                    </span>
+                  )}
                 </Link>
               ))}
             </div>

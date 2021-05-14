@@ -10,7 +10,9 @@ export type SongSearchQueryResponse = {
     readonly songsByName: ReadonlyArray<{
         readonly id: string;
         readonly name: string;
+        readonly nameYomi: string;
         readonly artistName: string;
+        readonly artistNameYomi: string;
     }>;
 };
 export type SongSearchQuery = {
@@ -27,7 +29,9 @@ query SongSearchQuery(
   songsByName(name: $name) {
     id
     name
+    nameYomi
     artistName
+    artistNameYomi
   }
 }
 */
@@ -73,7 +77,21 @@ v1 = [
         "alias": null,
         "args": null,
         "kind": "ScalarField",
+        "name": "nameYomi",
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
         "name": "artistName",
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "artistNameYomi",
         "storageKey": null
       }
     ],
@@ -98,14 +116,14 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "0b27a6c86db86a7f3dd01abb720e6fed",
+    "cacheID": "228bab14e0d2ef26ad320676abfbecca",
     "id": null,
     "metadata": {},
     "name": "SongSearchQuery",
     "operationKind": "query",
-    "text": "query SongSearchQuery(\n  $name: String\n) {\n  songsByName(name: $name) {\n    id\n    name\n    artistName\n  }\n}\n"
+    "text": "query SongSearchQuery(\n  $name: String\n) {\n  songsByName(name: $name) {\n    id\n    name\n    nameYomi\n    artistName\n    artistNameYomi\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = '6d0d10e1b6fb01560fcf6881122dc3ad';
+(node as any).hash = '71e7e19634d8dbd0549192eae1a2263c';
 export default node;

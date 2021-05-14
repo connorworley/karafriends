@@ -1,6 +1,7 @@
 import React from "react";
 import { graphql, useLazyLoadQuery } from "react-relay";
 import { Link, RouteComponentProps } from "react-router-dom";
+import { isRomaji, toRomaji } from "wanakana";
 
 import { withLoader } from "../common/components/Loader";
 import { ArtistQuery } from "./__generated__/ArtistQuery.graphql";
@@ -12,6 +13,7 @@ const artistQuery = graphql`
       songs {
         id
         name
+        nameYomi
       }
     }
   }
@@ -44,7 +46,12 @@ const Artist = (props: Props) => {
             className="collection-item"
             key={song.id}
           >
-            {song.name}
+            {song.name}{" "}
+            {isRomaji(song.name) ? null : (
+              <span className="grey-text text-lighten-2">
+                {toRomaji(song.nameYomi)}
+              </span>
+            )}
           </Link>
         ))}
       </div>
