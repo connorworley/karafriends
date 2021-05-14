@@ -123,7 +123,9 @@ interface SearchMusicByKeywordResponse extends DkwebsysReponse {
   list: {
     requestNo: string;
     title: string;
+    titleYomi: string;
     artist: string;
+    artistYomi: string;
   }[];
 }
 
@@ -143,6 +145,7 @@ interface SearchArtistByKeywordResponse extends DkwebsysReponse {
   list: {
     artist: string;
     artistCode: number;
+    artistYomi: string;
     holdMusicCount: number;
   }[];
 }
@@ -168,7 +171,9 @@ interface GetMusicListByArtistResponse extends DkwebsysReponse {
   list: {
     requestNo: string;
     title: string;
+    titleYomi: string;
     artist: string;
+    artistYomi: string;
   }[];
 }
 

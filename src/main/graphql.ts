@@ -57,7 +57,15 @@ const resolvers = {
       args: {
         name: string | null;
       }
-    ): Promise<{ id: string; name: string; artistName: string }[]> => {
+    ): Promise<
+      {
+        id: string;
+        name: string;
+        nameYomi: string;
+        artistName: string;
+        artistNameYomi: string;
+      }[]
+    > => {
       if (args.name === null) {
         return Promise.resolve([]);
       }
@@ -75,7 +83,9 @@ const resolvers = {
                 acc.list.push({
                   id: cur.requestNo,
                   name: cur.title,
+                  nameYomi: cur.titleYomi,
                   artistName: cur.artist,
+                  artistNameYomi: cur.artistYomi,
                 });
                 acc.set.add(cur.requestNo);
               }
@@ -85,7 +95,9 @@ const resolvers = {
               list: new Array<{
                 id: string;
                 name: string;
+                nameYomi: string;
                 artistName: string;
+                artistNameYomi: string;
               }>(),
               set: new Set<string>(),
             }
@@ -97,7 +109,14 @@ const resolvers = {
       _: any,
       args: { ids: string[] }
     ): Promise<
-      { id: string; name: string; artistName: string; lyricsPreview: string }[]
+      {
+        id: string;
+        name: string;
+        nameYomi: string;
+        artistName: string;
+        artistNameYomi: string;
+        lyricsPreview: string;
+      }[]
     > => {
       if (args.ids.length === 0) {
         return Promise.resolve([]);
@@ -106,7 +125,9 @@ const resolvers = {
         json.isExist.map((song) => ({
           id: song.reqNo,
           name: song.songName,
+          nameYomi: "",
           artistName: song.artistName,
+          artistNameYomi: "",
           lyricsPreview: song.firstBars,
         }))
       );
@@ -118,7 +139,9 @@ const resolvers = {
     artistsByName: (
       _: any,
       args: { name: string }
-    ): Promise<{ id: string; name: string; songCount: number }[]> => {
+    ): Promise<
+      { id: string; name: string; nameYomi: string; songCount: number }[]
+    > => {
       if (args.name === null) {
         return Promise.resolve([]);
       }
@@ -138,6 +161,7 @@ const resolvers = {
                 acc.list.push({
                   id: cur.artistCode.toString(),
                   name: cur.artist,
+                  nameYomi: cur.artistYomi,
                   songCount: cur.holdMusicCount,
                 });
                 acc.set.add(cur.artistCode);
@@ -148,6 +172,7 @@ const resolvers = {
               list: new Array<{
                 id: string;
                 name: string;
+                nameYomi: string;
                 songCount: number;
               }>(),
               set: new Set<number>(),
@@ -163,7 +188,13 @@ const resolvers = {
       id: string;
       name: string;
       songCount: number;
-      songs: { id: string; name: string; artistName: string }[];
+      songs: {
+        id: string;
+        name: string;
+        nameYomi: string;
+        artistName: string;
+        artistNameYomi: string;
+      }[];
     }> => {
       return getMusicListByArtist(args.id).then((json) => ({
         id: json.data.artistCode.toString(),
@@ -172,7 +203,9 @@ const resolvers = {
         songs: json.list.map((artistSong) => ({
           id: artistSong.requestNo,
           name: artistSong.title,
+          nameYomi: artistSong.titleYomi,
           artistName: artistSong.artist,
+          artistNameYomi: artistSong.artistYomi,
         })),
       }));
     },

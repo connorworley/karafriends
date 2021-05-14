@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { graphql, QueryRenderer } from "react-relay";
 import { Link, RouteComponentProps } from "react-router-dom";
+import { isRomaji, toRomaji } from "wanakana";
 
 import Loader from "../common/components/Loader";
 import environment from "../common/graphqlEnvironment";
@@ -12,6 +13,7 @@ const artistSearchQuery = graphql`
     artistsByName(name: $name) {
       id
       name
+      nameYomi
       songCount
     }
   }
@@ -56,7 +58,12 @@ const ArtistSearch = (outerProps: Props) => {
                   to={`/artist/${artist.id}`}
                 >
                   <span className="truncate" style={{ flex: 1 }}>
-                    {artist.name}
+                    {artist.name}{" "}
+                    {isRomaji(artist.name) ? null : (
+                      <span className="grey-text text-lighten-2">
+                        {toRomaji(artist.nameYomi)}
+                      </span>
+                    )}
                   </span>
                   <span>{artist.songCount} songs</span>
                 </Link>
