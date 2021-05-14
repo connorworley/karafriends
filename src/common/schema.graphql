@@ -10,9 +10,9 @@ type Query {
 }
 
 type Mutation {
-  queueSong(id: String!): Boolean!
+  queueSong(songId: String!): Boolean!
   popSong: QueueItem
-  removeSong(id: String!, timestamp: String!): Boolean!
+  removeSong(songId: String!, timestamp: String!): Boolean!
 }
 
 type Artist {
@@ -33,6 +33,6 @@ type Song {
 }
 
 type QueueItem {
-  id: String!
+  songId: String!
   timestamp: String!
 }

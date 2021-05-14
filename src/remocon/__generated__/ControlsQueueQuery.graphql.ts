@@ -6,7 +6,7 @@ import { ConcreteRequest } from "relay-runtime";
 export type ControlsQueueQueryVariables = {};
 export type ControlsQueueQueryResponse = {
     readonly queue: ReadonlyArray<{
-        readonly id: string;
+        readonly songId: string;
         readonly timestamp: string;
     }>;
 };
@@ -20,7 +20,7 @@ export type ControlsQueueQuery = {
 /*
 query ControlsQueueQuery {
   queue {
-    id
+    songId
     timestamp
   }
 }
@@ -40,7 +40,7 @@ var v0 = [
         "alias": null,
         "args": null,
         "kind": "ScalarField",
-        "name": "id",
+        "name": "songId",
         "storageKey": null
       },
       {
@@ -72,14 +72,14 @@ return {
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "b3f37a8956711dd458986cd841262613",
+    "cacheID": "133069580ec378e77ccfb867d043608e",
     "id": null,
     "metadata": {},
     "name": "ControlsQueueQuery",
     "operationKind": "query",
-    "text": "query ControlsQueueQuery {\n  queue {\n    id\n    timestamp\n  }\n}\n"
+    "text": "query ControlsQueueQuery {\n  queue {\n    songId\n    timestamp\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = '976ff26569a6aa0b29a3a2278f485bfd';
+(node as any).hash = '84a9efa2f00a4edb5e17063c3121f21b';
 export default node;

@@ -23,7 +23,7 @@ interface Context {
 }
 
 type NotARealDb = {
-  songQueue: { id: string; timestamp: string }[];
+  songQueue: { songId: string; timestamp: string }[];
 };
 
 const db: NotARealDb = {
@@ -236,17 +236,26 @@ const resolvers = {
     },
   },
   Mutation: {
-    queueSong: (_: any, args: { id: string }): boolean => {
-      db.songQueue.push({ id: args.id, timestamp: Date.now().toString() });
+    queueSong: (_: any, args: { songId: string }): boolean => {
+      db.songQueue.push({
+        songId: args.songId,
+        timestamp: Date.now().toString(),
+      });
       return true;
     },
-    popSong: (_: any, args: {}): { id: string; timestamp: string } | null => {
+    popSong: (
+      _: any,
+      args: {}
+    ): { songId: string; timestamp: string } | null => {
       return db.songQueue.shift() || null;
     },
-    removeSong: (_: any, args: { id: string; timestamp: string }): boolean => {
-      const { id, timestamp } = args;
+    removeSong: (
+      _: any,
+      args: { songId: string; timestamp: string }
+    ): boolean => {
+      const { songId, timestamp } = args;
       db.songQueue = db.songQueue.filter(
-        (item) => !(item.id === id && item.timestamp === timestamp)
+        (item) => !(item.songId === songId && item.timestamp === timestamp)
       );
       return true;
     },
