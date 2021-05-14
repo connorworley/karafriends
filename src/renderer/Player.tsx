@@ -25,7 +25,7 @@ const scoringDataQuery = graphql`
 const popSongMutation = graphql`
   mutation PlayerPopSongMutation {
     popSong {
-      id
+      songId
       timestamp
     }
   }
@@ -51,7 +51,7 @@ function Player(props: { mic: InputDevice | null }) {
             fetchQuery<PlayerStreamingUrlQuery>(
               environment,
               streamingUrlQuery,
-              { id: popSong.id }
+              { id: popSong.songId }
             )
               // @ts-ignore: @types/react-relay has an incorrect return type for fetchQuery
               .toPromise()
@@ -65,7 +65,7 @@ function Player(props: { mic: InputDevice | null }) {
                 }
               });
             fetchQuery<PlayerScoringDataQuery>(environment, scoringDataQuery, {
-              id: popSong.id,
+              id: popSong.songId,
             })
               // @ts-ignore: @types/react-relay has an incorrect return type for fetchQuery
               .toPromise()

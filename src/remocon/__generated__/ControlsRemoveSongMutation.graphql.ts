@@ -4,7 +4,7 @@
 
 import { ConcreteRequest } from "relay-runtime";
 export type ControlsRemoveSongMutationVariables = {
-    id: string;
+    songId: string;
     timestamp: string;
 };
 export type ControlsRemoveSongMutationResponse = {
@@ -19,10 +19,10 @@ export type ControlsRemoveSongMutation = {
 
 /*
 mutation ControlsRemoveSongMutation(
-  $id: String!
+  $songId: String!
   $timestamp: String!
 ) {
-  removeSong(id: $id, timestamp: $timestamp)
+  removeSong(songId: $songId, timestamp: $timestamp)
 }
 */
 
@@ -31,7 +31,7 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "id"
+    "name": "songId"
   },
   {
     "defaultValue": null,
@@ -45,8 +45,8 @@ v1 = [
     "args": [
       {
         "kind": "Variable",
-        "name": "id",
-        "variableName": "id"
+        "name": "songId",
+        "variableName": "songId"
       },
       {
         "kind": "Variable",
@@ -77,14 +77,14 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "600f83df9ffb316c0095114355b665b2",
+    "cacheID": "772d0a552588e50d37ec8da0b4ef9ff5",
     "id": null,
     "metadata": {},
     "name": "ControlsRemoveSongMutation",
     "operationKind": "mutation",
-    "text": "mutation ControlsRemoveSongMutation(\n  $id: String!\n  $timestamp: String!\n) {\n  removeSong(id: $id, timestamp: $timestamp)\n}\n"
+    "text": "mutation ControlsRemoveSongMutation(\n  $songId: String!\n  $timestamp: String!\n) {\n  removeSong(songId: $songId, timestamp: $timestamp)\n}\n"
   }
 };
 })();
-(node as any).hash = '105af26e7ca38039e17c7c70a3afb3cf';
+(node as any).hash = '0070693eb4be2672945ea0228add4870';
 export default node;

@@ -6,7 +6,7 @@ import { ConcreteRequest } from "relay-runtime";
 export type PlayerPopSongMutationVariables = {};
 export type PlayerPopSongMutationResponse = {
     readonly popSong: {
-        readonly id: string;
+        readonly songId: string;
         readonly timestamp: string;
     } | null;
 };
@@ -20,7 +20,7 @@ export type PlayerPopSongMutation = {
 /*
 mutation PlayerPopSongMutation {
   popSong {
-    id
+    songId
     timestamp
   }
 }
@@ -40,7 +40,7 @@ var v0 = [
         "alias": null,
         "args": null,
         "kind": "ScalarField",
-        "name": "id",
+        "name": "songId",
         "storageKey": null
       },
       {
@@ -72,14 +72,14 @@ return {
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "27a39306f5c21ffb460841e13b568c95",
+    "cacheID": "e568eed16b13fb547e1eba0cc1c3af9d",
     "id": null,
     "metadata": {},
     "name": "PlayerPopSongMutation",
     "operationKind": "mutation",
-    "text": "mutation PlayerPopSongMutation {\n  popSong {\n    id\n    timestamp\n  }\n}\n"
+    "text": "mutation PlayerPopSongMutation {\n  popSong {\n    songId\n    timestamp\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = '6c8a50a2cc961c14410ad24f284cf20a';
+(node as any).hash = '704fb4eee3b39a03112120aa73602b7a';
 export default node;

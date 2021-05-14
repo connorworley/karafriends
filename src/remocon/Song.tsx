@@ -17,8 +17,8 @@ const songQuery = graphql`
 `;
 
 const songMutation = graphql`
-  mutation SongMutation($id: String!) {
-    queueSong(id: $id)
+  mutation SongMutation($songId: String!) {
+    queueSong(songId: $songId)
   }
 `;
 
@@ -38,7 +38,7 @@ function Song(props: Props) {
 
   const onClickQueueSong = () => {
     commit({
-      variables: { id: id.replace("-", "") },
+      variables: { songId: id.replace("-", "") },
       onCompleted: ({ queueSong }) => setQueued(queueSong),
     });
   };

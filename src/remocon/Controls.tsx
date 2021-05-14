@@ -10,7 +10,7 @@ import { ControlsSongsQuery } from "./__generated__/ControlsSongsQuery.graphql";
 const controlsQueueQuery = graphql`
   query ControlsQueueQuery {
     queue {
-      id
+      songId
       timestamp
     }
   }
@@ -27,8 +27,8 @@ const controlsSongsQuery = graphql`
 `;
 
 const removeSongMutation = graphql`
-  mutation ControlsRemoveSongMutation($id: String!, $timestamp: String!) {
-    removeSong(id: $id, timestamp: $timestamp)
+  mutation ControlsRemoveSongMutation($songId: String!, $timestamp: String!) {
+    removeSong(songId: $songId, timestamp: $timestamp)
   }
 `;
 
@@ -38,7 +38,7 @@ const Controls = () => {
     {}
   );
   const songsData = useLazyLoadQuery<ControlsSongsQuery>(controlsSongsQuery, {
-    ids: queueData.queue.map((item) => item.id),
+    ids: queueData.queue.map((item) => item.songId),
   });
   const initialSongsMap: Record<
     string,
@@ -51,21 +51,21 @@ const Controls = () => {
   const [commit, isInFlight] = useMutation<ControlsRemoveSongMutation>(
     removeSongMutation
   );
-  const onClickRemoveSong = (id: string, timestamp: string) => {
-    commit({ variables: { id, timestamp } });
+  const onClickRemoveSong = (songId: string, timestamp: string) => {
+    commit({ variables: { songId, timestamp } });
   };
   return (
     <div className="collection">
       {queueData.queue.map((item, i) => {
-        const song = songsMap[item.id];
+        const song = songsMap[item.songId];
         return (
           <div
-            key={`${item.id}_${i}`}
+            key={`${item.songId}_${i}`}
             className="collection-item"
             style={{ display: "flex" }}
           >
             <Link
-              to={`/song/${item.id}`}
+              to={`/song/${item.songId}`}
               className="truncate"
               style={{ flex: 1 }}
             >
@@ -75,7 +75,7 @@ const Controls = () => {
               style={{ cursor: "pointer" }}
               onClick={(e) => {
                 e.preventDefault();
-                onClickRemoveSong(item.id, item.timestamp);
+                onClickRemoveSong(item.songId, item.timestamp);
               }}
             >
               ❌
