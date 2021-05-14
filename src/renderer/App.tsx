@@ -67,7 +67,9 @@ function App() {
               </div>
             </div>
           </div>
-          <div>a</div>
+          <div>
+            <QRCode />
+          </div>
         </div>
       );
   }

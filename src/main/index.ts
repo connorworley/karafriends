@@ -13,6 +13,9 @@ import {
 import { login, MinseiCredentials } from "./damApi";
 import setupGraphQL from "./graphql";
 import remoconMiddleware from "./remoconMiddleware";
+import setupMdns from "./mdns";
+
+setupMdns();
 
 function attemptLogin(creds: Credentials) {
   return login(creds.account, creds.password)
