@@ -1,0 +1,32 @@
+name: Build
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: yarn install
+      - run: yarn build
+      - uses: actions/upload-artifact@v2
+        with:
+          name: karafriends-macos
+          path: dist/karafriends-*.dmg
+          retention-days: 1
+          if-no-files-found: error
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: rustup default stable-x86_64-pc-windows-gnu
+      - run: yarn install
+      - run: yarn build
+      - uses: actions/upload-artifact@v2
+        with:
+          name: karafriends-windows
+          path: dist/karafriends *.exe
+          retention-days: 1
+          if-no-files-found: error
