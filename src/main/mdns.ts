@@ -1,4 +1,3 @@
-// @ts-ignore: TODO: stub me
 import mdns from "multicast-dns";
 import { networkInterfaces } from "os";
 

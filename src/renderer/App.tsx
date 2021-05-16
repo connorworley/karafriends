@@ -17,8 +17,7 @@ enum AppState {
 
 function App() {
   const [appState, setAppState] = useState(AppState.Loading);
-  const [mic1, setMic1] = useState<InputDevice | null>(null);
-  const [mic2, setMic2] = useState<InputDevice | null>(null);
+  const [mics, setMics] = useState<InputDevice[]>([]);
 
   useEffect(() => {
     window.karafriends
@@ -26,7 +25,7 @@ function App() {
       .then((loggedIn) =>
         setAppState(loggedIn ? AppState.LoggedIn : AppState.NotLoggedIn)
       );
-  }, [mic1, mic2]);
+  }, [mics]);
 
   switch (appState) {
     case AppState.Loading:
@@ -47,23 +46,23 @@ function App() {
         <div className="appMainContainer grey lighten-3">
           <div className="row">
             <div className="appPlayer col s10">
-              <Player mic={mic1} />
+              <Player mics={mics} />
             </div>
             <div className="appSettings col s2">
               <nav className="center-align">Settings</nav>
               <div className="col s12">
-                <MicrophoneSetting
-                  cb={(name) => {
-                    if (mic1) mic1.stop();
-                    setMic1(new InputDevice(name));
-                  }}
-                />
-                <MicrophoneSetting
-                  cb={(name) => {
-                    if (mic2) mic2.stop();
-                    setMic2(new InputDevice(name));
-                  }}
-                />
+                {[...Array(mics.length + 1).keys()].map((i) => (
+                  <MicrophoneSetting
+                    key={i}
+                    onChange={(name) => {
+                      if (mics[i]) mics[i].stop();
+                      const updatedMics = [...mics];
+                      updatedMics.splice(i, 1, new InputDevice(name));
+                      setMics(updatedMics);
+                    }}
+                    value={mics[i] ? mics[i].name : ""}
+                  />
+                ))}
               </div>
             </div>
           </div>

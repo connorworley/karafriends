@@ -9,7 +9,7 @@ use neon::prelude::*;
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync>>;
 
-const ECHO_DELAY_SECS: f32 = 0.075;
+const ECHO_DELAY_SECS: f32 = 0.06;
 const ECHO_AMPLITUDE: f32 = 0.25;
 
 struct InputDevice {
