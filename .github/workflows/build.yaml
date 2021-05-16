@@ -13,9 +13,10 @@ jobs:
       - run: yarn build
       - uses: actions/upload-artifact@v2
         with:
-          name: karafriends-mac
+          name: karafriends-macos
           path: dist/karafriends-*-mac.zip
           retention-days: 1
+          if-no-files-found: error
   build-windows:
     runs-on: windows-latest
     steps:
@@ -26,5 +27,6 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: karafriends-windows
-          path: dist/karafriends-*.exe
+          path: dist/karafriends *.exe
           retention-days: 1
+          if-no-files-found: error
