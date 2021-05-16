@@ -57,7 +57,7 @@ function App() {
                     onChange={(name) => {
                       if (mics[i]) mics[i].stop();
                       const updatedMics = [...mics];
-                      updatedMics.splice(i, 1, new InputDevice(name));
+                      updatedMics[i] = new InputDevice(name);
                       setMics(updatedMics);
                     }}
                     value={mics[i] ? mics[i].name : ""}
