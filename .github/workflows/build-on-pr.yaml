@@ -1,0 +1,24 @@
+name: Build on master
+on: [pull_request]
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: yarn install
+      - run: yarn build
+      - uses: actions/upload-artifact@v2
+        with:
+          name: karafriends-mac
+          path: $(jq -r < package.json '"dist/\(.name)-\(.version)-mac.zip"')
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: rustup default stable-x86_64-pc-windows-gnu
+      - run: yarn install
+      - run: yarn build
+      - uses: actions/upload-artifact@v2
+        with:
+          name: karafriends-windows
+          path: $(jq -r < package.json '"dist/\(.name)-\(.version).exe"')
