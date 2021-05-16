@@ -4,7 +4,7 @@
   "private": true,
   "main": "build/main/main.js",
   "scripts": {
-    "build": "cargo build --manifest-path native/Cargo.toml --release && webpack && electron-builder -c.extraMetadata.main=./build/main/main.js",
+    "build": "cargo build --manifest-path native/Cargo.toml --release && webpack && electron-builder -c.extraMetadata.main=./build/main/main.js --publish never",
     "start": "cargo build --manifest-path native/Cargo.toml && webpack && concurrently \"webpack serve\" \"wait-on http://localhost:3000 && cross-env NODE_ENV=development electron .\"",
     "postinstall": "husky install"
   },

@@ -1,5 +1,9 @@
-name: Build on master
-on: [pull_request]
+name: Build
+on:
+  pull_request:
+  push:
+    branches:
+      - master
 jobs:
   build-macos:
     runs-on: macos-latest
