@@ -11,6 +11,7 @@ jobs:
         with:
           name: karafriends-mac
           path: $(jq -r < package.json '"dist/\(.name)-\(.version)-mac.zip"')
+          retention-days: 1
   build-windows:
     runs-on: windows-latest
     steps:
@@ -22,3 +23,4 @@ jobs:
         with:
           name: karafriends-windows
           path: $(jq -r < package.json '"dist/\(.name)-\(.version).exe"')
+          retention-days: 1
