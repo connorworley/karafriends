@@ -1,9 +1,7 @@
 /* tslint:disable:max-classes-per-file */
 
-// TODO: add stubs or something to make this work with tslint
-// tslint:disable-next-line
-const Spline = require("cubic-spline");
-
+import convert from "color-convert";
+import Spline from "cubic-spline";
 import React, { useEffect, useRef, useState } from "react";
 
 import { InputDevice } from "./audioSystem";
@@ -14,6 +12,7 @@ import seekVertShaderRaw from "./shaders/PianoRollSeek.vert.glsl";
 import singleColorFragShaderRaw from "./shaders/PianoRollSingleColor.frag.glsl";
 
 const TIME_WIDTH_SECS = 5.0;
+const PITCH_RESOLUTION = 16;
 
 function loadShader(
   gl: WebGLRenderingContext,
@@ -226,6 +225,100 @@ class PitchProgram extends ShaderProgram<[number, number, number[]]> {
   }
 }
 
+class PitchDetectionBuffer {
+  buffer: { time: number; value: number }[] = [];
+  positions: number[] = [];
+  pitchOffset: number = 0;
+
+  push(
+    pitchMidiNumber: number,
+    medianMidiNumber: number,
+    currentMidiNumber: number,
+    time: number
+  ) {
+    this.pitchOffset +=
+      Math.round(
+        (currentMidiNumber - (pitchMidiNumber + this.pitchOffset)) / 12
+      ) * 12;
+
+    const pitchMidiNumberOffset = pitchMidiNumber + this.pitchOffset;
+
+    if (
+      this.buffer.length === 0 ||
+      time > this.buffer[this.buffer.length - 1].time
+    ) {
+      this.buffer.push({
+        time,
+        value: pitchMidiNumberOffset,
+      });
+    } else {
+      this.buffer[this.buffer.length - 1] = {
+        time,
+        value: pitchMidiNumberOffset,
+      };
+    }
+
+    if (this.buffer.length > 200) {
+      this.buffer.shift();
+      this.buffer.splice(0, PITCH_RESOLUTION * 12);
+    }
+
+    if (this.buffer.length >= 1) {
+      const spline = new Spline(
+        this.buffer.map((obj) => obj.time),
+        this.buffer.map((obj) => obj.value)
+      );
+
+      const lastIndex = this.buffer.length - 1;
+
+      let currX = this.buffer[lastIndex].time;
+      let currY = spline.at(currX);
+
+      this.positions.push(
+        ...quadToTriangles(
+          currX - 0.025,
+          midiNumberToYCoord(currY + 0.5, medianMidiNumber),
+          currX,
+          midiNumberToYCoord(currY - 0.5, medianMidiNumber)
+        )
+      );
+
+      for (let i = 1; i < PITCH_RESOLUTION; i++) {
+        // We don't try to interpolate if there is only one note, the time gap between
+        // two notes is too large, or the pitch gap between two notes is too large.
+        if (this.buffer.length > 1) {
+          const timeGap =
+            this.buffer[lastIndex].time - this.buffer[lastIndex - 1].time;
+          const pitchGap = Math.abs(
+            this.buffer[lastIndex].value - this.buffer[lastIndex - 1].value
+          );
+
+          if (timeGap < 0.1 && pitchGap < 8) {
+            currX =
+              this.buffer[lastIndex - 1].time +
+              (i * timeGap) / PITCH_RESOLUTION;
+            currY = spline.at(currX);
+          }
+        }
+
+        this.positions.push(
+          ...quadToTriangles(
+            currX - 0.025,
+            midiNumberToYCoord(currY + 0.5, medianMidiNumber),
+            currX,
+            midiNumberToYCoord(currY - 0.5, medianMidiNumber)
+          )
+        );
+      }
+    }
+  }
+
+  clear() {
+    this.buffer = [];
+    this.positions = [];
+  }
+}
+
 function midiNumberToYCoord(midiNumber: number, medianMidiNumber: number) {
   // We draw 18 rows behind the canvas, and we also want to be able to align
   // notes in-between rows, so we have 36 positions. We want to return
@@ -237,7 +330,7 @@ function midiNumberToYCoord(midiNumber: number, medianMidiNumber: number) {
 export default function PianoRoll(props: {
   scoringData: number[];
   videoRef: React.RefObject<HTMLVideoElement>;
-  mic: InputDevice | null;
+  mics: InputDevice[];
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationFrameRequestRef = useRef<number>(0);
@@ -279,97 +372,12 @@ export default function PianoRoll(props: {
       .flat();
 
     let currentNoteIndex = 0;
-    let pitchOffset = 0;
 
-    const pitchMidiNumbers: {
-      time: number;
-      value: number;
-    }[] = [];
-
-    const pitchDetectionPositions: number[] = [];
-    const resolution = 16;
-
-    function pushPitchDetection(pitchMidiNumber: number) {
-      if (!props.videoRef.current) return;
-
+    function pollPitch(mic: InputDevice | null, buffer: PitchDetectionBuffer) {
+      if (!mic || !props.videoRef.current) return;
+      const { midiNumber, confidence } = mic.getPitch();
       if (
-        pitchMidiNumbers.length === 0 ||
-        props.videoRef.current.currentTime >
-          pitchMidiNumbers[pitchMidiNumbers.length - 1].time
-      ) {
-        pitchMidiNumbers.push({
-          time: props.videoRef.current.currentTime,
-          value: pitchMidiNumber,
-        });
-      } else {
-        pitchMidiNumbers[pitchMidiNumbers.length - 1] = {
-          time: props.videoRef.current.currentTime,
-          value: pitchMidiNumber,
-        };
-      }
-
-      if (pitchMidiNumbers.length > 200) {
-        pitchMidiNumbers.shift();
-        pitchDetectionPositions.splice(0, resolution * 12);
-      }
-
-      if (pitchMidiNumbers.length >= 1) {
-        const spline = new Spline(
-          pitchMidiNumbers.map((obj) => obj.time),
-          pitchMidiNumbers.map((obj) => obj.value)
-        );
-
-        const lastIndex = pitchMidiNumbers.length - 1;
-
-        let currX = pitchMidiNumbers[lastIndex].time;
-        let currY = spline.at(currX);
-
-        pitchDetectionPositions.push(
-          ...quadToTriangles(
-            currX - 0.025,
-            midiNumberToYCoord(currY + 0.5, medianMidiNumber),
-            currX,
-            midiNumberToYCoord(currY - 0.5, medianMidiNumber)
-          )
-        );
-
-        for (let i = 1; i < resolution; i++) {
-          // We don't try to interpolate if there is only one note, the time gap between
-          // two notes is too large, or the pitch gap between two notes is too large.
-          if (pitchMidiNumbers.length > 1) {
-            const timeGap =
-              pitchMidiNumbers[lastIndex].time -
-              pitchMidiNumbers[lastIndex - 1].time;
-            const pitchGap = Math.abs(
-              pitchMidiNumbers[lastIndex].value -
-                pitchMidiNumbers[lastIndex - 1].value
-            );
-
-            if (timeGap < 0.1 && pitchGap < 8) {
-              currX =
-                pitchMidiNumbers[lastIndex - 1].time +
-                (i * timeGap) / resolution;
-              currY = spline.at(currX);
-            }
-          }
-
-          pitchDetectionPositions.push(
-            ...quadToTriangles(
-              currX - 0.025,
-              midiNumberToYCoord(currY + 0.5, medianMidiNumber),
-              currX,
-              midiNumberToYCoord(currY - 0.5, medianMidiNumber)
-            )
-          );
-        }
-      }
-    }
-
-    const pollPitch = setInterval(() => {
-      if (!props.mic || !props.videoRef.current) return;
-      const { midiNumber, confidence } = props.mic.getPitch();
-      if (
-        confidence >= 0.6 &&
+        confidence >= 0.8 &&
         midiNumber !== 0 &&
         !props.videoRef.current.paused
       ) {
@@ -381,22 +389,38 @@ export default function PianoRoll(props: {
           currentNoteIndex++;
         }
         const currentMidiNumber = notes[currentNoteIndex].midiNumber;
-        pitchOffset +=
-          Math.round((currentMidiNumber - (midiNumber + pitchOffset)) / 12) *
-          12;
-        console.log(currentMidiNumber, midiNumber, pitchOffset);
-        pushPitchDetection(midiNumber + pitchOffset);
+        buffer.push(
+          midiNumber,
+          medianMidiNumber,
+          currentMidiNumber,
+          props.videoRef.current.currentTime
+        );
       }
-    }, 25);
+    }
 
     const gl = canvasRef.current.getContext("webgl2", {
       antialias: true,
       premultipliedAlpha: false,
     })!;
 
+    const pitchPollers: [
+      PitchDetectionBuffer,
+      PitchProgram,
+      NodeJS.Timeout
+    ][] = props.mics.map((mic, i) => {
+      const buffer = new PitchDetectionBuffer();
+      return [
+        buffer,
+        new PitchProgram(
+          gl,
+          convert.hsv.rgb([(360 / props.mics.length) * i, 255, 255])
+        ),
+        setInterval(() => pollPitch(mic, buffer), 25),
+      ];
+    });
+
     const noteProgram = new NoteProgram(gl, positions);
     const seekProgram = new SeekProgram(gl);
-    const pitchProgram = new PitchProgram(gl, [1.0, 1.0, 0.0]);
 
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
 
@@ -412,9 +436,11 @@ export default function PianoRoll(props: {
         noteProgram.draw(time, canvasWidth);
       }
 
-      if (pitchDetectionPositions.length > 0) {
-        pitchProgram.draw(time, canvasWidth, pitchDetectionPositions);
-      }
+      pitchPollers.forEach(([buffer, shader, _]) => {
+        if (buffer.positions.length > 0) {
+          shader.draw(time, canvasWidth, buffer.positions);
+        }
+      });
 
       seekProgram.draw(time);
 
@@ -436,9 +462,8 @@ export default function PianoRoll(props: {
     window.addEventListener("resize", updateSize);
 
     function clearPitchDetectionBuffers() {
-      pitchMidiNumbers.length = 0;
-      pitchDetectionPositions.length = 0;
       currentNoteIndex = 0;
+      pitchPollers.forEach(([buffer, _1, _2]) => buffer.clear());
     }
 
     props.videoRef.current.addEventListener(
@@ -447,9 +472,15 @@ export default function PianoRoll(props: {
     );
 
     return () => {
+      pitchPollers.forEach(([_1, _2, interval]) => clearInterval(interval));
       cancelAnimationFrame(animationFrameRequestRef.current);
       window.removeEventListener("resize", updateSize);
-      clearInterval(pollPitch);
+      if (props.videoRef.current) {
+        props.videoRef.current.removeEventListener(
+          "seeked",
+          clearPitchDetectionBuffers
+        );
+      }
     };
   }, [props]);
 

@@ -4,7 +4,8 @@ import React, { useEffect } from "react";
 import "./global";
 
 export default function MicrophoneSetting(props: {
-  cb: (name: string) => void;
+  onChange: (name: string) => void;
+  value: string;
 }) {
   useEffect(() => {
     M.AutoInit();
@@ -12,7 +13,10 @@ export default function MicrophoneSetting(props: {
 
   return (
     <div className="input-field">
-      <select value="" onChange={(e) => props.cb(e.target.value)}>
+      <select
+        value={props.value}
+        onChange={(e) => props.onChange(e.target.value)}
+      >
         <option value="" disabled={true}>
           Select a microphone
         </option>

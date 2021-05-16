@@ -33,7 +33,7 @@ const popSongMutation = graphql`
 
 const POLL_INTERVAL_MS = 5 * 1000;
 
-function Player(props: { mic: InputDevice | null }) {
+function Player(props: { mics: InputDevice[] }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [scoringData, setScoringData] = useState<number[]>([]);
   const pollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -90,7 +90,7 @@ function Player(props: { mic: InputDevice | null }) {
       <PianoRoll
         scoringData={scoringData}
         videoRef={videoRef}
-        mic={props.mic}
+        mics={props.mics}
       />
       <video className="karaVid" ref={videoRef} controls />
     </div>
