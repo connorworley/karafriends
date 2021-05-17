@@ -1,12 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { graphql, QueryRenderer } from "react-relay";
 import { Link, RouteComponentProps } from "react-router-dom";
-import { isRomaji, toRomaji } from "wanakana";
+import { bind, unbind, isRomaji, toKana, toRomaji } from "wanakana";
 
 import Loader from "../common/components/Loader";
 import environment from "../common/graphqlEnvironment";
 import DebouncedInput from "./components/DebouncedInput";
 import { SongSearchQuery } from "./__generated__/SongSearchQuery.graphql";
+
+enum ImeBinding {
+  Unknown,
+  Bound,
+  Unbound,
+}
 
 interface SongSearchParams {
   query: string | undefined;
@@ -18,18 +24,62 @@ function SongSearch(outerProps: Props) {
   const [songName, setSongName] = useState<string | null>(
     outerProps.match.params.query || null
   );
+  const inputRef = useRef<HTMLInputElement>(null);
+  console.log(history.state);
+  const [imeBound, setImeBound] = useState(
+    history.state.imeBound || ImeBinding.Unknown
+  );
+
+  function doSearch(query: string) {
+    setSongName(query === "" ? null : query);
+    history.replaceState(
+      {
+        imeBound: imeBound === ImeBinding.Bound ? imeBound : ImeBinding.Unknown,
+      },
+      "",
+      `#/search/song/${query}`
+    );
+  }
+
+  useEffect(() => {
+    if (!inputRef.current) return;
+    if (imeBound === ImeBinding.Bound) {
+      bind(inputRef.current);
+      inputRef.current.value = toKana(inputRef.current.value);
+    } else if (imeBound === ImeBinding.Unbound) {
+      unbind(inputRef.current);
+      inputRef.current.value = toRomaji(inputRef.current.value);
+    } else {
+      return;
+    }
+    doSearch(inputRef.current.value);
+  }, [imeBound]);
 
   return (
     <div>
       <h5>Searching by song title</h5>
-      <DebouncedInput
-        period={500}
-        onChange={(e) => {
-          setSongName(e.target.value === "" ? null : e.target.value);
-          history.replaceState({}, "", `#/search/song/${e.target.value}`);
-        }}
-        defaultValue={outerProps.match.params.query}
-      />
+      <div style={{ display: "flex" }}>
+        <DebouncedInput
+          inputRef={inputRef}
+          period={500}
+          onChange={(e) => doSearch(e.target.value)}
+          defaultValue={outerProps.match.params.query}
+        />
+        <a
+          className={`btn-floating btn-large waves-effect waves-light ${
+            imeBound === ImeBinding.Bound ? "green" : "grey"
+          }`}
+          onClick={() =>
+            setImeBound(
+              imeBound === ImeBinding.Bound
+                ? ImeBinding.Unbound
+                : ImeBinding.Bound
+            )
+          }
+        >
+          {imeBound === ImeBinding.Bound ? "あ" : "A"}
+        </a>
+      </div>
       <QueryRenderer<SongSearchQuery>
         environment={environment}
         query={graphql`

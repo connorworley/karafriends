@@ -52,9 +52,9 @@ const resolvers = {
         return Promise.resolve([]);
       }
       const searches = [searchMusicByKeyword(args.name)];
-      if (isRomaji(args.name)) {
-        searches.push(searchMusicByKeyword(toKana(stripWhitespace(args.name))));
-      }
+      // if (isRomaji(args.name)) {
+      //   searches.push(searchMusicByKeyword(toKana(stripWhitespace(args.name))));
+      // }
       return Promise.all(searches).then((results) => {
         const { list } = results
           .map((r) => r.list)

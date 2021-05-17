@@ -134,7 +134,7 @@ function searchMusicByKeyword(keyword: string) {
     "https://csgw.clubdam.com/dkwebsys/search-api/SearchMusicByKeywordApi",
     {
       keyword,
-      sort: "1",
+      sort: "2",
       pageNo: "1",
       dispCount: "30",
     }
@@ -155,7 +155,7 @@ function searchArtistByKeyword(keyword: string) {
     "https://csgw.clubdam.com/dkwebsys/search-api/SearchArtistByKeywordApi",
     {
       keyword,
-      sort: "1",
+      sort: "2",
       pageNo: "1",
       dispCount: "30",
     }
@@ -182,7 +182,7 @@ function getMusicListByArtist(artistCode: string) {
     "https://csgw.clubdam.com/dkwebsys/search-api/GetMusicListByArtistApi",
     {
       artistCode,
-      sort: "1",
+      sort: "2",
       pageNo: "1",
       dispCount: "30",
     }
