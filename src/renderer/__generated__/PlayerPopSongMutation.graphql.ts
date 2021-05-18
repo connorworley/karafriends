@@ -6,7 +6,9 @@ import { ConcreteRequest } from "relay-runtime";
 export type PlayerPopSongMutationVariables = {};
 export type PlayerPopSongMutationResponse = {
     readonly popSong: {
-        readonly songId: string;
+        readonly song: {
+            readonly id: string;
+        };
         readonly timestamp: string;
     } | null;
 };
@@ -20,7 +22,9 @@ export type PlayerPopSongMutation = {
 /*
 mutation PlayerPopSongMutation {
   popSong {
-    songId
+    song {
+      id
+    }
     timestamp
   }
 }
@@ -39,8 +43,19 @@ var v0 = [
       {
         "alias": null,
         "args": null,
-        "kind": "ScalarField",
-        "name": "songId",
+        "concreteType": "Song",
+        "kind": "LinkedField",
+        "name": "song",
+        "plural": false,
+        "selections": [
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "id",
+            "storageKey": null
+          }
+        ],
         "storageKey": null
       },
       {
@@ -72,14 +87,14 @@ return {
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "e568eed16b13fb547e1eba0cc1c3af9d",
+    "cacheID": "197d24689f7a766769638405764a848d",
     "id": null,
     "metadata": {},
     "name": "PlayerPopSongMutation",
     "operationKind": "mutation",
-    "text": "mutation PlayerPopSongMutation {\n  popSong {\n    songId\n    timestamp\n  }\n}\n"
+    "text": "mutation PlayerPopSongMutation {\n  popSong {\n    song {\n      id\n    }\n    timestamp\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = '704fb4eee3b39a03112120aa73602b7a';
+(node as any).hash = '235ef885c5af5ccdea3cf66cd89da836';
 export default node;

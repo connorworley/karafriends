@@ -2,14 +2,20 @@ import { useEffect, useState } from "react";
 import { fetchQuery, graphql, requestSubscription } from "react-relay";
 
 import environment from "../graphqlEnvironment";
-import QueueItem from "../types/QueueItem";
 import { useQueueQueueQuery } from "./__generated__/useQueueQueueQuery.graphql";
 import { useQueueQueueSubscription } from "./__generated__/useQueueQueueSubscription.graphql";
 
 const queueQuery = graphql`
   query useQueueQueueQuery {
     queue {
-      songId
+      song {
+        id
+        name
+        nameYomi
+        artistName
+        artistNameYomi
+        lyricsPreview
+      }
       timestamp
     }
   }
@@ -18,14 +24,23 @@ const queueQuery = graphql`
 const queueSubscription = graphql`
   subscription useQueueQueueSubscription {
     queueChanged {
-      songId
+      song {
+        id
+        name
+        nameYomi
+        artistName
+        artistNameYomi
+        lyricsPreview
+      }
       timestamp
     }
   }
 `;
 
+type StateType = useQueueQueueQuery["response"]["queue"];
+
 export default function useQueue() {
-  const [queueState, setQueueState] = useState<readonly QueueItem[]>([]);
+  const [queueState, setQueueState] = useState<StateType>([]);
 
   useEffect(() => {
     const initialQuery = fetchQuery<useQueueQueueQuery>(
@@ -35,7 +50,8 @@ export default function useQueue() {
     )
       // @ts-ignore: @types/react-relay has wrong return type for fetchQuery
       .subscribe({
-        next: ({ queue }: useQueueQueueQuery["response"]) => setQueueState(queue),
+        next: ({ queue }: useQueueQueueQuery["response"]) =>
+          setQueueState(queue),
       });
 
     const subscription = requestSubscription<useQueueQueueSubscription>(
