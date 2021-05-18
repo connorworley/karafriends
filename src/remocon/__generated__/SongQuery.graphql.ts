@@ -9,7 +9,9 @@ export type SongQueryVariables = {
 export type SongQueryResponse = {
     readonly songsByIds: ReadonlyArray<{
         readonly name: string;
+        readonly nameYomi: string;
         readonly artistName: string;
+        readonly artistNameYomi: string;
         readonly lyricsPreview: string | null;
     }>;
 };
@@ -26,7 +28,9 @@ query SongQuery(
 ) {
   songsByIds(ids: [$id]) {
     name
+    nameYomi
     artistName
+    artistNameYomi
     lyricsPreview
     id
   }
@@ -65,10 +69,24 @@ v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "artistName",
+  "name": "nameYomi",
   "storageKey": null
 },
 v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "artistName",
+  "storageKey": null
+},
+v5 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "artistNameYomi",
+  "storageKey": null
+},
+v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -92,7 +110,9 @@ return {
         "selections": [
           (v2/*: any*/),
           (v3/*: any*/),
-          (v4/*: any*/)
+          (v4/*: any*/),
+          (v5/*: any*/),
+          (v6/*: any*/)
         ],
         "storageKey": null
       }
@@ -117,6 +137,8 @@ return {
           (v2/*: any*/),
           (v3/*: any*/),
           (v4/*: any*/),
+          (v5/*: any*/),
+          (v6/*: any*/),
           {
             "alias": null,
             "args": null,
@@ -130,14 +152,14 @@ return {
     ]
   },
   "params": {
-    "cacheID": "eadd96a908c4854187ad344b41488aea",
+    "cacheID": "5556c37287eeb176d4a0562cf6b75490",
     "id": null,
     "metadata": {},
     "name": "SongQuery",
     "operationKind": "query",
-    "text": "query SongQuery(\n  $id: String!\n) {\n  songsByIds(ids: [$id]) {\n    name\n    artistName\n    lyricsPreview\n    id\n  }\n}\n"
+    "text": "query SongQuery(\n  $id: String!\n) {\n  songsByIds(ids: [$id]) {\n    name\n    nameYomi\n    artistName\n    artistNameYomi\n    lyricsPreview\n    id\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = '7e38c217f0af5103d1fee0c6b9443102';
+(node as any).hash = '51d6f8b86e1e2a56c442fdf5094536e7';
 export default node;

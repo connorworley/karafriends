@@ -6,7 +6,14 @@ import { ConcreteRequest } from "relay-runtime";
 export type useQueueQueueSubscriptionVariables = {};
 export type useQueueQueueSubscriptionResponse = {
     readonly queueChanged: ReadonlyArray<{
-        readonly songId: string;
+        readonly song: {
+            readonly id: string;
+            readonly name: string;
+            readonly nameYomi: string;
+            readonly artistName: string;
+            readonly artistNameYomi: string;
+            readonly lyricsPreview: string | null;
+        };
         readonly timestamp: string;
     }>;
 };
@@ -20,7 +27,14 @@ export type useQueueQueueSubscription = {
 /*
 subscription useQueueQueueSubscription {
   queueChanged {
-    songId
+    song {
+      id
+      name
+      nameYomi
+      artistName
+      artistNameYomi
+      lyricsPreview
+    }
     timestamp
   }
 }
@@ -39,8 +53,54 @@ var v0 = [
       {
         "alias": null,
         "args": null,
-        "kind": "ScalarField",
-        "name": "songId",
+        "concreteType": "Song",
+        "kind": "LinkedField",
+        "name": "song",
+        "plural": false,
+        "selections": [
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "id",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "name",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "nameYomi",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "artistName",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "artistNameYomi",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "lyricsPreview",
+            "storageKey": null
+          }
+        ],
         "storageKey": null
       },
       {
@@ -72,14 +132,14 @@ return {
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "9d46e09e4e754b0945d19ef45998b389",
+    "cacheID": "99fb5cf9699efdb133171ccd5f60b430",
     "id": null,
     "metadata": {},
     "name": "useQueueQueueSubscription",
     "operationKind": "subscription",
-    "text": "subscription useQueueQueueSubscription {\n  queueChanged {\n    songId\n    timestamp\n  }\n}\n"
+    "text": "subscription useQueueQueueSubscription {\n  queueChanged {\n    song {\n      id\n      name\n      nameYomi\n      artistName\n      artistNameYomi\n      lyricsPreview\n    }\n    timestamp\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = '388741935411b52a682f455242530c1b';
+(node as any).hash = '9e9ef5c0ac5f208c523a59093fde6099';
 export default node;

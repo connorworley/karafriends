@@ -11,7 +11,6 @@ import { isRomaji, toKana } from "wanakana";
 
 import { HOSTNAME } from "../common/constants";
 import rawSchema from "../common/schema.graphql";
-import QueueItem from "../common/types/QueueItem";
 import {
   getMusicListByArtist,
   getMusicStreamingUrls,
@@ -25,6 +24,22 @@ import {
 interface Context {
   creds: MinseiCredentials;
 }
+
+type SongInput = {
+  readonly id: string;
+  readonly name: string;
+  readonly nameYomi: string;
+  readonly artistName: string;
+  readonly artistNameYomi: string;
+  readonly lyricsPreview: string | null;
+};
+
+type Song = SongInput;
+
+type QueueItem = {
+  readonly song: Song;
+  readonly timestamp: string;
+};
 
 type NotARealDb = {
   songQueue: QueueItem[];
@@ -230,9 +245,9 @@ const resolvers = {
     },
   },
   Mutation: {
-    queueSong: (_: any, args: { songId: string }): boolean => {
+    queueSong: (_: any, args: { song: SongInput }): boolean => {
       db.songQueue.push({
-        songId: args.songId,
+        song: args.song,
         timestamp: Date.now().toString(),
       });
       pubsub.publish(SubscriptionEvent.QueueChanged, {
@@ -246,10 +261,13 @@ const resolvers = {
       });
       return db.songQueue.shift() || null;
     },
-    removeSong: (_: any, args: QueueItem): boolean => {
-      const { songId, timestamp } = args;
+    removeSong: (
+      _: any,
+      args: { songId: string; timestamp: string }
+    ): boolean => {
       db.songQueue = db.songQueue.filter(
-        (item) => !(item.songId === songId && item.timestamp === timestamp)
+        (item) =>
+          !(item.song.id === args.songId && item.timestamp === args.timestamp)
       );
       pubsub.publish(SubscriptionEvent.QueueChanged, {
         queueChanged: db.songQueue,

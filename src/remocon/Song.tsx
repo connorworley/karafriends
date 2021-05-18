@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { graphql, useLazyLoadQuery, useMutation } from "react-relay";
 import { RouteComponentProps } from "react-router-dom";
 
@@ -10,15 +10,17 @@ const songQuery = graphql`
   query SongQuery($id: String!) {
     songsByIds(ids: [$id]) {
       name
+      nameYomi
       artistName
+      artistNameYomi
       lyricsPreview
     }
   }
 `;
 
 const songMutation = graphql`
-  mutation SongMutation($songId: String!) {
-    queueSong(songId: $songId)
+  mutation SongMutation($song: SongInput!) {
+    queueSong(song: $song)
   }
 `;
 
@@ -34,21 +36,28 @@ function Song(props: Props) {
   const data = useLazyLoadQuery<SongQuery>(songQuery, { id });
   const [commit, isInFlight] = useMutation<SongMutation>(songMutation);
 
-  const { name, artistName, lyricsPreview } = data.songsByIds[0];
+  const song = data.songsByIds[0];
 
   const onClickQueueSong = () => {
     commit({
-      variables: { songId: id.replace("-", "") },
+      variables: { song: { id, ...song } },
       onCompleted: ({ queueSong }) => setQueued(queueSong),
     });
   };
 
+  useEffect(() => {
+    const timeout = setTimeout(() => setQueued(false), 1000);
+    return () => clearTimeout(timeout);
+  });
+
   return (
     <div className="card">
       <div className="card-content">
-        <h6>{artistName}</h6>
-        <h5>{name}</h5>
-        {!!lyricsPreview && <blockquote>{lyricsPreview} ...</blockquote>}
+        <h6>{song.artistName}</h6>
+        <h5>{song.name}</h5>
+        {!!song.lyricsPreview && (
+          <blockquote>{song.lyricsPreview} ...</blockquote>
+        )}
       </div>
       <div className="card-action">
         <button

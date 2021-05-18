@@ -3,8 +3,16 @@
 // @ts-nocheck
 
 import { ConcreteRequest } from "relay-runtime";
+export type SongInput = {
+    id: string;
+    name: string;
+    nameYomi: string;
+    artistName: string;
+    artistNameYomi: string;
+    lyricsPreview?: string | null;
+};
 export type SongMutationVariables = {
-    songId: string;
+    song: SongInput;
 };
 export type SongMutationResponse = {
     readonly queueSong: boolean;
@@ -18,9 +26,9 @@ export type SongMutation = {
 
 /*
 mutation SongMutation(
-  $songId: String!
+  $song: SongInput!
 ) {
-  queueSong(songId: $songId)
+  queueSong(song: $song)
 }
 */
 
@@ -29,7 +37,7 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "songId"
+    "name": "song"
   }
 ],
 v1 = [
@@ -38,8 +46,8 @@ v1 = [
     "args": [
       {
         "kind": "Variable",
-        "name": "songId",
-        "variableName": "songId"
+        "name": "song",
+        "variableName": "song"
       }
     ],
     "kind": "ScalarField",
@@ -65,14 +73,14 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "c3186b792719793a539b156a2050cd15",
+    "cacheID": "d1d11a2f94c3d8044173057bec2641e3",
     "id": null,
     "metadata": {},
     "name": "SongMutation",
     "operationKind": "mutation",
-    "text": "mutation SongMutation(\n  $songId: String!\n) {\n  queueSong(songId: $songId)\n}\n"
+    "text": "mutation SongMutation(\n  $song: SongInput!\n) {\n  queueSong(song: $song)\n}\n"
   }
 };
 })();
-(node as any).hash = 'ea978df77faa814efa378b6a9abc57b1';
+(node as any).hash = 'fae36ceb178c21999c0b159affc55fed';
 export default node;

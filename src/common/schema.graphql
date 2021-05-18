@@ -9,7 +9,7 @@ type Query {
 }
 
 type Mutation {
-  queueSong(songId: String!): Boolean!
+  queueSong(song: SongInput!): Boolean!
   popSong: QueueItem
   removeSong(songId: String!, timestamp: String!): Boolean!
 }
@@ -35,7 +35,16 @@ type Song {
   lyricsPreview: String
 }
 
+input SongInput {
+  id: String!
+  name: String!
+  nameYomi: String!
+  artistName: String!
+  artistNameYomi: String!
+  lyricsPreview: String
+}
+
 type QueueItem {
-  songId: String!
+  song: Song!
   timestamp: String!
 }
