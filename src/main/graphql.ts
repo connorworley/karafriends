@@ -1,11 +1,17 @@
+import { Server } from "http";
+
 import { ApolloServer, makeExecutableSchema } from "apollo-server-express";
 import isDev from "electron-is-dev";
 import { Application } from "express";
+import { execute, subscribe } from "graphql";
+import { PubSub } from "graphql-subscriptions";
 import promiseRetry from "promise-retry";
+import { SubscriptionServer } from "subscriptions-transport-ws";
 import { isRomaji, toKana } from "wanakana";
 
 import { HOSTNAME } from "../common/constants";
 import rawSchema from "../common/schema.graphql";
+import QueueItem from "../common/types/QueueItem";
 import {
   getMusicListByArtist,
   getMusicStreamingUrls,
@@ -21,12 +27,18 @@ interface Context {
 }
 
 type NotARealDb = {
-  songQueue: { songId: string; timestamp: string }[];
+  songQueue: QueueItem[];
 };
+
+enum SubscriptionEvent {
+  QueueChanged = "QueueChanged",
+}
 
 const db: NotARealDb = {
   songQueue: [],
 };
+
+const pubsub = new PubSub();
 
 function stripWhitespace(str: string) {
   return str.replace(/\s+/g, "");
@@ -223,36 +235,49 @@ const resolvers = {
         songId: args.songId,
         timestamp: Date.now().toString(),
       });
+      pubsub.publish(SubscriptionEvent.QueueChanged, {
+        queueChanged: db.songQueue,
+      });
       return true;
     },
-    popSong: (
-      _: any,
-      args: {}
-    ): { songId: string; timestamp: string } | null => {
+    popSong: (_: any, args: {}): QueueItem | null => {
+      pubsub.publish(SubscriptionEvent.QueueChanged, {
+        queueChanged: db.songQueue,
+      });
       return db.songQueue.shift() || null;
     },
-    removeSong: (
-      _: any,
-      args: { songId: string; timestamp: string }
-    ): boolean => {
+    removeSong: (_: any, args: QueueItem): boolean => {
       const { songId, timestamp } = args;
       db.songQueue = db.songQueue.filter(
         (item) => !(item.songId === songId && item.timestamp === timestamp)
       );
+      pubsub.publish(SubscriptionEvent.QueueChanged, {
+        queueChanged: db.songQueue,
+      });
       return true;
+    },
+  },
+  Subscription: {
+    queueChanged: {
+      subscribe: () => pubsub.asyncIterator([SubscriptionEvent.QueueChanged]),
     },
   },
 };
 
-function setupGraphQL(app: Application, creds: MinseiCredentials) {
+const schema = makeExecutableSchema({
+  typeDefs: rawSchema,
+  resolvers,
+});
+
+export function applyGraphQLMiddleware(
+  app: Application,
+  creds: MinseiCredentials
+) {
   const server = new ApolloServer({
-    schema: makeExecutableSchema({
-      typeDefs: rawSchema,
-      resolvers,
-    }),
     context: {
       creds,
     },
+    schema,
   });
   if (isDev) {
     app.use("/graphql", (req, res, next) => {
@@ -268,4 +293,18 @@ function setupGraphQL(app: Application, creds: MinseiCredentials) {
   server.applyMiddleware({ app });
 }
 
-export default setupGraphQL;
+export function subscriptionServer(server: Server) {
+  return () => {
+    return new SubscriptionServer(
+      {
+        execute,
+        subscribe,
+        schema,
+      },
+      {
+        server,
+        path: "/subscriptions",
+      }
+    );
+  };
+}

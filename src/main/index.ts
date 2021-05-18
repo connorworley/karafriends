@@ -1,3 +1,4 @@
+import { createServer } from "http";
 import path from "path";
 
 import { app, BrowserWindow, dialog, ipcMain, IpcMainEvent } from "electron"; // tslint:disable-line:no-implicit-dependencies
@@ -11,9 +12,9 @@ import {
   setCredentials,
 } from "../common/auth";
 import { login, MinseiCredentials } from "./damApi";
-import setupGraphQL from "./graphql";
-import remoconMiddleware from "./remoconMiddleware";
+import { applyGraphQLMiddleware, subscriptionServer } from "./graphql";
 import setupMdns from "./mdns";
+import remoconMiddleware from "./remoconMiddleware";
 
 setupMdns();
 
@@ -29,8 +30,9 @@ function attemptLogin(creds: Credentials) {
     .then((minseiCreds: MinseiCredentials) => {
       const expressApp = express();
       expressApp.use(remoconMiddleware());
-      setupGraphQL(expressApp, minseiCreds);
-      expressApp.listen(8080);
+      applyGraphQLMiddleware(expressApp, minseiCreds);
+      const server = createServer(expressApp);
+      server.listen(8080, subscriptionServer(server));
     });
 }
 
