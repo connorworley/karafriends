@@ -47,6 +47,7 @@ type NotARealDb = {
 
 enum SubscriptionEvent {
   QueueChanged = "QueueChanged",
+  QueueAdded = "QueueAdded",
 }
 
 const db: NotARealDb = {
@@ -246,12 +247,16 @@ const resolvers = {
   },
   Mutation: {
     queueSong: (_: any, args: { song: SongInput }): boolean => {
-      db.songQueue.push({
+      const queueItem = {
         song: args.song,
         timestamp: Date.now().toString(),
-      });
+      };
+      db.songQueue.push(queueItem);
       pubsub.publish(SubscriptionEvent.QueueChanged, {
         queueChanged: db.songQueue,
+      });
+      pubsub.publish(SubscriptionEvent.QueueAdded, {
+        queueAdded: queueItem,
       });
       return true;
     },
@@ -278,6 +283,9 @@ const resolvers = {
   Subscription: {
     queueChanged: {
       subscribe: () => pubsub.asyncIterator([SubscriptionEvent.QueueChanged]),
+    },
+    queueAdded: {
+      subscribe: () => pubsub.asyncIterator([SubscriptionEvent.QueueAdded]),
     },
   },
 };
