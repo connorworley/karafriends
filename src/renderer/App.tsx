@@ -1,5 +1,7 @@
+import M from "materialize-css";
 import "materialize-css/dist/css/materialize.css"; // tslint:disable-line:no-submodule-imports
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { graphql, useSubscription } from "react-relay";
 
 import Loader from "../common/components/Loader";
 import "./App.css";
@@ -8,12 +10,24 @@ import Login from "./Login";
 import MicrophoneSetting from "./MicrophoneSetting";
 import Player from "./Player";
 import QRCode from "./QRCode";
+import { AppQueueAddedSubscription } from "./__generated__/AppQueueAddedSubscription.graphql";
 
 enum AppState {
   Loading,
   NotLoggedIn,
   LoggedIn,
 }
+
+const songAddedSubscription = graphql`
+  subscription AppQueueAddedSubscription {
+    queueAdded {
+      song {
+        name
+        artistName
+      }
+    }
+  }
+`;
 
 function App() {
   const [appState, setAppState] = useState(AppState.Loading);
@@ -25,7 +39,23 @@ function App() {
       .then((loggedIn) =>
         setAppState(loggedIn ? AppState.LoggedIn : AppState.NotLoggedIn)
       );
-  }, [mics]);
+  }, []);
+
+  useSubscription<AppQueueAddedSubscription>(
+    useMemo(
+      () => ({
+        variables: {},
+        subscription: songAddedSubscription,
+        onNext: (response) => {
+          if (response)
+            M.toast({
+              html: `${response.queueAdded.song.name}<br/>${response.queueAdded.song.artistName}`,
+            });
+        },
+      }),
+      [songAddedSubscription]
+    )
+  );
 
   switch (appState) {
     case AppState.Loading:

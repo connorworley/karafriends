@@ -59,9 +59,7 @@ export default function useQueue() {
       {
         subscription: queueSubscription,
         variables: {},
-        onNext: (
-          response: useQueueQueueSubscription["response"] | null | undefined
-        ) => {
+        onNext: (response) => {
           if (response) setQueueState(response.queueChanged);
         },
       }

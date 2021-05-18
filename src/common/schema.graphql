@@ -16,6 +16,7 @@ type Mutation {
 
 type Subscription {
   queueChanged: [QueueItem!]!
+  queueAdded: QueueItem!
 }
 
 type Artist {
