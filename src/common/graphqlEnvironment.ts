@@ -1,6 +1,16 @@
-import { Environment, Network, RecordSource, Store } from "relay-runtime";
+import {
+  Environment,
+  GraphQLResponse,
+  Network,
+  Observable,
+  RecordSource,
+  RequestParameters,
+  Store,
+  Variables,
+} from "relay-runtime";
+import { SubscriptionClient } from "subscriptions-transport-ws";
 
-function fetchQuery(operation: any, variables: any) {
+function fetchQuery(request: RequestParameters, variables: Variables) {
   return fetch(
     window.location.port === "8080"
       ? "/graphql"
@@ -11,7 +21,7 @@ function fetchQuery(operation: any, variables: any) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        query: operation.text,
+        query: request.text,
         variables,
       }),
     }
@@ -20,8 +30,29 @@ function fetchQuery(operation: any, variables: any) {
   });
 }
 
+const subscriptionClient = new SubscriptionClient(
+  window.location.port === "8080"
+    ? `ws://${window.location.host}/subscriptions`
+    : "ws://localhost:8080/subscriptions",
+  {
+    reconnect: true,
+  }
+);
+
+function subscribe(request: RequestParameters, variables: Variables) {
+  const subscribeObservable = subscriptionClient.request({
+    query: request.text || undefined,
+    operationName: request.name,
+    variables,
+  });
+  // Important: Convert subscriptions-transport-ws observable type to Relay's
+  // @ts-ignore: the relay type stubs are pitifully broken
+  return Observable.from(subscribeObservable);
+}
+
 const environment = new Environment({
-  network: Network.create(fetchQuery),
+  // @ts-ignore: the relay type stubs are pitifully broken
+  network: Network.create(fetchQuery, subscribe),
   store: new Store(new RecordSource()),
 });
 

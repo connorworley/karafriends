@@ -3,22 +3,22 @@
 // @ts-nocheck
 
 import { ConcreteRequest } from "relay-runtime";
-export type ControlsQueueQueryVariables = {};
-export type ControlsQueueQueryResponse = {
+export type useQueueQueueQueryVariables = {};
+export type useQueueQueueQueryResponse = {
     readonly queue: ReadonlyArray<{
         readonly songId: string;
         readonly timestamp: string;
     }>;
 };
-export type ControlsQueueQuery = {
-    readonly response: ControlsQueueQueryResponse;
-    readonly variables: ControlsQueueQueryVariables;
+export type useQueueQueueQuery = {
+    readonly response: useQueueQueueQueryResponse;
+    readonly variables: useQueueQueueQueryVariables;
 };
 
 
 
 /*
-query ControlsQueueQuery {
+query useQueueQueueQuery {
   queue {
     songId
     timestamp
@@ -59,7 +59,7 @@ return {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "ControlsQueueQuery",
+    "name": "useQueueQueueQuery",
     "selections": (v0/*: any*/),
     "type": "Query",
     "abstractKey": null
@@ -68,18 +68,18 @@ return {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "ControlsQueueQuery",
+    "name": "useQueueQueueQuery",
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "133069580ec378e77ccfb867d043608e",
+    "cacheID": "f7c83bd87998bfbbf79ee4e6ae0c23f3",
     "id": null,
     "metadata": {},
-    "name": "ControlsQueueQuery",
+    "name": "useQueueQueueQuery",
     "operationKind": "query",
-    "text": "query ControlsQueueQuery {\n  queue {\n    songId\n    timestamp\n  }\n}\n"
+    "text": "query useQueueQueueQuery {\n  queue {\n    songId\n    timestamp\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = '84a9efa2f00a4edb5e17063c3121f21b';
+(node as any).hash = '9505a4ce90449183bc910e9b64daa3bc';
 export default node;

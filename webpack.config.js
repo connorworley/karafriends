@@ -4,9 +4,6 @@ const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { merge } = require("webpack-merge");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const RelayCompilerWebpackPlugin = require("relay-compiler-webpack-plugin");
-const RelayCompilerLanguageTypescript = require("relay-compiler-language-typescript")
-  .default;
 
 const COMMON_CONFIG = {
   mode: "development",
@@ -59,11 +56,6 @@ module.exports = [
         template: "./src/renderer/index.html",
       }),
       new MiniCssExtractPlugin(),
-      new RelayCompilerWebpackPlugin({
-        src: "./src/renderer",
-        schema: "./src/common/schema.graphql",
-        languagePlugin: RelayCompilerLanguageTypescript,
-      }),
     ],
     devServer: {
       port: 3000,
@@ -91,11 +83,6 @@ module.exports = [
         template: "./src/remocon/index.html",
       }),
       new MiniCssExtractPlugin(),
-      new RelayCompilerWebpackPlugin({
-        src: "./src/remocon",
-        schema: "./src/common/schema.graphql",
-        languagePlugin: RelayCompilerLanguageTypescript,
-      }),
       new CopyPlugin({
         patterns: [
           {
