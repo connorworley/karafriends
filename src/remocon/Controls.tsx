@@ -3,18 +3,9 @@ import { graphql, useLazyLoadQuery, useMutation } from "react-relay";
 import { Link } from "react-router-dom";
 
 import { withLoader } from "../common/components/Loader";
-import { ControlsQueueQuery } from "./__generated__/ControlsQueueQuery.graphql";
+import useQueue from "../common/hooks/useQueue";
 import { ControlsRemoveSongMutation } from "./__generated__/ControlsRemoveSongMutation.graphql";
 import { ControlsSongsQuery } from "./__generated__/ControlsSongsQuery.graphql";
-
-const controlsQueueQuery = graphql`
-  query ControlsQueueQuery {
-    queue {
-      songId
-      timestamp
-    }
-  }
-`;
 
 const controlsSongsQuery = graphql`
   query ControlsSongsQuery($ids: [String!]!) {
@@ -33,12 +24,9 @@ const removeSongMutation = graphql`
 `;
 
 const Controls = () => {
-  const queueData = useLazyLoadQuery<ControlsQueueQuery>(
-    controlsQueueQuery,
-    {}
-  );
+  const queue = useQueue();
   const songsData = useLazyLoadQuery<ControlsSongsQuery>(controlsSongsQuery, {
-    ids: queueData.queue.map((item) => item.songId),
+    ids: queue.map((item) => item.songId),
   });
   const initialSongsMap: Record<
     string,
@@ -56,7 +44,7 @@ const Controls = () => {
   };
   return (
     <div className="collection">
-      {queueData.queue.map((item, i) => {
+      {queue.map((item, i) => {
         const song = songsMap[item.songId];
         return (
           <div
