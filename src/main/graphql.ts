@@ -35,7 +35,8 @@ interface SongParent {
   readonly nameYomi: string;
   readonly artistName: string;
   readonly artistNameYomi: string;
-  readonly lyricsPreview: string | null;
+  readonly lyricsPreview?: string | null;
+  readonly tieUp?: string | null;
 }
 
 interface ArtistParent {
@@ -108,7 +109,10 @@ const resolvers = {
       return parent.artistNameYomi;
     },
     lyricsPreview(parent: SongParent) {
-      return parent.lyricsPreview;
+      return parent.lyricsPreview || null;
+    },
+    tieUp(parent: SongParent) {
+      return parent.tieUp || null;
     },
     streamingUrls(parent: SongParent, _: any, { dataSources }: IDataSources) {
       return dataSources.minsei
@@ -152,7 +156,6 @@ const resolvers = {
               nameYomi: song.titleYomi,
               artistName: song.artist,
               artistNameYomi: song.artistYomi,
-              lyricsPreivew: null,
             },
             cursor: (firstInt + 1).toString(),
           })),
@@ -184,7 +187,6 @@ const resolvers = {
               nameYomi: song.titleYomi,
               artistName: song.artist,
               artistNameYomi: song.artistYomi,
-              lyricsPreview: null,
             },
             cursor: (firstInt + i).toString(),
           })),
@@ -208,6 +210,7 @@ const resolvers = {
         artistName: data.data.artist,
         artistNameYomi: "",
         lyricsPreview: data.data.firstLine,
+        tieUp: data.list[0].mModelMusicInfoList[0].highlightTieUp,
       })),
     artistsByName: (
       _: any,
