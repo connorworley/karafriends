@@ -11,7 +11,7 @@ import {
   getCredentials,
   setCredentials,
 } from "../common/auth";
-import { login, MinseiCredentials } from "./damApi";
+import { MinseiAPI, MinseiCredentials } from "./damApi";
 import { applyGraphQLMiddleware, subscriptionServer } from "./graphql";
 import setupMdns from "./mdns";
 import remoconMiddleware from "./remoconMiddleware";
@@ -19,13 +19,15 @@ import remoconMiddleware from "./remoconMiddleware";
 setupMdns();
 
 function attemptLogin(creds: Credentials) {
-  return login(creds.account, creds.password)
+  return MinseiAPI.login(creds.account, creds.password)
     .then((json) => ({
       userCode: creds.account,
       authToken: json.data.authToken,
     }))
-    .catch(() =>
-      deleteCredentials().then(() => Promise.reject("credentials were invalid"))
+    .catch((e) =>
+      deleteCredentials().then(() =>
+        Promise.reject(`credentials were invalid (${e})\n\n${e.stack}`)
+      )
     )
     .then((minseiCreds: MinseiCredentials) => {
       const expressApp = express();

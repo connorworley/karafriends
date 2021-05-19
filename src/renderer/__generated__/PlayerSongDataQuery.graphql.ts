@@ -3,35 +3,29 @@
 // @ts-nocheck
 
 import { ConcreteRequest } from "relay-runtime";
-export type SongQueryVariables = {
+export type PlayerSongDataQueryVariables = {
     id: string;
 };
-export type SongQueryResponse = {
+export type PlayerSongDataQueryResponse = {
     readonly songById: {
-        readonly name: string;
-        readonly nameYomi: string;
-        readonly artistName: string;
-        readonly artistNameYomi: string;
-        readonly lyricsPreview: string | null;
+        readonly streamingUrls: ReadonlyArray<string>;
+        readonly scoringData: ReadonlyArray<number>;
     };
 };
-export type SongQuery = {
-    readonly response: SongQueryResponse;
-    readonly variables: SongQueryVariables;
+export type PlayerSongDataQuery = {
+    readonly response: PlayerSongDataQueryResponse;
+    readonly variables: PlayerSongDataQueryVariables;
 };
 
 
 
 /*
-query SongQuery(
+query PlayerSongDataQuery(
   $id: String!
 ) {
   songById(id: $id) {
-    name
-    nameYomi
-    artistName
-    artistNameYomi
-    lyricsPreview
+    streamingUrls
+    scoringData
     id
   }
 }
@@ -56,35 +50,14 @@ v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "name",
+  "name": "streamingUrls",
   "storageKey": null
 },
 v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "nameYomi",
-  "storageKey": null
-},
-v4 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "artistName",
-  "storageKey": null
-},
-v5 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "artistNameYomi",
-  "storageKey": null
-},
-v6 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "lyricsPreview",
+  "name": "scoringData",
   "storageKey": null
 };
 return {
@@ -92,7 +65,7 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "SongQuery",
+    "name": "PlayerSongDataQuery",
     "selections": [
       {
         "alias": null,
@@ -103,10 +76,7 @@ return {
         "plural": false,
         "selections": [
           (v2/*: any*/),
-          (v3/*: any*/),
-          (v4/*: any*/),
-          (v5/*: any*/),
-          (v6/*: any*/)
+          (v3/*: any*/)
         ],
         "storageKey": null
       }
@@ -118,7 +88,7 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "SongQuery",
+    "name": "PlayerSongDataQuery",
     "selections": [
       {
         "alias": null,
@@ -130,9 +100,6 @@ return {
         "selections": [
           (v2/*: any*/),
           (v3/*: any*/),
-          (v4/*: any*/),
-          (v5/*: any*/),
-          (v6/*: any*/),
           {
             "alias": null,
             "args": null,
@@ -146,14 +113,14 @@ return {
     ]
   },
   "params": {
-    "cacheID": "08d01793ede361228d0fe6b66e17fe31",
+    "cacheID": "8279b8c7714a92a717416acc00270c08",
     "id": null,
     "metadata": {},
-    "name": "SongQuery",
+    "name": "PlayerSongDataQuery",
     "operationKind": "query",
-    "text": "query SongQuery(\n  $id: String!\n) {\n  songById(id: $id) {\n    name\n    nameYomi\n    artistName\n    artistNameYomi\n    lyricsPreview\n    id\n  }\n}\n"
+    "text": "query PlayerSongDataQuery(\n  $id: String!\n) {\n  songById(id: $id) {\n    streamingUrls\n    scoringData\n    id\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = '9d6cab335ee60ef84c9a875d9d07435a';
+(node as any).hash = '4780a214f5d702d207b9fd99927aa169';
 export default node;

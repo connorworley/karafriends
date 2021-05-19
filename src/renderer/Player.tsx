@@ -2,23 +2,19 @@ import Hls from "hls.js";
 import React, { useEffect, useRef, useState } from "react";
 import { commitMutation, fetchQuery, graphql } from "react-relay";
 import { PlayerPopSongMutation } from "./__generated__/PlayerPopSongMutation.graphql";
-import { PlayerScoringDataQuery } from "./__generated__/PlayerScoringDataQuery.graphql";
-import { PlayerStreamingUrlQuery } from "./__generated__/PlayerStreamingUrlQuery.graphql";
+import { PlayerSongDataQuery } from "./__generated__/PlayerSongDataQuery.graphql";
 
 import environment from "../common/graphqlEnvironment";
 import { InputDevice } from "./audioSystem";
 import PianoRoll from "./PianoRoll";
 import "./Player.css";
 
-const streamingUrlQuery = graphql`
-  query PlayerStreamingUrlQuery($id: String!) {
-    streamingUrl(id: $id)
-  }
-`;
-
-const scoringDataQuery = graphql`
-  query PlayerScoringDataQuery($id: String!) {
-    scoringData(id: $id)
+const songDataQuery = graphql`
+  query PlayerSongDataQuery($id: String!) {
+    songById(id: $id) {
+      streamingUrls
+      scoringData
+    }
   }
 `;
 
@@ -37,7 +33,7 @@ const POLL_INTERVAL_MS = 5 * 1000;
 
 function Player(props: { mics: InputDevice[] }) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [scoringData, setScoringData] = useState<number[]>([]);
+  const [scoringData, setScoringData] = useState<readonly number[]>([]);
   const pollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   let hls: Hls | null = null;
 
@@ -50,29 +46,20 @@ function Player(props: { mics: InputDevice[] }) {
         variables: {},
         onCompleted: ({ popSong }) => {
           if (popSong !== null) {
-            fetchQuery<PlayerStreamingUrlQuery>(
-              environment,
-              streamingUrlQuery,
-              { id: popSong.song.id }
-            )
-              // @ts-ignore: @types/react-relay has an incorrect return type for fetchQuery
-              .toPromise()
-              .then(({ streamingUrl }: { streamingUrl: string }) => {
-                if (videoRef.current) {
-                  if (hls) hls.destroy();
-                  hls = new Hls();
-                  hls.attachMedia(videoRef.current);
-                  hls.loadSource(streamingUrl);
-                  videoRef.current.play();
-                }
-              });
-            fetchQuery<PlayerScoringDataQuery>(environment, scoringDataQuery, {
+            fetchQuery<PlayerSongDataQuery>(environment, songDataQuery, {
               id: popSong.song.id,
             })
               // @ts-ignore: @types/react-relay has an incorrect return type for fetchQuery
               .toPromise()
-              .then((data: { scoringData: number[] }) => {
-                setScoringData(data.scoringData);
+              .then(({ songById }: PlayerSongDataQuery["response"]) => {
+                if (videoRef.current) {
+                  if (hls) hls.destroy();
+                  hls = new Hls();
+                  hls.attachMedia(videoRef.current);
+                  hls.loadSource(songById.streamingUrls[0]);
+                  videoRef.current.play();
+                }
+                setScoringData(songById.scoringData);
               });
           } else {
             pollTimeoutRef.current = setTimeout(pollQueue, POLL_INTERVAL_MS);

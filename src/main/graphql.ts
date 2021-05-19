@@ -12,17 +12,16 @@ import { isRomaji, toKana } from "wanakana";
 import { HOSTNAME } from "../common/constants";
 import rawSchema from "../common/schema.graphql";
 import {
-  getMusicListByArtist,
-  getMusicStreamingUrls,
-  getScoringData,
-  getSongsByReqNos,
+  DkwebsysAPI,
+  MinseiAPI,
   MinseiCredentials,
-  searchArtistByKeyword,
-  searchMusicByKeyword,
 } from "./damApi";
 
-interface Context {
-  creds: MinseiCredentials;
+interface IDataSources {
+  dataSources: {
+    minsei: MinseiAPI,
+    dkwebsys: DkwebsysAPI,
+  },
 }
 
 type SongInput = {
@@ -34,10 +33,28 @@ type SongInput = {
   readonly lyricsPreview: string | null;
 };
 
-type Song = SongInput;
+interface SongParent {
+  readonly id: string;
+  readonly name: string;
+  readonly nameYomi: string;
+  readonly artistName: string;
+  readonly artistNameYomi: string;
+  readonly lyricsPreview: string | null;
+};
+
+interface ArtistParent {
+  readonly id: string;
+  readonly name: string;
+  readonly nameYomi: string;
+  readonly songCount: number;
+};
+
+interface Artist extends ArtistParent {
+  readonly songs: SongParent[];
+};
 
 type QueueItem = {
-  readonly song: Song;
+  readonly song: SongInput;
   readonly timestamp: string;
 };
 
@@ -61,188 +78,107 @@ function stripWhitespace(str: string) {
 }
 
 const resolvers = {
+  Song: {
+    id(parent: SongParent) {
+      return parent.id;
+    },
+    name(parent: SongParent) {
+      return parent.name;
+    },
+    nameYomi(parent: SongParent) {
+      return parent.nameYomi;
+    },
+    artistName(parent: SongParent) {
+      return parent.artistName;
+    },
+    artistNameYomi(parent: SongParent) {
+      return parent.artistNameYomi;
+    },
+    lyricsPreview(parent: SongParent) {
+      return parent.lyricsPreview;
+    },
+    streamingUrls(parent: SongParent, _: any, { dataSources }: IDataSources) {
+      return dataSources.minsei.getMusicStreamingUrls(parent.id)
+        .then(data => data.list.map(url => url.highBitrateUrl));
+    },
+    scoringData(parent: SongParent, _: any, { dataSources }: IDataSources) {
+      return dataSources.minsei.getScoringData(parent.id)
+        .then(data => Array.from(new Uint8Array(data)));
+    },
+  },
+  Artist: {
+    id(parent: ArtistParent) {
+      return parent.id;
+    },
+    name(parent: ArtistParent) {
+      return parent.name;
+    },
+    nameYomi(parent: ArtistParent) {
+      return parent.nameYomi;
+    },
+    songCount(parent: ArtistParent) {
+      return parent.songCount;
+    },
+    songs(parent: ArtistParent, _: any, { dataSources }: IDataSources): Promise<SongParent[]> {
+      return dataSources.dkwebsys.getMusicListByArtist(parent.id)
+        .then(data => data.list.map(song => ({
+          id: song.requestNo,
+          name: song.title,
+          nameYomi: song.titleYomi,
+          artistName: song.artist,
+          artistNameYomi: song.artistYomi,
+          lyricsPreview: null,
+        })));
+    },
+  },
   Query: {
-    songsByName: (
-      _: any,
-      args: {
-        name: string | null;
-      }
-    ): Promise<
-      {
-        id: string;
-        name: string;
-        nameYomi: string;
-        artistName: string;
-        artistNameYomi: string;
-      }[]
-    > => {
-      if (args.name === null) {
-        return Promise.resolve([]);
-      }
-      const searches = [searchMusicByKeyword(args.name)];
-      if (isRomaji(args.name)) {
-        searches.push(searchMusicByKeyword(toKana(stripWhitespace(args.name))));
-      }
-      return Promise.all(searches).then((results) => {
-        const { list } = results
-          .map((r) => r.list)
-          .flat()
-          .reduce(
-            (acc, cur) => {
-              if (!acc.set.has(cur.requestNo)) {
-                acc.list.push({
-                  id: cur.requestNo,
-                  name: cur.title,
-                  nameYomi: cur.titleYomi,
-                  artistName: cur.artist,
-                  artistNameYomi: cur.artistYomi,
-                });
-                acc.set.add(cur.requestNo);
-              }
-              return acc;
-            },
-            {
-              list: new Array<{
-                id: string;
-                name: string;
-                nameYomi: string;
-                artistName: string;
-                artistNameYomi: string;
-              }>(),
-              set: new Set<string>(),
-            }
-          );
-        return list;
-      });
-    },
-    songsByIds: (
-      _: any,
-      args: { ids: string[] }
-    ): Promise<
-      {
-        id: string;
-        name: string;
-        nameYomi: string;
-        artistName: string;
-        artistNameYomi: string;
-        lyricsPreview: string;
-      }[]
-    > => {
-      if (args.ids.length === 0) {
-        return Promise.resolve([]);
-      }
-      return getSongsByReqNos(args.ids).then((json) =>
-        json.isExist.map((song) => ({
-          id: song.reqNo,
-          name: song.songName,
-          nameYomi: "",
-          artistName: song.artistName,
+    songsByName: (_: any, args: { name: string }, { dataSources }: IDataSources): Promise<SongParent[]> =>
+      dataSources.dkwebsys.getMusicByKeyword(args.name)
+        .then(songs => songs.list.map(song => ({
+          id: song.requestNo,
+          name: song.title,
+          nameYomi: song.titleYomi,
+          artistName: song.artist,
+          artistNameYomi: song.artistYomi,
+          lyricsPreview: null,
+        }))),
+    songById: (_: any, args: { id: string }, { dataSources }: IDataSources): Promise<SongParent> =>
+      dataSources.minsei.getMusicDetails(args.id)
+        .then(data => ({
+          id: args.id,
+          name: data.data.value,
+          nameYomi: data.data.contentsYomi,
+          artistName: data.data.artistName,
           artistNameYomi: "",
-          lyricsPreview: song.firstBars,
-        }))
-      );
-    },
+          lyricsPreview: data.data.firstLine,
+        })),
+    artistsByName: (_: any, args: { name: string }, { dataSources }: IDataSources): Promise<ArtistParent[]> =>
+      dataSources.dkwebsys.getArtistByKeyword(args.name)
+        .then(artists => artists.list.map(artist => ({
+          id: artist.artistCode.toString(),
+          name: artist.artist,
+          nameYomi: artist.artistYomi,
+          songCount: artist.holdMusicCount,
+        }))),
+    artistById: (_: any, args: { id: string }, { dataSources }: IDataSources): Promise<Artist> =>
+      dataSources.dkwebsys.getMusicListByArtist(args.id)
+        .then(data => ({
+          id: args.id,
+          name: data.data.artist,
+          nameYomi: data.data.artistYomi_Kana,
+          songCount: data.data.totalCount,
+          songs: data.list.map(song => ({
+            id: song.requestNo,
+            name: song.title,
+            nameYomi: song.titleYomi,
+            artistName: song.artist,
+            artistNameYomi: song.artistYomi,
+            lyricsPreview: null,
+          })),
+        })),
     queue: () => {
       if (!db.songQueue.length) return [];
       return db.songQueue;
-    },
-    artistsByName: (
-      _: any,
-      args: { name: string }
-    ): Promise<
-      { id: string; name: string; nameYomi: string; songCount: number }[]
-    > => {
-      if (args.name === null) {
-        return Promise.resolve([]);
-      }
-      const searches = [searchArtistByKeyword(args.name)];
-      if (isRomaji(args.name)) {
-        searches.push(
-          searchArtistByKeyword(toKana(stripWhitespace(args.name)))
-        );
-      }
-      return Promise.all(searches).then((results) => {
-        const { list } = results
-          .map((r) => r.list)
-          .flat()
-          .reduce(
-            (acc, cur) => {
-              if (!acc.set.has(cur.artistCode)) {
-                acc.list.push({
-                  id: cur.artistCode.toString(),
-                  name: cur.artist,
-                  nameYomi: cur.artistYomi,
-                  songCount: cur.holdMusicCount,
-                });
-                acc.set.add(cur.artistCode);
-              }
-              return acc;
-            },
-            {
-              list: new Array<{
-                id: string;
-                name: string;
-                nameYomi: string;
-                songCount: number;
-              }>(),
-              set: new Set<number>(),
-            }
-          );
-        return list;
-      });
-    },
-    artistById: (
-      _: any,
-      args: { id: string }
-    ): Promise<{
-      id: string;
-      name: string;
-      songCount: number;
-      songs: {
-        id: string;
-        name: string;
-        nameYomi: string;
-        artistName: string;
-        artistNameYomi: string;
-      }[];
-    }> => {
-      return getMusicListByArtist(args.id).then((json) => ({
-        id: json.data.artistCode.toString(),
-        name: json.data.artist,
-        songCount: json.data.totalCount,
-        songs: json.list.map((artistSong) => ({
-          id: artistSong.requestNo,
-          name: artistSong.title,
-          nameYomi: artistSong.titleYomi,
-          artistName: artistSong.artist,
-          artistNameYomi: artistSong.artistYomi,
-        })),
-      }));
-    },
-    streamingUrl: (
-      _: any,
-      args: { id: string },
-      context: Context
-    ): Promise<string> => {
-      // Minsei requests seem to be a bit flaky, so let's retry them if needed
-      return promiseRetry((retry) =>
-        getMusicStreamingUrls(
-          args.id.match(/.{1,4}/g)!.join("-"),
-          context.creds
-        ).catch(retry)
-      ).then((json) => json.list[0].highBitrateUrl);
-    },
-    scoringData: (
-      _: any,
-      args: { id: string },
-      context: Context
-    ): Promise<number[]> => {
-      return promiseRetry((retry) =>
-        getScoringData(
-          args.id.match(/.{1,4}/g)!.join("-"),
-          context.creds
-        ).catch(retry)
-      ).then((scoringData) => Array.from(new Uint8Array(scoringData)));
     },
   },
   Mutation: {
@@ -300,9 +236,10 @@ export function applyGraphQLMiddleware(
   creds: MinseiCredentials
 ) {
   const server = new ApolloServer({
-    context: {
-      creds,
-    },
+    dataSources: () => ({
+      minsei: new MinseiAPI(creds),
+      dkwebsys: new DkwebsysAPI(),
+    }),
     schema,
   });
   if (isDev) {
