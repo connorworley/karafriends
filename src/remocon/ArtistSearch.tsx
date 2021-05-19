@@ -1,23 +1,8 @@
 import React, { useState } from "react";
-import { graphql, QueryRenderer } from "react-relay";
-import { Link, RouteComponentProps } from "react-router-dom";
-import { isRomaji, toRomaji } from "wanakana";
+import { RouteComponentProps } from "react-router-dom";
 
-import Loader from "../common/components/Loader";
-import environment from "../common/graphqlEnvironment";
+import ArtistSearchResults from "./ArtistSearchResults";
 import DebouncedInput from "./components/DebouncedInput";
-import { ArtistSearchQuery } from "./__generated__/ArtistSearchQuery.graphql";
-
-const artistSearchQuery = graphql`
-  query ArtistSearchQuery($name: String) {
-    artistsByName(name: $name) {
-      id
-      name
-      nameYomi
-      songCount
-    }
-  }
-`;
 
 interface ArtistSearchParams {
   query: string | undefined;
@@ -25,9 +10,9 @@ interface ArtistSearchParams {
 
 interface Props extends RouteComponentProps<ArtistSearchParams> {}
 
-const ArtistSearch = (outerProps: Props) => {
+const ArtistSearch = (props: Props) => {
   const [searchQuery, setSearchQuery] = useState<string | null>(
-    outerProps.match.params.query || null
+    props.match.params.query || null
   );
 
   return (
@@ -39,39 +24,9 @@ const ArtistSearch = (outerProps: Props) => {
           setSearchQuery(e.target.value === "" ? null : e.target.value);
           history.replaceState({}, "", `#/search/artist/${e.target.value}`);
         }}
-        defaultValue={outerProps.match.params.query}
+        defaultValue={props.match.params.query}
       />
-      <QueryRenderer<ArtistSearchQuery>
-        environment={environment}
-        query={artistSearchQuery}
-        variables={{ name: searchQuery }}
-        render={({ error, props }) => {
-          if (searchQuery === null) return null;
-          if (!props) return <Loader />;
-          return (
-            <div className="collection">
-              {props.artistsByName.map((artist) => (
-                <Link
-                  key={artist.id}
-                  className="collection-item"
-                  style={{ display: "flex" }}
-                  to={`/artist/${artist.id}`}
-                >
-                  <span className="truncate" style={{ flex: 1 }}>
-                    {artist.name}{" "}
-                    {isRomaji(artist.name) ? null : (
-                      <span className="grey-text text-lighten-2">
-                        {toRomaji(artist.nameYomi)}
-                      </span>
-                    )}
-                  </span>
-                  <span>{artist.songCount} songs</span>
-                </Link>
-              ))}
-            </div>
-          );
-        }}
-      />
+      <ArtistSearchResults artistName={searchQuery} />
     </>
   );
 };

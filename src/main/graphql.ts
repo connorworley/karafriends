@@ -197,17 +197,32 @@ const resolvers = {
       })),
     artistsByName: (
       _: any,
-      args: { name: string },
+      args: { name: string; first: number | null; after: string | null },
       { dataSources }: IDataSources
-    ): Promise<ArtistParent[]> =>
-      dataSources.dkwebsys.getArtistByKeyword(args.name).then((artists) =>
-        artists.list.map((artist) => ({
-          id: artist.artistCode.toString(),
-          name: artist.artist,
-          nameYomi: artist.artistYomi,
-          songCount: artist.holdMusicCount,
-        }))
-      ),
+    ): Promise<Connection<ArtistParent, string>> => {
+      const firstInt = args.first || 0;
+      const afterInt = args.after ? parseInt(args.after, 10) : 0;
+
+      return dataSources.dkwebsys
+        .getArtistByKeyword(args.name, firstInt, afterInt)
+        .then((result) => ({
+          edges: result.list.map((artist, i) => ({
+            node: {
+              id: artist.artistCode.toString(),
+              name: artist.artist,
+              nameYomi: artist.artistYomi,
+              songCount: artist.holdMusicCount,
+            },
+            cursor: (firstInt + i).toString(),
+          })),
+          pageInfo: {
+            hasPreviousPage: false, // We can always do this because we don't support backward pagination
+            hasNextPage: firstInt + afterInt < result.data.totalCount,
+            startCursor: "0",
+            endCursor: (firstInt + afterInt).toString(),
+          },
+        }));
+    },
     artistById: (
       _: any,
       args: { id: string },
