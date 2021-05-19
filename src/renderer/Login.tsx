@@ -14,7 +14,7 @@ export default function Login() {
     setCreds({ account: creds.account, password });
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} style={{ width: "100%" }}>
       <label>karafriends</label>
       <input
         type="text"
