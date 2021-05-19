@@ -173,6 +173,9 @@ interface GetMusicDetailInfoResponse extends DkwebsysReponse {
 }
 
 interface SearchMusicByKeywordResponse extends DkwebsysReponse {
+  data: {
+    totalCount: number;
+  };
   list: {
     requestNo: string;
     title: string;
@@ -242,24 +245,45 @@ export class DkwebsysAPI extends RESTDataSource {
     return this.musicDetailsInfoLoader.load(requestNo);
   }
 
-  private musicByKeywordLoader = new DataLoader((keywords) =>
-    Promise.all(
-      keywords.map((keyword) =>
-        this.post<SearchMusicByKeywordResponse>(
-          "https://csgw.clubdam.com/dkwebsys/search-api/SearchMusicByKeywordApi",
-          {
-            keyword,
-            sort: "1",
-            pageNo: "1",
-            dispCount: "30",
-          }
-        ).then(this.checkError)
+  private musicByKeywordLoader = new DataLoader(
+    (keys: readonly { keyword: string; pageNo: number }[]) =>
+      Promise.all(
+        keys.map((key) =>
+          this.post<SearchMusicByKeywordResponse>(
+            "https://csgw.clubdam.com/dkwebsys/search-api/SearchMusicByKeywordApi",
+            {
+              keyword: key.keyword,
+              sort: "2",
+              pageNo: key.pageNo.toString(),
+              dispCount: "30",
+            }
+          ).then(this.checkError)
+        )
       )
-    )
   );
 
-  getMusicByKeyword(keyword: string) {
-    return this.musicByKeywordLoader.load(keyword);
+  getMusicByKeyword(keyword: string, first: number, after: number) {
+    const firstPage = Math.floor(after / 30) + 1;
+    const pageCount = Math.ceil(first / 30);
+
+    return Promise.all(
+      [...Array(pageCount).keys()].map((pageOffset) =>
+        this.musicByKeywordLoader.load({
+          keyword,
+          pageNo: firstPage + pageOffset,
+        })
+      )
+    )
+      .then((results) =>
+        results.reduce((acc, cur) => {
+          acc.list = acc.list.concat(cur.list);
+          return acc;
+        })
+      )
+      .then((result) => ({
+        data: result.data,
+        list: result.list.slice(after % 30, first),
+      }));
   }
 
   private artistByKeywordLoader = new DataLoader((keywords) =>
