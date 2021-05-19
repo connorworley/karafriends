@@ -46,7 +46,7 @@ interface ArtistParent {
 }
 
 interface Artist extends ArtistParent {
-  readonly songs: SongParent[];
+  readonly songs: Connection<SongParent, string>;
 }
 
 interface Connection<NodeType, CursorType> {
@@ -136,19 +136,33 @@ const resolvers = {
     },
     songs(
       parent: ArtistParent,
-      _: any,
+      args: { first: number | null; after: string | null },
       { dataSources }: IDataSources
-    ): Promise<SongParent[]> {
-      return dataSources.dkwebsys.getMusicListByArtist(parent.id).then((data) =>
-        data.list.map((song) => ({
-          id: song.requestNo,
-          name: song.title,
-          nameYomi: song.titleYomi,
-          artistName: song.artist,
-          artistNameYomi: song.artistYomi,
-          lyricsPreview: null,
-        }))
-      );
+    ) {
+      const firstInt = args.first || 0;
+      const afterInt = args.after ? parseInt(args.after, 10) : 0;
+
+      return dataSources.dkwebsys
+        .getMusicListByArtist(parent.id, firstInt, afterInt)
+        .then((result) => ({
+          edges: result.list.map((song, i) => ({
+            node: {
+              id: song.requestNo,
+              name: song.title,
+              nameYomi: song.titleYomi,
+              artistName: song.artist,
+              artistNameYomi: song.artistYomi,
+              lyricsPreivew: null,
+            },
+            cursor: (firstInt + 1).toString(),
+          })),
+          pageInfo: {
+            hasPreviousPage: false,
+            hasNextPage: firstInt + afterInt < result.data.totalCount,
+            startCursor: "0",
+            endCursor: (firstInt + afterInt).toString(),
+          },
+        }));
     },
   },
   Query: {
@@ -225,23 +239,21 @@ const resolvers = {
     },
     artistById: (
       _: any,
-      args: { id: string },
+      args: { id: string; first: number | null; after: string | null },
       { dataSources }: IDataSources
-    ): Promise<Artist> =>
-      dataSources.dkwebsys.getMusicListByArtist(args.id).then((data) => ({
-        id: args.id,
-        name: data.data.artist,
-        nameYomi: data.data.artistYomi_Kana,
-        songCount: data.data.totalCount,
-        songs: data.list.map((song) => ({
-          id: song.requestNo,
-          name: song.title,
-          nameYomi: song.titleYomi,
-          artistName: song.artist,
-          artistNameYomi: song.artistYomi,
-          lyricsPreview: null,
-        })),
-      })),
+    ): Promise<ArtistParent> => {
+      const firstInt = args.first || 0;
+      const afterInt = args.after ? parseInt(args.after, 10) : 0;
+
+      return dataSources.dkwebsys
+        .getMusicListByArtist(args.id, firstInt, afterInt)
+        .then((data) => ({
+          id: args.id,
+          name: data.data.artist,
+          nameYomi: data.data.artistYomi_Kana,
+          songCount: data.data.totalCount,
+        }));
+    },
     queue: () => {
       if (!db.songQueue.length) return [];
       return db.songQueue;

@@ -2,7 +2,7 @@ type Query {
   songsByName(name: String, first: Int, after: String): SongConnection!
   songById(id: String!): Song!
   artistsByName(name: String, first: Int, after: String): ArtistConnection!
-  artistById(id: String!): Artist!
+  artistById(id: String, first: Int, after: String): Artist!
   queue: [QueueItem!]!
 }
 
@@ -22,7 +22,7 @@ type Artist {
   name: String!
   nameYomi: String!
   songCount: Int!
-  songs: [Song!]!
+  songs(first: Int, after: String): SongConnection!
 }
 
 type ArtistConnection {
