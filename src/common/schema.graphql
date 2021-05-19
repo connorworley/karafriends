@@ -51,6 +51,7 @@ type Song {
   lyricsPreview: String
   streamingUrls: [String!]!
   scoringData: [Int!]!
+  tieUp: String
 }
 
 input SongInput {

@@ -14,6 +14,7 @@ const songQuery = graphql`
       artistName
       artistNameYomi
       lyricsPreview
+      tieUp
     }
   }
 `;
@@ -55,6 +56,9 @@ function Song(props: Props) {
       <div className="card-content">
         <h6>{song.artistName}</h6>
         <h5>{song.name}</h5>
+        {!!song.tieUp && (
+          <p className="grey-text text-lighten-1">{song.tieUp}</p>
+        )}
         {!!song.lyricsPreview && (
           <blockquote>{song.lyricsPreview} ...</blockquote>
         )}
