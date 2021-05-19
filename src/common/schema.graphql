@@ -1,5 +1,5 @@
 type Query {
-  songsByName(name: String): [Song!]!
+  songsByName(name: String, first: Int, after: String): SongConnection!
   songById(id: String!): Song!
   artistsByName(name: String): [Artist!]!
   artistById(id: String!): Artist!
@@ -43,6 +43,23 @@ input SongInput {
   artistName: String!
   artistNameYomi: String!
   lyricsPreview: String
+}
+
+type SongConnection {
+  edges: [SongEdge!]!
+  pageInfo: SongPageInfo!
+}
+
+type SongEdge {
+  node: Song!
+  cursor: String!
+}
+
+type SongPageInfo {
+  hasPreviousPage: Boolean!
+  hasNextPage: Boolean!
+  startCursor: String!
+  endCursor: String!
 }
 
 type QueueItem {

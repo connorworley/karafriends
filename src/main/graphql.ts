@@ -49,6 +49,23 @@ interface Artist extends ArtistParent {
   readonly songs: SongParent[];
 }
 
+interface Connection<NodeType, CursorType> {
+  readonly edges: Edge<NodeType, CursorType>[];
+  readonly pageInfo: PageInfo<CursorType>;
+}
+
+interface Edge<NodeType, CursorType> {
+  readonly node: NodeType;
+  readonly cursor: CursorType;
+}
+
+interface PageInfo<CursorType> {
+  readonly hasPreviousPage: boolean;
+  readonly hasNextPage: boolean;
+  readonly startCursor: CursorType;
+  readonly endCursor: CursorType;
+}
+
 type QueueItem = {
   readonly song: SongInput;
   readonly timestamp: string;
@@ -137,19 +154,34 @@ const resolvers = {
   Query: {
     songsByName: (
       _: any,
-      args: { name: string },
+      args: { name: string; first: number | null; after: string | null },
       { dataSources }: IDataSources
-    ): Promise<SongParent[]> =>
-      dataSources.dkwebsys.getMusicByKeyword(args.name).then((songs) =>
-        songs.list.map((song) => ({
-          id: song.requestNo,
-          name: song.title,
-          nameYomi: song.titleYomi,
-          artistName: song.artist,
-          artistNameYomi: song.artistYomi,
-          lyricsPreview: null,
-        }))
-      ),
+    ): Promise<Connection<SongParent, string>> => {
+      const firstInt = args.first || 0;
+      const afterInt = args.after ? parseInt(args.after, 10) : 0;
+
+      return dataSources.dkwebsys
+        .getMusicByKeyword(args.name, firstInt, afterInt)
+        .then((result) => ({
+          edges: result.list.map((song, i) => ({
+            node: {
+              id: song.requestNo,
+              name: song.title,
+              nameYomi: song.titleYomi,
+              artistName: song.artist,
+              artistNameYomi: song.artistYomi,
+              lyricsPreview: null,
+            },
+            cursor: (firstInt + i).toString(),
+          })),
+          pageInfo: {
+            hasPreviousPage: false, // We can always do this because we don't support backward pagination
+            hasNextPage: firstInt + afterInt < result.data.totalCount,
+            startCursor: "0",
+            endCursor: (firstInt + afterInt).toString(),
+          },
+        }));
+    },
     songById: (
       _: any,
       args: { id: string },
