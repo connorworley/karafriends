@@ -330,23 +330,44 @@ export class DkwebsysAPI extends RESTDataSource {
       }));
   }
 
-  private musicListByArtistLoader = new DataLoader((artistCodes) =>
-    Promise.all(
-      artistCodes.map((artistCode) =>
-        this.post<GetMusicListByArtistResponse>(
-          "https://csgw.clubdam.com/dkwebsys/search-api/GetMusicListByArtistApi",
-          {
-            artistCode,
-            sort: "1",
-            pageNo: "1",
-            dispCount: "30",
-          }
-        ).then(this.checkError)
+  private musicListByArtistLoader = new DataLoader(
+    (keys: readonly { artistCode: string; pageNo: number }[]) =>
+      Promise.all(
+        keys.map((key) =>
+          this.post<GetMusicListByArtistResponse>(
+            "https://csgw.clubdam.com/dkwebsys/search-api/GetMusicListByArtistApi",
+            {
+              artistCode: key.artistCode,
+              sort: "2",
+              pageNo: key.pageNo.toString(),
+              dispCount: "30",
+            }
+          ).then(this.checkError)
+        )
       )
-    )
   );
 
-  getMusicListByArtist(artistCode: string) {
-    return this.musicListByArtistLoader.load(artistCode);
+  getMusicListByArtist(artistCode: string, first: number, after: number) {
+    const firstPage = Math.floor(after / 30) + 1;
+    const pageCount = Math.ceil(first / 30);
+
+    return Promise.all(
+      [...Array(pageCount).keys()].map((pageOffset) =>
+        this.musicListByArtistLoader.load({
+          artistCode,
+          pageNo: firstPage + pageOffset,
+        })
+      )
+    )
+      .then((results) =>
+        results.reduce((acc, cur) => {
+          acc.list = acc.list.concat(cur.list);
+          return acc;
+        })
+      )
+      .then((result) => ({
+        data: result.data,
+        list: result.list.slice(after % 30, first),
+      }));
   }
 }
