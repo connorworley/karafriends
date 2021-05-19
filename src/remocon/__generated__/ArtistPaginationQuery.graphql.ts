@@ -31,6 +31,7 @@ query ArtistPaginationQuery(
 fragment Artist_artistById_3L9VQn on Query {
   artistById(id: $artist_id, first: $count, after: $cursor) {
     name
+    songCount
     songs(first: $count, after: $cursor) {
       edges {
         node {
@@ -154,6 +155,13 @@ return {
           (v3/*: any*/),
           {
             "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "songCount",
+            "storageKey": null
+          },
+          {
+            "alias": null,
             "args": (v4/*: any*/),
             "concreteType": "SongConnection",
             "kind": "LinkedField",
@@ -249,14 +257,14 @@ return {
     ]
   },
   "params": {
-    "cacheID": "a628c8e65b08eefd14b3a881a86f8109",
+    "cacheID": "b08aead3918dd9f9bc20f9a6d9f4873e",
     "id": null,
     "metadata": {},
     "name": "ArtistPaginationQuery",
     "operationKind": "query",
-    "text": "query ArtistPaginationQuery(\n  $artist_id: String\n  $count: Int = 30\n  $cursor: String\n) {\n  ...Artist_artistById_3L9VQn\n}\n\nfragment Artist_artistById_3L9VQn on Query {\n  artistById(id: $artist_id, first: $count, after: $cursor) {\n    name\n    songs(first: $count, after: $cursor) {\n      edges {\n        node {\n          id\n          name\n          nameYomi\n          __typename\n        }\n        cursor\n      }\n      pageInfo {\n        endCursor\n        hasNextPage\n      }\n    }\n    id\n  }\n}\n"
+    "text": "query ArtistPaginationQuery(\n  $artist_id: String\n  $count: Int = 30\n  $cursor: String\n) {\n  ...Artist_artistById_3L9VQn\n}\n\nfragment Artist_artistById_3L9VQn on Query {\n  artistById(id: $artist_id, first: $count, after: $cursor) {\n    name\n    songCount\n    songs(first: $count, after: $cursor) {\n      edges {\n        node {\n          id\n          name\n          nameYomi\n          __typename\n        }\n        cursor\n      }\n      pageInfo {\n        endCursor\n        hasNextPage\n      }\n    }\n    id\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = '33e8e768612cabd34f9e0e852cfe9948';
+(node as any).hash = '010aa6c7b6955c9fb19e1847fbf43ba4';
 export default node;

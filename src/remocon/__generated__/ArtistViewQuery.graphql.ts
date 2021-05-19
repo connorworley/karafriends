@@ -27,6 +27,7 @@ query ArtistViewQuery(
 fragment Artist_artistById_czBiW on Query {
   artistById(id: $artist_id, first: 30) {
     name
+    songCount
     songs(first: 30) {
       edges {
         node {
@@ -121,6 +122,13 @@ return {
         "plural": false,
         "selections": [
           (v2/*: any*/),
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "songCount",
+            "storageKey": null
+          },
           {
             "alias": null,
             "args": (v3/*: any*/),
@@ -218,12 +226,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "4bcdafd509f3ac0436575b70cbabb168",
+    "cacheID": "b6d10e259df3c772eb43791753ca7c90",
     "id": null,
     "metadata": {},
     "name": "ArtistViewQuery",
     "operationKind": "query",
-    "text": "query ArtistViewQuery(\n  $artist_id: String\n) {\n  ...Artist_artistById_czBiW\n}\n\nfragment Artist_artistById_czBiW on Query {\n  artistById(id: $artist_id, first: 30) {\n    name\n    songs(first: 30) {\n      edges {\n        node {\n          id\n          name\n          nameYomi\n          __typename\n        }\n        cursor\n      }\n      pageInfo {\n        endCursor\n        hasNextPage\n      }\n    }\n    id\n  }\n}\n"
+    "text": "query ArtistViewQuery(\n  $artist_id: String\n) {\n  ...Artist_artistById_czBiW\n}\n\nfragment Artist_artistById_czBiW on Query {\n  artistById(id: $artist_id, first: 30) {\n    name\n    songCount\n    songs(first: 30) {\n      edges {\n        node {\n          id\n          name\n          nameYomi\n          __typename\n        }\n        cursor\n      }\n      pageInfo {\n        endCursor\n        hasNextPage\n      }\n    }\n    id\n  }\n}\n"
   }
 };
 })();

@@ -24,6 +24,7 @@ const artistPaginationQuery = graphql`
   @refetchable(queryName: "ArtistPaginationQuery") {
     artistById(id: $artist_id, first: $count, after: $cursor) {
       name
+      songCount
       songs(first: $count, after: $cursor)
         @connection(key: "ArtistPagination_songs") {
         edges {
@@ -61,7 +62,7 @@ const Artist = (props: Props) => {
       <div className="card">
         <div className="card-content">
           <h5>{data.artistById.name}</h5>
-          <p>{data.artistById.songs.edges.length} songs</p>
+          <p>{data.artistById.songCount} songs</p>
         </div>
       </div>
       <div className="collection">

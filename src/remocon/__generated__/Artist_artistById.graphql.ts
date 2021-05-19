@@ -7,6 +7,7 @@ import { FragmentRefs } from "relay-runtime";
 export type Artist_artistById = {
     readonly artistById: {
         readonly name: string;
+        readonly songCount: number;
         readonly songs: {
             readonly edges: ReadonlyArray<{
                 readonly node: {
@@ -108,6 +109,13 @@ return {
       "selections": [
         (v1/*: any*/),
         {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "songCount",
+          "storageKey": null
+        },
+        {
           "alias": "songs",
           "args": null,
           "concreteType": "SongConnection",
@@ -202,5 +210,5 @@ return {
   "abstractKey": null
 };
 })();
-(node as any).hash = '33e8e768612cabd34f9e0e852cfe9948';
+(node as any).hash = '010aa6c7b6955c9fb19e1847fbf43ba4';
 export default node;
