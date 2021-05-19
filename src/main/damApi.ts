@@ -186,6 +186,9 @@ interface SearchMusicByKeywordResponse extends DkwebsysReponse {
 }
 
 interface SearchArtistByKeywordResponse extends DkwebsysReponse {
+  data: {
+    totalCount: number;
+  };
   list: {
     artist: string;
     artistCode: number;
@@ -286,24 +289,45 @@ export class DkwebsysAPI extends RESTDataSource {
       }));
   }
 
-  private artistByKeywordLoader = new DataLoader((keywords) =>
-    Promise.all(
-      keywords.map((keyword) =>
-        this.post<SearchArtistByKeywordResponse>(
-          "https://csgw.clubdam.com/dkwebsys/search-api/SearchArtistByKeywordApi",
-          {
-            keyword,
-            sort: "1",
-            pageNo: "1",
-            dispCount: "30",
-          }
-        ).then(this.checkError)
+  private artistByKeywordLoader = new DataLoader(
+    (keys: readonly { keyword: string; pageNo: number }[]) =>
+      Promise.all(
+        keys.map((key) =>
+          this.post<SearchArtistByKeywordResponse>(
+            "https://csgw.clubdam.com/dkwebsys/search-api/SearchArtistByKeywordApi",
+            {
+              keyword: key.keyword,
+              sort: "2",
+              pageNo: key.pageNo.toString(),
+              dispCount: "30",
+            }
+          ).then(this.checkError)
+        )
       )
-    )
   );
 
-  getArtistByKeyword(keyword: string) {
-    return this.artistByKeywordLoader.load(keyword);
+  getArtistByKeyword(keyword: string, first: number, after: number) {
+    const firstPage = Math.floor(after / 30) + 1;
+    const pageCount = Math.ceil(first / 30);
+
+    return Promise.all(
+      [...Array(pageCount).keys()].map((pageOffset) =>
+        this.artistByKeywordLoader.load({
+          keyword,
+          pageNo: firstPage + pageOffset,
+        })
+      )
+    )
+      .then((results) =>
+        results.reduce((acc, cur) => {
+          acc.list = acc.list.concat(cur.list);
+          return acc;
+        })
+      )
+      .then((result) => ({
+        data: result.data,
+        list: result.list.slice(after % 30, first),
+      }));
   }
 
   private musicListByArtistLoader = new DataLoader((artistCodes) =>
