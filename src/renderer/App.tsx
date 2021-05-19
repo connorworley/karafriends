@@ -67,7 +67,7 @@ function App() {
       );
     case AppState.NotLoggedIn:
       return (
-        <div className="container">
+        <div className="container valign-wrapper" style={{ height: "100%" }}>
           <Login />
         </div>
       );
