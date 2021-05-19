@@ -8,7 +8,7 @@ import { SongQuery } from "./__generated__/SongQuery.graphql";
 
 const songQuery = graphql`
   query SongQuery($id: String!) {
-    songsByIds(ids: [$id]) {
+    songById(id: $id) {
       name
       nameYomi
       artistName
@@ -36,7 +36,7 @@ function Song(props: Props) {
   const data = useLazyLoadQuery<SongQuery>(songQuery, { id });
   const [commit, isInFlight] = useMutation<SongMutation>(songMutation);
 
-  const song = data.songsByIds[0];
+  const song = data.songById;
 
   const onClickQueueSong = () => {
     commit({

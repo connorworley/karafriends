@@ -328,7 +328,7 @@ function midiNumberToYCoord(midiNumber: number, medianMidiNumber: number) {
 }
 
 export default function PianoRoll(props: {
-  scoringData: number[];
+  scoringData: readonly number[];
   videoRef: React.RefObject<HTMLVideoElement>;
   mics: InputDevice[];
 }) {

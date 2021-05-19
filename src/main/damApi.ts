@@ -1,3 +1,12 @@
+/* tslint:disable:max-classes-per-file */
+
+import {
+  RequestOptions,
+  Response,
+  RESTDataSource,
+} from "apollo-datasource-rest";
+import DataLoader from "dataloader";
+import { request } from "express";
 import fetch from "node-fetch";
 
 const BASE_MINSEI_REQUEST = {
@@ -10,203 +19,22 @@ const BASE_MINSEI_REQUEST = {
   contractId: "1",
 };
 
+export interface MinseiCredentials {
+  userCode: string;
+  authToken: string;
+}
+
 interface MinseiResponse {
   message: string;
   status: string;
   statusCode: string;
 }
 
-interface MinseiCredentials {
-  userCode: string;
-  authToken: string;
-}
-
-function makeMinseiRequestRaw(url: string, data: any) {
-  // Minsei requests kind of look like dkwebsys requests, but are slightly different
-  const body = Object.entries({
-    ...BASE_MINSEI_REQUEST,
-    ...data,
-  })
-    .map(([k, v]) => `${k}=${v}`)
-    .join("&");
-  console.debug(`Minsei request: curl ${url} -d '${body}'`);
-  return fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body,
-  });
-}
-
-function makeMinseiRequest<T extends MinseiResponse>(url: string, data: any) {
-  // Minsei requests kind of look like dkwebsys requests, but are slightly different
-  return makeMinseiRequestRaw(url, data)
-    .then((res) => {
-      return res.json();
-    })
-    .then((json: T) => {
-      if (json.statusCode !== "0000") {
-        throw new Error(`${json.status}: ${json.message}`);
-      }
-      return json;
-    });
-}
-
-const BASE_DK_DENMOKU_REQUEST = {
-  appVer: "2.1.0",
-  deviceId: "22",
-};
-
-interface DkdenmokuResponse {
-  // There are literally no useful fields
-  appVer: string;
-}
-
-function makeDkdenmokuRequest<T extends DkdenmokuResponse>(
-  url: string,
-  data: any
-) {
-  return fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      ...BASE_DK_DENMOKU_REQUEST,
-      ...data,
-    }),
-  })
-    .then((res) => res.json())
-    .then((json: T) => json);
-}
-
-const BASE_DKWEBSYS_REQUEST = {
-  modelTypeCode: "2",
-  minseiModelNum: "M1",
-  compId: "1",
-  authKey: "2/Qb9R@8s*",
-};
-
-interface DkwebsysReponse {
-  result: {
-    statusCode: string;
-    message: string;
-    detailMessage?: string;
-  };
-}
-
-function makeDkwebsysRequest<T extends DkwebsysReponse>(
-  url: string,
-  data: any
-) {
-  return fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      ...BASE_DKWEBSYS_REQUEST,
-      ...data,
-    }),
-  })
-    .then((res) => {
-      return res.json();
-    })
-    .then((json: T) => {
-      if (json.result.statusCode !== "0000") {
-        throw new Error(`${json.result.message}: ${json.result.detailMessage}`);
-      }
-      return json;
-    });
-}
-
-interface SearchMusicByKeywordResponse extends DkwebsysReponse {
-  list: {
-    requestNo: string;
-    title: string;
-    titleYomi: string;
-    artist: string;
-    artistYomi: string;
-  }[];
-}
-
-function searchMusicByKeyword(keyword: string) {
-  return makeDkwebsysRequest<SearchMusicByKeywordResponse>(
-    "https://csgw.clubdam.com/dkwebsys/search-api/SearchMusicByKeywordApi",
-    {
-      keyword,
-      sort: "1",
-      pageNo: "1",
-      dispCount: "30",
-    }
-  );
-}
-
-interface SearchArtistByKeywordResponse extends DkwebsysReponse {
-  list: {
-    artist: string;
-    artistCode: number;
-    artistYomi: string;
-    holdMusicCount: number;
-  }[];
-}
-
-function searchArtistByKeyword(keyword: string) {
-  return makeDkwebsysRequest<SearchArtistByKeywordResponse>(
-    "https://csgw.clubdam.com/dkwebsys/search-api/SearchArtistByKeywordApi",
-    {
-      keyword,
-      sort: "1",
-      pageNo: "1",
-      dispCount: "30",
-    }
-  );
-}
-
-interface GetMusicListByArtistResponse extends DkwebsysReponse {
+interface MinseiLogin extends MinseiResponse {
   data: {
-    artistCode: number;
-    artist: string;
-    totalCount: number;
+    authToken: string;
+    damtomoId: string;
   };
-  list: {
-    requestNo: string;
-    title: string;
-    titleYomi: string;
-    artist: string;
-    artistYomi: string;
-  }[];
-}
-
-function getMusicListByArtist(artistCode: string) {
-  return makeDkwebsysRequest<GetMusicListByArtistResponse>(
-    "https://csgw.clubdam.com/dkwebsys/search-api/GetMusicListByArtistApi",
-    {
-      artistCode,
-      sort: "1",
-      pageNo: "1",
-      dispCount: "30",
-    }
-  );
-}
-
-interface DkDamIsExistServletResponse extends DkdenmokuResponse {
-  isExist: {
-    artistName: string;
-    firstBars: string;
-    reqNo: string;
-    songName: string;
-  }[];
-}
-
-function getSongsByReqNos(reqNos: string[]) {
-  return makeDkdenmokuRequest<DkDamIsExistServletResponse>(
-    "https://denmoku.clubdam.com/dkdenmoku/DkDamIsExistServlet",
-    {
-      isExist: reqNos.map((reqNo) => ({
-        reqNo: reqNo.replace("-", ""),
-      })),
-    }
-  );
 }
 
 interface MinseiMusicDetails extends MinseiResponse {
@@ -238,16 +66,6 @@ interface MinseiMusicDetails extends MinseiResponse {
   };
 }
 
-function getMusicDetails(reqNo: string, creds: MinseiCredentials) {
-  return makeMinseiRequest<MinseiMusicDetails>(
-    "https://csgw.clubdam.com/cwa/win/minsei/music/search/GetMusicDetail.api",
-    {
-      ...creds,
-      requestNo: reqNo,
-    }
-  );
-}
-
 interface MinseiStreamingUrls extends MinseiResponse {
   data: {
     karaokeContentsId: string;
@@ -260,57 +78,224 @@ interface MinseiStreamingUrls extends MinseiResponse {
   }[];
 }
 
-function getMusicStreamingUrls(reqNo: string, creds: MinseiCredentials) {
-  return makeMinseiRequest<MinseiStreamingUrls>(
-    "https://csgw.clubdam.com/cwa/win/minsei/music/playLog/GetMusicStreamingURL.api",
-    {
-      ...creds,
-      requestNo: reqNo,
+export class MinseiAPI extends RESTDataSource {
+  creds: MinseiCredentials;
+
+  constructor(creds: MinseiCredentials) {
+    super();
+    this.baseURL = "https://csgw.clubdam.com/cwa/win/minsei";
+    this.creds = creds;
+  }
+
+  post<T>(url: string, data: object): Promise<T> {
+    return super.post(
+      url,
+      Object.entries({
+        ...BASE_MINSEI_REQUEST,
+        ...data,
+      })
+        .map(([k, v]) => `${k}=${v}`)
+        .join("&"),
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      }
+    );
+  }
+
+  parseBody(response: Response): Promise<object | string | ArrayBuffer> {
+    if (response.headers.get("Content-Type") === "application/octet-stream") {
+      return response.arrayBuffer();
+    } else {
+      return super.parseBody(response);
     }
+  }
+
+  static checkError<T extends MinseiResponse>(data: T) {
+    if (data.statusCode !== "0000") {
+      throw new Error(`${data.status}: ${data.message}`);
+    }
+    return data;
+  }
+
+  static login(loginId: string, password: string) {
+    return fetch(
+      "https://csgw.clubdam.com/cwa/win/minsei/auth/LoginByDamtomoMemberId.api",
+      {
+        method: "POST",
+        body: `loginId=${loginId}&password=${password}&format=json`,
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      }
+    )
+      .then((data) => data.json())
+      .then(MinseiAPI.checkError);
+  }
+
+  private musicDetailsLoader = new DataLoader((requestNos) =>
+    Promise.all(
+      requestNos.map((requestNo) =>
+        this.post<MinseiMusicDetails>("/music/search/GetMusicDetail.api", {
+          requestNo,
+          ...this.creds,
+        }).then(MinseiAPI.checkError)
+      )
+    )
   );
+
+  getMusicDetails(requestNo: string) {
+    return this.musicDetailsLoader.load(requestNo);
+  }
+
+  getMusicStreamingUrls(requestNo: string) {
+    return this.post<MinseiStreamingUrls>(
+      "/music/playLog/GetMusicStreamingURL.api",
+      { requestNo, ...this.creds }
+    ).then(MinseiAPI.checkError);
+  }
+
+  getScoringData(requestNo: string) {
+    return this.post<object | ArrayBuffer>(
+      "/scoring/GetScoringReferenceData.api",
+      { requestNo, ...this.creds }
+    ).then((body) => {
+      if (!(body instanceof ArrayBuffer)) {
+        return Promise.reject("Scoring data was not returned in binary format");
+      }
+      return body;
+    });
+  }
 }
 
-interface MinseiLogin extends MinseiResponse {
-  data: {
-    authToken: string;
-    damtomoId: string;
+const BASE_DKWEBSYS_REQUEST = {
+  modelTypeCode: "2",
+  minseiModelNum: "M1",
+  compId: "1",
+  authKey: "2/Qb9R@8s*",
+};
+
+interface DkwebsysReponse {
+  result: {
+    statusCode: string;
+    message: string;
+    detailMessage?: string;
   };
 }
 
-function login(username: string, password: string) {
-  return makeMinseiRequest<MinseiLogin>(
-    "https://csgw.clubdam.com/cwa/win/minsei/auth/LoginByDamtomoMemberId.api",
-    {
-      loginId: username,
-      password,
+interface SearchMusicByKeywordResponse extends DkwebsysReponse {
+  list: {
+    requestNo: string;
+    title: string;
+    titleYomi: string;
+    artist: string;
+    artistYomi: string;
+  }[];
+}
+
+interface SearchArtistByKeywordResponse extends DkwebsysReponse {
+  list: {
+    artist: string;
+    artistCode: number;
+    artistYomi: string;
+    holdMusicCount: number;
+  }[];
+}
+
+interface GetMusicListByArtistResponse extends DkwebsysReponse {
+  data: {
+    artistCode: number;
+    artist: string;
+    artistYomi_Kana: string;
+    totalCount: number;
+  };
+  list: {
+    requestNo: string;
+    title: string;
+    titleYomi: string;
+    artist: string;
+    artistYomi: string;
+  }[];
+}
+
+export class DkwebsysAPI extends RESTDataSource {
+  constructor() {
+    super();
+    this.baseURL = "https://csgw.clubdam.com/dkwebsys";
+  }
+
+  post<T>(url: string, data: object): Promise<T> {
+    return super.post(url, {
+      ...BASE_DKWEBSYS_REQUEST,
+      ...data,
+    });
+  }
+
+  checkError<T extends DkwebsysReponse>(data: T) {
+    if (data.result.statusCode !== "0000") {
+      throw new Error(`${data.result.message}: ${data.result.detailMessage}`);
     }
+    return data;
+  }
+
+  private musicByKeywordLoader = new DataLoader((keywords) =>
+    Promise.all(
+      keywords.map((keyword) =>
+        this.post<SearchMusicByKeywordResponse>(
+          "https://csgw.clubdam.com/dkwebsys/search-api/SearchMusicByKeywordApi",
+          {
+            keyword,
+            sort: "1",
+            pageNo: "1",
+            dispCount: "30",
+          }
+        ).then(this.checkError)
+      )
+    )
   );
-}
 
-function getScoringData(reqNo: string, creds: MinseiCredentials) {
-  return makeMinseiRequestRaw(
-    "https://csgw.clubdam.com/cwa/win/minsei/scoring/GetScoringReferenceData.api",
-    {
-      ...creds,
-      requestNo: reqNo,
-    }
-  ).then((res) => {
-    if (res.headers.get("Content-Type") === "application/octet-stream") {
-      return res.arrayBuffer();
-    } else {
-      return Promise.reject("Scoring data was not returned in binary format");
-    }
-  });
-}
+  getMusicByKeyword(keyword: string) {
+    return this.musicByKeywordLoader.load(keyword);
+  }
 
-export {
-  getMusicListByArtist,
-  getSongsByReqNos,
-  searchArtistByKeyword,
-  searchMusicByKeyword,
-  getMusicDetails,
-  getMusicStreamingUrls,
-  login,
-  getScoringData,
-  MinseiCredentials,
-};
+  private artistByKeywordLoader = new DataLoader((keywords) =>
+    Promise.all(
+      keywords.map((keyword) =>
+        this.post<SearchArtistByKeywordResponse>(
+          "https://csgw.clubdam.com/dkwebsys/search-api/SearchArtistByKeywordApi",
+          {
+            keyword,
+            sort: "1",
+            pageNo: "1",
+            dispCount: "30",
+          }
+        ).then(this.checkError)
+      )
+    )
+  );
+
+  getArtistByKeyword(keyword: string) {
+    return this.artistByKeywordLoader.load(keyword);
+  }
+
+  private musicListByArtistLoader = new DataLoader((artistCodes) =>
+    Promise.all(
+      artistCodes.map((artistCode) =>
+        this.post<GetMusicListByArtistResponse>(
+          "https://csgw.clubdam.com/dkwebsys/search-api/GetMusicListByArtistApi",
+          {
+            artistCode,
+            sort: "1",
+            pageNo: "1",
+            dispCount: "30",
+          }
+        ).then(this.checkError)
+      )
+    )
+  );
+
+  getMusicListByArtist(artistCode: string) {
+    return this.musicListByArtistLoader.load(artistCode);
+  }
+}

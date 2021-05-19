@@ -1,11 +1,9 @@
 type Query {
   songsByName(name: String): [Song!]!
-  songsByIds(ids: [String!]!): [Song!]!
-  queue: [QueueItem!]!
+  songById(id: String!): Song!
   artistsByName(name: String): [Artist!]!
   artistById(id: String!): Artist!
-  streamingUrl(id: String!): String!
-  scoringData(id: String!): [Int!]!
+  queue: [QueueItem!]!
 }
 
 type Mutation {
@@ -34,6 +32,8 @@ type Song {
   artistName: String!
   artistNameYomi: String!
   lyricsPreview: String
+  streamingUrls: [String!]!
+  scoringData: [Int!]!
 }
 
 input SongInput {
