@@ -37,35 +37,6 @@ interface MinseiLogin extends MinseiResponse {
   };
 }
 
-interface MinseiMusicDetails extends MinseiResponse {
-  data: {
-    artistCode: string;
-    artistName: string;
-    contentsId: string;
-    contentsYomi: string;
-    firstLine: string;
-    guideVocalList: {
-      contentsId: string;
-      duet: string;
-      playtime: string;
-    }[];
-    musicTypeList: {
-      musicTypeCode: string;
-      musicTypeId: string;
-      musicTypeName: string;
-    }[];
-    mylist: string;
-    requestNo: string;
-    songDifficulty: string;
-    songTechDifficulty: string;
-    thumbnailPathList: {
-      thumbnailPath: string;
-      thumbnailType: string;
-    }[];
-    value: string;
-  };
-}
-
 interface MinseiStreamingUrls extends MinseiResponse {
   data: {
     karaokeContentsId: string;
@@ -134,21 +105,6 @@ export class MinseiAPI extends RESTDataSource {
       .then(MinseiAPI.checkError);
   }
 
-  private musicDetailsLoader = new DataLoader((requestNos) =>
-    Promise.all(
-      requestNos.map((requestNo) =>
-        this.post<MinseiMusicDetails>("/music/search/GetMusicDetail.api", {
-          requestNo,
-          ...this.creds,
-        }).then(MinseiAPI.checkError)
-      )
-    )
-  );
-
-  getMusicDetails(requestNo: string) {
-    return this.musicDetailsLoader.load(requestNo);
-  }
-
   getMusicStreamingUrls(requestNo: string) {
     return this.post<MinseiStreamingUrls>(
       "/music/playLog/GetMusicStreamingURL.api",
@@ -182,6 +138,38 @@ interface DkwebsysReponse {
     message: string;
     detailMessage?: string;
   };
+}
+
+interface GetMusicDetailInfoResponse extends DkwebsysReponse {
+  data: {
+    artistCode: number;
+    artist: string;
+    requestNo: string;
+    title: string;
+    titleYomi_Kana: string;
+    firstLine: string;
+  };
+
+  list: {
+    mModelMusicInfoList: {
+      highlightTieUp: string;
+      shift: string;
+      thumbnailType: string;
+      thumbnailPath: string;
+      guideVocal: string;
+      playtime: string;
+      contentTypeId: string;
+      contentTypeName: string;
+      scoreLevel: number;
+      technicalLevel: number;
+      scoreFlag: string;
+      lyricsImageFlag: string;
+      myListFlag: string;
+      damTomoPublicVocalFlag: string;
+      damTomoPublicMovieFlag: string;
+      damTomoPublicRecordingFlag: string;
+    }[];
+  }[];
 }
 
 interface SearchMusicByKeywordResponse extends DkwebsysReponse {
@@ -237,6 +225,21 @@ export class DkwebsysAPI extends RESTDataSource {
       throw new Error(`${data.result.message}: ${data.result.detailMessage}`);
     }
     return data;
+  }
+
+  private musicDetailsInfoLoader = new DataLoader((requestNos) =>
+    Promise.all(
+      requestNos.map((requestNo) =>
+        this.post<GetMusicDetailInfoResponse>(
+          "/search-api/GetMusicDetailInfoApi",
+          { requestNo }
+        ).then(this.checkError)
+      )
+    )
+  );
+
+  getMusicDetailsInfo(requestNo: string) {
+    return this.musicDetailsInfoLoader.load(requestNo);
   }
 
   private musicByKeywordLoader = new DataLoader((keywords) =>

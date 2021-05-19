@@ -11,17 +11,13 @@ import { isRomaji, toKana } from "wanakana";
 
 import { HOSTNAME } from "../common/constants";
 import rawSchema from "../common/schema.graphql";
-import {
-  DkwebsysAPI,
-  MinseiAPI,
-  MinseiCredentials,
-} from "./damApi";
+import { DkwebsysAPI, MinseiAPI, MinseiCredentials } from "./damApi";
 
 interface IDataSources {
   dataSources: {
-    minsei: MinseiAPI,
-    dkwebsys: DkwebsysAPI,
-  },
+    minsei: MinseiAPI;
+    dkwebsys: DkwebsysAPI;
+  };
 }
 
 type SongInput = {
@@ -40,18 +36,18 @@ interface SongParent {
   readonly artistName: string;
   readonly artistNameYomi: string;
   readonly lyricsPreview: string | null;
-};
+}
 
 interface ArtistParent {
   readonly id: string;
   readonly name: string;
   readonly nameYomi: string;
   readonly songCount: number;
-};
+}
 
 interface Artist extends ArtistParent {
   readonly songs: SongParent[];
-};
+}
 
 type QueueItem = {
   readonly song: SongInput;
@@ -98,12 +94,14 @@ const resolvers = {
       return parent.lyricsPreview;
     },
     streamingUrls(parent: SongParent, _: any, { dataSources }: IDataSources) {
-      return dataSources.minsei.getMusicStreamingUrls(parent.id)
-        .then(data => data.list.map(url => url.highBitrateUrl));
+      return dataSources.minsei
+        .getMusicStreamingUrls(parent.id)
+        .then((data) => data.list.map((url) => url.highBitrateUrl));
     },
     scoringData(parent: SongParent, _: any, { dataSources }: IDataSources) {
-      return dataSources.minsei.getScoringData(parent.id)
-        .then(data => Array.from(new Uint8Array(data)));
+      return dataSources.minsei
+        .getScoringData(parent.id)
+        .then((data) => Array.from(new Uint8Array(data)));
     },
   },
   Artist: {
@@ -119,63 +117,84 @@ const resolvers = {
     songCount(parent: ArtistParent) {
       return parent.songCount;
     },
-    songs(parent: ArtistParent, _: any, { dataSources }: IDataSources): Promise<SongParent[]> {
-      return dataSources.dkwebsys.getMusicListByArtist(parent.id)
-        .then(data => data.list.map(song => ({
+    songs(
+      parent: ArtistParent,
+      _: any,
+      { dataSources }: IDataSources
+    ): Promise<SongParent[]> {
+      return dataSources.dkwebsys.getMusicListByArtist(parent.id).then((data) =>
+        data.list.map((song) => ({
           id: song.requestNo,
           name: song.title,
           nameYomi: song.titleYomi,
           artistName: song.artist,
           artistNameYomi: song.artistYomi,
           lyricsPreview: null,
-        })));
+        }))
+      );
     },
   },
   Query: {
-    songsByName: (_: any, args: { name: string }, { dataSources }: IDataSources): Promise<SongParent[]> =>
-      dataSources.dkwebsys.getMusicByKeyword(args.name)
-        .then(songs => songs.list.map(song => ({
+    songsByName: (
+      _: any,
+      args: { name: string },
+      { dataSources }: IDataSources
+    ): Promise<SongParent[]> =>
+      dataSources.dkwebsys.getMusicByKeyword(args.name).then((songs) =>
+        songs.list.map((song) => ({
           id: song.requestNo,
           name: song.title,
           nameYomi: song.titleYomi,
           artistName: song.artist,
           artistNameYomi: song.artistYomi,
           lyricsPreview: null,
-        }))),
-    songById: (_: any, args: { id: string }, { dataSources }: IDataSources): Promise<SongParent> =>
-      dataSources.minsei.getMusicDetails(args.id)
-        .then(data => ({
-          id: args.id,
-          name: data.data.value,
-          nameYomi: data.data.contentsYomi,
-          artistName: data.data.artistName,
-          artistNameYomi: "",
-          lyricsPreview: data.data.firstLine,
-        })),
-    artistsByName: (_: any, args: { name: string }, { dataSources }: IDataSources): Promise<ArtistParent[]> =>
-      dataSources.dkwebsys.getArtistByKeyword(args.name)
-        .then(artists => artists.list.map(artist => ({
+        }))
+      ),
+    songById: (
+      _: any,
+      args: { id: string },
+      { dataSources }: IDataSources
+    ): Promise<SongParent> =>
+      dataSources.dkwebsys.getMusicDetailsInfo(args.id).then((data) => ({
+        id: args.id,
+        name: data.data.title,
+        nameYomi: data.data.titleYomi_Kana,
+        artistName: data.data.artist,
+        artistNameYomi: "",
+        lyricsPreview: data.data.firstLine,
+      })),
+    artistsByName: (
+      _: any,
+      args: { name: string },
+      { dataSources }: IDataSources
+    ): Promise<ArtistParent[]> =>
+      dataSources.dkwebsys.getArtistByKeyword(args.name).then((artists) =>
+        artists.list.map((artist) => ({
           id: artist.artistCode.toString(),
           name: artist.artist,
           nameYomi: artist.artistYomi,
           songCount: artist.holdMusicCount,
-        }))),
-    artistById: (_: any, args: { id: string }, { dataSources }: IDataSources): Promise<Artist> =>
-      dataSources.dkwebsys.getMusicListByArtist(args.id)
-        .then(data => ({
-          id: args.id,
-          name: data.data.artist,
-          nameYomi: data.data.artistYomi_Kana,
-          songCount: data.data.totalCount,
-          songs: data.list.map(song => ({
-            id: song.requestNo,
-            name: song.title,
-            nameYomi: song.titleYomi,
-            artistName: song.artist,
-            artistNameYomi: song.artistYomi,
-            lyricsPreview: null,
-          })),
+        }))
+      ),
+    artistById: (
+      _: any,
+      args: { id: string },
+      { dataSources }: IDataSources
+    ): Promise<Artist> =>
+      dataSources.dkwebsys.getMusicListByArtist(args.id).then((data) => ({
+        id: args.id,
+        name: data.data.artist,
+        nameYomi: data.data.artistYomi_Kana,
+        songCount: data.data.totalCount,
+        songs: data.list.map((song) => ({
+          id: song.requestNo,
+          name: song.title,
+          nameYomi: song.titleYomi,
+          artistName: song.artist,
+          artistNameYomi: song.artistYomi,
+          lyricsPreview: null,
         })),
+      })),
     queue: () => {
       if (!db.songQueue.length) return [];
       return db.songQueue;
