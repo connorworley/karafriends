@@ -10,6 +10,7 @@ export type SongInput = {
     artistName: string;
     artistNameYomi: string;
     lyricsPreview?: string | null;
+    tieUp?: string | null;
 };
 export type SongMutationVariables = {
     song: SongInput;

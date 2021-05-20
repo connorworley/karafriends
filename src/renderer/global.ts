@@ -3,6 +3,7 @@ declare global {
     karafriends: {
       isLoggedIn(): Promise<boolean>;
       attemptLogin(creds: { account: string; password: string }): void;
+      ipAddresses(): string[];
       nativeAudio: {
         inputDevices: () => string[];
         outputDevices: () => string[];

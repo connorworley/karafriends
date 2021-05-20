@@ -61,6 +61,7 @@ input SongInput {
   artistName: String!
   artistNameYomi: String!
   lyricsPreview: String
+  tieUp: String
 }
 
 type SongConnection {

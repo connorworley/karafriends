@@ -1,7 +1,7 @@
 import mdns from "multicast-dns";
-import { networkInterfaces } from "os";
 
 import { HOSTNAME } from "../common/constants";
+import ipAddresses from "../common/ipAddresses";
 
 export default function setupMdns() {
   const mdnsObj = mdns();
@@ -12,15 +12,12 @@ export default function setupMdns() {
       query.questions[0].type === "A"
     ) {
       mdnsObj.respond({
-        answers: Object.values(networkInterfaces())
-          .flat()
-          .filter((iface) => !iface.internal)
-          .map((iface) => ({
-            name: HOSTNAME,
-            type: "A",
-            ttl: 300,
-            data: iface.address,
-          })),
+        answers: ipAddresses().map((address) => ({
+          name: HOSTNAME,
+          type: "A",
+          ttl: 300,
+          data: address,
+        })),
       });
     }
   });

@@ -1,6 +1,7 @@
 import { contextBridge, ipcRenderer } from "electron"; // tslint:disable-line:no-implicit-dependencies
 
 import { Credentials, hasCredentials } from "../common/auth";
+import ipAddresses from "../common/ipAddresses";
 
 const nativeAudio = require("../../native"); // tslint:disable-line:no-var-requires
 
@@ -10,6 +11,7 @@ const inputDevices: { [deviceId: number]: any } = {};
 contextBridge.exposeInMainWorld("karafriends", {
   isLoggedIn: hasCredentials,
   attemptLogin: (creds: Credentials) => ipcRenderer.send("attemptLogin", creds),
+  ipAddresses,
   nativeAudio: {
     inputDevices: nativeAudio.inputDevices,
     outputDevices: nativeAudio.outputDevices,
