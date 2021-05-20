@@ -4,6 +4,17 @@
 }
 
 .appPlayer,
-.appSettings {
+.appSidebar {
   padding: 0 !important;
+  height: 100%;
+}
+
+.appSidebar {
+  display: flex;
+  flex-direction: column;
+}
+
+#toast-container {
+  top: 0px;
+  right: 10px;
 }

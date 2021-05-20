@@ -4,12 +4,15 @@ import React, { useEffect, useMemo, useState } from "react";
 import { graphql, useSubscription } from "react-relay";
 
 import Loader from "../common/components/Loader";
+import { HOSTNAME } from "../common/constants";
 import "./App.css";
 import { InputDevice } from "./audioSystem";
+import HostnameSetting from "./HostnameSetting";
 import Login from "./Login";
 import MicrophoneSetting from "./MicrophoneSetting";
 import Player from "./Player";
 import QRCode from "./QRCode";
+import Queue from "./Queue";
 import { AppQueueAddedSubscription } from "./__generated__/AppQueueAddedSubscription.graphql";
 
 enum AppState {
@@ -32,6 +35,7 @@ const songAddedSubscription = graphql`
 function App() {
   const [appState, setAppState] = useState(AppState.Loading);
   const [mics, setMics] = useState<InputDevice[]>([]);
+  const [hostname, setHostname] = useState(HOSTNAME);
 
   useEffect(() => {
     window.karafriends
@@ -49,7 +53,7 @@ function App() {
         onNext: (response) => {
           if (response)
             M.toast({
-              html: `${response.queueAdded.song.name}<br/>${response.queueAdded.song.artistName}`,
+              html: `<h3>${response.queueAdded.song.name} - ${response.queueAdded.song.artistName}</h3>`,
             });
         },
       }),
@@ -73,31 +77,30 @@ function App() {
       );
     case AppState.LoggedIn:
       return (
-        <div className="appMainContainer grey lighten-3">
-          <div className="row">
-            <div className="appPlayer col s10">
-              <Player mics={mics} />
-            </div>
-            <div className="appSettings col s2">
-              <nav className="center-align">Settings</nav>
-              <div className="col s12">
-                {[...Array(mics.length + 1).keys()].map((i) => (
-                  <MicrophoneSetting
-                    key={i}
-                    onChange={(name) => {
-                      if (mics[i]) mics[i].stop();
-                      const updatedMics = [...mics];
-                      updatedMics[i] = new InputDevice(name);
-                      setMics(updatedMics);
-                    }}
-                    value={mics[i] ? mics[i].name : ""}
-                  />
-                ))}
-              </div>
-            </div>
+        <div className="appMainContainer black row">
+          <div className="appPlayer col s11 valign-wrapper">
+            <Player mics={mics} />
           </div>
-          <div>
-            <QRCode />
+          <div className="appSidebar col s1 grey lighten-3">
+            <QRCode hostname={hostname} />
+            <nav className="center-align">Settings</nav>
+            <div>
+              <HostnameSetting onChange={setHostname} />
+              {[...Array(mics.length + 1).keys()].map((i) => (
+                <MicrophoneSetting
+                  key={i}
+                  onChange={(name) => {
+                    if (mics[i]) mics[i].stop();
+                    const updatedMics = [...mics];
+                    updatedMics[i] = new InputDevice(name);
+                    setMics(updatedMics);
+                  }}
+                  value={mics[i] ? mics[i].name : ""}
+                />
+              ))}
+            </div>
+            <nav className="center-align">Queue</nav>
+            <Queue />
           </div>
         </div>
       );

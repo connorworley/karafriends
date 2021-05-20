@@ -1,6 +1,7 @@
 .karaVidContainer {
   position: relative;
   background: black;
+  width: 100%;
 }
 
 .karaVid {

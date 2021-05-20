@@ -1,25 +1,37 @@
-import { toDataURL } from "qrcode";
-import React, { useEffect, useState } from "react";
+import { toCanvas } from "qrcode";
+import React, { useEffect, useRef } from "react";
 
-import Loader from "../common/components/Loader";
-import { HOSTNAME } from "../common/constants";
+import "./QRCode.css";
 
-function QRCode() {
-  const [imgSrc, setImgSrc] = useState<string | null>(null);
+function QRCode(props: { hostname: string }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    toDataURL(
-      `http://${HOSTNAME}:8080`,
-      { errorCorrectionLevel: "L" },
-      (error, url) => setImgSrc(url)
-    );
+    function update() {
+      if (!canvasRef.current) return;
+      console.log("update", canvasRef.current.clientWidth);
+      canvasRef.current.style.width = "100%";
+      toCanvas(
+        canvasRef.current,
+        `http://${props.hostname}:8080`,
+        {
+          errorCorrectionLevel: "L",
+          width: canvasRef.current.clientWidth,
+        },
+        (error) => {
+          if (error) {
+            console.error(error);
+          }
+        }
+      );
+    }
+
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
   });
 
-  if (imgSrc) {
-    return <img src={imgSrc} />;
-  } else {
-    return <Loader />;
-  }
+  return <canvas ref={canvasRef} className="qrcode" />;
 }
 
 export default QRCode;

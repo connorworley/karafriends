@@ -413,7 +413,9 @@ export default function PianoRoll(props: {
         buffer,
         new PitchProgram(
           gl,
-          convert.hsv.rgb([(360 / props.mics.length) * i, 255, 255])
+          convert.hsv
+            .rgb([(360 / props.mics.length) * i, 30, 100])
+            .map((channel) => channel / 255) as [number, number, number]
         ),
         setInterval(() => pollPitch(mic, buffer), 25),
       ];
