@@ -14,6 +14,7 @@ export type SongQueryResponse = {
         readonly artistNameYomi: string;
         readonly lyricsPreview: string | null;
         readonly tieUp: string | null;
+        readonly playtime: number | null;
     };
 };
 export type SongQuery = {
@@ -34,6 +35,7 @@ query SongQuery(
     artistNameYomi
     lyricsPreview
     tieUp
+    playtime
     id
   }
 }
@@ -95,6 +97,13 @@ v7 = {
   "kind": "ScalarField",
   "name": "tieUp",
   "storageKey": null
+},
+v8 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "playtime",
+  "storageKey": null
 };
 return {
   "fragment": {
@@ -116,7 +125,8 @@ return {
           (v4/*: any*/),
           (v5/*: any*/),
           (v6/*: any*/),
-          (v7/*: any*/)
+          (v7/*: any*/),
+          (v8/*: any*/)
         ],
         "storageKey": null
       }
@@ -144,6 +154,7 @@ return {
           (v5/*: any*/),
           (v6/*: any*/),
           (v7/*: any*/),
+          (v8/*: any*/),
           {
             "alias": null,
             "args": null,
@@ -157,14 +168,14 @@ return {
     ]
   },
   "params": {
-    "cacheID": "23b80e9567e7400e11ad0036ba8e81a7",
+    "cacheID": "645fc4394c55febaa15c2e53720c3719",
     "id": null,
     "metadata": {},
     "name": "SongQuery",
     "operationKind": "query",
-    "text": "query SongQuery(\n  $id: String!\n) {\n  songById(id: $id) {\n    name\n    nameYomi\n    artistName\n    artistNameYomi\n    lyricsPreview\n    tieUp\n    id\n  }\n}\n"
+    "text": "query SongQuery(\n  $id: String!\n) {\n  songById(id: $id) {\n    name\n    nameYomi\n    artistName\n    artistNameYomi\n    lyricsPreview\n    tieUp\n    playtime\n    id\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = '43973d4d058ac3be99326efa43175e45';
+(node as any).hash = '028a57cb757fafa92a6e77846aa731b4';
 export default node;

@@ -11,12 +11,13 @@ export type SongInput = {
     artistNameYomi: string;
     lyricsPreview?: string | null;
     tieUp?: string | null;
+    playtime?: number | null;
 };
 export type SongMutationVariables = {
     song: SongInput;
 };
 export type SongMutationResponse = {
-    readonly queueSong: boolean;
+    readonly queueSong: number;
 };
 export type SongMutation = {
     readonly response: SongMutationResponse;

@@ -1,3 +1,4 @@
+import formatDuration from "format-duration";
 import React from "react";
 
 import useQueue from "../common/hooks/useQueue";
@@ -7,7 +8,7 @@ export default function Queue() {
   const queue = useQueue();
   return (
     <div className="collection queueQueue">
-      {queue.map((item, i) => (
+      {queue.map(([item, eta], i) => (
         <div
           key={`${item.song.id}_${i}`}
           className="collection-item"
@@ -16,6 +17,9 @@ export default function Queue() {
           {item.song.name}
           <br />
           {item.song.artistName}
+          <span className="secondary-content">
+            T-{formatDuration(eta * 1000)}
+          </span>
         </div>
       ))}
     </div>

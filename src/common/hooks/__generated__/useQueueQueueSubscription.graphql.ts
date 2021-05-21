@@ -13,6 +13,7 @@ export type useQueueQueueSubscriptionResponse = {
             readonly artistName: string;
             readonly artistNameYomi: string;
             readonly lyricsPreview: string | null;
+            readonly playtime: number | null;
         };
         readonly timestamp: string;
     }>;
@@ -34,6 +35,7 @@ subscription useQueueQueueSubscription {
       artistName
       artistNameYomi
       lyricsPreview
+      playtime
     }
     timestamp
   }
@@ -99,6 +101,13 @@ var v0 = [
             "kind": "ScalarField",
             "name": "lyricsPreview",
             "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "playtime",
+            "storageKey": null
           }
         ],
         "storageKey": null
@@ -132,14 +141,14 @@ return {
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "99fb5cf9699efdb133171ccd5f60b430",
+    "cacheID": "5f4aba8836c45224b1a70d5c52e20b24",
     "id": null,
     "metadata": {},
     "name": "useQueueQueueSubscription",
     "operationKind": "subscription",
-    "text": "subscription useQueueQueueSubscription {\n  queueChanged {\n    song {\n      id\n      name\n      nameYomi\n      artistName\n      artistNameYomi\n      lyricsPreview\n    }\n    timestamp\n  }\n}\n"
+    "text": "subscription useQueueQueueSubscription {\n  queueChanged {\n    song {\n      id\n      name\n      nameYomi\n      artistName\n      artistNameYomi\n      lyricsPreview\n      playtime\n    }\n    timestamp\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = '9e9ef5c0ac5f208c523a59093fde6099';
+(node as any).hash = '1e386ae9ce67baf755c28c736989a6b2';
 export default node;

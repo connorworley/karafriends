@@ -13,6 +13,7 @@ export type useQueueQueueQueryResponse = {
             readonly artistName: string;
             readonly artistNameYomi: string;
             readonly lyricsPreview: string | null;
+            readonly playtime: number | null;
         };
         readonly timestamp: string;
     }>;
@@ -34,6 +35,7 @@ query useQueueQueueQuery {
       artistName
       artistNameYomi
       lyricsPreview
+      playtime
     }
     timestamp
   }
@@ -99,6 +101,13 @@ var v0 = [
             "kind": "ScalarField",
             "name": "lyricsPreview",
             "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "playtime",
+            "storageKey": null
           }
         ],
         "storageKey": null
@@ -132,14 +141,14 @@ return {
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "3534e36dd3629f260d8271d2c7ae3fe6",
+    "cacheID": "31e2909937a10a69a2747f9e84a3d90b",
     "id": null,
     "metadata": {},
     "name": "useQueueQueueQuery",
     "operationKind": "query",
-    "text": "query useQueueQueueQuery {\n  queue {\n    song {\n      id\n      name\n      nameYomi\n      artistName\n      artistNameYomi\n      lyricsPreview\n    }\n    timestamp\n  }\n}\n"
+    "text": "query useQueueQueueQuery {\n  queue {\n    song {\n      id\n      name\n      nameYomi\n      artistName\n      artistNameYomi\n      lyricsPreview\n      playtime\n    }\n    timestamp\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = '8f1d0eb3bd06000ca1d8e890dddbc21c';
+(node as any).hash = 'fdd03cb26a6b2439e714f4146e022219';
 export default node;

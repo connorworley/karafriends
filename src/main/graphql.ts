@@ -26,6 +26,7 @@ type SongInput = {
   readonly artistName: string;
   readonly artistNameYomi: string;
   readonly lyricsPreview: string | null;
+  readonly playtime?: number | null;
 };
 
 interface SongParent {
@@ -36,6 +37,7 @@ interface SongParent {
   readonly artistNameYomi: string;
   readonly lyricsPreview?: string | null;
   readonly tieUp?: string | null;
+  readonly playtime?: number | null;
 }
 
 interface ArtistParent {
@@ -108,6 +110,9 @@ const resolvers = {
     },
     tieUp(parent: SongParent) {
       return parent.tieUp || null;
+    },
+    playtime(parent: SongParent) {
+      return parent.playtime || null;
     },
     streamingUrls(parent: SongParent, _: any, { dataSources }: IDataSources) {
       return dataSources.minsei
@@ -206,6 +211,7 @@ const resolvers = {
         artistNameYomi: "",
         lyricsPreview: data.data.firstLine,
         tieUp: data.list[0].mModelMusicInfoList[0].highlightTieUp,
+        playtime: parseInt(data.list[0].mModelMusicInfoList[0].playtime, 10),
       })),
     artistsByName: (
       _: any,
@@ -258,7 +264,7 @@ const resolvers = {
     },
   },
   Mutation: {
-    queueSong: (_: any, args: { song: SongInput }): boolean => {
+    queueSong: (_: any, args: { song: SongInput }): number => {
       const queueItem = {
         song: args.song,
         timestamp: Date.now().toString(),
@@ -270,7 +276,10 @@ const resolvers = {
       pubsub.publish(SubscriptionEvent.QueueAdded, {
         queueAdded: queueItem,
       });
-      return true;
+      return db.songQueue.reduce(
+        (acc, cur) => acc + (cur.song.playtime || 0),
+        0
+      );
     },
     popSong: (_: any, args: {}): QueueItem | null => {
       pubsub.publish(SubscriptionEvent.QueueChanged, {
