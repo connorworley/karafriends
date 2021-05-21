@@ -1,3 +1,4 @@
+import formatDuration from "format-duration";
 import React from "react";
 import { graphql, useLazyLoadQuery, useMutation } from "react-relay";
 import { Link } from "react-router-dom";
@@ -22,7 +23,7 @@ const Controls = () => {
   };
   return (
     <div className="collection">
-      {queue.map((item, i) => {
+      {queue.map(([item, eta], i) => {
         return (
           <div
             key={`${item.song.id}_${i}`}
@@ -36,6 +37,9 @@ const Controls = () => {
             >
               {item.song.artistName} - {item.song.name}
             </Link>
+            <span className="secondary-content">
+              T-{formatDuration(eta * 1000)}
+            </span>
             <div
               style={{ cursor: "pointer" }}
               onClick={(e) => {

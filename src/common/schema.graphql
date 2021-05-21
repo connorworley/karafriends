@@ -7,7 +7,7 @@ type Query {
 }
 
 type Mutation {
-  queueSong(song: SongInput!): Boolean!
+  queueSong(song: SongInput!): Int!
   popSong: QueueItem
   removeSong(songId: String!, timestamp: String!): Boolean!
 }
@@ -52,6 +52,7 @@ type Song {
   streamingUrls: [String!]!
   scoringData: [Int!]!
   tieUp: String
+  playtime: Int
 }
 
 input SongInput {
@@ -62,6 +63,7 @@ input SongInput {
   artistNameYomi: String!
   lyricsPreview: String
   tieUp: String
+  playtime: Int
 }
 
 type SongConnection {

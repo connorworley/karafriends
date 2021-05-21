@@ -1,3 +1,4 @@
+import formatDuration from "format-duration";
 import React, { useEffect, useState } from "react";
 import { graphql, useLazyLoadQuery, useMutation } from "react-relay";
 import { RouteComponentProps } from "react-router-dom";
@@ -15,6 +16,7 @@ const songQuery = graphql`
       artistNameYomi
       lyricsPreview
       tieUp
+      playtime
     }
   }
 `;
@@ -33,7 +35,10 @@ interface Props extends RouteComponentProps<SongParams> {}
 
 function Song(props: Props) {
   const { id } = props.match.params;
-  const [queued, setQueued] = useState(false);
+  const initialQueueButtonText = "Queue song";
+  const [queueButtonText, setQueueButtonText] = useState(
+    initialQueueButtonText
+  );
   const data = useLazyLoadQuery<SongQuery>(songQuery, { id });
   const [commit, isInFlight] = useMutation<SongMutation>(songMutation);
 
@@ -42,12 +47,18 @@ function Song(props: Props) {
   const onClickQueueSong = () => {
     commit({
       variables: { song: { id, ...song } },
-      onCompleted: ({ queueSong }) => setQueued(queueSong),
+      onCompleted: ({ queueSong }) =>
+        setQueueButtonText(
+          `Estimated wait: T-${formatDuration(queueSong * 1000)}`
+        ),
     });
   };
 
   useEffect(() => {
-    const timeout = setTimeout(() => setQueued(false), 1000);
+    const timeout = setTimeout(
+      () => setQueueButtonText(initialQueueButtonText),
+      2500
+    );
     return () => clearTimeout(timeout);
   });
 
@@ -65,10 +76,12 @@ function Song(props: Props) {
       </div>
       <div className="card-action">
         <button
-          className={`btn ${queued ? "disabled" : ""}`}
+          className={`btn ${
+            queueButtonText !== initialQueueButtonText ? "disabled" : ""
+          }`}
           onClick={onClickQueueSong}
         >
-          {queued ? "Queued!" : "Queue song"}
+          {queueButtonText}
         </button>
       </div>
     </div>
