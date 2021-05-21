@@ -3,30 +3,30 @@ import React, { useEffect, useState } from "react";
 import { graphql, useMutation } from "react-relay";
 
 import {
-  QueueButtonMutation,
-  QueueButtonMutationVariables,
-} from "./__generated__/QueueButtonMutation.graphql";
+  YoutubeQueueButtonMutation,
+  YoutubeQueueButtonMutationVariables,
+} from "./__generated__/YoutubeQueueButtonMutation.graphql";
 
-const queueButtonMutation = graphql`
-  mutation QueueButtonMutation($song: SongInput!, $streamingUrlIdx: Int!) {
-    queueSong(song: $song, streamingUrlIdx: $streamingUrlIdx)
+const youtubeQueueButtonMutation = graphql`
+  mutation YoutubeQueueButtonMutation($input: QueueYoutubeSongInput!) {
+    queueYoutubeSong(input: $input)
   }
 `;
 
-export default function QueueButton(props: {
+export default function YoutubeQueueButton(props: {
   defaultText: string;
-  variables: QueueButtonMutationVariables;
+  variables: YoutubeQueueButtonMutationVariables;
 }) {
   const [text, setText] = useState(props.defaultText);
-  const [commit, isInFlight] = useMutation<QueueButtonMutation>(
-    queueButtonMutation
+  const [commit] = useMutation<YoutubeQueueButtonMutation>(
+    youtubeQueueButtonMutation
   );
 
   const onClick = () => {
     commit({
       variables: props.variables,
-      onCompleted: ({ queueSong }) =>
-        setText(`Estimated wait: T-${formatDuration(queueSong * 1000)}`),
+      onCompleted: ({ queueYoutubeSong }) =>
+        setText(`Estimated wait: T-${formatDuration(queueYoutubeSong * 1000)}`),
     });
   };
 

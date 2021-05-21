@@ -24,7 +24,7 @@ enum AppState {
 const songAddedSubscription = graphql`
   subscription AppQueueAddedSubscription {
     queueAdded {
-      song {
+      ... on QueueItemInterface {
         name
         artistName
       }
@@ -53,7 +53,7 @@ function App() {
         onNext: (response) => {
           if (response)
             M.toast({
-              html: `<h3>${response.queueAdded.song.name} - ${response.queueAdded.song.artistName}</h3>`,
+              html: `<h3>${response.queueAdded.name} - ${response.queueAdded.artistName}</h3>`,
             });
         },
       }),

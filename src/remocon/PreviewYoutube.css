@@ -1,0 +1,31 @@
+.flex-container {
+  display: flex;
+}
+
+.flex-item {
+  padding-top: 1em;
+  padding-left: 1em;
+}
+
+.flex-vertical {
+  flex-direction: column;
+}
+
+.channel-name {
+  font-weight: bold;
+  font-size: large;
+}
+
+@media screen and (max-width: 992px) {
+  .flex-container {
+    flex-wrap: wrap;
+  }
+
+  #youtube-player {
+    width: 100%;
+  }
+
+  .responsive-player-width {
+    width: 100%;
+  }
+}

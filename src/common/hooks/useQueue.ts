@@ -15,13 +15,14 @@ type ElementType<T extends ReadonlyArray<unknown>> = T extends ReadonlyArray<
 const queueQuery = graphql`
   query useQueueQueueQuery {
     queue {
-      song {
+      ... on QueueItemInterface {
+        __typename
         id
         name
         artistName
         playtime
+        timestamp
       }
-      timestamp
     }
   }
 `;
@@ -29,13 +30,14 @@ const queueQuery = graphql`
 const queueSubscription = graphql`
   subscription useQueueQueueSubscription {
     queueChanged {
-      song {
+      ... on QueueItemInterface {
+        __typename
         id
         name
         artistName
         playtime
+        timestamp
       }
-      timestamp
     }
   }
 `;
@@ -45,7 +47,7 @@ type StateType = useQueueQueueQuery["response"]["queue"];
 function withETAs(queue: StateType) {
   const result = queue.reduce<[[ElementType<StateType>, number][], number]>(
     ([results, totalETA], cur) => {
-      const playtime = cur.song.playtime || 0;
+      const playtime = cur.playtime || 0;
       return [
         results.concat([[cur, totalETA + playtime]]),
         totalETA + playtime,
