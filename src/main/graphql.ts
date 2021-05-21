@@ -5,7 +5,6 @@ import isDev from "electron-is-dev";
 import { Application } from "express";
 import { execute, subscribe } from "graphql";
 import { PubSub } from "graphql-subscriptions";
-import promiseRetry from "promise-retry";
 import { SubscriptionServer } from "subscriptions-transport-ws";
 import { isRomaji, toKana } from "wanakana";
 
@@ -86,10 +85,6 @@ const db: NotARealDb = {
 };
 
 const pubsub = new PubSub();
-
-function stripWhitespace(str: string) {
-  return str.replace(/\s+/g, "");
-}
 
 const resolvers = {
   Song: {

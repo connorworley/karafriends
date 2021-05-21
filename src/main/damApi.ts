@@ -8,6 +8,7 @@ import {
 import DataLoader from "dataloader";
 import { request } from "express";
 import fetch from "node-fetch";
+import promiseRetry from "promise-retry";
 
 const BASE_MINSEI_REQUEST = {
   charset: "UTF-8",
@@ -106,22 +107,34 @@ export class MinseiAPI extends RESTDataSource {
   }
 
   getMusicStreamingUrls(requestNo: string) {
-    return this.post<MinseiStreamingUrls>(
-      "/music/playLog/GetMusicStreamingURL.api",
-      { requestNo, ...this.creds }
-    ).then(MinseiAPI.checkError);
+    // This endpoint seems to be flaky
+    return promiseRetry((retry) =>
+      this.post<MinseiStreamingUrls>(
+        "/music/playLog/GetMusicStreamingURL.api",
+        { requestNo, ...this.creds }
+      )
+        .then(MinseiAPI.checkError)
+        .catch(retry)
+    );
   }
 
   getScoringData(requestNo: string) {
-    return this.post<object | ArrayBuffer>(
-      "/scoring/GetScoringReferenceData.api",
-      { requestNo, ...this.creds }
-    ).then((body) => {
-      if (!(body instanceof ArrayBuffer)) {
-        return Promise.reject("Scoring data was not returned in binary format");
-      }
-      return body;
-    });
+    // This endpoint seems to be flaky
+    return promiseRetry((retry) =>
+      this.post<object | ArrayBuffer>("/scoring/GetScoringReferenceData.api", {
+        requestNo,
+        ...this.creds,
+      })
+        .then((body) => {
+          if (!(body instanceof ArrayBuffer)) {
+            return Promise.reject(
+              "Scoring data was not returned in binary format"
+            );
+          }
+          return body;
+        })
+        .catch(retry)
+    );
   }
 }
 
