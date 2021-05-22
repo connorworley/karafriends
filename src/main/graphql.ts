@@ -22,10 +22,7 @@ interface IDataSources {
 type SongInput = {
   readonly id: string;
   readonly name: string;
-  readonly nameYomi: string;
   readonly artistName: string;
-  readonly artistNameYomi: string;
-  readonly lyricsPreview: string | null;
   readonly playtime?: number | null;
 };
 
@@ -71,6 +68,7 @@ interface PageInfo<CursorType> {
 type QueueItem = {
   readonly song: SongInput;
   readonly timestamp: string;
+  readonly streamingUrl: string;
 };
 
 type NotARealDb = {
@@ -117,7 +115,12 @@ const resolvers = {
     streamingUrls(parent: SongParent, _: any, { dataSources }: IDataSources) {
       return dataSources.minsei
         .getMusicStreamingUrls(parent.id)
-        .then((data) => data.list.map((url) => url.highBitrateUrl));
+        .then((data) =>
+          data.list.map((info) => ({
+            url: info.highBitrateUrl,
+            isGuideVocal: info.duet !== "normal",
+          }))
+        );
     },
     scoringData(parent: SongParent, _: any, { dataSources }: IDataSources) {
       return dataSources.minsei
@@ -264,10 +267,13 @@ const resolvers = {
     },
   },
   Mutation: {
-    queueSong: (_: any, args: { song: SongInput }): number => {
+    queueSong: (
+      _: any,
+      args: { song: SongInput; streamingUrl: string }
+    ): number => {
       const queueItem = {
-        song: args.song,
         timestamp: Date.now().toString(),
+        ...args,
       };
       db.songQueue.push(queueItem);
       pubsub.publish(SubscriptionEvent.QueueChanged, {

@@ -6,31 +6,29 @@ import { ConcreteRequest } from "relay-runtime";
 export type SongInput = {
     id: string;
     name: string;
-    nameYomi: string;
     artistName: string;
-    artistNameYomi: string;
-    lyricsPreview?: string | null;
-    tieUp?: string | null;
     playtime?: number | null;
 };
-export type SongMutationVariables = {
+export type QueueButtonMutationVariables = {
     song: SongInput;
+    streamingUrl: string;
 };
-export type SongMutationResponse = {
+export type QueueButtonMutationResponse = {
     readonly queueSong: number;
 };
-export type SongMutation = {
-    readonly response: SongMutationResponse;
-    readonly variables: SongMutationVariables;
+export type QueueButtonMutation = {
+    readonly response: QueueButtonMutationResponse;
+    readonly variables: QueueButtonMutationVariables;
 };
 
 
 
 /*
-mutation SongMutation(
+mutation QueueButtonMutation(
   $song: SongInput!
+  $streamingUrl: String!
 ) {
-  queueSong(song: $song)
+  queueSong(song: $song, streamingUrl: $streamingUrl)
 }
 */
 
@@ -40,6 +38,11 @@ var v0 = [
     "defaultValue": null,
     "kind": "LocalArgument",
     "name": "song"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "streamingUrl"
   }
 ],
 v1 = [
@@ -50,6 +53,11 @@ v1 = [
         "kind": "Variable",
         "name": "song",
         "variableName": "song"
+      },
+      {
+        "kind": "Variable",
+        "name": "streamingUrl",
+        "variableName": "streamingUrl"
       }
     ],
     "kind": "ScalarField",
@@ -62,7 +70,7 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "SongMutation",
+    "name": "QueueButtonMutation",
     "selections": (v1/*: any*/),
     "type": "Mutation",
     "abstractKey": null
@@ -71,18 +79,18 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "SongMutation",
+    "name": "QueueButtonMutation",
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "d1d11a2f94c3d8044173057bec2641e3",
+    "cacheID": "69bc63b15213f592d631ef315cf59dc8",
     "id": null,
     "metadata": {},
-    "name": "SongMutation",
+    "name": "QueueButtonMutation",
     "operationKind": "mutation",
-    "text": "mutation SongMutation(\n  $song: SongInput!\n) {\n  queueSong(song: $song)\n}\n"
+    "text": "mutation QueueButtonMutation(\n  $song: SongInput!\n  $streamingUrl: String!\n) {\n  queueSong(song: $song, streamingUrl: $streamingUrl)\n}\n"
   }
 };
 })();
-(node as any).hash = 'fae36ceb178c21999c0b159affc55fed';
+(node as any).hash = '3e2da98382c45d6acbf78b99579be88a';
 export default node;

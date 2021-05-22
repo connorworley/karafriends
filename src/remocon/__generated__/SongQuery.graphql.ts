@@ -15,6 +15,10 @@ export type SongQueryResponse = {
         readonly lyricsPreview: string | null;
         readonly tieUp: string | null;
         readonly playtime: number | null;
+        readonly streamingUrls: ReadonlyArray<{
+            readonly url: string;
+            readonly isGuideVocal: boolean;
+        }>;
     };
 };
 export type SongQuery = {
@@ -36,6 +40,10 @@ query SongQuery(
     lyricsPreview
     tieUp
     playtime
+    streamingUrls {
+      url
+      isGuideVocal
+    }
     id
   }
 }
@@ -104,6 +112,31 @@ v8 = {
   "kind": "ScalarField",
   "name": "playtime",
   "storageKey": null
+},
+v9 = {
+  "alias": null,
+  "args": null,
+  "concreteType": "StreamingUrlInfo",
+  "kind": "LinkedField",
+  "name": "streamingUrls",
+  "plural": true,
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "url",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "isGuideVocal",
+      "storageKey": null
+    }
+  ],
+  "storageKey": null
 };
 return {
   "fragment": {
@@ -126,7 +159,8 @@ return {
           (v5/*: any*/),
           (v6/*: any*/),
           (v7/*: any*/),
-          (v8/*: any*/)
+          (v8/*: any*/),
+          (v9/*: any*/)
         ],
         "storageKey": null
       }
@@ -155,6 +189,7 @@ return {
           (v6/*: any*/),
           (v7/*: any*/),
           (v8/*: any*/),
+          (v9/*: any*/),
           {
             "alias": null,
             "args": null,
@@ -168,14 +203,14 @@ return {
     ]
   },
   "params": {
-    "cacheID": "645fc4394c55febaa15c2e53720c3719",
+    "cacheID": "952353d21e3fa7484d2b60185e54b808",
     "id": null,
     "metadata": {},
     "name": "SongQuery",
     "operationKind": "query",
-    "text": "query SongQuery(\n  $id: String!\n) {\n  songById(id: $id) {\n    name\n    nameYomi\n    artistName\n    artistNameYomi\n    lyricsPreview\n    tieUp\n    playtime\n    id\n  }\n}\n"
+    "text": "query SongQuery(\n  $id: String!\n) {\n  songById(id: $id) {\n    name\n    nameYomi\n    artistName\n    artistNameYomi\n    lyricsPreview\n    tieUp\n    playtime\n    streamingUrls {\n      url\n      isGuideVocal\n    }\n    id\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = '028a57cb757fafa92a6e77846aa731b4';
+(node as any).hash = '23f1602ba632c293673bd035fd460cc7';
 export default node;

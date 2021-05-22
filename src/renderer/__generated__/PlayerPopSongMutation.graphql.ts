@@ -8,8 +8,10 @@ export type PlayerPopSongMutationResponse = {
     readonly popSong: {
         readonly song: {
             readonly id: string;
+            readonly scoringData: ReadonlyArray<number>;
         };
         readonly timestamp: string;
+        readonly streamingUrl: string;
     } | null;
 };
 export type PlayerPopSongMutation = {
@@ -24,8 +26,10 @@ mutation PlayerPopSongMutation {
   popSong {
     song {
       id
+      scoringData
     }
     timestamp
+    streamingUrl
   }
 }
 */
@@ -54,6 +58,13 @@ var v0 = [
             "kind": "ScalarField",
             "name": "id",
             "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "scoringData",
+            "storageKey": null
           }
         ],
         "storageKey": null
@@ -63,6 +74,13 @@ var v0 = [
         "args": null,
         "kind": "ScalarField",
         "name": "timestamp",
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "streamingUrl",
         "storageKey": null
       }
     ],
@@ -87,14 +105,14 @@ return {
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "197d24689f7a766769638405764a848d",
+    "cacheID": "6a543b2538746c8224b70eb8da98af62",
     "id": null,
     "metadata": {},
     "name": "PlayerPopSongMutation",
     "operationKind": "mutation",
-    "text": "mutation PlayerPopSongMutation {\n  popSong {\n    song {\n      id\n    }\n    timestamp\n  }\n}\n"
+    "text": "mutation PlayerPopSongMutation {\n  popSong {\n    song {\n      id\n      scoringData\n    }\n    timestamp\n    streamingUrl\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = '235ef885c5af5ccdea3cf66cd89da836';
+(node as any).hash = '6e3f706395d3ac9fa32cf430bc02817e';
 export default node;

@@ -1,10 +1,9 @@
-import formatDuration from "format-duration";
-import React, { useEffect, useState } from "react";
-import { graphql, useLazyLoadQuery, useMutation } from "react-relay";
+import React from "react";
+import { graphql, useLazyLoadQuery } from "react-relay";
 import { RouteComponentProps } from "react-router-dom";
 
 import { withLoader } from "../common/components/Loader";
-import { SongMutation } from "./__generated__/SongMutation.graphql";
+import QueueButton from "./components/QueueButton";
 import { SongQuery } from "./__generated__/SongQuery.graphql";
 
 const songQuery = graphql`
@@ -17,13 +16,11 @@ const songQuery = graphql`
       lyricsPreview
       tieUp
       playtime
+      streamingUrls {
+        url
+        isGuideVocal
+      }
     }
-  }
-`;
-
-const songMutation = graphql`
-  mutation SongMutation($song: SongInput!) {
-    queueSong(song: $song)
   }
 `;
 
@@ -35,33 +32,8 @@ interface Props extends RouteComponentProps<SongParams> {}
 
 function Song(props: Props) {
   const { id } = props.match.params;
-  const initialQueueButtonText = "Queue song";
-  const [queueButtonText, setQueueButtonText] = useState(
-    initialQueueButtonText
-  );
   const data = useLazyLoadQuery<SongQuery>(songQuery, { id });
-  const [commit, isInFlight] = useMutation<SongMutation>(songMutation);
-
   const song = data.songById;
-
-  const onClickQueueSong = () => {
-    commit({
-      variables: { song: { id, ...song } },
-      onCompleted: ({ queueSong }) =>
-        setQueueButtonText(
-          `Estimated wait: T-${formatDuration(queueSong * 1000)}`
-        ),
-    });
-  };
-
-  useEffect(() => {
-    const timeout = setTimeout(
-      () => setQueueButtonText(initialQueueButtonText),
-      2500
-    );
-    return () => clearTimeout(timeout);
-  });
-
   return (
     <div className="card">
       <div className="card-content">
@@ -75,14 +47,24 @@ function Song(props: Props) {
         )}
       </div>
       <div className="card-action">
-        <button
-          className={`btn ${
-            queueButtonText !== initialQueueButtonText ? "disabled" : ""
-          }`}
-          onClick={onClickQueueSong}
-        >
-          {queueButtonText}
-        </button>
+        {song.streamingUrls.map((info) => (
+          <span key={info.url}>
+            <QueueButton
+              defaultText={
+                info.isGuideVocal ? "Queue song (Guide vocal)" : "Queue song"
+              }
+              variables={{
+                song: {
+                  id,
+                  name: song.name,
+                  artistName: song.artistName,
+                  playtime: song.playtime,
+                },
+                streamingUrl: info.url,
+              }}
+            />{" "}
+          </span>
+        ))}
       </div>
     </div>
   );

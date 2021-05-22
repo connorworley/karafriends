@@ -9,10 +9,7 @@ export type useQueueQueueQueryResponse = {
         readonly song: {
             readonly id: string;
             readonly name: string;
-            readonly nameYomi: string;
             readonly artistName: string;
-            readonly artistNameYomi: string;
-            readonly lyricsPreview: string | null;
             readonly playtime: number | null;
         };
         readonly timestamp: string;
@@ -31,10 +28,7 @@ query useQueueQueueQuery {
     song {
       id
       name
-      nameYomi
       artistName
-      artistNameYomi
-      lyricsPreview
       playtime
     }
     timestamp
@@ -78,28 +72,7 @@ var v0 = [
             "alias": null,
             "args": null,
             "kind": "ScalarField",
-            "name": "nameYomi",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
             "name": "artistName",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "artistNameYomi",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "lyricsPreview",
             "storageKey": null
           },
           {
@@ -141,14 +114,14 @@ return {
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "31e2909937a10a69a2747f9e84a3d90b",
+    "cacheID": "3d0f226793d5f91fe17e8aaea9c90b0d",
     "id": null,
     "metadata": {},
     "name": "useQueueQueueQuery",
     "operationKind": "query",
-    "text": "query useQueueQueueQuery {\n  queue {\n    song {\n      id\n      name\n      nameYomi\n      artistName\n      artistNameYomi\n      lyricsPreview\n      playtime\n    }\n    timestamp\n  }\n}\n"
+    "text": "query useQueueQueueQuery {\n  queue {\n    song {\n      id\n      name\n      artistName\n      playtime\n    }\n    timestamp\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = 'fdd03cb26a6b2439e714f4146e022219';
+(node as any).hash = '203d2cc24158144101e9b039fa222185';
 export default node;
