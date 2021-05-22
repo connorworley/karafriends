@@ -18,10 +18,7 @@ const queueQuery = graphql`
       song {
         id
         name
-        nameYomi
         artistName
-        artistNameYomi
-        lyricsPreview
         playtime
       }
       timestamp
@@ -35,10 +32,7 @@ const queueSubscription = graphql`
       song {
         id
         name
-        nameYomi
         artistName
-        artistNameYomi
-        lyricsPreview
         playtime
       }
       timestamp

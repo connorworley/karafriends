@@ -9,10 +9,7 @@ export type useQueueQueueSubscriptionResponse = {
         readonly song: {
             readonly id: string;
             readonly name: string;
-            readonly nameYomi: string;
             readonly artistName: string;
-            readonly artistNameYomi: string;
-            readonly lyricsPreview: string | null;
             readonly playtime: number | null;
         };
         readonly timestamp: string;
@@ -31,10 +28,7 @@ subscription useQueueQueueSubscription {
     song {
       id
       name
-      nameYomi
       artistName
-      artistNameYomi
-      lyricsPreview
       playtime
     }
     timestamp
@@ -78,28 +72,7 @@ var v0 = [
             "alias": null,
             "args": null,
             "kind": "ScalarField",
-            "name": "nameYomi",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
             "name": "artistName",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "artistNameYomi",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "lyricsPreview",
             "storageKey": null
           },
           {
@@ -141,14 +114,14 @@ return {
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "5f4aba8836c45224b1a70d5c52e20b24",
+    "cacheID": "3936cedda4eff4ae6ddfad4ea96a2ce7",
     "id": null,
     "metadata": {},
     "name": "useQueueQueueSubscription",
     "operationKind": "subscription",
-    "text": "subscription useQueueQueueSubscription {\n  queueChanged {\n    song {\n      id\n      name\n      nameYomi\n      artistName\n      artistNameYomi\n      lyricsPreview\n      playtime\n    }\n    timestamp\n  }\n}\n"
+    "text": "subscription useQueueQueueSubscription {\n  queueChanged {\n    song {\n      id\n      name\n      artistName\n      playtime\n    }\n    timestamp\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = '1e386ae9ce67baf755c28c736989a6b2';
+(node as any).hash = '4546379f1f0e2ebdcb79b05a20512c2c';
 export default node;
