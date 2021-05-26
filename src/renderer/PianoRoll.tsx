@@ -170,7 +170,7 @@ class SeekProgram extends ShaderProgram<[number]> {
       );
       this.gl.enableVertexAttribArray(this.attributeLocations.position);
       this.gl.uniform1f(this.uniformLocations.timeWidth, TIME_WIDTH_SECS);
-      this.gl.uniform3fv(this.uniformLocations.color, [0.9, 0.9, 0.9]);
+      this.gl.uniform4fv(this.uniformLocations.color, [0.9, 0.9, 0.9, 1.0]);
     }
 
     this.gl.uniform1f(this.uniformLocations.time, time);
@@ -210,7 +210,7 @@ class PitchProgram extends ShaderProgram<[number, number, number[]]> {
       );
       this.gl.enableVertexAttribArray(this.attributeLocations.position);
       this.gl.uniform1f(this.uniformLocations.timeWidth, TIME_WIDTH_SECS);
-      this.gl.uniform3fv(this.uniformLocations.color, this.color);
+      this.gl.uniform4f(this.uniformLocations.color, ...this.color, 1.0);
     }
 
     this.gl.uniform1f(this.uniformLocations.time, time);
@@ -222,6 +222,49 @@ class PitchProgram extends ShaderProgram<[number, number, number[]]> {
       this.gl.DYNAMIC_DRAW
     );
     this.gl.drawArrays(this.gl.TRIANGLES, 0, positions.length / 2);
+  }
+}
+
+class FreeTimeProgram extends ShaderProgram<[number, number]> {
+  readonly triangleCount: number;
+
+  constructor(gl: WebGLRenderingContext, positions: number[]) {
+    super(
+      gl,
+      [
+        loadShader(gl, gl.VERTEX_SHADER, midiVertShaderRaw)!,
+        loadShader(gl, gl.FRAGMENT_SHADER, singleColorFragShaderRaw)!,
+      ],
+      ["position"],
+      ["time", "timeWidth", "canvasWidth", "color"],
+      ["positions"]
+    );
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.positions);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+    this.triangleCount = positions.length / 2;
+  }
+
+  draw(time: number, canvasWidth: number) {
+    if (this.gl.CURRENT_PROGRAM !== this.program) {
+      this.gl.useProgram(this.program);
+      this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffers.positions);
+      this.gl.vertexAttribPointer(
+        this.attributeLocations.position,
+        2,
+        this.gl.FLOAT,
+        false,
+        0,
+        0
+      );
+      this.gl.enableVertexAttribArray(this.attributeLocations.position);
+      this.gl.uniform1f(this.uniformLocations.timeWidth, TIME_WIDTH_SECS);
+      this.gl.uniform4fv(this.uniformLocations.color, [0, 0, 0, 0.5]);
+    }
+
+    this.gl.uniform1f(this.uniformLocations.time, time);
+    this.gl.uniform1f(this.uniformLocations.canvasWidth, canvasWidth);
+
+    this.gl.drawArrays(this.gl.TRIANGLES, 0, this.triangleCount);
   }
 }
 
@@ -340,6 +383,9 @@ export default function PianoRoll(props: {
 
     const view = new Uint32Array(Uint8Array.from(props.scoringData).buffer);
     const noteCount = view[1];
+    const lyricsIntervalCount = view[2];
+    const damTimeWindowIntervalCount = view[3];
+    const pogIntervalCount = view[4];
 
     const notes: {
       startTime: number;
@@ -350,11 +396,12 @@ export default function PianoRoll(props: {
     const nBars = 36;
     const barSize = 1 / nBars;
 
-    for (let i = 0; i < noteCount * 4; i += 4) {
+    const notesOffset = 6;
+    for (let i = notesOffset; i < notesOffset + noteCount * 4; i += 4) {
       notes.push({
-        startTime: view[6 + i] / 1000,
-        endTime: view[6 + i + 1] / 1000,
-        midiNumber: view[6 + i + 2],
+        startTime: view[i] / 1000,
+        endTime: view[i + 1] / 1000,
+        midiNumber: view[i + 2],
       });
     }
 
@@ -372,6 +419,61 @@ export default function PianoRoll(props: {
       .flat();
 
     let currentNoteIndex = 0;
+
+    const lyricsIntervals: [number, number][] = [];
+    const lyricsIntervalsOffset = notesOffset + noteCount * 4;
+    for (
+      let i = lyricsIntervalsOffset;
+      i < lyricsIntervalsOffset + lyricsIntervalCount * 2;
+      i += 2
+    ) {
+      lyricsIntervals.push([view[i] / 1000, view[i + 1] / 1000]);
+    }
+    const combinedLyricsIntervals = lyricsIntervals.reduce<[number, number][]>(
+      (acc, cur) => {
+        if (acc.length === 0) {
+          return [cur];
+        }
+        const [prevStart, prevEnd] = acc[acc.length - 1];
+        const [curStart, curEnd] = cur;
+        if (curStart - prevEnd <= 10) {
+          acc[acc.length - 1] = [prevStart, curEnd];
+          return acc;
+        } else {
+          return acc.concat([cur]);
+        }
+      },
+      []
+    );
+    const [
+      freeTimeIntervals,
+      lastLyricsIntervalEnd,
+    ] = combinedLyricsIntervals.reduce<[[number, number][], number]>(
+      (acc, cur) => {
+        const [intervals, prevEnd] = acc;
+        const [curStart, curEnd] = cur;
+        return [intervals.concat([[prevEnd, curStart]]), curEnd];
+      },
+      [[], 0]
+    );
+    freeTimeIntervals.push([lastLyricsIntervalEnd, 9999]);
+    const freeTimePositions = freeTimeIntervals
+      .map(([start, end]) => quadToTriangles(start, 1.0, end, 0.0))
+      .flat();
+
+    const damTimeWindowIntervalsOffset =
+      lyricsIntervalsOffset + lyricsIntervalCount * 2;
+
+    const pogIntervals: [number, number][] = [];
+    const pogIntervalsOffset =
+      damTimeWindowIntervalsOffset + damTimeWindowIntervalCount * 2;
+    for (
+      let i = pogIntervalsOffset;
+      i < pogIntervalsOffset + pogIntervalCount * 2;
+      i += 2
+    ) {
+      pogIntervals.push([view[i] / 1000, view[i + 1] / 1000]);
+    }
 
     function pollPitch(mic: InputDevice | null, buffer: PitchDetectionBuffer) {
       if (!mic || !props.videoRef.current) return;
@@ -423,6 +525,7 @@ export default function PianoRoll(props: {
 
     const noteProgram = new NoteProgram(gl, positions);
     const seekProgram = new SeekProgram(gl);
+    const freeTimeProgram = new FreeTimeProgram(gl, freeTimePositions);
 
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
 
@@ -433,6 +536,10 @@ export default function PianoRoll(props: {
       const canvasWidth = canvasRef.current.width;
 
       gl.clear(gl.COLOR_BUFFER_BIT);
+
+      if (freeTimePositions.length > 0) {
+        freeTimeProgram.draw(time, canvasWidth);
+      }
 
       if (positions.length > 0) {
         noteProgram.draw(time, canvasWidth);
@@ -445,6 +552,11 @@ export default function PianoRoll(props: {
       });
 
       seekProgram.draw(time);
+
+      canvasRef.current.classList.toggle(
+        "pianoRollPog",
+        pogIntervals.some(([start, end]) => time >= start - 1 && time <= end)
+      );
 
       animationFrameRequestRef.current = window.requestAnimationFrame(draw);
     };
@@ -486,5 +598,5 @@ export default function PianoRoll(props: {
     };
   }, [props]);
 
-  return <canvas className="karaVidPianoRoll" ref={canvasRef}></canvas>;
+  return <canvas className="pianoRollRoll" ref={canvasRef}></canvas>;
 }
