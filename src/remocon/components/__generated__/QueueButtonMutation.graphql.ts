@@ -11,7 +11,7 @@ export type SongInput = {
 };
 export type QueueButtonMutationVariables = {
     song: SongInput;
-    streamingUrl: string;
+    streamingUrlIdx: number;
 };
 export type QueueButtonMutationResponse = {
     readonly queueSong: number;
@@ -26,9 +26,9 @@ export type QueueButtonMutation = {
 /*
 mutation QueueButtonMutation(
   $song: SongInput!
-  $streamingUrl: String!
+  $streamingUrlIdx: Int!
 ) {
-  queueSong(song: $song, streamingUrl: $streamingUrl)
+  queueSong(song: $song, streamingUrlIdx: $streamingUrlIdx)
 }
 */
 
@@ -42,7 +42,7 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "streamingUrl"
+    "name": "streamingUrlIdx"
   }
 ],
 v1 = [
@@ -56,8 +56,8 @@ v1 = [
       },
       {
         "kind": "Variable",
-        "name": "streamingUrl",
-        "variableName": "streamingUrl"
+        "name": "streamingUrlIdx",
+        "variableName": "streamingUrlIdx"
       }
     ],
     "kind": "ScalarField",
@@ -83,14 +83,14 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "69bc63b15213f592d631ef315cf59dc8",
+    "cacheID": "3330c0b3b5e2254bdd23539db6a4a521",
     "id": null,
     "metadata": {},
     "name": "QueueButtonMutation",
     "operationKind": "mutation",
-    "text": "mutation QueueButtonMutation(\n  $song: SongInput!\n  $streamingUrl: String!\n) {\n  queueSong(song: $song, streamingUrl: $streamingUrl)\n}\n"
+    "text": "mutation QueueButtonMutation(\n  $song: SongInput!\n  $streamingUrlIdx: Int!\n) {\n  queueSong(song: $song, streamingUrlIdx: $streamingUrlIdx)\n}\n"
   }
 };
 })();
-(node as any).hash = '3e2da98382c45d6acbf78b99579be88a';
+(node as any).hash = '69e52b84ab77cf02a8eea26dfd350422';
 export default node;

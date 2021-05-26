@@ -13,10 +13,13 @@ const popSongMutation = graphql`
     popSong {
       song {
         id
+        streamingUrls {
+          url
+        }
         scoringData
       }
       timestamp
-      streamingUrl
+      streamingUrlIdx
     }
   }
 `;
@@ -43,7 +46,9 @@ function Player(props: { mics: InputDevice[] }) {
             if (hls) hls.destroy();
             hls = new Hls();
             hls.attachMedia(videoRef.current);
-            hls.loadSource(popSong.streamingUrl);
+            hls.loadSource(
+              popSong.song.streamingUrls[popSong.streamingUrlIdx].url
+            );
             videoRef.current.play();
           } else {
             pollTimeoutRef.current = setTimeout(pollQueue, POLL_INTERVAL_MS);

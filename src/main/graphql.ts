@@ -33,6 +33,7 @@ interface SongParent {
   readonly artistName: string;
   readonly artistNameYomi: string;
   readonly lyricsPreview?: string | null;
+  readonly vocalTypes?: string[];
   readonly tieUp?: string | null;
   readonly playtime?: number | null;
 }
@@ -71,6 +72,11 @@ type QueueItem = {
   readonly streamingUrl: string;
 };
 
+interface HistoryItem {
+  readonly song: SongParent;
+  readonly playDate: string;
+}
+
 type NotARealDb = {
   songQueue: QueueItem[];
 };
@@ -106,6 +112,9 @@ const resolvers = {
     lyricsPreview(parent: SongParent) {
       return parent.lyricsPreview || null;
     },
+    vocalTypes(parent: SongParent) {
+      return parent.vocalTypes || [];
+    },
     tieUp(parent: SongParent) {
       return parent.tieUp || null;
     },
@@ -113,14 +122,11 @@ const resolvers = {
       return parent.playtime || null;
     },
     streamingUrls(parent: SongParent, _: any, { dataSources }: IDataSources) {
-      return dataSources.minsei
-        .getMusicStreamingUrls(parent.id)
-        .then((data) =>
-          data.list.map((info) => ({
-            url: info.highBitrateUrl,
-            isGuideVocal: info.duet !== "normal",
-          }))
-        );
+      return dataSources.minsei.getMusicStreamingUrls(parent.id).then((data) =>
+        data.list.map((info) => ({
+          url: info.highBitrateUrl,
+        }))
+      );
     },
     scoringData(parent: SongParent, _: any, { dataSources }: IDataSources) {
       return dataSources.minsei
@@ -213,6 +219,20 @@ const resolvers = {
         artistName: data.data.artist,
         artistNameYomi: "",
         lyricsPreview: data.data.firstLine,
+        vocalTypes: data.list[0].mModelMusicInfoList[0].guideVocal
+          .split(",")
+          .map((vocalType) => {
+            switch (vocalType) {
+              case "0":
+                return "NORMAL";
+              case "1":
+                return "GUIDE_MALE";
+              case "2":
+                return "GUIDE_FEMALE";
+              default:
+                throw new Error(`unknown vocal type ${vocalType}`);
+            }
+          }),
         tieUp: data.list[0].mModelMusicInfoList[0].highlightTieUp,
         playtime: parseInt(data.list[0].mModelMusicInfoList[0].playtime, 10),
       })),
@@ -264,6 +284,39 @@ const resolvers = {
     queue: () => {
       if (!db.songQueue.length) return [];
       return db.songQueue;
+    },
+    history: (
+      _: any,
+      args: { first: number | null; after: string | null },
+      { dataSources }: IDataSources
+    ): Promise<Connection<HistoryItem, string>> => {
+      const firstInt = args.first || 0;
+      const afterInt = args.after ? parseInt(args.after, 10) : 0;
+
+      return dataSources.minsei
+        .getPlayHistory(firstInt, afterInt)
+        .then((result) => ({
+          edges: result.list.map((song, i) => ({
+            node: {
+              song: {
+                id: song.requestNo,
+                name: song.contentsName,
+                nameYomi: song.contentsYomi,
+                artistName: song.artistName,
+                artistNameYomi: "",
+              },
+              playDate: song.playDate,
+            },
+            cursor: (firstInt + i).toString(),
+          })),
+          pageInfo: {
+            hasPreviousPage: false, // We can always do this because we don't support backward pagination
+            hasNextPage:
+              firstInt + afterInt < parseInt(result.data.dataCount, 10),
+            startCursor: "0",
+            endCursor: (firstInt + afterInt).toString(),
+          },
+        }));
     },
   },
   Mutation: {
