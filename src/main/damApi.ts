@@ -50,6 +50,29 @@ interface MinseiStreamingUrls extends MinseiResponse {
   }[];
 }
 
+interface MinseiPlayHistory extends MinseiResponse {
+  data: {
+    dataCount: string;
+    hasNext: string;
+    hasPreview: string;
+    overFlg: string;
+    pageCount: string;
+    value: string;
+  };
+  list: {
+    artistCd: string;
+    artistName: string;
+    contentsId: string;
+    contentsName: string;
+    contentsYomi: string;
+    deviceName: string;
+    playDate: string;
+    requestNo: string;
+    thumbnailUrl: string;
+    url: string;
+  }[];
+}
+
 export class MinseiAPI extends RESTDataSource {
   creds: MinseiCredentials;
 
@@ -60,20 +83,18 @@ export class MinseiAPI extends RESTDataSource {
   }
 
   post<T>(url: string, data: object): Promise<T> {
-    return super.post(
-      url,
-      Object.entries({
-        ...BASE_MINSEI_REQUEST,
-        ...data,
-      })
-        .map(([k, v]) => `${k}=${v}`)
-        .join("&"),
-      {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      }
-    );
+    const body = Object.entries({
+      ...BASE_MINSEI_REQUEST,
+      ...data,
+    })
+      .map(([k, v]) => `${k}=${v}`)
+      .join("&");
+    console.debug(`[minsei] curl ${this.baseURL}${url} -d '${body}'`);
+    return super.post(url, body, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    });
   }
 
   parseBody(response: Response): Promise<object | string | ArrayBuffer> {
@@ -85,7 +106,8 @@ export class MinseiAPI extends RESTDataSource {
   }
 
   static checkError<T extends MinseiResponse>(data: T) {
-    if (data.statusCode !== "0000") {
+    // statusCode 1005 seems to mean pagination continues
+    if (data.statusCode !== "0000" && data.statusCode !== "1005") {
       throw new Error(`${data.status}: ${data.message}`);
     }
     return data;
@@ -103,7 +125,7 @@ export class MinseiAPI extends RESTDataSource {
       }
     )
       .then((data) => data.json())
-      .then(MinseiAPI.checkError);
+      .then((data: MinseiLogin) => MinseiAPI.checkError(data));
   }
 
   getMusicStreamingUrls(requestNo: string) {
@@ -135,6 +157,32 @@ export class MinseiAPI extends RESTDataSource {
         })
         .catch(retry)
     );
+  }
+
+  getPlayHistory(first: number, after: number) {
+    const firstPage = Math.floor(after / 30) + 1;
+    const pageCount = Math.ceil(first / 30);
+
+    return Promise.all(
+      [...Array(pageCount).keys()].map((pageOffset) =>
+        this.post<MinseiPlayHistory>("/music/playLog/GetMusicPlayHistory.api", {
+          pageNo: (firstPage + pageOffset).toString(),
+          dispNumber: "30",
+          compUseFlag: "1",
+          ...this.creds,
+        }).then(MinseiAPI.checkError)
+      )
+    )
+      .then((results) =>
+        results.reduce((acc, cur) => {
+          acc.list = acc.list.concat(cur.list);
+          return acc;
+        })
+      )
+      .then((result) => ({
+        data: result.data,
+        list: result.list.slice(after % 30, first),
+      }));
   }
 }
 

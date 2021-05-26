@@ -8,8 +8,8 @@ import {
 } from "./__generated__/QueueButtonMutation.graphql";
 
 const queueButtonMutation = graphql`
-  mutation QueueButtonMutation($song: SongInput!, $streamingUrl: String!) {
-    queueSong(song: $song, streamingUrl: $streamingUrl)
+  mutation QueueButtonMutation($song: SongInput!, $streamingUrlIdx: Int!) {
+    queueSong(song: $song, streamingUrlIdx: $streamingUrlIdx)
   }
 `;
 

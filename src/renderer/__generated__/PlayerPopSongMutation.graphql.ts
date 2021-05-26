@@ -8,10 +8,13 @@ export type PlayerPopSongMutationResponse = {
     readonly popSong: {
         readonly song: {
             readonly id: string;
+            readonly streamingUrls: ReadonlyArray<{
+                readonly url: string;
+            }>;
             readonly scoringData: ReadonlyArray<number>;
         };
         readonly timestamp: string;
-        readonly streamingUrl: string;
+        readonly streamingUrlIdx: number;
     } | null;
 };
 export type PlayerPopSongMutation = {
@@ -26,10 +29,13 @@ mutation PlayerPopSongMutation {
   popSong {
     song {
       id
+      streamingUrls {
+        url
+      }
       scoringData
     }
     timestamp
-    streamingUrl
+    streamingUrlIdx
   }
 }
 */
@@ -62,6 +68,24 @@ var v0 = [
           {
             "alias": null,
             "args": null,
+            "concreteType": "StreamingUrlInfo",
+            "kind": "LinkedField",
+            "name": "streamingUrls",
+            "plural": true,
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "url",
+                "storageKey": null
+              }
+            ],
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
             "kind": "ScalarField",
             "name": "scoringData",
             "storageKey": null
@@ -80,7 +104,7 @@ var v0 = [
         "alias": null,
         "args": null,
         "kind": "ScalarField",
-        "name": "streamingUrl",
+        "name": "streamingUrlIdx",
         "storageKey": null
       }
     ],
@@ -105,14 +129,14 @@ return {
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "6a543b2538746c8224b70eb8da98af62",
+    "cacheID": "8dba7197512f9bb801567932a5641139",
     "id": null,
     "metadata": {},
     "name": "PlayerPopSongMutation",
     "operationKind": "mutation",
-    "text": "mutation PlayerPopSongMutation {\n  popSong {\n    song {\n      id\n      scoringData\n    }\n    timestamp\n    streamingUrl\n  }\n}\n"
+    "text": "mutation PlayerPopSongMutation {\n  popSong {\n    song {\n      id\n      streamingUrls {\n        url\n      }\n      scoringData\n    }\n    timestamp\n    streamingUrlIdx\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = '6e3f706395d3ac9fa32cf430bc02817e';
+(node as any).hash = '3b98263ee02e5e6ffdaef7747f143f24';
 export default node;

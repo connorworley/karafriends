@@ -14,12 +14,9 @@ const songQuery = graphql`
       artistName
       artistNameYomi
       lyricsPreview
+      vocalTypes
       tieUp
       playtime
-      streamingUrls {
-        url
-        isGuideVocal
-      }
     }
   }
 `;
@@ -47,24 +44,38 @@ function Song(props: Props) {
         )}
       </div>
       <div className="card-action">
-        {song.streamingUrls.map((info) => (
-          <span key={info.url}>
-            <QueueButton
-              defaultText={
-                info.isGuideVocal ? "Queue song (Guide vocal)" : "Queue song"
-              }
-              variables={{
-                song: {
-                  id,
-                  name: song.name,
-                  artistName: song.artistName,
-                  playtime: song.playtime,
-                },
-                streamingUrl: info.url,
-              }}
-            />{" "}
-          </span>
-        ))}
+        {song.vocalTypes.map((vocalType, i) => {
+          let defaultText = "";
+          switch (vocalType) {
+            case "NORMAL":
+              defaultText = "Queue song";
+              break;
+            case "GUIDE_MALE":
+              defaultText = "Queue song - guide vocal (male)";
+              break;
+            case "GUIDE_FEMALE":
+              defaultText = "Queue song - guide vocal (female)";
+              break;
+            default:
+              throw new Error(`unknown vocal type ${vocalType}`);
+          }
+          return (
+            <span key={vocalType}>
+              <QueueButton
+                defaultText={defaultText}
+                variables={{
+                  song: {
+                    id,
+                    name: song.name,
+                    artistName: song.artistName,
+                    playtime: song.playtime,
+                  },
+                  streamingUrlIdx: i,
+                }}
+              />{" "}
+            </span>
+          );
+        })}
       </div>
     </div>
   );

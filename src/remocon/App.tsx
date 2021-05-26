@@ -7,6 +7,7 @@ import "materialize-css/dist/css/materialize.css"; // tslint:disable-line:no-sub
 
 import Artist from "./Artist";
 import Controls from "./Controls";
+import History from "./History";
 import Search from "./Search";
 import Song from "./Song";
 
@@ -29,6 +30,9 @@ function App() {
                 <Link to="/search">Search Songs</Link>
               </li>
               <li>
+                <Link to="/history">History</Link>
+              </li>
+              <li>
                 <Link to="/controls">Controls</Link>
               </li>
             </ul>
@@ -37,6 +41,9 @@ function App() {
         <ul className="sidenav" id="mobile-demo">
           <li>
             <Link to="/search">Search Songs</Link>
+          </li>
+          <li>
+            <Link to="/history">History</Link>
           </li>
           <li>
             <Link to="/">Controls</Link>
@@ -48,6 +55,7 @@ function App() {
             <Route path="/artist/:id" component={Artist} />
             <Route path="/song/:id" component={Song} />
             <Route path="/search" component={Search} />
+            <Route path="/history" component={History} />
             <Route path="/">
               <Controls />
             </Route>

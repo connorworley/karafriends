@@ -4,10 +4,11 @@ type Query {
   artistsByName(name: String, first: Int, after: String): ArtistConnection!
   artistById(id: String, first: Int, after: String): Artist!
   queue: [QueueItem!]!
+  history(first: Int, after: String): HistoryConnection!
 }
 
 type Mutation {
-  queueSong(song: SongInput!, streamingUrl: String!): Int!
+  queueSong(song: SongInput!, streamingUrlIdx: Int!): Int!
   popSong: QueueItem
   removeSong(songId: String!, timestamp: String!): Boolean!
 }
@@ -15,6 +16,28 @@ type Mutation {
 type Subscription {
   queueChanged: [QueueItem!]!
   queueAdded: QueueItem!
+}
+
+type HistoryItem {
+  song: Song!
+  playDate: String!
+}
+
+type HistoryConnection {
+  edges: [HistoryEdge!]!
+  pageInfo: HistoryPageInfo!
+}
+
+type HistoryEdge {
+  node: HistoryItem!
+  cursor: String!
+}
+
+type HistoryPageInfo {
+  hasPreviousPage: Boolean!
+  hasNextPage: Boolean!
+  startCursor: String!
+  endCursor: String!
 }
 
 type Artist {
@@ -42,6 +65,12 @@ type ArtistPageInfo {
   endCursor: String!
 }
 
+enum VocalType {
+  NORMAL
+  GUIDE_MALE
+  GUIDE_FEMALE
+}
+
 type Song {
   id: ID!
   name: String!
@@ -49,6 +78,7 @@ type Song {
   artistName: String!
   artistNameYomi: String!
   lyricsPreview: String
+  vocalTypes: [VocalType!]!
   streamingUrls: [StreamingUrlInfo!]!
   scoringData: [Int!]!
   tieUp: String
@@ -81,11 +111,10 @@ type SongPageInfo {
 
 type StreamingUrlInfo {
   url: String!
-  isGuideVocal: Boolean!
 }
 
 type QueueItem {
   song: Song!
   timestamp: String!
-  streamingUrl: String!
+  streamingUrlIdx: Int!
 }
