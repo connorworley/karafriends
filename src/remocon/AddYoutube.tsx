@@ -1,8 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import { graphql, QueryRenderer, useLazyLoadQuery } from "react-relay";
-import { Link } from "react-router-dom";
-import YoutubePlayer from "youtube-player";
-import PreviewYoutube from "./PreviewYoutube";
+import React, { useState } from "react";
+import YoutubeInfo from "./YoutubeInfo";
 
 function getVideoId(videoQuery: string): string | null {
   try {
@@ -39,9 +36,13 @@ function AddYoutube() {
           placeholder="Youtube Video Link or VideoID"
           onChange={(e) => setVideoQuery(e.target.value)}
         />
-        <button type="submit">Preview Video</button>
+        <button className="btn" type="submit">
+          Preview Video
+        </button>
       </form>
-      {videoId !== "" ? <PreviewYoutube videoId={videoId} /> : null}
+      {videoId !== "" ? (
+        <YoutubeInfo videoId={videoId} showQueueFields={true} />
+      ) : null}
     </div>
   );
 }

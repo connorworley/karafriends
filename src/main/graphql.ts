@@ -95,6 +95,7 @@ interface DamQueueItem extends QueueItemInterface {
 
 interface YoutubeQueueItem extends QueueItemInterface {
   readonly __typename: "YoutubeQueueItem";
+  readonly hasAdhocLyrics: boolean;
 }
 
 type QueueItem = DamQueueItem | YoutubeQueueItem;
@@ -114,6 +115,7 @@ type QueueYoutubeSongInput = {
   readonly artistName: string;
   readonly playtime?: number | null;
   readonly nickname: string;
+  readonly adhocSongLyrics: string;
 };
 
 interface HistoryItem {
@@ -129,18 +131,35 @@ enum PlaybackState {
   WAITING = "WAITING",
 }
 
+type PushAdhocLyricsInput = {
+  readonly lyric: string;
+  readonly lyricIndex: number;
+};
+
+type AdhocLyricsEntry = {
+  readonly lyric: string;
+  readonly lyricIndex: number;
+};
+
 type NotARealDb = {
+  currentSong: QueueItem | null;
+  currentSongAdhocLyrics: AdhocLyricsEntry[];
+  idToAdhocLyrics: Record<string, string[]>;
   playbackState: PlaybackState;
   songQueue: QueueItem[];
 };
 
 enum SubscriptionEvent {
+  CurrentSongAdhocLyricsChanged = "CurrentSongAdhocLyricsChanged",
   PlaybackStateChanged = "PlaybackStateChanged",
   QueueChanged = "QueueChanged",
   QueueAdded = "QueueAdded",
 }
 
 const db: NotARealDb = {
+  currentSong: null,
+  currentSongAdhocLyrics: [],
+  idToAdhocLyrics: {},
   playbackState: PlaybackState.WAITING,
   songQueue: [],
 };
@@ -156,6 +175,10 @@ function pushSongToQueue(queueItem: QueueItem): number {
     queueAdded: queueItem,
   });
   return db.songQueue.reduce((acc, cur) => acc + (cur.playtime || 0), 0);
+}
+
+function cleanupAdhocSongLyrics(lyrics: string): string[] {
+  return lyrics.split("\n").filter((entry) => entry.trim() !== "");
 }
 
 const resolvers = {
@@ -258,6 +281,9 @@ const resolvers = {
     },
   },
   Query: {
+    adhocLyrics(_: any, args: { id: string }): string[] {
+      return db.idToAdhocLyrics[args.id];
+    },
     songsByName: (
       _: any,
       args: { name: string; first: number | null; after: string | null },
@@ -362,6 +388,9 @@ const resolvers = {
           songCount: data.data.totalCount,
         }));
     },
+    currentSong: () => {
+      return db.currentSong;
+    },
     queue: () => {
       if (!db.songQueue.length) return [];
       return db.songQueue;
@@ -441,24 +470,56 @@ const resolvers = {
       const queueItem: YoutubeQueueItem = {
         timestamp: Date.now().toString(),
         ...args.input,
+        hasAdhocLyrics: args.input.adhocSongLyrics ? true : false,
         __typename: "YoutubeQueueItem",
       };
+      if (args.input.adhocSongLyrics) {
+        db.idToAdhocLyrics[args.input.id] = cleanupAdhocSongLyrics(
+          args.input.adhocSongLyrics
+        );
+      }
       downloadYoutubeVideo(
         args.input.id,
         pushSongToQueue.bind(null, queueItem)
       );
-      // The song hasn't actually been added to the queue yet, but let's
-      // optimistically return the eta assuming it will successfully queue
+      // The song likely hasn't actually been added to the queue yet since it needs to download,
+      // but let's optimistically return the eta assuming it will successfully queue
       return (
         db.songQueue.reduce((acc, cur) => acc + (cur.playtime || 0), 0) +
         (args.input.playtime || 0)
       );
     },
+    pushAdhocLyrics: (
+      _: any,
+      args: { input: PushAdhocLyricsInput }
+    ): boolean => {
+      db.currentSongAdhocLyrics.push({
+        lyric: args.input.lyric,
+        lyricIndex: args.input.lyricIndex,
+      });
+      pubsub.publish(SubscriptionEvent.CurrentSongAdhocLyricsChanged, {
+        currentSongAdhocLyricsChanged: db.currentSongAdhocLyrics,
+      });
+      return true;
+    },
+    popAdhocLyrics: (_: any, args: {}): boolean => {
+      db.currentSongAdhocLyrics.shift();
+      pubsub.publish(SubscriptionEvent.CurrentSongAdhocLyricsChanged, {
+        currentSongAdhocLyricsChanged: db.currentSongAdhocLyrics,
+      });
+      return true;
+    },
     popSong: (_: any, args: {}): QueueItem | null => {
       pubsub.publish(SubscriptionEvent.QueueChanged, {
         queueChanged: db.songQueue,
       });
-      return db.songQueue.shift() || null;
+      const newSong = db.songQueue.shift() || null;
+      db.currentSongAdhocLyrics = [];
+      pubsub.publish(SubscriptionEvent.CurrentSongAdhocLyricsChanged, {
+        currentSongAdhocLyricsChanged: db.currentSongAdhocLyrics,
+      });
+      db.currentSong = newSong;
+      return newSong;
     },
     removeSong: (
       _: any,
@@ -489,6 +550,10 @@ const resolvers = {
       subscribe: () =>
         pubsub.asyncIterator([SubscriptionEvent.PlaybackStateChanged]),
     },
+    currentSongAdhocLyricsChanged: {
+      subscribe: () =>
+        pubsub.asyncIterator([SubscriptionEvent.CurrentSongAdhocLyricsChanged]),
+    },
     queueChanged: {
       subscribe: () => pubsub.asyncIterator([SubscriptionEvent.QueueChanged]),
     },
@@ -514,7 +579,9 @@ export function applyGraphQLMiddleware(
       youtube: new YoutubeAPI(),
     }),
     schema,
-    playground: true,
+    playground: {
+      subscriptionEndpoint: "ws://localhost:8080/subscriptions",
+    },
   });
   if (isDev) {
     app.use("/graphql", (req, res, next) => {

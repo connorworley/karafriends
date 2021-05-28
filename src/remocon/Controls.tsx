@@ -24,10 +24,8 @@ interface QueueLinkProps {
 
 const QueueLink = (props: QueueLinkProps): JSX.Element | null => {
   let linkUrl: JSX.Element | null = null;
-  console.log(props);
   switch (props.typename) {
     case "DamQueueItem":
-      console.log("hoahoa");
       linkUrl = (
         <Link
           to={`/song/${props.songId}`}
@@ -39,7 +37,6 @@ const QueueLink = (props: QueueLinkProps): JSX.Element | null => {
       );
       break;
     case "YoutubeQueueItem":
-      console.log("hocmooaahoa");
       linkUrl = (
         <a
           href={`https://youtu.be/${props.songId}`}

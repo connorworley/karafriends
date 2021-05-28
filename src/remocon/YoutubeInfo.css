@@ -3,8 +3,8 @@
 }
 
 .flex-item {
-  padding-top: 1em;
-  padding-left: 1em;
+  margin-top: 1em;
+  margin-left: 1em;
 }
 
 .flex-vertical {
@@ -28,4 +28,12 @@
   .responsive-player-width {
     width: 100%;
   }
+}
+
+.details-container {
+  min-width: 0px;
+}
+
+.lyrics-input-container {
+  margin-right: 1em;
 }

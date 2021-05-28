@@ -1,0 +1,28 @@
+.no-lyrics-container {
+  padding: 0.5em 0 2em 0;
+  text-align: center;
+}
+
+.picker-item {
+  text-align: left;
+}
+
+.lyrics-controller-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.lyrics-controller {
+  border: 2px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-height: 25em;
+  max-width: 25em;
+  min-height: 10em;
+  min-width: 10em;
+  height: 100%;
+  width: 100%;
+}

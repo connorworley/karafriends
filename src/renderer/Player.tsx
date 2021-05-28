@@ -6,6 +6,7 @@ import { PlayerPopSongMutation } from "./__generated__/PlayerPopSongMutation.gra
 
 import environment from "../common/graphqlEnvironment";
 import usePlaybackState from "../common/hooks/usePlaybackState";
+import AdhocLyrics from "./AdhocLyrics";
 import { InputDevice } from "./audioSystem";
 import PianoRoll from "./PianoRoll";
 import "./Player.css";
@@ -27,6 +28,7 @@ const popSongMutation = graphql`
         __typename
         id
         timestamp
+        hasAdhocLyrics
       }
     }
   }
@@ -38,12 +40,16 @@ function Player(props: { mics: InputDevice[] }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [scoringData, setScoringData] = useState<readonly number[]>([]);
   const [shouldShowPianoRoll, setShouldShowPianoRoll] = useState<boolean>(true);
+  const [shouldShowAdhocLyrics, setShouldShowAdhocLyrics] = useState<boolean>(
+    false
+  );
   const { playbackState, setPlaybackState } = usePlaybackState();
   const pollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   let hls: Hls | null = null;
 
   useEffect(() => {
     if (!videoRef.current) return;
+
     const pollQueue = () =>
       commitMutation<PlayerPopSongMutation>(environment, {
         mutation: popSongMutation,
@@ -55,6 +61,7 @@ function Player(props: { mics: InputDevice[] }) {
             switch (popSong.__typename) {
               case "DamQueueItem":
                 setShouldShowPianoRoll(true);
+                setShouldShowAdhocLyrics(false);
                 setScoringData(popSong.scoringData);
                 hls = new Hls();
                 hls.attachMedia(videoRef.current);
@@ -65,6 +72,7 @@ function Player(props: { mics: InputDevice[] }) {
                 break;
               case "YoutubeQueueItem":
                 setShouldShowPianoRoll(false);
+                setShouldShowAdhocLyrics(popSong.hasAdhocLyrics);
                 const staticUrl = `http://localhost:8080/static`;
                 videoRef.current.src = `${staticUrl}/${popSong.id}.mp4`;
                 videoRef.current.play();
@@ -114,6 +122,7 @@ function Player(props: { mics: InputDevice[] }) {
         />
       ) : null}
       <video className="karaVid" ref={videoRef} controls />
+      {shouldShowAdhocLyrics ? <AdhocLyrics /> : null}
     </div>
   );
 }

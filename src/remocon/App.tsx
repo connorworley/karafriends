@@ -5,11 +5,13 @@ import { HashRouter, Link, Route, Switch } from "react-router-dom";
 import M from "materialize-css";
 import "materialize-css/dist/css/materialize.css"; // tslint:disable-line:no-submodule-imports
 
+import AdhocLyricsGuide from "./AdhocLyricsGuide";
 import Artist from "./Artist";
 import Controls from "./Controls";
+import CurrentSong from "./CurrentSong";
 import History from "./History";
 import Search from "./Search";
-import Song from "./Song";
+import { RoutedSong } from "./Song";
 
 function App() {
   useEffect(() => {
@@ -42,6 +44,9 @@ function App() {
               <li>
                 <Link to="/controls">Controls</Link>
               </li>
+              <li>
+                <Link to="/current">Current Song</Link>
+              </li>
             </ul>
           </div>
         </nav>
@@ -55,12 +60,17 @@ function App() {
           <li>
             <Link to="/">Controls</Link>
           </li>
+          <li>
+            <Link to="/current">Current Song</Link>
+          </li>
         </ul>
 
         <div className="container">
           <Switch>
+            <Route path="/adhocLyrics/:id" component={AdhocLyricsGuide} />
             <Route path="/artist/:id" component={Artist} />
-            <Route path="/song/:id" component={Song} />
+            <Route path="/current" component={CurrentSong} />
+            <Route path="/song/:id" component={RoutedSong} />
             <Route path="/search" component={Search} />
             <Route path="/history" component={History} />
             <Route path="/">
