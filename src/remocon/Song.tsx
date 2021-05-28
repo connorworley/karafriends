@@ -3,7 +3,7 @@ import { graphql, useLazyLoadQuery } from "react-relay";
 import { RouteComponentProps } from "react-router-dom";
 
 import { withLoader } from "../common/components/Loader";
-import QueueButton from "./components/QueueButton";
+import DamQueueButton from "./components/DamQueueButton";
 import { SongQuery } from "./__generated__/SongQuery.graphql";
 
 const songQuery = graphql`
@@ -61,16 +61,16 @@ function Song(props: Props) {
           }
           return (
             <span key={vocalType}>
-              <QueueButton
+              <DamQueueButton
                 defaultText={defaultText}
                 variables={{
-                  song: {
+                  input: {
                     id,
                     name: song.name,
                     artistName: song.artistName,
                     playtime: song.playtime,
+                    streamingUrlIdx: i,
                   },
-                  streamingUrlIdx: i,
                 }}
               />{" "}
             </span>

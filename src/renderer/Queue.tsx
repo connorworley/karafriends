@@ -10,13 +10,13 @@ export default function Queue() {
     <div className="collection queueQueue">
       {queue.map(([item, eta], i) => (
         <div
-          key={`${item.song.id}_${i}`}
+          key={`${item.id}_${i}`}
           className="collection-item"
           style={{ display: "flex" }}
         >
-          {item.song.name}
+          {item.name}
           <br />
-          {item.song.artistName}
+          {item.artistName}
           <span className="secondary-content">
             T-{formatDuration(eta * 1000)}
           </span>

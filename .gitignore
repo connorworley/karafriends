@@ -11,6 +11,7 @@
 # production
 /build
 /dist
+/vids
 
 # misc
 .DS_Store
@@ -24,6 +25,7 @@ yarn-debug.log*
 yarn-error.log*
 
 *.node
+*/**/*.swp
 
 # Added by cargo
 /native/target

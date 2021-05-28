@@ -6,25 +6,20 @@ import { Application } from "express";
 import { execute, subscribe } from "graphql";
 import { PubSub } from "graphql-subscriptions";
 import { SubscriptionServer } from "subscriptions-transport-ws";
-import { isRomaji, toKana } from "wanakana";
+import { downloadYoutubeVideo } from "./../common/videoDownloader";
 
 import { HOSTNAME } from "../common/constants";
 import rawSchema from "../common/schema.graphql";
 import { DkwebsysAPI, MinseiAPI, MinseiCredentials } from "./damApi";
+import { YoutubeAPI } from "./youtubeApi";
 
 interface IDataSources {
   dataSources: {
     minsei: MinseiAPI;
     dkwebsys: DkwebsysAPI;
+    youtube: YoutubeAPI;
   };
 }
-
-type SongInput = {
-  readonly id: string;
-  readonly name: string;
-  readonly artistName: string;
-  readonly playtime?: number | null;
-};
 
 interface SongParent {
   readonly id: string;
@@ -66,10 +61,56 @@ interface PageInfo<CursorType> {
   readonly endCursor: CursorType;
 }
 
-type QueueItem = {
-  readonly song: SongInput;
+interface YoutubeVideoInfo {
+  readonly __typename: "YoutubeVideoInfo";
+  readonly author: string;
+  readonly channelId: string;
+  readonly keywords: string[];
+  readonly lengthSeconds: number;
+  readonly description: string;
+  readonly title: string;
+  readonly viewCount: number;
+}
+
+interface YoutubeVideoInfoError {
+  readonly __typename: "YoutubeVideoInfoError";
+  readonly reason: string;
+}
+
+type YoutubeVideoInfoResult = YoutubeVideoInfo | YoutubeVideoInfoError;
+
+interface QueueItemInterface {
+  readonly id: string;
+  readonly name: string;
+  readonly artistName: string;
+  readonly playtime?: number | null;
   readonly timestamp: string;
-  readonly streamingUrl: string;
+}
+
+interface DamQueueItem extends QueueItemInterface {
+  readonly __typename: "DamQueueItem";
+  readonly streamingUrlIdx: string;
+}
+
+interface YoutubeQueueItem extends QueueItemInterface {
+  readonly __typename: "YoutubeQueueItem";
+}
+
+type QueueItem = DamQueueItem | YoutubeQueueItem;
+
+type QueueDamSongInput = {
+  readonly id: string;
+  readonly name: string;
+  readonly artistName: string;
+  readonly playtime?: number | null;
+  readonly streamingUrlIdx: string;
+};
+
+type QueueYoutubeSongInput = {
+  readonly id: string;
+  readonly name: string;
+  readonly artistName: string;
+  readonly playtime?: number | null;
 };
 
 interface HistoryItem {
@@ -91,6 +132,17 @@ const db: NotARealDb = {
 };
 
 const pubsub = new PubSub();
+
+function pushSongToQueue(queueItem: QueueItem): number {
+  db.songQueue.push(queueItem);
+  pubsub.publish(SubscriptionEvent.QueueChanged, {
+    queueChanged: db.songQueue,
+  });
+  pubsub.publish(SubscriptionEvent.QueueAdded, {
+    queueAdded: queueItem,
+  });
+  return db.songQueue.reduce((acc, cur) => acc + (cur.playtime || 0), 0);
+}
 
 const resolvers = {
   Song: {
@@ -175,6 +227,20 @@ const resolvers = {
             endCursor: (firstInt + afterInt).toString(),
           },
         }));
+    },
+  },
+  DamQueueItem: {
+    streamingUrls(parent: DamQueueItem, _: any, { dataSources }: IDataSources) {
+      return dataSources.minsei.getMusicStreamingUrls(parent.id).then((data) =>
+        data.list.map((info) => ({
+          url: info.highBitrateUrl,
+        }))
+      );
+    },
+    scoringData(parent: DamQueueItem, _: any, { dataSources }: IDataSources) {
+      return dataSources.minsei
+        .getScoringData(parent.id)
+        .then((data) => Array.from(new Uint8Array(data)));
     },
   },
   Query: {
@@ -318,26 +384,58 @@ const resolvers = {
           },
         }));
     },
+    youtubeVideoInfo: (
+      _: any,
+      args: { videoId: string },
+      { dataSources }: IDataSources
+    ): Promise<YoutubeVideoInfoResult> => {
+      return dataSources.youtube.getVideoInfo(args.videoId).then((data) => {
+        if (data.playabilityStatus.status !== "OK") {
+          return {
+            __typename: "YoutubeVideoInfoError",
+            reason: data.playabilityStatus.reason,
+          };
+        }
+        return {
+          __typename: "YoutubeVideoInfo",
+          author: data.videoDetails.author,
+          channelId: data.videoDetails.channelId,
+          keywords: data.videoDetails.keywords,
+          lengthSeconds: parseInt(data.videoDetails.lengthSeconds, 10),
+          description: data.videoDetails.shortDescription,
+          title: data.videoDetails.title,
+          viewCount: parseInt(data.videoDetails.viewCount, 10),
+        };
+      });
+    },
   },
   Mutation: {
-    queueSong: (
-      _: any,
-      args: { song: SongInput; streamingUrl: string }
-    ): number => {
-      const queueItem = {
+    queueDamSong: (_: any, args: { input: QueueDamSongInput }): number => {
+      const queueItem: DamQueueItem = {
         timestamp: Date.now().toString(),
-        ...args,
+        ...args.input,
+        __typename: "DamQueueItem",
       };
-      db.songQueue.push(queueItem);
-      pubsub.publish(SubscriptionEvent.QueueChanged, {
-        queueChanged: db.songQueue,
-      });
-      pubsub.publish(SubscriptionEvent.QueueAdded, {
-        queueAdded: queueItem,
-      });
-      return db.songQueue.reduce(
-        (acc, cur) => acc + (cur.song.playtime || 0),
-        0
+      return pushSongToQueue(queueItem);
+    },
+    queueYoutubeSong: (
+      _: any,
+      args: { input: QueueYoutubeSongInput }
+    ): number => {
+      const queueItem: YoutubeQueueItem = {
+        timestamp: Date.now().toString(),
+        ...args.input,
+        __typename: "YoutubeQueueItem",
+      };
+      downloadYoutubeVideo(
+        args.input.id,
+        pushSongToQueue.bind(null, queueItem)
+      );
+      // The song hasn't actually been added to the queue yet, but let's
+      // optimistically return the eta assuming it will successfully queue
+      return (
+        db.songQueue.reduce((acc, cur) => acc + (cur.playtime || 0), 0) +
+        (args.input.playtime || 0)
       );
     },
     popSong: (_: any, args: {}): QueueItem | null => {
@@ -352,7 +450,7 @@ const resolvers = {
     ): boolean => {
       db.songQueue = db.songQueue.filter(
         (item) =>
-          !(item.song.id === args.songId && item.timestamp === args.timestamp)
+          !(item.id === args.songId && item.timestamp === args.timestamp)
       );
       pubsub.publish(SubscriptionEvent.QueueChanged, {
         queueChanged: db.songQueue,
@@ -383,8 +481,10 @@ export function applyGraphQLMiddleware(
     dataSources: () => ({
       minsei: new MinseiAPI(creds),
       dkwebsys: new DkwebsysAPI(),
+      youtube: new YoutubeAPI(),
     }),
     schema,
+    playground: true,
   });
   if (isDev) {
     app.use("/graphql", (req, res, next) => {

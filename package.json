@@ -12,6 +12,8 @@
     "postinstall": "husky install"
   },
   "dependencies": {
+    "@types/user-agents": "^1.0.1",
+    "@types/youtube-player": "^5.5.3",
     "apollo-datasource-rest": "^0.13.0",
     "apollo-server-express": "^2.19.1",
     "color-convert": "^2.0.1",
@@ -31,11 +33,15 @@
     "qrcode": "^1.4.4",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-icons": "^4.2.0",
     "react-relay": "^11.0.0",
     "react-router-dom": "^5.2.0",
     "relay-runtime": "^10.1.0",
     "subscriptions-transport-ws": "^0.9.18",
-    "wanakana": "^4.0.2"
+    "user-agents": "^1.0.658",
+    "wanakana": "^4.0.2",
+    "youtube-player": "^5.5.2",
+    "ytdl-core": "^4.8.2"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.12.7",

@@ -5,10 +5,14 @@ type Query {
   artistById(id: String, first: Int, after: String): Artist!
   queue: [QueueItem!]!
   history(first: Int, after: String): HistoryConnection!
+  youtubeVideoInfo(videoId: String): YoutubeVideoInfoResult!
 }
 
 type Mutation {
-  queueSong(song: SongInput!, streamingUrlIdx: Int!): Int!
+  # Maybe we can merge these queue endpoints once Input Unions become real
+  # https://github.com/graphql/graphql-spec/issues/488
+  queueDamSong(input: QueueDamSongInput): Int!
+  queueYoutubeSong(input: QueueYoutubeSongInput): Int!
   popSong: QueueItem
   removeSong(songId: String!, timestamp: String!): Boolean!
 }
@@ -85,7 +89,15 @@ type Song {
   playtime: Int
 }
 
-input SongInput {
+input QueueDamSongInput {
+  id: String!
+  name: String!
+  artistName: String!
+  playtime: Int
+  streamingUrlIdx: Int!
+}
+
+input QueueYoutubeSongInput {
   id: String!
   name: String!
   artistName: String!
@@ -113,8 +125,47 @@ type StreamingUrlInfo {
   url: String!
 }
 
-type QueueItem {
-  song: Song!
+interface QueueItemInterface {
+  id: String!
+  name: String!
+  artistName: String!
+  playtime: Int
+  timestamp: String!
+}
+
+type DamQueueItem implements QueueItemInterface {
+  id: String!
+  name: String!
+  artistName: String!
+  streamingUrls: [StreamingUrlInfo!]!
+  scoringData: [Int!]!
+  playtime: Int
   timestamp: String!
   streamingUrlIdx: Int!
 }
+
+type YoutubeQueueItem implements QueueItemInterface {
+  id: String!
+  name: String!
+  artistName: String!
+  playtime: Int
+  timestamp: String!
+}
+
+union QueueItem = DamQueueItem | YoutubeQueueItem
+
+type YoutubeVideoInfo {
+  author: String!
+  channelId: String!
+  keywords: [String!]
+  lengthSeconds: Int!
+  description: String!
+  title: String!
+  viewCount: Int!
+}
+
+type YoutubeVideoInfoError {
+  reason: String!
+}
+
+union YoutubeVideoInfoResult = YoutubeVideoInfo | YoutubeVideoInfoError
