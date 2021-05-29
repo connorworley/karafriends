@@ -73,6 +73,7 @@ enum VocalType {
   NORMAL
   GUIDE_MALE
   GUIDE_FEMALE
+  UNKNOWN
 }
 
 type Song {

@@ -57,7 +57,9 @@ function Song(props: Props) {
               defaultText = "Queue song - guide vocal (female)";
               break;
             default:
-              throw new Error(`unknown vocal type ${vocalType}`);
+              console.warn(`unknown vocal type ${vocalType}`);
+              defaultText = "Queue song - guide vocal (unknown type)";
+              break;
           }
           return (
             <span key={vocalType}>
