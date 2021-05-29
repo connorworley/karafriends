@@ -1,7 +1,7 @@
 import { createServer } from "http";
 import path from "path";
 
-import { app, BrowserWindow, dialog, ipcMain, IpcMainEvent } from "electron"; // tslint:disable-line:no-implicit-dependencies
+import { app, BrowserWindow, dialog, globalShortcut, ipcMain, IpcMainEvent } from "electron"; // tslint:disable-line:no-implicit-dependencies
 import isDev from "electron-is-dev";
 import express from "express";
 
@@ -111,4 +111,27 @@ app.on("activate", () => {
   if (rendererWindow === null) {
     createWindow();
   }
+});
+
+function refreshRendererWindow() {
+  if (!rendererWindow) return;
+  if (dialog.showMessageBoxSync(
+    rendererWindow,
+    {
+      message : "Are you sure you want to reload the renderer window?",
+      buttons: ["Reload", "Cancel"],
+    },
+  ) === 0) {
+    rendererWindow.reload();
+  }
+}
+
+app.on('browser-window-focus', () => {
+  globalShortcut.register("CommandOrControl+R", refreshRendererWindow);
+  globalShortcut.register("F5", refreshRendererWindow);
+});
+
+app.on('browser-window-blur', () => {
+  globalShortcut.unregister('CommandOrControl+R');
+  globalShortcut.unregister('F5');
 });

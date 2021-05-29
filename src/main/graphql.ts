@@ -296,7 +296,8 @@ const resolvers = {
               case "2":
                 return "GUIDE_FEMALE";
               default:
-                throw new Error(`unknown vocal type ${vocalType}`);
+                console.warn(`unknown vocal type ${vocalType}`);
+                return "UNKNOWN";
             }
           }),
         tieUp: data.list[0].mModelMusicInfoList[0].highlightTieUp,
