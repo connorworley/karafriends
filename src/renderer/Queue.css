@@ -1,3 +1,25 @@
 .queueQueue {
-  overflow-y: auto;
+  overflow: hidden;
+}
+
+.queueMarquee {
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.queueMarqueeInner {
+  display: inline-block;
+}
+
+.queueMarqueeInner span {
+  animation: queueMarquee 10s linear infinite;
+}
+
+@keyframes queueMarquee {
+  0% {
+    margin-left: 0%;
+  }
+  100% {
+    margin-left: -25%;
+  }
 }
