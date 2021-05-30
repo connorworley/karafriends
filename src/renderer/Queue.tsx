@@ -14,11 +14,22 @@ export default function Queue() {
           className="collection-item"
           style={{ display: "flex" }}
         >
-          {item.name}
-          <br />
-          {item.artistName}
+          <span className="queueMarquee">
+            <span className="queueMarqueeInner">
+              <span>
+                {item.name} - {item.artistName}
+                {" - "}
+                {item.name} - {item.artistName}
+                {" - "}
+                {item.name} - {item.artistName}
+                {" - "}
+                {item.name} - {item.artistName}
+                {" - "}
+              </span>
+            </span>
+          </span>
           <span className="secondary-content">
-            T-{formatDuration(eta * 1000)}
+            {formatDuration(eta * 1000)}
           </span>
         </div>
       ))}
