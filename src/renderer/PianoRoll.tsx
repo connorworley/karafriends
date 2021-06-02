@@ -2,6 +2,8 @@
 
 import convert from "color-convert";
 import Spline from "cubic-spline";
+import vec from "gl-vec2";
+import getNormals from "polyline-normals";
 import React, { useEffect, useRef, useState } from "react";
 
 import { InputDevice } from "./audioSystem";
@@ -12,7 +14,8 @@ import seekVertShaderRaw from "./shaders/PianoRollSeek.vert.glsl";
 import singleColorFragShaderRaw from "./shaders/PianoRollSingleColor.frag.glsl";
 
 const TIME_WIDTH_SECS = 5.0;
-const PITCH_RESOLUTION = 16;
+const PITCH_RESOLUTION = 8;
+const STROKE_WIDTH = 0.03;
 
 function loadShader(
   gl: WebGLRenderingContext,
@@ -32,6 +35,28 @@ function loadShader(
   }
 
   return shader;
+}
+
+function edgesToTriangles(top: number[][], bottom: number[][]) {
+  const triangles = [];
+
+  for (let i = 0; i < top.length - 1; i++) {
+    const x0 = top[i][0];
+    const y0 = top[i][1];
+
+    const x1 = bottom[i][0];
+    const y1 = bottom[i][1];
+
+    const x2 = top[i + 1][0];
+    const y2 = top[i + 1][1];
+
+    const x3 = bottom[i + 1][0];
+    const y3 = bottom[i + 1][1];
+
+    triangles.push(...[x0, y0, x1, y1, x2, y2, x1, y1, x2, y2, x3, y3]);
+  }
+
+  return triangles;
 }
 
 function quadToTriangles(x0: number, y0: number, x1: number, y1: number) {
@@ -303,62 +328,99 @@ class PitchDetectionBuffer {
 
     if (this.buffer.length > 200) {
       this.buffer.shift();
-      this.buffer.splice(0, PITCH_RESOLUTION * 12);
+      this.positions.splice(0, 12 * (PITCH_RESOLUTION - 1));
     }
 
     if (this.buffer.length >= 1) {
-      const spline = new Spline(
-        this.buffer.map((obj) => obj.time),
-        this.buffer.map((obj) => obj.value)
-      );
-
       const lastIndex = this.buffer.length - 1;
 
-      let currX = this.buffer[lastIndex].time;
-      let currY = spline.at(currX);
+      let timeGap = null;
+      let pitchGap = null;
 
-      this.positions.push(
-        ...quadToTriangles(
-          currX - 0.025,
-          midiNumberToYCoord(currY + 0.5, medianMidiNumber),
-          currX,
-          midiNumberToYCoord(currY - 0.5, medianMidiNumber)
-        )
-      );
+      if (this.buffer.length >= 3) {
+        timeGap = this.buffer[lastIndex].time - this.buffer[lastIndex - 2].time;
 
-      for (let i = 1; i < PITCH_RESOLUTION; i++) {
-        // We don't try to interpolate if there is only one note, the time gap between
-        // two notes is too large, or the pitch gap between two notes is too large.
-        if (this.buffer.length > 1) {
-          const timeGap =
-            this.buffer[lastIndex].time - this.buffer[lastIndex - 1].time;
-          const pitchGap = Math.abs(
+        pitchGap = Math.max(
+          Math.abs(
             this.buffer[lastIndex].value - this.buffer[lastIndex - 1].value
-          );
-
-          if (timeGap < 0.1 && pitchGap < 8) {
-            currX =
-              this.buffer[lastIndex - 1].time +
-              (i * timeGap) / PITCH_RESOLUTION;
-            currY = spline.at(currX);
-          }
-        }
-
-        this.positions.push(
-          ...quadToTriangles(
-            currX - 0.025,
-            midiNumberToYCoord(currY + 0.5, medianMidiNumber),
-            currX,
-            midiNumberToYCoord(currY - 0.5, medianMidiNumber)
+          ),
+          Math.abs(
+            this.buffer[lastIndex - 1].value - this.buffer[lastIndex - 2].value
+          ),
+          Math.abs(
+            this.buffer[lastIndex].value - this.buffer[lastIndex - 2].value
           )
         );
       }
+
+      // If we don't have 3 points to create a spline with, or the time/pitch gap
+      // between points is too large, just draw the current point as is.
+      if (!timeGap || !pitchGap || timeGap > 0.06 || pitchGap > 7) {
+        const pitchPoint = quadToTriangles(
+          this.buffer[lastIndex].time - 0.025,
+          this.buffer[lastIndex].value - STROKE_WIDTH / 2,
+          this.buffer[lastIndex].time,
+          this.buffer[lastIndex].value + STROKE_WIDTH / 2
+        );
+
+        for (let i = 0; i < PITCH_RESOLUTION - 1; i++) {
+          this.positions.push(...pitchPoint);
+        }
+
+        return;
+      }
+
+      const path = [];
+
+      const bufferSlice = this.buffer.slice(lastIndex - 2, lastIndex + 1);
+      const spline = new Spline(
+        bufferSlice.map((obj) => obj.time),
+        bufferSlice.map((obj) =>
+          midiNumberToYCoord(obj.value, medianMidiNumber)
+        )
+      );
+
+      for (let i = 0; i < PITCH_RESOLUTION; i++) {
+        const currX =
+          this.buffer[lastIndex - 2].time + i * (timeGap / PITCH_RESOLUTION);
+
+        path.push([currX, spline.at(currX)]);
+      }
+
+      const edges: number[][][] = this.createEdges(path);
+      const newLineSegment = edgesToTriangles(edges[0], edges[1]);
+
+      // Only add the newest line segment to positions
+      this.positions.push(...newLineSegment);
     }
   }
 
   clear() {
     this.buffer = [];
     this.positions = [];
+  }
+
+  createEdges(path: number[][]) {
+    const strokeWidth = 0.03;
+
+    const top: number[][] = [];
+    const bottom: number[][] = [];
+
+    const normals: any = getNormals(path, false);
+    const tmp = [0, 0];
+
+    path.forEach((point, i) => {
+      const normal: number[] = normals[i][0];
+      const join: number = normals[i][1];
+
+      vec.scaleAndAdd(tmp, point, normal, (join * strokeWidth) / 2);
+      top.push(tmp.slice());
+
+      vec.scaleAndAdd(tmp, point, normal, (-join * strokeWidth) / 2);
+      bottom.push(tmp.slice());
+    });
+
+    return [top, bottom];
   }
 }
 
@@ -392,9 +454,6 @@ export default function PianoRoll(props: {
       endTime: number;
       midiNumber: number;
     }[] = [];
-
-    const nBars = 36;
-    const barSize = 1 / nBars;
 
     const notesOffset = 6;
     for (let i = notesOffset; i < notesOffset + noteCount * 4; i += 4) {
