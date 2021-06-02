@@ -401,8 +401,6 @@ class PitchDetectionBuffer {
   }
 
   createEdges(path: number[][]) {
-    const strokeWidth = 0.03;
-
     const top: number[][] = [];
     const bottom: number[][] = [];
 
@@ -413,10 +411,10 @@ class PitchDetectionBuffer {
       const normal: number[] = normals[i][0];
       const join: number = normals[i][1];
 
-      vec.scaleAndAdd(tmp, point, normal, (join * strokeWidth) / 2);
+      vec.scaleAndAdd(tmp, point, normal, (join * STROKE_WIDTH) / 2);
       top.push(tmp.slice());
 
-      vec.scaleAndAdd(tmp, point, normal, (-join * strokeWidth) / 2);
+      vec.scaleAndAdd(tmp, point, normal, (-join * STROKE_WIDTH) / 2);
       bottom.push(tmp.slice());
     });
 
