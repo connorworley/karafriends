@@ -65,7 +65,8 @@ function Player(props: { mics: InputDevice[] }) {
                 break;
               case "YoutubeQueueItem":
                 setShouldShowPianoRoll(false);
-                videoRef.current.src = `${window.origin}/vids/${popSong.id}.mp4`;
+                const staticUrl = `http://localhost:8080/static`;
+                videoRef.current.src = `${staticUrl}/${popSong.id}.mp4`;
                 videoRef.current.play();
                 break;
             }

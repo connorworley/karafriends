@@ -1,11 +1,17 @@
+import { app } from "electron"; // tslint:disable-line:no-implicit-dependencies
 import fs from "fs";
 import ytdl from "ytdl-core";
+
+export const TEMP_FOLDER: string = `${app.getPath("temp")}/karafriends_tmp`;
 
 export function downloadYoutubeVideo(
   videoId: string,
   onComplete: () => any
 ): void {
-  const writePath = `vids/${videoId}.mp4`;
+  if (!fs.existsSync(TEMP_FOLDER)) {
+    fs.mkdirSync(TEMP_FOLDER);
+  }
+  const writePath = `${TEMP_FOLDER}/${videoId}.mp4`;
   if (fs.existsSync(writePath)) {
     onComplete();
     return;
