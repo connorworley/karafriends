@@ -11,6 +11,7 @@ import {
   getCredentials,
   setCredentials,
 } from "../common/auth";
+import { TEMP_FOLDER } from "./../common/videoDownloader";
 import { MinseiAPI, MinseiCredentials } from "./damApi";
 import { applyGraphQLMiddleware, subscriptionServer } from "./graphql";
 import setupMdns from "./mdns";
@@ -31,6 +32,7 @@ function attemptLogin(creds: Credentials) {
     )
     .then((minseiCreds: MinseiCredentials) => {
       const expressApp = express();
+      expressApp.use("/static", express.static(TEMP_FOLDER));
       expressApp.use(remoconMiddleware());
       applyGraphQLMiddleware(expressApp, minseiCreds);
       const server = createServer(expressApp);

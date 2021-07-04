@@ -7,6 +7,9 @@ import PreviewYoutube from "./PreviewYoutube";
 function getVideoId(videoQuery: string): string | null {
   try {
     const url = new URL(videoQuery);
+    if (url.hostname === "youtu.be") {
+      return url.pathname.replace("/", "");
+    }
     return url.searchParams.get("v");
   } catch (e) {
     if (e.name !== "TypeError") {
