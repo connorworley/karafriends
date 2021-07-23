@@ -6,6 +6,7 @@ type Query {
   queue: [QueueItem!]!
   history(first: Int, after: String): HistoryConnection!
   youtubeVideoInfo(videoId: String): YoutubeVideoInfoResult!
+  playbackState: PlaybackState!
 }
 
 type Mutation {
@@ -15,9 +16,11 @@ type Mutation {
   queueYoutubeSong(input: QueueYoutubeSongInput): Int!
   popSong: QueueItem
   removeSong(songId: String!, timestamp: String!): Boolean!
+  setPlaybackState(playbackState: PlaybackState!): Boolean!
 }
 
 type Subscription {
+  playbackStateChanged: PlaybackState!
   queueChanged: [QueueItem!]!
   queueAdded: QueueItem!
 }
@@ -170,3 +173,11 @@ type YoutubeVideoInfoError {
 }
 
 union YoutubeVideoInfoResult = YoutubeVideoInfo | YoutubeVideoInfoError
+
+enum PlaybackState {
+  PAUSED
+  PLAYING
+  RESTARTING
+  SKIPPING
+  WAITING
+}
