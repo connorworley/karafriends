@@ -118,16 +118,27 @@ interface HistoryItem {
   readonly playDate: string;
 }
 
+enum PlaybackState {
+  PAUSED = "PAUSED",
+  PLAYING = "PLAYING",
+  RESTARTING = "RESTARTING",
+  SKIPPING = "SKIPPING",
+  WAITING = "WAITING",
+}
+
 type NotARealDb = {
+  playbackState: PlaybackState;
   songQueue: QueueItem[];
 };
 
 enum SubscriptionEvent {
+  PlaybackStateChanged = "PlaybackStateChanged",
   QueueChanged = "QueueChanged",
   QueueAdded = "QueueAdded",
 }
 
 const db: NotARealDb = {
+  playbackState: PlaybackState.WAITING,
   songQueue: [],
 };
 
@@ -409,6 +420,7 @@ const resolvers = {
         };
       });
     },
+    playbackState: () => db.playbackState,
   },
   Mutation: {
     queueDamSong: (_: any, args: { input: QueueDamSongInput }): number => {
@@ -458,8 +470,22 @@ const resolvers = {
       });
       return true;
     },
+    setPlaybackState: (
+      _: any,
+      args: { playbackState: PlaybackState }
+    ): boolean => {
+      db.playbackState = args.playbackState;
+      pubsub.publish(SubscriptionEvent.PlaybackStateChanged, {
+        playbackStateChanged: args.playbackState,
+      });
+      return true;
+    },
   },
   Subscription: {
+    playbackStateChanged: {
+      subscribe: () =>
+        pubsub.asyncIterator([SubscriptionEvent.PlaybackStateChanged]),
+    },
     queueChanged: {
       subscribe: () => pubsub.asyncIterator([SubscriptionEvent.QueueChanged]),
     },

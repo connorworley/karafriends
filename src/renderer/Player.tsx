@@ -5,6 +5,7 @@ import YoutubePlayer from "youtube-player";
 import { PlayerPopSongMutation } from "./__generated__/PlayerPopSongMutation.graphql";
 
 import environment from "../common/graphqlEnvironment";
+import usePlaybackState from "../common/hooks/usePlaybackState";
 import { InputDevice } from "./audioSystem";
 import PianoRoll from "./PianoRoll";
 import "./Player.css";
@@ -37,6 +38,7 @@ function Player(props: { mics: InputDevice[] }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [scoringData, setScoringData] = useState<readonly number[]>([]);
   const [shouldShowPianoRoll, setShouldShowPianoRoll] = useState<boolean>(true);
+  const { playbackState, setPlaybackState } = usePlaybackState();
   const pollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   let hls: Hls | null = null;
 
@@ -67,7 +69,9 @@ function Player(props: { mics: InputDevice[] }) {
                 videoRef.current.play();
                 break;
             }
+            setPlaybackState("PLAYING");
           } else {
+            setPlaybackState("WAITING");
             pollTimeoutRef.current = setTimeout(pollQueue, POLL_INTERVAL_MS);
           }
         },
@@ -78,6 +82,26 @@ function Player(props: { mics: InputDevice[] }) {
       if (pollTimeoutRef.current) clearTimeout(pollTimeoutRef.current);
     };
   }, []);
+
+  useEffect(() => {
+    if (!videoRef.current) return;
+    switch (playbackState) {
+      case "PAUSED":
+        videoRef.current.pause();
+        break;
+      case "PLAYING":
+        videoRef.current.play();
+        break;
+      case "RESTARTING":
+        videoRef.current.currentTime = 0;
+        setPlaybackState("PLAYING");
+        break;
+      case "SKIPPING":
+        videoRef.current.currentTime = videoRef.current.duration;
+        videoRef.current.play();
+        break;
+    }
+  }, [playbackState]);
 
   return (
     <div className="karaVidContainer">
