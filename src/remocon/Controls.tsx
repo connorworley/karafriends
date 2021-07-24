@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 
 import { withLoader } from "../common/components/Loader";
 import useQueue from "../common/hooks/useQueue";
+import PlaybackControls from "./components/PlaybackControls";
 import { ControlsRemoveSongMutation } from "./__generated__/ControlsRemoveSongMutation.graphql";
 
 interface QueueLinkProps {
@@ -82,9 +83,12 @@ const Controls = () => {
   };
 
   return (
-    <div className="collection">
-      {queue.map(([item, eta], i) => {
-        return (
+    <>
+      <div className="section">
+        <PlaybackControls />
+      </div>
+      <div className="collection">
+        {queue.map(([item, eta], i) => (
           <div
             key={`${item.id}_${i}`}
             className="collection-item"
@@ -113,9 +117,9 @@ const Controls = () => {
               ❌
             </div>
           </div>
-        );
-      })}
-    </div>
+        ))}
+      </div>
+    </>
   );
 };
 

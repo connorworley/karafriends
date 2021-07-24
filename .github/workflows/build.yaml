@@ -15,7 +15,6 @@ jobs:
         with:
           name: karafriends-macos
           path: dist/karafriends-*.dmg
-          retention-days: 1
           if-no-files-found: error
   build-windows:
     runs-on: windows-latest
@@ -28,5 +27,4 @@ jobs:
         with:
           name: karafriends-windows
           path: dist/karafriends *.exe
-          retention-days: 1
           if-no-files-found: error

@@ -29,3 +29,6 @@ yarn-error.log*
 
 # Added by cargo
 /native/target
+
+# react-relay
+__generated__
