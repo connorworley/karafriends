@@ -72,6 +72,7 @@ function Song(props: Props) {
                     artistName: song.artistName,
                     playtime: song.playtime,
                     streamingUrlIdx: i,
+                    nickname: localStorage.getItem("nickname") || "unknown",
                   },
                 }}
               />{" "}

@@ -15,6 +15,13 @@ function App() {
   useEffect(() => {
     const elems = document.querySelectorAll(".sidenav");
     M.Sidenav.init(elems, {});
+
+    while ((localStorage.getItem("nickname") || "").length === 0) {
+      localStorage.setItem(
+        "nickname",
+        prompt("Please set your nickname:") || ""
+      );
+    }
   });
 
   return (

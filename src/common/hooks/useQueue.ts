@@ -22,6 +22,7 @@ const queueQuery = graphql`
         artistName
         playtime
         timestamp
+        nickname
       }
     }
   }
@@ -37,6 +38,7 @@ const queueSubscription = graphql`
         artistName
         playtime
         timestamp
+        nickname
       }
     }
   }

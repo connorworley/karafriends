@@ -96,6 +96,7 @@ input QueueDamSongInput {
   artistName: String!
   playtime: Int
   streamingUrlIdx: Int!
+  nickname: String!
 }
 
 input QueueYoutubeSongInput {
@@ -103,6 +104,7 @@ input QueueYoutubeSongInput {
   name: String!
   artistName: String!
   playtime: Int
+  nickname: String!
 }
 
 type SongConnection {
@@ -132,6 +134,7 @@ interface QueueItemInterface {
   artistName: String!
   playtime: Int
   timestamp: String!
+  nickname: String!
 }
 
 type DamQueueItem implements QueueItemInterface {
@@ -142,6 +145,7 @@ type DamQueueItem implements QueueItemInterface {
   scoringData: [Int!]!
   playtime: Int
   timestamp: String!
+  nickname: String!
   streamingUrlIdx: Int!
 }
 
@@ -151,6 +155,7 @@ type YoutubeQueueItem implements QueueItemInterface {
   artistName: String!
   playtime: Int
   timestamp: String!
+  nickname: String!
 }
 
 union QueueItem = DamQueueItem | YoutubeQueueItem

@@ -99,7 +99,7 @@ const Controls = () => {
               {getIcon(item.__typename)} {item.artistName} - {item.name}
             </QueueLink>
             <span className="secondary-content">
-              T-{formatDuration(eta * 1000)}
+              {item.nickname} - T-{formatDuration(eta * 1000)}
             </span>
             <div
               style={{ cursor: "pointer" }}
