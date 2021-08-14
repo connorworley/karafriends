@@ -23,14 +23,19 @@ function cyrb53(str: string, seed = 0) {
   return 4294967296 * (2097151 & h2) + (h1 >>> 0);
 }
 
+const ones = 0b11111111111111111111111111111111111111111111111111111;
+
 export default function Queue() {
   const queue = useQueue();
   return (
     <div className="collection queueQueue">
       {queue.map(([item, eta], i) => {
-        const nicknameColor = `#${cyrb53(item.nickname || "")
+        const nicknameHash = cyrb53(item.nickname || "");
+        const nicknameColor = `#${nicknameHash.toString(16).slice(-6)}`;
+        const nicknameBgColor = `#${(ones ^ nicknameHash)
           .toString(16)
           .slice(-6)}`;
+        console.log(nicknameHash, nicknameColor, nicknameBgColor);
         return (
           <div
             key={`${item.id}_${i}`}
@@ -41,13 +46,41 @@ export default function Queue() {
               <span className="queueMarqueeInner">
                 <span>
                   {item.name} - {item.artistName}{" "}
-                  <span style={{ color: nicknameColor }}>{item.nickname}</span>{" "}
+                  <span
+                    style={{
+                      backgroundColor: nicknameBgColor,
+                      color: nicknameColor,
+                    }}
+                  >
+                    {item.nickname}
+                  </span>{" "}
                   {item.name} - {item.artistName}{" "}
-                  <span style={{ color: nicknameColor }}>{item.nickname}</span>{" "}
+                  <span
+                    style={{
+                      backgroundColor: nicknameBgColor,
+                      color: nicknameColor,
+                    }}
+                  >
+                    {item.nickname}
+                  </span>{" "}
                   {item.name} - {item.artistName}{" "}
-                  <span style={{ color: nicknameColor }}>{item.nickname}</span>{" "}
+                  <span
+                    style={{
+                      backgroundColor: nicknameBgColor,
+                      color: nicknameColor,
+                    }}
+                  >
+                    {item.nickname}
+                  </span>{" "}
                   {item.name} - {item.artistName}{" "}
-                  <span style={{ color: nicknameColor }}>{item.nickname}</span>{" "}
+                  <span
+                    style={{
+                      backgroundColor: nicknameBgColor,
+                      color: nicknameColor,
+                    }}
+                  >
+                    {item.nickname}
+                  </span>{" "}
                 </span>
               </span>
             </span>
