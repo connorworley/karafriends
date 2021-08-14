@@ -85,6 +85,7 @@ interface QueueItemInterface {
   readonly artistName: string;
   readonly playtime?: number | null;
   readonly timestamp: string;
+  readonly nickname: string;
 }
 
 interface DamQueueItem extends QueueItemInterface {
@@ -104,6 +105,7 @@ type QueueDamSongInput = {
   readonly artistName: string;
   readonly playtime?: number | null;
   readonly streamingUrlIdx: string;
+  readonly nickname: string;
 };
 
 type QueueYoutubeSongInput = {
@@ -111,6 +113,7 @@ type QueueYoutubeSongInput = {
   readonly name: string;
   readonly artistName: string;
   readonly playtime?: number | null;
+  readonly nickname: string;
 };
 
 interface HistoryItem {

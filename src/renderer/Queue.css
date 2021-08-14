@@ -11,7 +11,7 @@
   display: inline-block;
 }
 
-.queueMarqueeInner span {
+.queueMarqueeInner > span {
   animation: queueMarquee 10s linear infinite;
 }
 

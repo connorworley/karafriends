@@ -78,6 +78,7 @@ function PreviewYoutube(props: PreviewYoutubeProps) {
                     name: videoData.youtubeVideoInfo.title,
                     artistName: videoData.youtubeVideoInfo.author,
                     playtime: videoData.youtubeVideoInfo.lengthSeconds,
+                    nickname: localStorage.getItem("nickname") || "unknown",
                   },
                 }}
               />
