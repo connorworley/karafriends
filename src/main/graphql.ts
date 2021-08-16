@@ -80,7 +80,7 @@ interface YoutubeVideoInfoError {
 type YoutubeVideoInfoResult = YoutubeVideoInfo | YoutubeVideoInfoError;
 
 interface QueueItemInterface {
-  readonly id: string;
+  readonly songId: string;
   readonly name: string;
   readonly artistName: string;
   readonly playtime?: number | null;
@@ -101,7 +101,7 @@ interface YoutubeQueueItem extends QueueItemInterface {
 type QueueItem = DamQueueItem | YoutubeQueueItem;
 
 type QueueDamSongInput = {
-  readonly id: string;
+  readonly songId: string;
   readonly name: string;
   readonly artistName: string;
   readonly playtime?: number | null;
@@ -110,7 +110,7 @@ type QueueDamSongInput = {
 };
 
 type QueueYoutubeSongInput = {
-  readonly id: string;
+  readonly songId: string;
   readonly name: string;
   readonly artistName: string;
   readonly playtime?: number | null;
@@ -268,15 +268,17 @@ const resolvers = {
   },
   DamQueueItem: {
     streamingUrls(parent: DamQueueItem, _: any, { dataSources }: IDataSources) {
-      return dataSources.minsei.getMusicStreamingUrls(parent.id).then((data) =>
-        data.list.map((info) => ({
-          url: info.highBitrateUrl,
-        }))
-      );
+      return dataSources.minsei
+        .getMusicStreamingUrls(parent.songId)
+        .then((data) =>
+          data.list.map((info) => ({
+            url: info.highBitrateUrl,
+          }))
+        );
     },
     scoringData(parent: DamQueueItem, _: any, { dataSources }: IDataSources) {
       return dataSources.minsei
-        .getScoringData(parent.id)
+        .getScoringData(parent.songId)
         .then((data) => Array.from(new Uint8Array(data)));
     },
   },
@@ -474,12 +476,12 @@ const resolvers = {
         __typename: "YoutubeQueueItem",
       };
       if (args.input.adhocSongLyrics) {
-        db.idToAdhocLyrics[args.input.id] = cleanupAdhocSongLyrics(
+        db.idToAdhocLyrics[args.input.songId] = cleanupAdhocSongLyrics(
           args.input.adhocSongLyrics
         );
       }
       downloadYoutubeVideo(
-        args.input.id,
+        args.input.songId,
         pushSongToQueue.bind(null, queueItem)
       );
       // The song likely hasn't actually been added to the queue yet since it needs to download,
@@ -527,7 +529,7 @@ const resolvers = {
     ): boolean => {
       db.songQueue = db.songQueue.filter(
         (item) =>
-          !(item.id === args.songId && item.timestamp === args.timestamp)
+          !(item.songId === args.songId && item.timestamp === args.timestamp)
       );
       pubsub.publish(SubscriptionEvent.QueueChanged, {
         queueChanged: db.songQueue,

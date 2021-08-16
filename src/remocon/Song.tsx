@@ -67,7 +67,7 @@ function Song(props: SongParams) {
                 defaultText={defaultText}
                 variables={{
                   input: {
-                    id,
+                    songId: id,
                     name: song.name,
                     artistName: song.artistName,
                     playtime: song.playtime,

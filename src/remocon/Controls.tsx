@@ -87,13 +87,13 @@ const Controls = () => {
       <div className="collection">
         {queue.map(([item, eta], i) => (
           <div
-            key={`${item.id}_${i}`}
+            key={`${item.songId}_${i}`}
             className="collection-item"
             style={{ display: "flex" }}
           >
             <QueueLink
               typename={item.__typename}
-              songId={item.id}
+              songId={item.songId}
               className="truncate"
               style={{ flex: "1" }}
             >
@@ -106,8 +106,8 @@ const Controls = () => {
               style={{ cursor: "pointer" }}
               onClick={(e) => {
                 e.preventDefault();
-                if (item.id && item.timestamp) {
-                  onClickRemoveSong(item.id, item.timestamp);
+                if (item.songId && item.timestamp) {
+                  onClickRemoveSong(item.songId, item.timestamp);
                 }
               }}
             >

@@ -49,9 +49,6 @@ function YoutubeInfo(props: YoutubeInfoProps) {
     { videoId }
   );
 
-  const [lyrics, setLyrics] = useState<string[]>([]);
-  const videoRef = useRef<HTMLVideoElement>(null);
-
   useEffect(() => {
     if (playerRef.current == null) {
       playerRef.current = YoutubePlayer("youtube-player", { videoId });
@@ -107,7 +104,7 @@ function YoutubeInfo(props: YoutubeInfoProps) {
             defaultText={"Queue Song"}
             variables={{
               input: {
-                id: videoId,
+                songId: videoId,
                 name: videoData.youtubeVideoInfo.title,
                 artistName: videoData.youtubeVideoInfo.author,
                 playtime: videoData.youtubeVideoInfo.lengthSeconds,

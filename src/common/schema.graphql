@@ -104,7 +104,7 @@ type Song {
 }
 
 input QueueDamSongInput {
-  id: String!
+  songId: String!
   name: String!
   artistName: String!
   playtime: Int
@@ -113,7 +113,7 @@ input QueueDamSongInput {
 }
 
 input QueueYoutubeSongInput {
-  id: String!
+  songId: String!
   name: String!
   artistName: String!
   playtime: Int
@@ -148,7 +148,7 @@ input PushAdhocLyricsInput {
 }
 
 interface QueueItemInterface {
-  id: String!
+  songId: String!
   name: String!
   artistName: String!
   playtime: Int
@@ -157,7 +157,7 @@ interface QueueItemInterface {
 }
 
 type DamQueueItem implements QueueItemInterface {
-  id: String!
+  songId: String!
   name: String!
   artistName: String!
   streamingUrls: [StreamingUrlInfo!]!
@@ -169,7 +169,7 @@ type DamQueueItem implements QueueItemInterface {
 }
 
 type YoutubeQueueItem implements QueueItemInterface {
-  id: String!
+  songId: String!
   name: String!
   artistName: String!
   playtime: Int

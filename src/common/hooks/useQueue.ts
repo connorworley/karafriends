@@ -17,7 +17,7 @@ const queueQuery = graphql`
     queue {
       ... on QueueItemInterface {
         __typename
-        id
+        songId
         name
         artistName
         playtime
@@ -33,7 +33,7 @@ const queueSubscription = graphql`
     queueChanged {
       ... on QueueItemInterface {
         __typename
-        id
+        songId
         name
         artistName
         playtime

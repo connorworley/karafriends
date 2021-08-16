@@ -16,7 +16,7 @@ const popSongMutation = graphql`
     popSong {
       ... on DamQueueItem {
         __typename
-        id
+        songId
         streamingUrls {
           url
         }
@@ -26,7 +26,7 @@ const popSongMutation = graphql`
       }
       ... on YoutubeQueueItem {
         __typename
-        id
+        songId
         timestamp
         hasAdhocLyrics
       }
@@ -74,7 +74,7 @@ function Player(props: { mics: InputDevice[] }) {
                 setShouldShowPianoRoll(false);
                 setShouldShowAdhocLyrics(popSong.hasAdhocLyrics);
                 const staticUrl = `http://localhost:8080/static`;
-                videoRef.current.src = `${staticUrl}/${popSong.id}.mp4`;
+                videoRef.current.src = `${staticUrl}/${popSong.songId}.mp4`;
                 videoRef.current.play();
                 break;
             }

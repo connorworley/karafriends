@@ -16,13 +16,13 @@ const currentSongQuery = graphql`
     currentSong {
       ... on DamQueueItem {
         __typename
-        id
+        songId
         name
         artistName
       }
       ... on YoutubeQueueItem {
         __typename
-        id
+        songId
         name
         artistName
         playtime
@@ -37,13 +37,15 @@ function CurrentSong() {
   const queryData = useLazyLoadQuery<CurrentSongQuery>(currentSongQuery, {});
 
   function getCurrentSongDisplay() {
+    console.log(queryData.currentSong);
     switch (queryData?.currentSong?.__typename) {
       case "DamQueueItem":
-        return <Song id={queryData.currentSong.id} />;
+        console.log("why");
+        return <Song id={queryData.currentSong.songId} />;
       case "YoutubeQueueItem":
         return (
           <YoutubeInfo
-            videoId={queryData.currentSong.id}
+            videoId={queryData.currentSong.songId}
             showAdhocLyricsFields={queryData.currentSong.hasAdhocLyrics}
           />
         );
