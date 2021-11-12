@@ -1,0 +1,19 @@
+.lyrics-container {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 90%;
+}
+
+.entry-container {
+  font-size: 3vw; /* this must match the canvas width check in AdhocLyrics.tsx */
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transition: margin-top 0.25s ease-out;
+  font-weight: bolder;
+  color: white;
+  -webkit-text-stroke-color: black;
+  -webkit-text-stroke-width: 0.1vw;
+}

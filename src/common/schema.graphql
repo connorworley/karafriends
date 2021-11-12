@@ -1,28 +1,38 @@
 type Query {
-  songsByName(name: String, first: Int, after: String): SongConnection!
-  songById(id: String!): Song!
-  artistsByName(name: String, first: Int, after: String): ArtistConnection!
+  adhocLyrics(id: String!): [String!]
   artistById(id: String, first: Int, after: String): Artist!
-  queue: [QueueItem!]!
+  artistsByName(name: String, first: Int, after: String): ArtistConnection!
+  currentSong: QueueItem
   history(first: Int, after: String): HistoryConnection!
-  youtubeVideoInfo(videoId: String): YoutubeVideoInfoResult!
   playbackState: PlaybackState!
+  queue: [QueueItem!]!
+  songById(id: String!): Song!
+  songsByName(name: String, first: Int, after: String): SongConnection!
+  youtubeVideoInfo(videoId: String): YoutubeVideoInfoResult!
 }
 
 type Mutation {
   # Maybe we can merge these queue endpoints once Input Unions become real
   # https://github.com/graphql/graphql-spec/issues/488
+  popAdhocLyrics: Boolean!
+  popSong: QueueItem
+  pushAdhocLyrics(input: PushAdhocLyricsInput): Boolean!
   queueDamSong(input: QueueDamSongInput): Int!
   queueYoutubeSong(input: QueueYoutubeSongInput): Int!
-  popSong: QueueItem
   removeSong(songId: String!, timestamp: String!): Boolean!
   setPlaybackState(playbackState: PlaybackState!): Boolean!
 }
 
 type Subscription {
+  currentSongAdhocLyricsChanged: [AdhocLyricsEntry!]!
   playbackStateChanged: PlaybackState!
-  queueChanged: [QueueItem!]!
   queueAdded: QueueItem!
+  queueChanged: [QueueItem!]!
+}
+
+type AdhocLyricsEntry {
+  lyric: String!
+  lyricIndex: Int!
 }
 
 type HistoryItem {
@@ -94,7 +104,7 @@ type Song {
 }
 
 input QueueDamSongInput {
-  id: String!
+  songId: String!
   name: String!
   artistName: String!
   playtime: Int
@@ -103,11 +113,12 @@ input QueueDamSongInput {
 }
 
 input QueueYoutubeSongInput {
-  id: String!
+  songId: String!
   name: String!
   artistName: String!
   playtime: Int
   nickname: String!
+  adhocSongLyrics: String
 }
 
 type SongConnection {
@@ -131,8 +142,13 @@ type StreamingUrlInfo {
   url: String!
 }
 
+input PushAdhocLyricsInput {
+  lyric: String!
+  lyricIndex: Int!
+}
+
 interface QueueItemInterface {
-  id: String!
+  songId: String!
   name: String!
   artistName: String!
   playtime: Int
@@ -141,7 +157,7 @@ interface QueueItemInterface {
 }
 
 type DamQueueItem implements QueueItemInterface {
-  id: String!
+  songId: String!
   name: String!
   artistName: String!
   streamingUrls: [StreamingUrlInfo!]!
@@ -153,12 +169,13 @@ type DamQueueItem implements QueueItemInterface {
 }
 
 type YoutubeQueueItem implements QueueItemInterface {
-  id: String!
+  songId: String!
   name: String!
   artistName: String!
   playtime: Int
   timestamp: String!
   nickname: String!
+  hasAdhocLyrics: Boolean!
 }
 
 union QueueItem = DamQueueItem | YoutubeQueueItem

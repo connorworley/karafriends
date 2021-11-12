@@ -38,7 +38,7 @@ export default function Queue() {
         console.log(nicknameHash, nicknameColor, nicknameBgColor);
         return (
           <div
-            key={`${item.id}_${i}`}
+            key={`${item.songId}_${i}`}
             className="collection-item"
             style={{ display: "flex" }}
           >

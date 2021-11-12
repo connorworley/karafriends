@@ -21,28 +21,28 @@ const songQuery = graphql`
   }
 `;
 
-interface SongParams {
+interface RouteParams {
   id: string;
 }
 
-interface Props extends RouteComponentProps<SongParams> {}
+interface SongParams extends RouteParams {
+  showQueueButton?: boolean;
+}
 
-function Song(props: Props) {
-  const { id } = props.match.params;
+interface RoutedSongProps extends RouteComponentProps<RouteParams> {}
+
+function _RoutedSong(props: RoutedSongProps) {
+  return Song({ ...props.match.params, showQueueButton: true });
+}
+export const RoutedSong = withLoader(_RoutedSong);
+
+function Song(props: SongParams) {
+  const { id, showQueueButton } = props;
   const data = useLazyLoadQuery<SongQuery>(songQuery, { id });
   const song = data.songById;
-  return (
-    <div className="card">
-      <div className="card-content">
-        <h6>{song.artistName}</h6>
-        <h5>{song.name}</h5>
-        {!!song.tieUp && (
-          <p className="grey-text text-lighten-1">{song.tieUp}</p>
-        )}
-        {!!song.lyricsPreview && (
-          <blockquote>{song.lyricsPreview} ...</blockquote>
-        )}
-      </div>
+
+  function getQueueButton() {
+    return (
       <div className="card-action">
         {song.vocalTypes.map((vocalType, i) => {
           let defaultText = "";
@@ -67,7 +67,7 @@ function Song(props: Props) {
                 defaultText={defaultText}
                 variables={{
                   input: {
-                    id,
+                    songId: id,
                     name: song.name,
                     artistName: song.artistName,
                     playtime: song.playtime,
@@ -80,6 +80,22 @@ function Song(props: Props) {
           );
         })}
       </div>
+    );
+  }
+
+  return (
+    <div className="card">
+      <div className="card-content">
+        <h6>{song.artistName}</h6>
+        <h5>{song.name}</h5>
+        {!!song.tieUp && (
+          <p className="grey-text text-lighten-1">{song.tieUp}</p>
+        )}
+        {!!song.lyricsPreview && (
+          <blockquote>{song.lyricsPreview} ...</blockquote>
+        )}
+      </div>
+      {showQueueButton ? getQueueButton() : null}
     </div>
   );
 }

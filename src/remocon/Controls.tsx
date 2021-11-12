@@ -24,10 +24,8 @@ interface QueueLinkProps {
 
 const QueueLink = (props: QueueLinkProps): JSX.Element | null => {
   let linkUrl: JSX.Element | null = null;
-  console.log(props);
   switch (props.typename) {
     case "DamQueueItem":
-      console.log("hoahoa");
       linkUrl = (
         <Link
           to={`/song/${props.songId}`}
@@ -39,7 +37,6 @@ const QueueLink = (props: QueueLinkProps): JSX.Element | null => {
       );
       break;
     case "YoutubeQueueItem":
-      console.log("hocmooaahoa");
       linkUrl = (
         <a
           href={`https://youtu.be/${props.songId}`}
@@ -90,13 +87,13 @@ const Controls = () => {
       <div className="collection">
         {queue.map(([item, eta], i) => (
           <div
-            key={`${item.id}_${i}`}
+            key={`${item.songId}_${i}`}
             className="collection-item"
             style={{ display: "flex" }}
           >
             <QueueLink
               typename={item.__typename}
-              songId={item.id}
+              songId={item.songId}
               className="truncate"
               style={{ flex: "1" }}
             >
@@ -109,8 +106,8 @@ const Controls = () => {
               style={{ cursor: "pointer" }}
               onClick={(e) => {
                 e.preventDefault();
-                if (item.id && item.timestamp) {
-                  onClickRemoveSong(item.id, item.timestamp);
+                if (item.songId && item.timestamp) {
+                  onClickRemoveSong(item.songId, item.timestamp);
                 }
               }}
             >
