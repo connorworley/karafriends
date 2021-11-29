@@ -23,6 +23,7 @@ jobs:
       - run: rustup default stable-x86_64-pc-windows-gnu
       - run: curl -sSL https://download.steinberg.net/sdk_downloads/asiosdk_2.3.3_2019-06-14.zip -o asio.zip && unzip asio.zip -d ${{ runner.temp }}\asio
       - run: yarn install
+      - run: echo $env:Path
       - run: $env:Path = ("C:\msys64\mingw64\bin;" + $env:Path) && echo $env:Path && yarn build
         env:
           CPAL_ASIO_DIR: ${{ runner.temp }}\asio\asiosdk_2.3.3_2019-06-14
