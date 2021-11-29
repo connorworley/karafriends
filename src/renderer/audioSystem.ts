@@ -6,8 +6,11 @@ export class InputDevice {
   deviceId: number;
   name: string;
 
-  constructor(name: string) {
-    this.deviceId = window.karafriends.nativeAudio.inputDevice_new(name);
+  constructor(name: string, channelSelection: number) {
+    this.deviceId = window.karafriends.nativeAudio.inputDevice_new(
+      name,
+      channelSelection
+    );
     this.name = name;
     registry.register(this, this.deviceId);
   }

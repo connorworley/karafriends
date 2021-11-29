@@ -12,6 +12,11 @@ type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync>
 const ECHO_DELAY_SECS: f32 = 0.06;
 const ECHO_AMPLITUDE: f32 = 0.25;
 
+enum ChannelSelection {
+    Channel(u8),
+    All,
+}
+
 struct InputDevice {
     input_stream: Arc<Mutex<cpal::platform::Stream>>,
     output_stream: Arc<Mutex<cpal::platform::Stream>>,
@@ -67,16 +72,30 @@ fn input_devices(mut cx: FunctionContext) -> JsResult<JsArray> {
         let host = cpal::default_host();
         Ok(host
             .input_devices()?
-            .map(|device| device.name().unwrap())
+            .map(|input_device| {
+                let mut supported_input_configs: Vec<_> =
+                    input_device.supported_input_configs().unwrap().collect();
+                supported_input_configs.sort_by(|a, b| compare_configs(a, b, None));
+                let best_supported_input_config = supported_input_configs
+                    .last()
+                    .ok_or("No supported input configs")
+                    .unwrap();
+                let input_config = supported_config_to_config(best_supported_input_config);
+                (input_device.name().unwrap(), input_config.channels)
+            })
             .collect())
     }) {
         Ok(devices) => devices,
         Err(e) => return cx.throw_error(e.to_string()),
     };
     let js_array = JsArray::new(&mut cx, input_devices.len() as u32);
-    for (i, name) in input_devices.iter().enumerate() {
-        let js_string = cx.string(name);
-        js_array.set(&mut cx, i as u32, js_string)?;
+    for (i, (name, channel_count)) in input_devices.iter().enumerate() {
+        let js_name = cx.string(name);
+        let js_channel_count = cx.number(*channel_count);
+        let inner_array = JsArray::new(&mut cx, 2);
+        inner_array.set(&mut cx, 0, js_name)?;
+        inner_array.set(&mut cx, 1, js_channel_count)?;
+        js_array.set(&mut cx, i as u32, inner_array)?;
     }
     Ok(js_array)
 }
@@ -148,6 +167,10 @@ fn supported_config_to_config(
 
 fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDevice>>> {
     let name = cx.argument::<JsString>(0)?.value(&mut cx);
+    let channel_selection = match cx.argument::<JsNumber>(1)?.value(&mut cx) as i16 {
+        -1 => ChannelSelection::All,
+        i => ChannelSelection::Channel(i as u8),
+    };
     let device = match cpal_safe(move || -> Result<InputDevice> {
         let host = cpal::default_host();
         let input_device = host
@@ -218,11 +241,18 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
             move |samples: &[f32], _| {
                 let mono_samples: Vec<_> = samples
                     .chunks(input_channels)
-                    .map(|channel_samples| {
-                        channel_samples
+                    .map(|channel_samples| match channel_selection {
+                        ChannelSelection::All => {
+                            channel_samples
+                                .iter()
+                                .fold(0.0, |total, sample| total + sample)
+                                / input_channels as f32
+                        }
+                        ChannelSelection::Channel(i) => channel_samples
                             .iter()
-                            .fold(0.0, |total, sample| total + sample)
-                            / input_channels as f32
+                            .skip(i.into())
+                            .step_by(input_channels)
+                            .fold(0.0, |total, sample| total + sample),
                     })
                     .collect();
 

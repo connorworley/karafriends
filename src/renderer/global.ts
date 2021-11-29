@@ -5,9 +5,9 @@ declare global {
       attemptLogin(creds: { account: string; password: string }): void;
       ipAddresses(): string[];
       nativeAudio: {
-        inputDevices: () => string[];
+        inputDevices: () => [string, number][];
         outputDevices: () => string[];
-        inputDevice_new: (name: string) => number;
+        inputDevice_new: (name: string, channelSelection: number) => number;
         inputDevice_delete: (deviceId: number) => void;
         inputDevice_getPitch: (
           deviceId: number

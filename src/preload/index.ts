@@ -15,11 +15,14 @@ contextBridge.exposeInMainWorld("karafriends", {
   nativeAudio: {
     inputDevices: nativeAudio.inputDevices,
     outputDevices: nativeAudio.outputDevices,
-    inputDevice_new(name: string) {
+    inputDevice_new(name: string, channelSelection: number) {
       console.debug(
         `preload: creating input device ${inputDeviceCount}: ${name}`
       );
-      inputDevices[inputDeviceCount++] = nativeAudio.inputDevice_new(name);
+      inputDevices[inputDeviceCount++] = nativeAudio.inputDevice_new(
+        name,
+        channelSelection
+      );
       return inputDeviceCount - 1;
     },
     inputDevice_delete(deviceId: number) {
