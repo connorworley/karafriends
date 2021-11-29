@@ -5,6 +5,7 @@ use std::cmp::Ordering;
 use std::sync::{Arc, Mutex};
 
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
+use cpal::Host;
 use neon::prelude::*;
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync>>;
@@ -62,9 +63,21 @@ fn cpal_safe<T: Send + 'static>(f: impl FnOnce() -> T + Send + 'static) -> T {
     f()
 }
 
+fn cpal_host() -> Host {
+    #[cfg(windows)]
+    {
+        cpal::host_from_id(cpal::HostId::Asio).unwrap_or_else(|_| {
+            eprintln!("failed to create asio cpal host, falling back to default");
+            cpal::default_host()
+        })
+    }
+    #[cfg(not(windows))]
+    cpal::default_host()
+}
+
 fn input_devices(mut cx: FunctionContext) -> JsResult<JsArray> {
     let input_devices: Vec<_> = match cpal_safe(|| -> Result<Vec<_>> {
-        let host = cpal::default_host();
+        let host = cpal_host();
         Ok(host
             .input_devices()?
             .map(|device| device.name().unwrap())
@@ -149,7 +162,7 @@ fn supported_config_to_config(
 fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDevice>>> {
     let name = cx.argument::<JsString>(0)?.value(&mut cx);
     let device = match cpal_safe(move || -> Result<InputDevice> {
-        let host = cpal::default_host();
+        let host = cpal_host();
         let input_device = host
             .input_devices()?
             .find(|device| device.name().unwrap() == name)
