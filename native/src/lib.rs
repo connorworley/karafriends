@@ -242,17 +242,8 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
                 let mono_samples: Vec<_> = samples
                     .chunks(input_channels)
                     .map(|channel_samples| match channel_selection {
-                        ChannelSelection::All => {
-                            channel_samples
-                                .iter()
-                                .fold(0.0, |total, sample| total + sample)
-                                / input_channels as f32
-                        }
-                        ChannelSelection::Channel(i) => channel_samples
-                            .iter()
-                            .skip(i.into())
-                            .step_by(input_channels)
-                            .fold(0.0, |total, sample| total + sample),
+                        ChannelSelection::All = channel_samples.iter().sum() / input_channels as f32,
+                        ChannelSelection::Channel(i) => channel_samples[i],
                     })
                     .collect();
 
