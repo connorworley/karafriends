@@ -23,7 +23,7 @@ jobs:
       - run: rustup default stable-x86_64-pc-windows-gnu
       - run: curl -sSL https://download.steinberg.net/sdk_downloads/asiosdk_2.3.3_2019-06-14.zip -o asio.zip && unzip asio.zip -d C:\asio
       - run: yarn install
-      - run: call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\vcvarsall.bat" amd64 && yarn build
+      - run: \& "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\vcvarsall.bat" amd64 && yarn build
         env:
           CPAL_ASIO_DIR: C:\asio\asiosdk_2.3.3_2019-06-14
       - uses: actions/upload-artifact@v2
