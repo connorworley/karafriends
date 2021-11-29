@@ -20,16 +20,12 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: KyleMayes/install-llvm-action@v1
-        with:
-          version: "13.0"
-          directory: ${{ runner.temp }}/llvm
       - run: rustup default stable-x86_64-pc-windows-gnu
-      - run: curl -sSL https://download.steinberg.net/sdk_downloads/asiosdk_2.3.3_2019-06-14.zip -o asio.zip && unzip asio.zip -d C:\asio
+      - run: curl -sSL https://download.steinberg.net/sdk_downloads/asiosdk_2.3.3_2019-06-14.zip -o asio.zip && unzip asio.zip -d ${{ runner.temp }}/asio
       - run: yarn install
-      - run: yarn build
+      - run: $env:LIBCLANG_PATH = "C:\msys64\mingw64\bin" && yarn build
         env:
-          CPAL_ASIO_DIR: C:\asio\asiosdk_2.3.3_2019-06-14
+          CPAL_ASIO_DIR: ${{ runner.temp }}/asio/asiosdk_2.3.3_2019-06-14
       - uses: actions/upload-artifact@v2
         with:
           name: karafriends-windows
