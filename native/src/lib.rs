@@ -243,7 +243,7 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
                     .chunks(input_channels)
                     .map(|channel_samples| match channel_selection {
                         ChannelSelection::All => channel_samples.iter().sum() / input_channels as f32,
-                        ChannelSelection::Channel(i) => channel_samples[i],
+                        ChannelSelection::Channel(i) => channel_samples[i as usize],
                     })
                     .collect();
 
