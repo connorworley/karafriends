@@ -81,7 +81,7 @@ fn input_devices(mut cx: FunctionContext) -> JsResult<JsArray> {
                     .ok_or("No supported input configs")
                     .unwrap();
                 let input_config = supported_config_to_config(best_supported_input_config);
-                (input_device.name().unwrap(), input_config.channels)
+                (input_device.name().unwrap(), 1)
             })
             .collect())
     }) {
@@ -156,7 +156,7 @@ fn supported_config_to_config(
     config_range: &cpal::SupportedStreamConfigRange,
 ) -> cpal::StreamConfig {
     cpal::StreamConfig {
-        channels: config_range.channels(),
+        channels: 1,
         sample_rate: config_range.max_sample_rate(),
         buffer_size: match config_range.buffer_size() {
             cpal::SupportedBufferSize::Range { min, max: _ } => cpal::BufferSize::Fixed(*min),

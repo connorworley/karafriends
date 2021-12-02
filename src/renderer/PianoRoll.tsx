@@ -535,7 +535,6 @@ export default function PianoRoll(props: {
     function pollPitch(mic: InputDevice | null, buffer: PitchDetectionBuffer) {
       if (!mic || !props.videoRef.current) return;
       const { midiNumber, confidence } = mic.getPitch();
-      console.log(midiNumber, confidence);
       if (
         confidence >= 0.8 &&
         midiNumber !== 0 &&
