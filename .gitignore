@@ -32,3 +32,6 @@ yarn-error.log*
 
 # react-relay
 __generated__
+
+# bazel
+bazel-*

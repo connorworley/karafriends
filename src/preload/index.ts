@@ -15,13 +15,13 @@ contextBridge.exposeInMainWorld("karafriends", {
   nativeAudio: {
     inputDevices: nativeAudio.inputDevices,
     outputDevices: nativeAudio.outputDevices,
-    inputDevice_new(name: string, channelSelection: number) {
+    inputDevice_new(name: string, isAsio: boolean) {
       console.debug(
         `preload: creating input device ${inputDeviceCount}: ${name}`
       );
       inputDevices[inputDeviceCount++] = nativeAudio.inputDevice_new(
         name,
-        channelSelection
+        isAsio
       );
       return inputDeviceCount - 1;
     },
@@ -29,8 +29,8 @@ contextBridge.exposeInMainWorld("karafriends", {
       console.debug(`preload: deleting input device ${deviceId}`);
       delete inputDevices[deviceId];
     },
-    inputDevice_getPitch(deviceId: number) {
-      return nativeAudio.inputDevice_getPitch(inputDevices[deviceId]);
+    inputDevice_getPitch(deviceId: number, left: boolean) {
+      return nativeAudio.inputDevice_getPitch(inputDevices[deviceId], left);
     },
     inputDevice_stop(deviceId: number) {
       return nativeAudio.inputDevice_stop(inputDevices[deviceId]);

@@ -89,10 +89,10 @@ function App() {
               {[...Array(mics.length + 1).keys()].map((i) => (
                 <MicrophoneSetting
                   key={i}
-                  onChange={(name, channel) => {
+                  onChange={(name, isAsio) => {
                     if (mics[i]) mics[i].stop();
                     const updatedMics = [...mics];
-                    updatedMics[i] = new InputDevice(name, channel);
+                    updatedMics[i] = new InputDevice(name, isAsio);
                     setMics(updatedMics);
                   }}
                   value={mics[i] ? mics[i].name : ""}

@@ -532,9 +532,13 @@ export default function PianoRoll(props: {
       pogIntervals.push([view[i] / 1000, view[i + 1] / 1000]);
     }
 
-    function pollPitch(mic: InputDevice | null, buffer: PitchDetectionBuffer) {
+    function pollPitch(
+      mic: InputDevice | null,
+      buffer: PitchDetectionBuffer,
+      left: boolean
+    ) {
       if (!mic || !props.videoRef.current) return;
-      const { midiNumber, confidence } = mic.getPitch();
+      const { midiNumber, confidence } = mic.getPitch(left);
       if (
         confidence >= 0.8 &&
         midiNumber !== 0 &&
@@ -562,23 +566,40 @@ export default function PianoRoll(props: {
       premultipliedAlpha: false,
     })!;
 
+    // @ts-ignore
     const pitchPollers: [
       PitchDetectionBuffer,
       PitchProgram,
       NodeJS.Timeout
-    ][] = props.mics.map((mic, i) => {
-      const buffer = new PitchDetectionBuffer();
-      return [
-        buffer,
-        new PitchProgram(
-          gl,
-          convert.hsv
-            .rgb([(360 / props.mics.length) * i, 30, 100])
-            .map((channel) => channel / 255) as [number, number, number]
-        ),
-        setInterval(() => pollPitch(mic, buffer), 25),
-      ];
-    });
+    ][] = props.mics
+      .map((mic, i) => {
+        const buffer = new PitchDetectionBuffer();
+        return [
+          buffer,
+          new PitchProgram(
+            gl,
+            convert.hsv
+              .rgb([(360 / (props.mics.length * 2)) * i, 30, 100])
+              .map((channel) => channel / 255) as [number, number, number]
+          ),
+          setInterval(() => pollPitch(mic, buffer, true), 25),
+        ];
+      })
+      .concat(
+        props.mics.map((mic, i) => {
+          const buffer = new PitchDetectionBuffer();
+          return [
+            buffer,
+            new PitchProgram(
+              gl,
+              convert.hsv
+                .rgb([(360 / (props.mics.length * 2)) * (i + 1), 30, 100])
+                .map((channel) => channel / 255) as [number, number, number]
+            ),
+            setInterval(() => pollPitch(mic, buffer, false), 25),
+          ];
+        })
+      );
 
     const noteProgram = new NoteProgram(gl, positions);
     const seekProgram = new SeekProgram(gl);

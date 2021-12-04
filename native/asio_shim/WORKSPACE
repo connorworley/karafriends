@@ -1,0 +1,9 @@
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+  
+http_archive(
+    name = "asio_sdk",
+    urls = ["https://download.steinberg.net/sdk_downloads/asiosdk_2.3.3_2019-06-14.zip"],
+    sha256 = "80f5bf2703563f6047acec2edd468d0838c9f61eced9f7cdce9629b04e9710ac",
+    strip_prefix = "asiosdk_2.3.3_2019-06-14/",
+    build_file = "//:asio_sdk.BUILD",
+)

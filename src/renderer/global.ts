@@ -7,10 +7,11 @@ declare global {
       nativeAudio: {
         inputDevices: () => [string, number][];
         outputDevices: () => string[];
-        inputDevice_new: (name: string, channelSelection: number) => number;
+        inputDevice_new: (name: string, isAsio: boolean) => number;
         inputDevice_delete: (deviceId: number) => void;
         inputDevice_getPitch: (
-          deviceId: number
+          deviceId: number,
+          left: boolean
         ) => { midiNumber: number; confidence: number };
         inputDevice_stop: (deviceId: number) => void;
       };

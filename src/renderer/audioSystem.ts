@@ -6,17 +6,20 @@ export class InputDevice {
   deviceId: number;
   name: string;
 
-  constructor(name: string, channelSelection: number) {
+  constructor(name: string, isAsio: boolean) {
     this.deviceId = window.karafriends.nativeAudio.inputDevice_new(
       name,
-      channelSelection
+      isAsio
     );
     this.name = name;
     registry.register(this, this.deviceId);
   }
 
-  getPitch() {
-    return window.karafriends.nativeAudio.inputDevice_getPitch(this.deviceId);
+  getPitch(left: boolean) {
+    return window.karafriends.nativeAudio.inputDevice_getPitch(
+      this.deviceId,
+      left
+    );
   }
 
   stop() {

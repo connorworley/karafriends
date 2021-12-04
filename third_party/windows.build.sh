@@ -22,6 +22,11 @@ if [ -f /.dockerenv ]; then
     CC="x86_64-w64-mingw32-gcc" LDFLAGS="-lwinpthread" ./waf build --enable-fftw3f --disable-tests --disable-docs --disable-examples --verbose
     CC="x86_64-w64-mingw32-gcc" LDFLAGS="-lwinpthread" ./waf install --enable-fftw3f --disable-tests --disable-docs --disable-examples --verbose
     cp /usr/local/lib/libaubio.a /out/libaubio.lib
+    cd /opt/libffi-3.4.2
+    ./configure --host=x86_64-w64-mingw32 --enable-static --disable-shared
+    make -j4
+    make install
+    cp /usr/local/lib/libffi.a /out/libffi.lib
 else
     docker build -t karafriends-third_party-windows -f windows.Dockerfile .
     docker run -v $(pwd):/code -v $(pwd)/../prebuilt/windows:/out karafriends-third_party-windows /code/windows.build.sh

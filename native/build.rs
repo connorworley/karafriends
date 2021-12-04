@@ -13,6 +13,8 @@ pub fn main() {
         println!("cargo:rustc-link-lib=static=libaubio");
         println!("cargo:rustc-link-lib=static=libfftw3f");
         println!("cargo:rustc-link-lib=libsamplerate");
+        #[cfg(feature = "asio")]
+        println!("cargo:rustc-link-lib=static=libasio_shim");
     } else {
         println!("cargo:rustc-link-lib=aubio");
     }

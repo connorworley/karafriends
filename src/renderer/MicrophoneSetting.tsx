@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import "./global";
 
 export default function MicrophoneSetting(props: {
-  onChange: (name: string, channelSelection: number) => void;
+  onChange: (name: string, isAsio: boolean) => void;
   value: string;
 }) {
   useEffect(() => {
@@ -17,27 +17,23 @@ export default function MicrophoneSetting(props: {
         value={props.value}
         onChange={(e) => {
           const dataset = e.target.options[e.target.selectedIndex].dataset;
-          props.onChange(dataset.name!, parseInt(dataset.channel!, 10));
+          props.onChange(dataset.name!, dataset.isAsio === "true");
         }}
       >
         <option value="" disabled={true}>
           Select a microphone
         </option>
-        {window.karafriends.nativeAudio
-          .inputDevices()
-          .map(([name, channelCount]) =>
-            [
-              <option data-name={name} data-channel={-1} key={`${name}_${-1}`}>
-                {`${name} (All Channels)`}
-              </option>,
-            ].concat(
-              [...Array(channelCount)].map((_, i) => (
-                <option data-name={name} data-channel={i} key={`${name}_${i}`}>
-                  {`${name} (Channel ${i})`}
-                </option>
-              ))
-            )
-          )}
+        {window.karafriends.nativeAudio.inputDevices().map(([name, isAsio]) => (
+          <option
+            value={`${name}_${isAsio}`}
+            data-name={name}
+            data-is-asio={isAsio}
+            key={`${name}_${isAsio}`}
+          >
+            {isAsio && "* "}
+            {name}
+          </option>
+        ))}
       </select>
       <label>Microphone</label>
     </div>
