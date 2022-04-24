@@ -37,3 +37,15 @@
 .lyrics-input-container {
   margin-right: 1em;
 }
+
+.radio-item {
+  margin-top: 0em;
+}
+
+#add-lyrics {
+  margin-left: 0.5em;
+}
+
+.add-lyrics-section {
+  margin-top: 0em
+}

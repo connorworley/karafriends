@@ -10,6 +10,8 @@ import {
 } from "./__generated__/YoutubeInfoVideoInfoQuery.graphql";
 
 import "./YoutubeInfo.css";
+import "materialize-css/dist/css/materialize.css"; // tslint:disable-line:no-submodule-imports
+
 
 const youtubeInfoVideoInfoQuery = graphql`
   query YoutubeInfoVideoInfoQuery($videoId: String!) {
@@ -17,6 +19,10 @@ const youtubeInfoVideoInfoQuery = graphql`
       ... on YoutubeVideoInfo {
         __typename
         author
+        captionLanguages {
+          name
+          code
+        }
         channelId
         keywords
         lengthSeconds
@@ -44,6 +50,7 @@ function YoutubeInfo(props: YoutubeInfoProps) {
   > | null> = useRef(null);
   const { videoId } = props;
   const [adhocSongLyrics, setAdhocSongLyrics] = useState<string | null>(null);
+  const [selectedCaption, setSelectedCaption] = useState<string | undefined>(undefined);
   const videoData = useLazyLoadQuery<YoutubeInfoVideoInfoQuery>(
     youtubeInfoVideoInfoQuery,
     { videoId }
@@ -110,11 +117,36 @@ function YoutubeInfo(props: YoutubeInfoProps) {
                 playtime: videoData.youtubeVideoInfo.lengthSeconds,
                 nickname: localStorage.getItem("nickname") || "unknown",
                 adhocSongLyrics,
+                captionCode: selectedCaption || null,
               },
             }}
           />
         </div>
+        <h5 id="add-lyrics">Add Lyrics:</h5>
+        <div className="flex-container flex-vertical flex-item add-lyrics-section">
+          <h6 className="add-lyrics-section">From Captions</h6>
+          <label className="flex-item radio-item">
+            <input
+              checked={selectedCaption === undefined}
+              name="captions" type="radio" value={undefined}
+              onChange={(event) => {setSelectedCaption(undefined)}}
+            />
+          <span>None</span>
+          </label>
+          {videoData.youtubeVideoInfo.captionLanguages.map((captionLanguage) => {
+            return (<label className="flex-item radio-item">
+              <input
+                checked={selectedCaption === captionLanguage.code}
+                name="captions" type="radio"
+                value={captionLanguage.code}
+                onChange={(event) => {setSelectedCaption(captionLanguage.code)}}
+              />
+              <span>{captionLanguage.name}</span>
+            </label>)
+          })}
+        </div>
         <div className="flex-item lyrics-input-container">
+          <h6 className="add-lyrics-section">Manual Lyrics</h6>
           <textarea
             onChange={onAdhocSongLyricsChanged}
             placeholder={

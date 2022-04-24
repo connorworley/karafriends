@@ -28,6 +28,17 @@ interface GetVideoInfoResponse {
     status: string;
     reason: string;
   };
+  captions?: {
+    playerCaptionsTracklistRenderer: {
+      captionTracks: [{
+        name: {
+          simpleText: string;
+        };
+        vssId: string;
+        languageCode: string;
+      }];
+    };
+  };
   videoDetails: {
     videoId: string;
     title: string;

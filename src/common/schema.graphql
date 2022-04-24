@@ -119,6 +119,7 @@ input QueueYoutubeSongInput {
   playtime: Int
   nickname: String!
   adhocSongLyrics: String
+  captionCode: String
 }
 
 type SongConnection {
@@ -176,12 +177,19 @@ type YoutubeQueueItem implements QueueItemInterface {
   timestamp: String!
   nickname: String!
   hasAdhocLyrics: Boolean!
+  hasCaptions: Boolean!
 }
 
 union QueueItem = DamQueueItem | YoutubeQueueItem
 
+type CaptionLanguage {
+  code: String!
+  name: String!
+}
+
 type YoutubeVideoInfo {
   author: String!
+  captionLanguages: [CaptionLanguage!]!
   channelId: String!
   keywords: [String!]
   lengthSeconds: Int!
