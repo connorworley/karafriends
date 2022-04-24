@@ -7,12 +7,23 @@ import path from "path";
 import process from "process";
 import { exec } from "child_process";
 
-let tmpDir;
 const pathTo7zip = sevenBin.path7za;
 const extraResourcesDir = `${process.cwd()}/extraResources`;
 
+async function fetchWithRetries(url, retries) {
+  return fetch(url).then((res) => {
+    if (res.ok) {
+      return res;
+    }
+    if (retries > 0) {
+      return fetchWithRetries(url, retries - 1);
+    }
+    throw new Error(res.status);
+  });
+}
+
 async function downloadFile(url, path) {
-  const res = await fetch(url);
+  const res = await fetchWithRetries(url, 3);
   const fileStream = fs.createWriteStream(path);
   await new Promise((resolve, reject) => {
     res.body.pipe(fileStream);
@@ -33,7 +44,7 @@ async function getExternalResources() {
   if (externalResourceChecks.every((check) => check === true)) {
     return;
   }
-  tmpDir = fs.mkdtempSync(
+  const tmpDir = fs.mkdtempSync(
     path.join(os.tmpdir(), "karafriends_getExternalResources")
   );
   await Promise.all([

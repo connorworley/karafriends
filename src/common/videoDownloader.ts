@@ -4,7 +4,8 @@ import fs from "fs";
 import process from "process";
 
 export const TEMP_FOLDER: string = `${app.getPath("temp")}/karafriends_tmp`;
-const youtubeIdRe: RegExp = new RegExp(/[0-9A-Za-z_-]{10}[048AEIMQUYcgkosw]/);
+const youtubeIdRe: RegExp = new RegExp(/^[0-9A-Za-z_-]{10}[048AEIMQUYcgkosw]$/);
+const captionCodeRe: RegExp = new RegExp(/^[a-z]{2}$/);
 const extraResourcesPath: string =
   process.env.NODE_ENV === "development"
     ? `${app.getAppPath()}/extraResources/`
@@ -44,13 +45,20 @@ export function downloadYoutubeVideo(
   captionCode: string | null,
   onComplete: () => any
 ): void {
-  // Make sure videoId is a valid ID. Don't want to pass just anything into a raw shell command
+  // Make our inputs are valid. Don't want to pass just anything into a raw shell command
   if (!youtubeIdRe.test(videoId)) {
     console.error(
       `Error downloading Youtube Video. ${videoId} is not a valid YouTube video ID`
     );
     return;
   }
+  if (captionCode !== null && !captionCodeRe.test(captionCode)) {
+    console.error(
+      `Error downloading Youtube Video. ${captionCode} is not a valid caption code`
+    );
+    return;
+  }
+
   if (!fs.existsSync(TEMP_FOLDER)) {
     fs.mkdirSync(TEMP_FOLDER);
   }
