@@ -58,21 +58,24 @@ function createWindow() {
     },
   });
 
-  // Ignore CORS when fetching ipcasting HLS
+  // Ignore CORS when fetching ipcasting HLS and when sending requests to remocon
   const session = rendererWindow.webContents.session;
-  const ipcastingFilter = {
-    urls: ["https://*.ipcasting.jp/*"],
+  const ignoreCORSFilter = {
+    urls: [
+      "https://*.ipcasting.jp/*",
+      "http://localhost:8080/*",
+    ],
   };
 
   session.webRequest.onBeforeSendHeaders(
-    ipcastingFilter,
+    ignoreCORSFilter,
     (details, callback) => {
       delete details.requestHeaders.Origin;
       callback({ requestHeaders: details.requestHeaders });
     }
   );
 
-  session.webRequest.onHeadersReceived(ipcastingFilter, (details, callback) => {
+  session.webRequest.onHeadersReceived(ignoreCORSFilter, (details, callback) => {
     details.responseHeaders!["Access-Control-Allow-Origin"] = ["*"];
     callback({ responseHeaders: details.responseHeaders });
   });

@@ -61,9 +61,15 @@ interface PageInfo<CursorType> {
   readonly endCursor: CursorType;
 }
 
+interface CaptionLanguage {
+  code: string;
+  name: string;
+}
+
 interface YoutubeVideoInfo {
   readonly __typename: "YoutubeVideoInfo";
   readonly author: string;
+  readonly captionLanguages: CaptionLanguage[];
   readonly channelId: string;
   readonly keywords: string[];
   readonly lengthSeconds: number;
@@ -96,6 +102,7 @@ interface DamQueueItem extends QueueItemInterface {
 interface YoutubeQueueItem extends QueueItemInterface {
   readonly __typename: "YoutubeQueueItem";
   readonly hasAdhocLyrics: boolean;
+  readonly hasCaptions: boolean;
 }
 
 type QueueItem = DamQueueItem | YoutubeQueueItem;
@@ -116,6 +123,7 @@ type QueueYoutubeSongInput = {
   readonly playtime?: number | null;
   readonly nickname: string;
   readonly adhocSongLyrics: string;
+  readonly captionCode: string | null;
 };
 
 interface HistoryItem {
@@ -442,9 +450,23 @@ const resolvers = {
             reason: data.playabilityStatus.reason,
           };
         }
+        const captionLanguages: CaptionLanguage[] = []
+        if (data?.captions) {
+          data.captions.playerCaptionsTracklistRenderer.captionTracks.forEach((captionTrack) => {
+            // auto-generated captions have a vssId that start with "a". Skip them
+            if (captionTrack.vssId.startsWith("a")) {
+              return
+            }
+            captionLanguages.push({
+              code: captionTrack.languageCode,
+              name: captionTrack.name.simpleText,
+            })
+          })
+        }
         return {
           __typename: "YoutubeVideoInfo",
           author: data.videoDetails.author,
+          captionLanguages,
           channelId: data.videoDetails.channelId,
           keywords: data.videoDetails.keywords,
           lengthSeconds: parseInt(data.videoDetails.lengthSeconds, 10),
@@ -473,6 +495,7 @@ const resolvers = {
         timestamp: Date.now().toString(),
         ...args.input,
         hasAdhocLyrics: args.input.adhocSongLyrics ? true : false,
+        hasCaptions: args.input.captionCode ? true : false,
         __typename: "YoutubeQueueItem",
       };
       if (args.input.adhocSongLyrics) {
@@ -482,6 +505,7 @@ const resolvers = {
       }
       downloadYoutubeVideo(
         args.input.songId,
+        args.input.captionCode,
         pushSongToQueue.bind(null, queueItem)
       );
       // The song likely hasn't actually been added to the queue yet since it needs to download,
