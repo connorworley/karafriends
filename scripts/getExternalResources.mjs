@@ -44,6 +44,7 @@ async function getExternalResources() {
   if (externalResourceChecks.every((check) => check === true)) {
     return;
   }
+
   const tmpDir = fs.mkdtempSync(
     path.join(os.tmpdir(), "karafriends_getExternalResources")
   );

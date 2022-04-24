@@ -6,6 +6,7 @@ import process from "process";
 export const TEMP_FOLDER: string = `${app.getPath("temp")}/karafriends_tmp`;
 const youtubeIdRe: RegExp = new RegExp(/^[0-9A-Za-z_-]{10}[048AEIMQUYcgkosw]$/);
 const captionCodeRe: RegExp = new RegExp(/^[a-z]{2}$/);
+
 const extraResourcesPath: string =
   process.env.NODE_ENV === "development"
     ? `${app.getAppPath()}/extraResources/`
@@ -62,6 +63,7 @@ export function downloadYoutubeVideo(
   if (!fs.existsSync(TEMP_FOLDER)) {
     fs.mkdirSync(TEMP_FOLDER);
   }
+
   const writeBasePath = `${TEMP_FOLDER}/${videoId}`;
   const captionArgs = captionCode
     ? `--write-subs --sub-langs ${captionCode}`
