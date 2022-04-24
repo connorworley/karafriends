@@ -59,7 +59,7 @@ export function downloadYoutubeVideo(
     ? `--write-subs --sub-langs ${captionCode}`
     : "";
   exec(
-    `${resourcePaths.ytdlp} ${captionArgs} -S res,ext:mp4:m4a --recode mp4 --ffmpeg-location "${resourcePaths.ffmpeg}" -o "${writeBasePath}.mp4" -- "${videoId}"`,
+    `${resourcePaths.ytdlp} ${captionArgs} -S res,ext:mp4:m4a --recode mp4 -N 4 --ffmpeg-location "${resourcePaths.ffmpeg}" -o "${writeBasePath}.mp4" -- "${videoId}"`,
     (error, stdout, stderr) => {
       if (error) {
         console.error(
