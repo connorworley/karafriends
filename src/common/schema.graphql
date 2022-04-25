@@ -17,8 +17,8 @@ type Mutation {
   popAdhocLyrics: Boolean!
   popSong: QueueItem
   pushAdhocLyrics(input: PushAdhocLyricsInput): Boolean!
-  queueDamSong(input: QueueDamSongInput): Int!
-  queueYoutubeSong(input: QueueYoutubeSongInput): Int!
+  queueDamSong(input: QueueDamSongInput): QueueSongResult!
+  queueYoutubeSong(input: QueueYoutubeSongInput): QueueSongResult!
   removeSong(songId: String!, timestamp: String!): Boolean!
   setPlaybackState(playbackState: PlaybackState!): Boolean!
 }
@@ -181,6 +181,16 @@ type YoutubeQueueItem implements QueueItemInterface {
 }
 
 union QueueItem = DamQueueItem | YoutubeQueueItem
+
+type QueueSongInfo {
+  eta: Int!
+}
+
+type QueueSongError {
+  reason: String!
+}
+
+union QueueSongResult = QueueSongInfo | QueueSongError
 
 type CaptionLanguage {
   code: String!
