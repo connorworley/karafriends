@@ -6,7 +6,6 @@ const { merge } = require("webpack-merge");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const COMMON_CONFIG = {
-  mode: "development",
   resolve: {
     alias: {
       graphql$: path.resolve(__dirname, "./node_modules/graphql/index.js"),

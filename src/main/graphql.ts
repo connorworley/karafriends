@@ -61,9 +61,15 @@ interface PageInfo<CursorType> {
   readonly endCursor: CursorType;
 }
 
+interface CaptionLanguage {
+  code: string;
+  name: string;
+}
+
 interface YoutubeVideoInfo {
   readonly __typename: "YoutubeVideoInfo";
   readonly author: string;
+  readonly captionLanguages: CaptionLanguage[];
   readonly channelId: string;
   readonly keywords: string[];
   readonly lengthSeconds: number;
@@ -96,9 +102,22 @@ interface DamQueueItem extends QueueItemInterface {
 interface YoutubeQueueItem extends QueueItemInterface {
   readonly __typename: "YoutubeQueueItem";
   readonly hasAdhocLyrics: boolean;
+  readonly hasCaptions: boolean;
 }
 
 type QueueItem = DamQueueItem | YoutubeQueueItem;
+
+type QueueSongInfo = {
+  readonly __typename: "QueueSongInfo";
+  readonly eta: number;
+};
+
+interface QueueSongError {
+  readonly __typename: "QueueSongError";
+  readonly reason: string;
+}
+
+type QueueSongResult = QueueSongInfo | QueueSongError;
 
 type QueueDamSongInput = {
   readonly songId: string;
@@ -116,6 +135,7 @@ type QueueYoutubeSongInput = {
   readonly playtime?: number | null;
   readonly nickname: string;
   readonly adhocSongLyrics: string;
+  readonly captionCode: string | null;
 };
 
 interface HistoryItem {
@@ -147,6 +167,7 @@ type NotARealDb = {
   idToAdhocLyrics: Record<string, string[]>;
   playbackState: PlaybackState;
   songQueue: QueueItem[];
+  queuedNicknames: Set<string>;
 };
 
 enum SubscriptionEvent {
@@ -162,11 +183,19 @@ const db: NotARealDb = {
   idToAdhocLyrics: {},
   playbackState: PlaybackState.WAITING,
   songQueue: [],
+  queuedNicknames: new Set(),
 };
 
 const pubsub = new PubSub();
 
-function pushSongToQueue(queueItem: QueueItem): number {
+function pushSongToQueue(queueItem: QueueItem): QueueSongResult {
+  if (db.queuedNicknames.has(queueItem.nickname)) {
+    return {
+      __typename: "QueueSongError",
+      reason: `${queueItem.nickname} already has 1 song in the queue`,
+    };
+  }
+  db.queuedNicknames.add(queueItem.nickname);
   db.songQueue.push(queueItem);
   pubsub.publish(SubscriptionEvent.QueueChanged, {
     queueChanged: db.songQueue,
@@ -174,7 +203,10 @@ function pushSongToQueue(queueItem: QueueItem): number {
   pubsub.publish(SubscriptionEvent.QueueAdded, {
     queueAdded: queueItem,
   });
-  return db.songQueue.reduce((acc, cur) => acc + (cur.playtime || 0), 0);
+  return {
+    __typename: "QueueSongInfo",
+    eta: db.songQueue.reduce((acc, cur) => acc + (cur.playtime || 0), 0),
+  };
 }
 
 function cleanupAdhocSongLyrics(lyrics: string): string[] {
@@ -442,9 +474,25 @@ const resolvers = {
             reason: data.playabilityStatus.reason,
           };
         }
+        const captionLanguages: CaptionLanguage[] = [];
+        if (data?.captions) {
+          data.captions.playerCaptionsTracklistRenderer.captionTracks.forEach(
+            (captionTrack) => {
+              // auto-generated captions have a vssId that start with "a". Skip them
+              if (captionTrack.vssId.startsWith("a")) {
+                return;
+              }
+              captionLanguages.push({
+                code: captionTrack.languageCode,
+                name: captionTrack.name.simpleText,
+              });
+            }
+          );
+        }
         return {
           __typename: "YoutubeVideoInfo",
           author: data.videoDetails.author,
+          captionLanguages,
           channelId: data.videoDetails.channelId,
           keywords: data.videoDetails.keywords,
           lengthSeconds: parseInt(data.videoDetails.lengthSeconds, 10),
@@ -457,7 +505,10 @@ const resolvers = {
     playbackState: () => db.playbackState,
   },
   Mutation: {
-    queueDamSong: (_: any, args: { input: QueueDamSongInput }): number => {
+    queueDamSong: (
+      _: any,
+      args: { input: QueueDamSongInput }
+    ): QueueSongResult => {
       const queueItem: DamQueueItem = {
         timestamp: Date.now().toString(),
         ...args.input,
@@ -473,6 +524,7 @@ const resolvers = {
         timestamp: Date.now().toString(),
         ...args.input,
         hasAdhocLyrics: args.input.adhocSongLyrics ? true : false,
+        hasCaptions: args.input.captionCode ? true : false,
         __typename: "YoutubeQueueItem",
       };
       if (args.input.adhocSongLyrics) {
@@ -482,6 +534,7 @@ const resolvers = {
       }
       downloadYoutubeVideo(
         args.input.songId,
+        args.input.captionCode,
         pushSongToQueue.bind(null, queueItem)
       );
       // The song likely hasn't actually been added to the queue yet since it needs to download,
@@ -521,16 +574,21 @@ const resolvers = {
         currentSongAdhocLyricsChanged: db.currentSongAdhocLyrics,
       });
       db.currentSong = newSong;
+      if (newSong) {
+        db.queuedNicknames.delete(newSong.nickname);
+      }
       return newSong;
     },
     removeSong: (
       _: any,
       args: { songId: string; timestamp: string }
     ): boolean => {
-      db.songQueue = db.songQueue.filter(
+      const songIdx = db.songQueue.findIndex(
         (item) =>
-          !(item.songId === args.songId && item.timestamp === args.timestamp)
+          item.songId === args.songId && item.timestamp === args.timestamp
       );
+      db.queuedNicknames.delete(db.songQueue[songIdx].nickname);
+      db.songQueue.splice(songIdx, 1);
       pubsub.publish(SubscriptionEvent.QueueChanged, {
         queueChanged: db.songQueue,
       });

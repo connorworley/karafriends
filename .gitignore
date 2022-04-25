@@ -35,3 +35,7 @@ __generated__
 
 # bazel
 bazel-*
+
+# Extra resources that are downloaded on build
+/extraResources/ffmpeg/**/*
+/extraResources/ytdlp/*

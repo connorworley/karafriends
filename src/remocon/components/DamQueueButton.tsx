@@ -9,7 +9,16 @@ import {
 
 const damQueueButtonMutation = graphql`
   mutation DamQueueButtonMutation($input: QueueDamSongInput!) {
-    queueDamSong(input: $input)
+    queueDamSong(input: $input) {
+      ... on QueueSongInfo {
+        __typename
+        eta
+      }
+      ... on QueueSongError {
+        __typename
+        reason
+      }
+    }
   }
 `;
 
@@ -23,8 +32,18 @@ export default function DamQueueButton(props: {
   const onClick = () => {
     commit({
       variables: props.variables,
-      onCompleted: ({ queueDamSong }) =>
-        setText(`Estimated wait: T-${formatDuration(queueDamSong * 1000)}`),
+      onCompleted: ({ queueDamSong }) => {
+        switch (queueDamSong.__typename) {
+          case "QueueSongInfo":
+            setText(
+              `Estimated wait: T-${formatDuration(queueDamSong.eta * 1000)}`
+            );
+            break;
+          case "QueueSongError":
+            setText(`Error: ${queueDamSong.reason}`);
+            break;
+        }
+      },
     });
   };
 

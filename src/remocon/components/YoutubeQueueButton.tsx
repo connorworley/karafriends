@@ -9,7 +9,16 @@ import {
 
 const youtubeQueueButtonMutation = graphql`
   mutation YoutubeQueueButtonMutation($input: QueueYoutubeSongInput!) {
-    queueYoutubeSong(input: $input)
+    queueYoutubeSong(input: $input) {
+      ... on QueueSongInfo {
+        __typename
+        eta
+      }
+      ... on QueueSongError {
+        __typename
+        reason
+      }
+    }
   }
 `;
 
@@ -25,8 +34,18 @@ export default function YoutubeQueueButton(props: {
   const onClick = () => {
     commit({
       variables: props.variables,
-      onCompleted: ({ queueYoutubeSong }) =>
-        setText(`Estimated wait: T-${formatDuration(queueYoutubeSong * 1000)}`),
+      onCompleted: ({ queueYoutubeSong }) => {
+        switch (queueYoutubeSong.__typename) {
+          case "QueueSongInfo":
+            setText(
+              `Estimated wait: T-${formatDuration(queueYoutubeSong.eta * 1000)}`
+            );
+            break;
+          case "QueueSongError":
+            setText(`Error: ${queueYoutubeSong.reason}`);
+            break;
+        }
+      },
     });
   };
 

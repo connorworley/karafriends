@@ -29,6 +29,7 @@ const popSongMutation = graphql`
         songId
         timestamp
         hasAdhocLyrics
+        hasCaptions
       }
     }
   }
@@ -38,6 +39,7 @@ const POLL_INTERVAL_MS = 5 * 1000;
 
 function Player(props: { mics: InputDevice[] }) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const trackRef = useRef<HTMLTrackElement>(null);
   const [scoringData, setScoringData] = useState<readonly number[]>([]);
   const [shouldShowPianoRoll, setShouldShowPianoRoll] = useState<boolean>(true);
   const [shouldShowAdhocLyrics, setShouldShowAdhocLyrics] = useState<boolean>(
@@ -56,6 +58,10 @@ function Player(props: { mics: InputDevice[] }) {
         variables: {},
         onCompleted: ({ popSong }) => {
           if (!videoRef.current) return;
+          if (trackRef?.current) {
+            trackRef.current.default = false;
+            trackRef.current.src = "";
+          }
           if (popSong !== null) {
             if (hls) hls.destroy();
             switch (popSong.__typename) {
@@ -75,6 +81,10 @@ function Player(props: { mics: InputDevice[] }) {
                 setShouldShowAdhocLyrics(popSong.hasAdhocLyrics);
                 const staticUrl = `http://localhost:8080/static`;
                 videoRef.current.src = `${staticUrl}/${popSong.songId}.mp4`;
+                if (trackRef?.current && popSong?.hasCaptions) {
+                  trackRef.current.default = true;
+                  trackRef.current.src = `${staticUrl}/${popSong.songId}.vtt`;
+                }
                 videoRef.current.play();
                 break;
             }
@@ -121,7 +131,14 @@ function Player(props: { mics: InputDevice[] }) {
           mics={props.mics}
         />
       ) : null}
-      <video className="karaVid" ref={videoRef} controls />
+      <video
+        className="karaVid"
+        ref={videoRef}
+        crossOrigin="anonymous"
+        controls
+      >
+        <track ref={trackRef} kind="subtitles" src="" default />
+      </video>
       {shouldShowAdhocLyrics ? <AdhocLyrics /> : null}
     </div>
   );

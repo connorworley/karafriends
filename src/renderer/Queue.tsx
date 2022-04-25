@@ -31,11 +31,8 @@ export default function Queue() {
     <div className="collection queueQueue">
       {queue.map(([item, eta], i) => {
         const nicknameHash = cyrb53(item.nickname || "");
-        const nicknameColor = `#${nicknameHash.toString(16).slice(-6)}`;
-        const nicknameBgColor = `#${(ones ^ nicknameHash)
-          .toString(16)
-          .slice(-6)}`;
-        console.log(nicknameHash, nicknameColor, nicknameBgColor);
+        const nicknameColor = `hsl(${nicknameHash % 180}, 100%, 50%)`;
+        const nicknameBgColor = `hsl(${(nicknameHash % 180) + 180}, 100%, 50%)`;
         return (
           <div
             key={`${item.songId}_${i}`}
