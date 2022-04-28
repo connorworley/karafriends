@@ -245,7 +245,9 @@ const resolvers = {
     streamingUrls(parent: SongParent, _: any, { dataSources }: IDataSources) {
       return dataSources.minsei.getMusicStreamingUrls(parent.id).then((data) =>
         data.list.map((info) => ({
-          url: info.highBitrateUrl,
+          url: process.env.KARAFRIENDS_USE_LOW_BITRATE_URL
+            ? info.lowBitrateUrl
+            : info.highBitrateUrl,
         }))
       );
     },
@@ -304,7 +306,9 @@ const resolvers = {
         .getMusicStreamingUrls(parent.songId)
         .then((data) =>
           data.list.map((info) => ({
-            url: info.highBitrateUrl,
+            url: process.env.KARAFRIENDS_USE_LOW_BITRATE_URL
+              ? info.lowBitrateUrl
+              : info.highBitrateUrl,
           }))
         );
     },
