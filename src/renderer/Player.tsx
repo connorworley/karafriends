@@ -64,22 +64,63 @@ function Player(props: { mics: InputDevice[] }) {
           }
           if (popSong !== null) {
             if (hls) hls.destroy();
+
+            const staticUrl = `http://localhost:8080/static`;
+
             switch (popSong.__typename) {
               case "DamQueueItem":
                 setShouldShowPianoRoll(true);
                 setShouldShowAdhocLyrics(false);
                 setScoringData(popSong.scoringData);
-                hls = new Hls();
-                hls.attachMedia(videoRef.current);
-                hls.loadSource(
-                  popSong.streamingUrls[popSong.streamingUrlIdx].url
-                );
+
+                // If caching is on this means we'll be serving almost everything through /static
+                // which seems kind of stupid, but whatever
+                const fileUrl = `${staticUrl}/${popSong.songId}-${popSong.streamingUrlIdx}.mp4`;
+
+                const loadRemote = () => {
+                  if (!videoRef.current) return;
+
+                  hls = new Hls();
+                  hls.attachMedia(videoRef.current);
+                  hls.loadSource(
+                    popSong.streamingUrls[popSong.streamingUrlIdx].url
+                  );
+                };
+
+                fetch(fileUrl, { method: "HEAD" })
+                  .then((response) => {
+                    // I can guarantee this does not happen
+                    if (!videoRef.current) return;
+
+                    if (response.ok) {
+                      console.log(`Using local file for ${popSong.songId}`);
+                      videoRef.current.src = fileUrl;
+                    } else {
+                      // Maybe it's not done downloading yet, or predownload is disabled
+                      console.log(
+                        `Local file for ${popSong.songId} doesn't seem available, using remote`
+                      );
+                      loadRemote();
+                    }
+                  })
+                  .catch((error) => {
+                    console.error(
+                      "Something has gone terribly wrong while checking for a local file"
+                    );
+                    console.error(error);
+
+                    // I can guarantee this does not happen
+                    if (!videoRef.current) return;
+
+                    // Pretend nothing happened.
+                    loadRemote();
+                  });
+
                 videoRef.current.play();
                 break;
               case "YoutubeQueueItem":
                 setShouldShowPianoRoll(false);
                 setShouldShowAdhocLyrics(popSong.hasAdhocLyrics);
-                const staticUrl = `http://localhost:8080/static`;
                 videoRef.current.src = `${staticUrl}/${popSong.songId}.mp4`;
                 if (trackRef?.current && popSong?.hasCaptions) {
                   trackRef.current.default = true;

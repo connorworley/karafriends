@@ -1,7 +1,14 @@
 import { createServer } from "http";
 import path from "path";
 
-import { app, BrowserWindow, dialog, globalShortcut, ipcMain, IpcMainEvent } from "electron"; // tslint:disable-line:no-implicit-dependencies
+import {
+  app,
+  BrowserWindow,
+  dialog,
+  globalShortcut,
+  ipcMain,
+  IpcMainEvent,
+} from "electron"; // tslint:disable-line:no-implicit-dependencies
 import isDev from "electron-is-dev";
 import express from "express";
 
@@ -61,10 +68,7 @@ function createWindow() {
   // Ignore CORS when fetching ipcasting HLS and when sending requests to remocon
   const session = rendererWindow.webContents.session;
   const ignoreCORSFilter = {
-    urls: [
-      "https://*.ipcasting.jp/*",
-      "http://localhost:8080/*",
-    ],
+    urls: ["https://*.ipcasting.jp/*", "http://localhost:8080/*"],
   };
 
   session.webRequest.onBeforeSendHeaders(
@@ -75,10 +79,16 @@ function createWindow() {
     }
   );
 
-  session.webRequest.onHeadersReceived(ignoreCORSFilter, (details, callback) => {
-    details.responseHeaders!["Access-Control-Allow-Origin"] = ["*"];
-    callback({ responseHeaders: details.responseHeaders });
-  });
+  session.webRequest.onHeadersReceived(
+    ignoreCORSFilter,
+    (details, callback) => {
+      // Chrome is not happy if ACAO is set twice, which is what happens
+      // when the Express static middleware is setting this one
+      delete details.responseHeaders!["access-control-allow-origin"];
+      details.responseHeaders!["Access-Control-Allow-Origin"] = ["*"];
+      callback({ responseHeaders: details.responseHeaders });
+    }
+  );
 
   getCredentials()
     .then(attemptLogin)
@@ -120,23 +130,22 @@ app.on("activate", () => {
 
 function refreshRendererWindow() {
   if (!rendererWindow) return;
-  if (dialog.showMessageBoxSync(
-    rendererWindow,
-    {
-      message : "Are you sure you want to reload the renderer window?",
+  if (
+    dialog.showMessageBoxSync(rendererWindow, {
+      message: "Are you sure you want to reload the renderer window?",
       buttons: ["Reload", "Cancel"],
-    },
-  ) === 0) {
+    }) === 0
+  ) {
     rendererWindow.reload();
   }
 }
 
-app.on('browser-window-focus', () => {
+app.on("browser-window-focus", () => {
   globalShortcut.register("CommandOrControl+R", refreshRendererWindow);
   globalShortcut.register("F5", refreshRendererWindow);
 });
 
-app.on('browser-window-blur', () => {
-  globalShortcut.unregister('CommandOrControl+R');
-  globalShortcut.unregister('F5');
+app.on("browser-window-blur", () => {
+  globalShortcut.unregister("CommandOrControl+R");
+  globalShortcut.unregister("F5");
 });
