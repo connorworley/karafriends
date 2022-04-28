@@ -6,7 +6,10 @@ import { Application } from "express";
 import { execute, subscribe } from "graphql";
 import { PubSub } from "graphql-subscriptions";
 import { SubscriptionServer } from "subscriptions-transport-ws";
-import { downloadYoutubeVideo } from "./../common/videoDownloader";
+import {
+  downloadDamVideo,
+  downloadYoutubeVideo,
+} from "./../common/videoDownloader";
 
 import { HOSTNAME } from "../common/constants";
 import rawSchema from "../common/schema.graphql";
@@ -507,13 +510,29 @@ const resolvers = {
   Mutation: {
     queueDamSong: (
       _: any,
-      args: { input: QueueDamSongInput }
+      args: { input: QueueDamSongInput },
+      { dataSources }: IDataSources
     ): QueueSongResult => {
       const queueItem: DamQueueItem = {
         timestamp: Date.now().toString(),
         ...args.input,
         __typename: "DamQueueItem",
       };
+
+      if (process.env.KARAFRIENDS_PREDOWNLOAD_DAM) {
+        console.error(`Starting offline download of ${queueItem.songId}`);
+        dataSources.minsei
+          .getMusicStreamingUrls(queueItem.songId)
+          .then((data) => {
+            // XXX: This should be already be a number but typescript tells me it is not
+            const selectedIndex = data.list[+queueItem.streamingUrlIdx];
+            const url = process.env.KARAFRIENDS_USE_LOW_BITRATE_URL
+              ? selectedIndex.lowBitrateUrl
+              : selectedIndex.highBitrateUrl;
+            downloadDamVideo(url, queueItem.songId, queueItem.streamingUrlIdx);
+          });
+      }
+
       return pushSongToQueue(queueItem);
     },
     queueYoutubeSong: (

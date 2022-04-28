@@ -1,4 +1,4 @@
-import { exec } from "child_process";
+import { exec, spawn } from "child_process";
 import { app } from "electron"; // tslint:disable-line:no-implicit-dependencies
 import fs from "fs";
 import process from "process";
@@ -20,18 +20,18 @@ interface YtdlResourcePaths {
 }
 
 const linuxResourcePaths: YtdlResourcePaths = {
-  ffmpeg: `${extraResourcesPath}/ffmpeg/linux/`,
+  ffmpeg: `${extraResourcesPath}ffmpeg/linux/`,
   ytdlp: `${extraResourcesPath}/ytdlp/yt-dlp`,
 };
 
 const macosResourcePaths: YtdlResourcePaths = {
-  ffmpeg: `${extraResourcesPath}/ffmpeg/macos/`,
-  ytdlp: `${extraResourcesPath}/ytdlp/yt-dlp_macos`,
+  ffmpeg: `${extraResourcesPath}ffmpeg/macos/`,
+  ytdlp: `${extraResourcesPath}ytdlp/yt-dlp_macos`,
 };
 
 const winResourcePaths: YtdlResourcePaths = {
-  ffmpeg: `${extraResourcesPath}/ffmpeg/win/`,
-  ytdlp: `${extraResourcesPath}/ytdlp/yt-dlp.exe`,
+  ffmpeg: `${extraResourcesPath}ffmpeg/win/`,
+  ytdlp: `${extraResourcesPath}ytdlp/yt-dlp.exe`,
 };
 
 const resourcePaths: YtdlResourcePaths =
@@ -40,6 +40,41 @@ const resourcePaths: YtdlResourcePaths =
     : process.platform === "darwin"
     ? macosResourcePaths
     : linuxResourcePaths;
+
+export function downloadDamVideo(
+  m3u8Url: string,
+  songId: string,
+  suffix: string
+): void {
+  if (!fs.existsSync(TEMP_FOLDER)) {
+    fs.mkdirSync(TEMP_FOLDER);
+  }
+
+  const filename = `${TEMP_FOLDER}/${songId}-${suffix}.mp4`;
+  const tempFilename = `${filename}.tmp`;
+
+  if (fs.existsSync(filename)) {
+    console.info(`${filename} already exists, not redownloading`);
+    return;
+  }
+
+  console.info(`Downloading DAM video to ${filename}`);
+
+  const ffmpeg = spawn(
+    `${resourcePaths.ffmpeg}/ffmpeg -y -i "${m3u8Url}" -c copy -movflags faststart -f mp4 "${tempFilename}"`,
+    { shell: true, stdio: "inherit" }
+  );
+
+  ffmpeg.on("exit", (code, signal) => {
+    if (code === 0) {
+      fs.renameSync(tempFilename, filename);
+    } else {
+      console.error(
+        `Error downloading DAM video with ID ${songId}: code=${code}, signal=${signal}`
+      );
+    }
+  });
+}
 
 export function downloadYoutubeVideo(
   videoId: string,
@@ -65,6 +100,8 @@ export function downloadYoutubeVideo(
   }
 
   const writeBasePath = `${TEMP_FOLDER}/${videoId}`;
+  console.info(`Downloading YouTube video to ${writeBasePath}.mp4`);
+
   const captionArgs = captionCode
     ? `--write-subs --sub-langs ${captionCode}`
     : "";
