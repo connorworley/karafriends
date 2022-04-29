@@ -69,6 +69,7 @@ const winTasks = {
           (err) => {
             if (err) {
               console.error(error);
+              throw err;
             }
             hasFinishedExtracting[0] = true;
           }
@@ -115,6 +116,7 @@ const macosTasks = {
           (err) => {
             if (err) {
               console.error(error);
+              throw err;
             }
             hasFinishedExtracting[0] = true;
           }
@@ -167,6 +169,7 @@ const linuxTasks = {
               (err) => {
                 if (err) {
                   console.error(error);
+                  throw err;
                 }
                 hasFinishedExtracting[0] = true;
               }
