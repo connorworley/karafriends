@@ -13,7 +13,7 @@ function QRCode(props: { hostname: string }) {
       canvasRef.current.style.width = "100%";
       toCanvas(
         canvasRef.current,
-        `http://${props.hostname}:8080`,
+        `http://${props.hostname}`,
         {
           errorCorrectionLevel: "L",
           width: canvasRef.current.clientWidth,
