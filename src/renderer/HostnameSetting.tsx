@@ -15,6 +15,7 @@ export default function HostnameSetting(props: {
     <div className="input-field">
       <select value={HOSTNAME} onChange={(e) => props.onChange(e.target.value)}>
         <option value={HOSTNAME}>{HOSTNAME}</option>
+        <option value="kara.rarelyupset.com">kara.rarelyupset.com</option>
         {window.karafriends.ipAddresses().map((address) => (
           <option value={address} key={address}>
             {address}
