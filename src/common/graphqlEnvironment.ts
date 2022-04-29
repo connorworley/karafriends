@@ -12,7 +12,8 @@ import { SubscriptionClient } from "subscriptions-transport-ws";
 
 function fetchQuery(request: RequestParameters, variables: Variables) {
   return fetch(
-    window.location.hostname === "localhost"
+    window.location.hostname === "localhost" ||
+      window.location.protocol === "file:"
       ? "http://localhost:8080/graphql"
       : "/graphql",
     {
@@ -31,7 +32,8 @@ function fetchQuery(request: RequestParameters, variables: Variables) {
 }
 
 const subscriptionClient = new SubscriptionClient(
-  window.location.hostname === "localhost"
+  window.location.hostname === "localhost" ||
+  window.location.protocol === "file:"
     ? "ws://localhost:8080/subscriptions"
     : `${window.location.protocol === "https:" ? "wss" : "ws"}://${
         window.location.host
