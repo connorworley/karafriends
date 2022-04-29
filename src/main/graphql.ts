@@ -5,16 +5,21 @@ import isDev from "electron-is-dev";
 import { Application } from "express";
 import { execute, subscribe } from "graphql";
 import { PubSub } from "graphql-subscriptions";
+import { Nicovideo } from "niconico";
 import { SubscriptionServer } from "subscriptions-transport-ws";
-import {
-  downloadDamVideo,
-  downloadYoutubeVideo,
-} from "./../common/videoDownloader";
 
+import karafriendsConfig from "../common/config";
 import { HOSTNAME } from "../common/constants";
 import rawSchema from "../common/schema.graphql";
+import {
+  downloadDamVideo,
+  downloadNicoVideo,
+  downloadYoutubeVideo,
+} from "./../common/videoDownloader";
 import { DkwebsysAPI, MinseiAPI, MinseiCredentials } from "./damApi";
 import { YoutubeAPI } from "./youtubeApi";
+
+import "regenerator-runtime/runtime"; // tslint:disable-line:no-submodule-imports
 
 interface IDataSources {
   dataSources: {
@@ -69,16 +74,19 @@ interface CaptionLanguage {
   name: string;
 }
 
-interface YoutubeVideoInfo {
-  readonly __typename: "YoutubeVideoInfo";
+interface VideoInfo {
   readonly author: string;
-  readonly captionLanguages: CaptionLanguage[];
   readonly channelId: string;
-  readonly keywords: string[];
   readonly lengthSeconds: number;
   readonly description: string;
   readonly title: string;
   readonly viewCount: number;
+}
+
+interface YoutubeVideoInfo extends VideoInfo {
+  readonly __typename: "YoutubeVideoInfo";
+  readonly captionLanguages: CaptionLanguage[];
+  readonly keywords: string[];
 }
 
 interface YoutubeVideoInfoError {
@@ -87,6 +95,18 @@ interface YoutubeVideoInfoError {
 }
 
 type YoutubeVideoInfoResult = YoutubeVideoInfo | YoutubeVideoInfoError;
+
+interface NicoVideoInfo extends VideoInfo {
+  readonly __typename: "NicoVideoInfo";
+  readonly thumbnailUrl: string;
+}
+
+interface NicoVideoInfoError {
+  readonly __typename: "NicoVideoInfoError";
+  readonly reason: string;
+}
+
+type NicoVideoInfoResult = NicoVideoInfo | NicoVideoInfoError;
 
 interface QueueItemInterface {
   readonly songId: string;
@@ -108,7 +128,11 @@ interface YoutubeQueueItem extends QueueItemInterface {
   readonly hasCaptions: boolean;
 }
 
-type QueueItem = DamQueueItem | YoutubeQueueItem;
+interface NicoQueueItem extends QueueItemInterface {
+  readonly __typename: "NicoQueueItem";
+}
+
+type QueueItem = DamQueueItem | YoutubeQueueItem | NicoQueueItem;
 
 type QueueSongInfo = {
   readonly __typename: "QueueSongInfo";
@@ -141,6 +165,14 @@ type QueueYoutubeSongInput = {
   readonly captionCode: string | null;
 };
 
+type QueueNicoSongInput = {
+  readonly songId: string;
+  readonly name: string;
+  readonly artistName: string;
+  readonly playtime?: number | null;
+  readonly nickname: string;
+};
+
 interface HistoryItem {
   readonly song: SongParent;
   readonly playDate: string;
@@ -170,7 +202,6 @@ type NotARealDb = {
   idToAdhocLyrics: Record<string, string[]>;
   playbackState: PlaybackState;
   songQueue: QueueItem[];
-  queuedNicknames: Set<string>;
 };
 
 enum SubscriptionEvent {
@@ -186,19 +217,44 @@ const db: NotARealDb = {
   idToAdhocLyrics: {},
   playbackState: PlaybackState.WAITING,
   songQueue: [],
-  queuedNicknames: new Set(),
 };
 
 const pubsub = new PubSub();
 
+const nicovideo = new Nicovideo();
+
+interface WatchData {
+  owner: {
+    id: number;
+    nickname: string;
+  };
+  video: {
+    count: {
+      view: number;
+    };
+    description: string;
+    duration: number;
+    title: string;
+    thumbnail: {
+      player: string;
+    };
+  };
+}
+
 function pushSongToQueue(queueItem: QueueItem): QueueSongResult {
-  if (db.queuedNicknames.has(queueItem.nickname)) {
+  // Not very efficient, but surely the queue won't ever get so big that this would be considered expensive
+  const songsQueuedByUser: number = db.songQueue.filter(
+    (x) => x.nickname === queueItem.nickname
+  ).length;
+  if (
+    karafriendsConfig.paxSongQueueLimit >= 0 &&
+    songsQueuedByUser >= karafriendsConfig.paxSongQueueLimit
+  ) {
     return {
       __typename: "QueueSongError",
-      reason: `${queueItem.nickname} already has 1 song in the queue`,
+      reason: `${queueItem.nickname} already has ${karafriendsConfig.paxSongQueueLimit} song(s) in the queue`,
     };
   }
-  db.queuedNicknames.add(queueItem.nickname);
   db.songQueue.push(queueItem);
   pubsub.publish(SubscriptionEvent.QueueChanged, {
     queueChanged: db.songQueue,
@@ -248,7 +304,7 @@ const resolvers = {
     streamingUrls(parent: SongParent, _: any, { dataSources }: IDataSources) {
       return dataSources.minsei.getMusicStreamingUrls(parent.id).then((data) =>
         data.list.map((info) => ({
-          url: process.env.KARAFRIENDS_USE_LOW_BITRATE_URL
+          url: karafriendsConfig.useLowBitrateUrl
             ? info.lowBitrateUrl
             : info.highBitrateUrl,
         }))
@@ -309,7 +365,7 @@ const resolvers = {
         .getMusicStreamingUrls(parent.songId)
         .then((data) =>
           data.list.map((info) => ({
-            url: process.env.KARAFRIENDS_USE_LOW_BITRATE_URL
+            url: karafriendsConfig.useLowBitrateUrl
               ? info.lowBitrateUrl
               : info.highBitrateUrl,
           }))
@@ -509,6 +565,30 @@ const resolvers = {
         };
       });
     },
+    nicoVideoInfo: async (
+      _: any,
+      args: { videoId: string }
+    ): Promise<NicoVideoInfoResult> => {
+      try {
+        // @ts-ignore
+        const watchData: WatchData = await nicovideo.watch(args.videoId);
+        return {
+          __typename: "NicoVideoInfo",
+          author: watchData.owner.nickname,
+          channelId: watchData.owner.id.toString(10),
+          description: watchData.video.description,
+          lengthSeconds: watchData.video.duration,
+          title: watchData.video.title,
+          thumbnailUrl: watchData.video.thumbnail.player,
+          viewCount: watchData.video.count.view,
+        };
+      } catch (e) {
+        return {
+          __typename: "NicoVideoInfoError",
+          reason: "Failed getting video info. Maybe an invalid VideoID?",
+        };
+      }
+    },
     playbackState: () => db.playbackState,
   },
   Mutation: {
@@ -523,14 +603,14 @@ const resolvers = {
         __typename: "DamQueueItem",
       };
 
-      if (process.env.KARAFRIENDS_PREDOWNLOAD_DAM) {
-        console.error(`Starting offline download of ${queueItem.songId}`);
+      if (karafriendsConfig.predownloadDAM) {
+        console.log(`Starting offline download of ${queueItem.songId}`);
         dataSources.minsei
           .getMusicStreamingUrls(queueItem.songId)
           .then((data) => {
             // XXX: This should be already be a number but typescript tells me it is not
             const selectedIndex = data.list[+queueItem.streamingUrlIdx];
-            const url = process.env.KARAFRIENDS_USE_LOW_BITRATE_URL
+            const url = karafriendsConfig.useLowBitrateUrl
               ? selectedIndex.lowBitrateUrl
               : selectedIndex.highBitrateUrl;
             downloadDamVideo(url, queueItem.songId, queueItem.streamingUrlIdx);
@@ -558,6 +638,23 @@ const resolvers = {
       downloadYoutubeVideo(
         args.input.songId,
         args.input.captionCode,
+        pushSongToQueue.bind(null, queueItem)
+      );
+      // The song likely hasn't actually been added to the queue yet since it needs to download,
+      // but let's optimistically return the eta assuming it will successfully queue
+      return (
+        db.songQueue.reduce((acc, cur) => acc + (cur.playtime || 0), 0) +
+        (args.input.playtime || 0)
+      );
+    },
+    queueNicoSong: (_: any, args: { input: QueueNicoSongInput }): number => {
+      const queueItem: NicoQueueItem = {
+        timestamp: Date.now().toString(),
+        ...args.input,
+        __typename: "NicoQueueItem",
+      };
+      downloadNicoVideo(
+        args.input.songId,
         pushSongToQueue.bind(null, queueItem)
       );
       // The song likely hasn't actually been added to the queue yet since it needs to download,
@@ -597,9 +694,6 @@ const resolvers = {
         currentSongAdhocLyricsChanged: db.currentSongAdhocLyrics,
       });
       db.currentSong = newSong;
-      if (newSong) {
-        db.queuedNicknames.delete(newSong.nickname);
-      }
       return newSong;
     },
     removeSong: (
@@ -610,7 +704,6 @@ const resolvers = {
         (item) =>
           item.songId === args.songId && item.timestamp === args.timestamp
       );
-      db.queuedNicknames.delete(db.songQueue[songIdx].nickname);
       db.songQueue.splice(songIdx, 1);
       pubsub.publish(SubscriptionEvent.QueueChanged, {
         queueChanged: db.songQueue,

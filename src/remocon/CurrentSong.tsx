@@ -2,6 +2,7 @@ import React from "react";
 import { graphql, useLazyLoadQuery } from "react-relay";
 
 import { withLoader } from "../common/components/Loader";
+import NicoInfo from "./NicoInfo";
 import Song from "./Song";
 import YoutubeInfo from "./YoutubeInfo";
 import {
@@ -17,17 +18,15 @@ const currentSongQuery = graphql`
       ... on DamQueueItem {
         __typename
         songId
-        name
-        artistName
       }
       ... on YoutubeQueueItem {
         __typename
         songId
-        name
-        artistName
-        playtime
-        timestamp
         hasAdhocLyrics
+      }
+      ... on NicoQueueItem {
+        __typename
+        songId
       }
     }
   }
@@ -37,10 +36,8 @@ function CurrentSong() {
   const queryData = useLazyLoadQuery<CurrentSongQuery>(currentSongQuery, {});
 
   function getCurrentSongDisplay() {
-    console.log(queryData.currentSong);
     switch (queryData?.currentSong?.__typename) {
       case "DamQueueItem":
-        console.log("why");
         return <Song id={queryData.currentSong.songId} />;
       case "YoutubeQueueItem":
         return (
@@ -49,6 +46,9 @@ function CurrentSong() {
             showAdhocLyricsFields={queryData.currentSong.hasAdhocLyrics}
           />
         );
+      case "NicoQueueItem":
+        return <NicoInfo videoId={queryData.currentSong.songId} />;
+
       default:
         return (
           <div className="card no-song-container">

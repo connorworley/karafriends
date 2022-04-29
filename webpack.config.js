@@ -43,6 +43,12 @@ module.exports = [
     output: {
       path: path.resolve(__dirname, "build", "main"),
     },
+    externals: {
+      // Needed because niconico needs jsdom and jsdom wants canvas
+      // But we don't actually need canvas
+      // https://github.com/jsdom/jsdom/issues/1708
+      canvas: "{}",
+    },
   }),
   merge(COMMON_CONFIG, {
     target: "web", // our renderer is rather locked down

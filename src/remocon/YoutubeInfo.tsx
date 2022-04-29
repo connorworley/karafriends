@@ -9,9 +9,8 @@ import {
   YoutubeInfoVideoInfoQueryResponse,
 } from "./__generated__/YoutubeInfoVideoInfoQuery.graphql";
 
-import "./YoutubeInfo.css";
 import "materialize-css/dist/css/materialize.css"; // tslint:disable-line:no-submodule-imports
-
+import "./YoutubeInfo.css";
 
 const youtubeInfoVideoInfoQuery = graphql`
   query YoutubeInfoVideoInfoQuery($videoId: String!) {
@@ -26,7 +25,6 @@ const youtubeInfoVideoInfoQuery = graphql`
         channelId
         keywords
         lengthSeconds
-        description
         title
         viewCount
       }
@@ -50,7 +48,9 @@ function YoutubeInfo(props: YoutubeInfoProps) {
   > | null> = useRef(null);
   const { videoId } = props;
   const [adhocSongLyrics, setAdhocSongLyrics] = useState<string | null>(null);
-  const [selectedCaption, setSelectedCaption] = useState<string | undefined>(undefined);
+  const [selectedCaption, setSelectedCaption] = useState<string | undefined>(
+    undefined
+  );
   const videoData = useLazyLoadQuery<YoutubeInfoVideoInfoQuery>(
     youtubeInfoVideoInfoQuery,
     { videoId }
@@ -78,9 +78,13 @@ function YoutubeInfo(props: YoutubeInfoProps) {
         return (
           <div className="flex-container flex-vertical details-container">
             <div className="flex-item">
-              <span className="channel-name">
-                {videoData.youtubeVideoInfo.author}
-              </span>
+              <a
+                href={`https://www.youtube.com/channel/${videoData.youtubeVideoInfo.channelId}`}
+              >
+                <span className="channel-name">
+                  {videoData.youtubeVideoInfo.author}
+                </span>
+              </a>
             </div>
             <div className="flex-item">{videoData.youtubeVideoInfo.title}</div>
             <div className="flex-item">
@@ -128,22 +132,33 @@ function YoutubeInfo(props: YoutubeInfoProps) {
           <label className="flex-item radio-item">
             <input
               checked={selectedCaption === undefined}
-              name="captions" type="radio" value={undefined}
-              onChange={(event) => {setSelectedCaption(undefined)}}
+              name="captions"
+              type="radio"
+              value={undefined}
+              onChange={(event) => {
+                setSelectedCaption(undefined);
+              }}
             />
-          <span>None</span>
+            <span>None</span>
           </label>
-          {videoData.youtubeVideoInfo.captionLanguages.map((captionLanguage) => {
-            return (<label className="flex-item radio-item">
-              <input
-                checked={selectedCaption === captionLanguage.code}
-                name="captions" type="radio"
-                value={captionLanguage.code}
-                onChange={(event) => {setSelectedCaption(captionLanguage.code)}}
-              />
-              <span>{captionLanguage.name}</span>
-            </label>)
-          })}
+          {videoData.youtubeVideoInfo.captionLanguages.map(
+            (captionLanguage) => {
+              return (
+                <label className="flex-item radio-item">
+                  <input
+                    checked={selectedCaption === captionLanguage.code}
+                    name="captions"
+                    type="radio"
+                    value={captionLanguage.code}
+                    onChange={(event) => {
+                      setSelectedCaption(captionLanguage.code);
+                    }}
+                  />
+                  <span>{captionLanguage.name}</span>
+                </label>
+              );
+            }
+          )}
         </div>
         <div className="flex-item lyrics-input-container">
           <h6 className="add-lyrics-section">Manual Lyrics</h6>

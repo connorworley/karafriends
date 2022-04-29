@@ -5,6 +5,7 @@ import process from "process";
 
 export const TEMP_FOLDER: string = `${app.getPath("temp")}/karafriends_tmp`;
 const youtubeIdRe: RegExp = new RegExp(/^[0-9A-Za-z_-]{10}[048AEIMQUYcgkosw]$/);
+const nicoIdRe: RegExp = new RegExp(/^[sm]{2}\d*$/);
 const captionCodeRe: RegExp = new RegExp(/^[a-z]{2}$/);
 
 const extraResourcesPath: string =
@@ -59,9 +60,11 @@ export function downloadDamVideo(
   }
 
   console.info(`Downloading DAM video to ${filename}`);
+  const ffmpegFilename: string =
+    process.platform === "win32" ? "ffmpeg.exe" : "ffmpeg";
 
   const ffmpeg = spawn(
-    `${resourcePaths.ffmpeg}/ffmpeg -y -i "${m3u8Url}" -c copy -movflags faststart -f mp4 "${tempFilename}"`,
+    `${resourcePaths.ffmpeg}/${ffmpegFilename} -y -i "${m3u8Url}" -c copy -movflags faststart -f mp4 "${tempFilename}"`,
     { shell: true, stdio: "inherit" }
   );
 
@@ -81,7 +84,7 @@ export function downloadYoutubeVideo(
   captionCode: string | null,
   onComplete: () => any
 ): void {
-  // Make our inputs are valid. Don't want to pass just anything into a raw shell command
+  // Make sure our inputs are valid. Don't want to pass just anything into a raw shell command
   if (!youtubeIdRe.test(videoId)) {
     console.error(
       `Error downloading Youtube Video. ${videoId} is not a valid YouTube video ID`
@@ -125,6 +128,41 @@ export function downloadYoutubeVideo(
             `Error trying to rename caption file ${writeBasePath}.${captionCode}.vtt to ${writeBasePath}.vtt: ${fsError}`
           );
         }
+      }
+      console.log(stdout);
+      console.error(stderr);
+      onComplete();
+    }
+  );
+}
+
+export function downloadNicoVideo(
+  videoId: string,
+  onComplete: () => any
+): void {
+  // Make sure our inputs are valid. Don't want to pass just anything into a raw shell command
+  if (!nicoIdRe.test(videoId)) {
+    console.error(
+      `Error downloading Niconico Video. ${videoId} is not a valid Niconico video ID`
+    );
+    return;
+  }
+
+  if (!fs.existsSync(TEMP_FOLDER)) {
+    fs.mkdirSync(TEMP_FOLDER);
+  }
+
+  const writeBasePath = `${TEMP_FOLDER}/${videoId}`;
+  console.info(`Downloading Niconico video to ${writeBasePath}.mp4`);
+
+  exec(
+    `${resourcePaths.ytdlp} -N 4 -o "${writeBasePath}.mp4" -- "https://www.nicovideo.jp/watch/${videoId}"`,
+    (error, stdout, stderr) => {
+      if (error) {
+        console.error(
+          `Error downloading Niconico Video with ID ${videoId}: ${error}`
+        );
+        return;
       }
       console.log(stdout);
       console.error(stderr);

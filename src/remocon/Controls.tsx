@@ -6,6 +6,8 @@ import { FaYoutube } from "react-icons/fa";
 import { GiMicrophone } from "react-icons/gi";
 // tslint:disable-next-line:no-submodule-imports
 import { GrStatusUnknown } from "react-icons/gr";
+// tslint:disable-next-line:no-submodule-imports
+import { SiNiconico } from "react-icons/si";
 import { graphql, useLazyLoadQuery, useMutation } from "react-relay";
 import { Link } from "react-router-dom";
 
@@ -47,6 +49,17 @@ const QueueLink = (props: QueueLinkProps): JSX.Element | null => {
         </a>
       );
       break;
+    case "NicoQueueItem":
+      linkUrl = (
+        <a
+          href={`https://www.nicovideo.jp/watch/${props.songId}`}
+          className={props.className}
+          style={props.style}
+        >
+          {props.children}
+        </a>
+      );
+      break;
   }
   return linkUrl;
 };
@@ -59,6 +72,9 @@ function getIcon(typename: string | undefined): JSX.Element {
       break;
     case "YoutubeQueueItem":
       icon = <FaYoutube />;
+      break;
+    case "NicoQueueItem":
+      icon = <SiNiconico />;
       break;
   }
   return icon;
