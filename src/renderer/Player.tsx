@@ -135,6 +135,7 @@ function Player(props: { mics: InputDevice[] }) {
                 break;
               case "NicoQueueItem":
                 setShouldShowPianoRoll(false);
+                setShouldShowAdhocLyrics(false);
                 videoRef.current.src = `${staticUrl}/${popSong.songId}.mp4`;
                 videoRef.current.play();
                 break;
