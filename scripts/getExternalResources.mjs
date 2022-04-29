@@ -51,7 +51,7 @@ const winTasks = {
   getAssets: async (tmpDir) =>
     Promise.all([
       downloadFile(
-        "https://github.com/yt-dlp/yt-dlp/releases/download/2022.04.08/yt-dlp.exe",
+        "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe",
         `${extraResourcesDir}/ytdlp/yt-dlp.exe`
       ),
       downloadFile(
@@ -97,7 +97,7 @@ const macosTasks = {
   getAssets: async (tmpDir) =>
     Promise.all([
       downloadFile(
-        "https://github.com/yt-dlp/yt-dlp/releases/download/2022.04.08/yt-dlp_macos",
+        "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos",
         `${extraResourcesDir}/ytdlp/yt-dlp_macos`
       ),
       downloadFile(
@@ -146,7 +146,7 @@ const linuxTasks = {
   getAssets: async (tmpDir) =>
     Promise.all([
       downloadFile(
-        "https://github.com/yt-dlp/yt-dlp/releases/download/2022.04.08/yt-dlp",
+        "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp",
         `${extraResourcesDir}/ytdlp/yt-dlp`
       ),
       downloadFile(
