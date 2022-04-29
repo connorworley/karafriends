@@ -107,6 +107,8 @@ function Player(props: { mics: InputDevice[] }) {
                       );
                       loadRemote();
                     }
+
+                    videoRef.current.play();
                   })
                   .catch((error) => {
                     console.error(
@@ -119,9 +121,8 @@ function Player(props: { mics: InputDevice[] }) {
 
                     // Pretend nothing happened.
                     loadRemote();
+                    videoRef.current.play();
                   });
-
-                videoRef.current.play();
                 break;
               case "YoutubeQueueItem":
                 setShouldShowPianoRoll(false);
