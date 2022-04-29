@@ -33,6 +33,7 @@
     "keytar": "^7.7.0",
     "materialize-css": "^1.0.0-rc.2",
     "multicast-dns": "^7.2.2",
+    "niconico": "^1.2.0",
     "node-fetch": "^2.6.1",
     "polyline-normals": "^2.0.2",
     "promise-retry": "^2.0.1",
@@ -45,11 +46,13 @@
     "react-relay": "^11.0.0",
     "react-router-dom": "^5.2.0",
     "react-swipeable": "^6.2.0",
+    "regenerator-runtime": "^0.13.9",
     "relay-runtime": "^10.1.0",
     "subscriptions-transport-ws": "^0.9.18",
     "ts-invariant": "^0.9.1",
     "user-agents": "^1.0.658",
     "wanakana": "^4.0.2",
+    "yaml": "^2.0.1",
     "youtube-player": "^5.5.2"
   },
   "devDependencies": {

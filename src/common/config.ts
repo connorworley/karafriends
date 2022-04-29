@@ -1,0 +1,42 @@
+import { app } from "electron"; // tslint:disable-line:no-implicit-dependencies
+import fs from "fs";
+import path from "path";
+import { parse } from "yaml";
+
+interface KarafriendsConfig {
+  // Whether to use the low bitrate URLs for DAM songs
+  useLowBitrateUrl: boolean;
+  // Whether to download DAM songs locally instead of streaming them
+  predownloadDAM: boolean;
+  // Max number of songs each user can add to the queue. Set to 0 for unlimited
+  paxSongQueueLimit: number;
+}
+
+const DEFAULT_CONFIG: KarafriendsConfig = {
+  useLowBitrateUrl: false,
+  predownloadDAM: false,
+  paxSongQueueLimit: 1,
+};
+
+function getConfig(): KarafriendsConfig {
+  // Refer to https://www.electronjs.org/docs/latest/api/app#appgetpathname
+  // for where the config file should be placed. On Windows, it should be %APPDATA%/karafriends/config.yaml
+  const configFilepath: string = path.join(
+    app.getPath("userData"),
+    "config.yaml"
+  );
+  if (fs.existsSync(configFilepath)) {
+    const localConfig: KarafriendsConfig = parse(
+      fs.readFileSync(configFilepath, { encoding: "utf8", flag: "r" })
+    );
+    return {
+      ...DEFAULT_CONFIG,
+      ...localConfig,
+    };
+  }
+  return DEFAULT_CONFIG;
+}
+
+const karafriendsConfig: KarafriendsConfig = getConfig();
+
+export default karafriendsConfig;

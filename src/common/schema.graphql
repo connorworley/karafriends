@@ -4,6 +4,7 @@ type Query {
   artistsByName(name: String, first: Int, after: String): ArtistConnection!
   currentSong: QueueItem
   history(first: Int, after: String): HistoryConnection!
+  nicoVideoInfo(videoId: String): NicoVideoInfoResult!
   playbackState: PlaybackState!
   queue: [QueueItem!]!
   songById(id: String!): Song!
@@ -19,6 +20,7 @@ type Mutation {
   pushAdhocLyrics(input: PushAdhocLyricsInput): Boolean!
   queueDamSong(input: QueueDamSongInput): QueueSongResult!
   queueYoutubeSong(input: QueueYoutubeSongInput): QueueSongResult!
+  queueNicoSong(input: QueueNicoSongInput): QueueSongResult!
   removeSong(songId: String!, timestamp: String!): Boolean!
   setPlaybackState(playbackState: PlaybackState!): Boolean!
 }
@@ -122,6 +124,14 @@ input QueueYoutubeSongInput {
   captionCode: String
 }
 
+input QueueNicoSongInput {
+  songId: String!
+  name: String!
+  artistName: String!
+  playtime: Int
+  nickname: String!
+}
+
 type SongConnection {
   edges: [SongEdge!]!
   pageInfo: SongPageInfo!
@@ -180,7 +190,16 @@ type YoutubeQueueItem implements QueueItemInterface {
   hasCaptions: Boolean!
 }
 
-union QueueItem = DamQueueItem | YoutubeQueueItem
+type NicoQueueItem implements QueueItemInterface {
+  songId: String!
+  name: String!
+  artistName: String!
+  playtime: Int
+  timestamp: String!
+  nickname: String!
+}
+
+union QueueItem = DamQueueItem | YoutubeQueueItem | NicoQueueItem
 
 type QueueSongInfo {
   eta: Int!
@@ -197,7 +216,16 @@ type CaptionLanguage {
   name: String!
 }
 
-type YoutubeVideoInfo {
+interface VideoInfo {
+  author: String!
+  channelId: String!
+  lengthSeconds: Int!
+  description: String!
+  title: String!
+  viewCount: Int!
+}
+
+type YoutubeVideoInfo implements VideoInfo {
   author: String!
   captionLanguages: [CaptionLanguage!]!
   channelId: String!
@@ -213,6 +241,22 @@ type YoutubeVideoInfoError {
 }
 
 union YoutubeVideoInfoResult = YoutubeVideoInfo | YoutubeVideoInfoError
+
+type NicoVideoInfo implements VideoInfo {
+  author: String!
+  channelId: String!
+  lengthSeconds: Int!
+  description: String!
+  title: String!
+  thumbnailUrl: String!
+  viewCount: Int!
+}
+
+type NicoVideoInfoError {
+  reason: String!
+}
+
+union NicoVideoInfoResult = NicoVideoInfo | NicoVideoInfoError
 
 enum PlaybackState {
   PAUSED

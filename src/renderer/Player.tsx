@@ -31,6 +31,11 @@ const popSongMutation = graphql`
         hasAdhocLyrics
         hasCaptions
       }
+      ... on NicoQueueItem {
+        __typename
+        songId
+        timestamp
+      }
     }
   }
 `;
@@ -126,6 +131,11 @@ function Player(props: { mics: InputDevice[] }) {
                   trackRef.current.default = true;
                   trackRef.current.src = `${staticUrl}/${popSong.songId}.vtt`;
                 }
+                videoRef.current.play();
+                break;
+              case "NicoQueueItem":
+                setShouldShowPianoRoll(false);
+                videoRef.current.src = `${staticUrl}/${popSong.songId}.mp4`;
                 videoRef.current.play();
                 break;
             }
