@@ -1,6 +1,7 @@
 import { createServer } from "http";
 import path from "path";
 
+import compression from "compression";
 import {
   app,
   BrowserWindow,
@@ -40,6 +41,7 @@ function attemptLogin(creds: Credentials) {
     .then((minseiCreds: MinseiCredentials) => {
       const expressApp = express();
       expressApp.use("/static", express.static(TEMP_FOLDER));
+      expressApp.use(compression());
       expressApp.use(remoconMiddleware());
       applyGraphQLMiddleware(expressApp, minseiCreds);
       const server = createServer(expressApp);

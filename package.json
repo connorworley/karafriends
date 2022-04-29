@@ -14,6 +14,7 @@
     "postinstall": "husky install"
   },
   "dependencies": {
+    "@types/compression": "^1.7.2",
     "@types/react-fade-in": "^2.0.2",
     "@types/react-swipeable": "^5.2.0",
     "@types/user-agents": "^1.0.1",
@@ -21,6 +22,7 @@
     "apollo-datasource-rest": "^0.13.0",
     "apollo-server-express": "^2.19.1",
     "color-convert": "^2.0.1",
+    "compression": "^1.7.4",
     "cubic-spline": "^3.0.3",
     "dataloader": "^2.0.0",
     "electron-is-dev": "^1.2.0",
