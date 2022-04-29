@@ -2,6 +2,7 @@
 import fetch from "node-fetch";
 import sevenBin from "7zip-bin";
 import fs from "fs";
+import mv from "mv";
 import os from "os";
 import path from "path";
 import process from "process";
@@ -63,7 +64,7 @@ const winTasks = {
     exec(
       `${pathTo7zip} e ${tmpDir}/ffmpeg/win/ffmpeg.7z -y -o${tmpDir}/ffmpeg/win/contents`,
       (error, stdout, stderr) => {
-        fs.rename(
+        mv(
           `${tmpDir}/ffmpeg/win/contents/ffmpeg.exe`,
           `${extraResourcesDir}/ffmpeg/win/ffmpeg.exe`,
           (err) => {
@@ -110,7 +111,7 @@ const macosTasks = {
     exec(
       `${pathTo7zip} e ${tmpDir}/ffmpeg/macos/ffmpeg.zip -y -o${tmpDir}/ffmpeg/macos/contents`,
       (error, stdout, stderr) => {
-        fs.rename(
+        mv(
           `${tmpDir}/ffmpeg/macos/contents/ffmpeg`,
           `${extraResourcesDir}/ffmpeg/macos/ffmpeg`,
           (err) => {
@@ -163,7 +164,7 @@ const linuxTasks = {
         exec(
           `${pathTo7zip} e ${tmpDir}/ffmpeg/linux/xz/ffmpeg.tar -y -o${tmpDir}/ffmpeg/linux/contents`,
           (error, stdout, stderr) => {
-            fs.rename(
+            mv(
               `${tmpDir}/ffmpeg/linux/contents/ffmpeg`,
               `${extraResourcesDir}/ffmpeg/linux/ffmpeg`,
               (err) => {
@@ -208,6 +209,10 @@ async function getExternalResources(tasks) {
       console.error(
         `Extracting ffmpeg did not complete after ${maxMsToWaitForExtraction} ms and was aborted!`
       );
+      process.exit(1);
+    }
+    if (!tasks.doChecks().every((check) => check === true)) {
+      console.error("An external resource wasn't successfuly downloaded!");
       process.exit(1);
     }
     tasks.setPermissions();
