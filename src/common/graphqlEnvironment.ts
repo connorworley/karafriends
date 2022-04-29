@@ -12,9 +12,9 @@ import { SubscriptionClient } from "subscriptions-transport-ws";
 
 function fetchQuery(request: RequestParameters, variables: Variables) {
   return fetch(
-    window.location.port === "8080"
-      ? "/graphql"
-      : "http://localhost:8080/graphql",
+    window.location.hostname === "localhost"
+      ? "http://localhost:8080/graphql"
+      : "/graphql",
     {
       method: "POST",
       headers: {
@@ -31,9 +31,11 @@ function fetchQuery(request: RequestParameters, variables: Variables) {
 }
 
 const subscriptionClient = new SubscriptionClient(
-  window.location.port === "8080"
-    ? `ws://${window.location.host}/subscriptions`
-    : "ws://localhost:8080/subscriptions",
+  window.location.hostname === "localhost"
+    ? "ws://localhost:8080/subscriptions"
+    : `${window.location.protocol === "https:" ? "wss" : "ws"}://${
+        window.location.host
+      }:${window.location.port}/subscriptions`,
   {
     reconnect: true,
   }
