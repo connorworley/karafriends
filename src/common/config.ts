@@ -25,7 +25,9 @@ function getConfig(): KarafriendsConfig {
     app.getPath("userData"),
     "config.yaml"
   );
+  console.log(`Checking ${configFilepath} for configs`);
   if (fs.existsSync(configFilepath)) {
+    console.log(`Configs found. Loading them up.`);
     const localConfig: KarafriendsConfig = parse(
       fs.readFileSync(configFilepath, { encoding: "utf8", flag: "r" })
     );
@@ -34,6 +36,7 @@ function getConfig(): KarafriendsConfig {
       ...localConfig,
     };
   }
+  console.log("No local configs found. Using default.");
   return DEFAULT_CONFIG;
 }
 
