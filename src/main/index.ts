@@ -51,7 +51,6 @@ function attemptLogin(creds: Credentials) {
     )
     .then((minseiCreds: MinseiCredentials) => {
       const expressApp = express();
-      expressApp.use("/static", express.static(TEMP_FOLDER));
       expressApp.use(compression());
       expressApp.use(remoconMiddleware());
       applyGraphQLMiddleware(expressApp, minseiCreds);
