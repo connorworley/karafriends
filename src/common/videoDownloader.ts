@@ -108,32 +108,33 @@ export function downloadYoutubeVideo(
   const captionArgs = captionCode
     ? `--write-subs --sub-langs ${captionCode}`
     : "";
-  exec(
+  const ytdlp = spawn(
     `${resourcePaths.ytdlp} ${captionArgs} -S res,ext:mp4:m4a --recode mp4 -N 4 --ffmpeg-location "${resourcePaths.ffmpeg}" -o "${writeBasePath}.mp4" -- "${videoId}"`,
-    (error, stdout, stderr) => {
-      if (error) {
-        console.error(
-          `Error downloading Youtube Video with ID ${videoId}: ${error}`
-        );
-        return;
-      }
-      if (captionCode) {
-        try {
-          fs.renameSync(
-            `${writeBasePath}.${captionCode}.vtt`,
-            `${writeBasePath}.vtt`
-          );
-        } catch (fsError) {
-          console.error(
-            `Error trying to rename caption file ${writeBasePath}.${captionCode}.vtt to ${writeBasePath}.vtt: ${fsError}`
-          );
-        }
-      }
-      console.log(stdout);
-      console.error(stderr);
-      onComplete();
-    }
+    { shell: true, stdio: "inherit" }
   );
+
+  ytdlp.on("exit", (code, signal) => {
+    if (code !== 0) {
+      console.error(
+        `Error downloading Youtube Video with ID ${videoId}, see output for details`
+      );
+      return;
+    }
+
+    if (captionCode) {
+      try {
+        fs.renameSync(
+          `${writeBasePath}.${captionCode}.vtt`,
+          `${writeBasePath}.vtt`
+        );
+      } catch (fsError) {
+        console.error(
+          `Error trying to rename caption file ${writeBasePath}.${captionCode}.vtt to ${writeBasePath}.vtt: ${fsError}`
+        );
+      }
+    }
+    onComplete();
+  });
 }
 
 export function downloadNicoVideo(
