@@ -104,7 +104,7 @@ function createWindow() {
   );
 
   protocol.registerFileProtocol("karafriends", (request, callback) => {
-    console.log(`Got protocol request: ${request.url}`);
+    console.log(`Got protocol request: ${request.method} ${request.url}`);
     const url = request.url.substr(14 /* 'karafriends://'.length */);
     callback({ path: path.normalize(`${TEMP_FOLDER}/${url}`) });
   });
