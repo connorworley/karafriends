@@ -80,7 +80,7 @@ function Player(props: { mics: InputDevice[] }) {
 
                 // If caching is on this means we'll be serving almost everything through /static
                 // which seems kind of stupid, but whatever
-                const fileUrl = `${staticUrl}/${popSong.songId}-${popSong.streamingUrlIdx}.mp4`;
+                const fileUrl = `karafriends://${popSong.songId}-${popSong.streamingUrlIdx}.mp4`;
 
                 const loadRemote = () => {
                   if (!videoRef.current) return;
@@ -99,6 +99,7 @@ function Player(props: { mics: InputDevice[] }) {
 
                     if (response.ok) {
                       console.log(`Using local file for ${popSong.songId}`);
+                      // This throws a random DOMException about load requests but it's probably fine
                       videoRef.current.src = fileUrl;
                     } else {
                       // Maybe it's not done downloading yet, or predownload is disabled
@@ -111,8 +112,9 @@ function Player(props: { mics: InputDevice[] }) {
                     videoRef.current.play();
                   })
                   .catch((error) => {
-                    console.error(
-                      "Something has gone terribly wrong while checking for a local file"
+                    // This throws if the file doesn't exist (as karafriends:// is a file:// passthrough protocol)
+                    console.log(
+                      `Local file for ${popSong.songId} doesn't seem available, using remote`
                     );
                     console.error(error);
 
@@ -127,17 +129,17 @@ function Player(props: { mics: InputDevice[] }) {
               case "YoutubeQueueItem":
                 setShouldShowPianoRoll(false);
                 setShouldShowAdhocLyrics(popSong.hasAdhocLyrics);
-                videoRef.current.src = `${staticUrl}/${popSong.songId}.mp4`;
+                videoRef.current.src = `karafriends://${popSong.songId}.mp4`;
                 if (trackRef?.current && popSong?.hasCaptions) {
                   trackRef.current.default = true;
-                  trackRef.current.src = `${staticUrl}/${popSong.songId}.vtt`;
+                  trackRef.current.src = `karafriends://${popSong.songId}.vtt`;
                 }
                 videoRef.current.play();
                 break;
               case "NicoQueueItem":
                 setShouldShowPianoRoll(false);
                 setShouldShowAdhocLyrics(false);
-                videoRef.current.src = `${staticUrl}/${popSong.songId}.mp4`;
+                videoRef.current.src = `karafriends://${popSong.songId}.mp4`;
                 videoRef.current.play();
                 break;
             }
