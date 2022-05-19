@@ -9,6 +9,7 @@ import {
   globalShortcut,
   ipcMain,
   IpcMainEvent,
+  protocol,
 } from "electron"; // tslint:disable-line:no-implicit-dependencies
 import isDev from "electron-is-dev";
 import express from "express";
@@ -27,6 +28,16 @@ import remoconMiddleware from "./remoconMiddleware";
 
 setupMdns();
 
+protocol.registerSchemesAsPrivileged([
+  {
+    scheme: "karafriends",
+    privileges: {
+      supportFetchAPI: true,
+      stream: true,
+    },
+  },
+]);
+
 function attemptLogin(creds: Credentials) {
   return MinseiAPI.login(creds.account, creds.password)
     .then((json) => ({
@@ -40,7 +51,6 @@ function attemptLogin(creds: Credentials) {
     )
     .then((minseiCreds: MinseiCredentials) => {
       const expressApp = express();
-      expressApp.use("/static", express.static(TEMP_FOLDER));
       expressApp.use(compression());
       expressApp.use(remoconMiddleware());
       applyGraphQLMiddleware(expressApp, minseiCreds);
@@ -91,6 +101,12 @@ function createWindow() {
       callback({ responseHeaders: details.responseHeaders });
     }
   );
+
+  protocol.registerFileProtocol("karafriends", (request, callback) => {
+    console.log(`Got protocol request: ${request.method} ${request.url}`);
+    const url = request.url.substr(14 /* 'karafriends://'.length */);
+    callback({ path: path.normalize(`${TEMP_FOLDER}/${url}`) });
+  });
 
   getCredentials()
     .then(attemptLogin)
