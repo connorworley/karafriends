@@ -109,7 +109,7 @@ export function downloadYoutubeVideo(
     ? `--write-subs --sub-langs ${captionCode}`
     : "";
   const ytdlp = spawn(
-    `${resourcePaths.ytdlp} ${captionArgs} -S res,ext:mp4:m4a --recode mp4 -N 4 --ffmpeg-location "${resourcePaths.ffmpeg}" -o "${writeBasePath}.mp4" -- "${videoId}"`,
+    `${resourcePaths.ytdlp} ${captionArgs} -S res:720,ext:mp4:m4a --recode mp4 -N 4 --ffmpeg-location "${resourcePaths.ffmpeg}" -o "${writeBasePath}.mp4" -- "${videoId}"`,
     { shell: true, stdio: "inherit" }
   );
 
