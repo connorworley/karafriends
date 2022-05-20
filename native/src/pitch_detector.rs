@@ -104,6 +104,9 @@ impl PitchDetector {
 }
 
 fn quadratic_peak_pos(x: &Vec<f32>, pos: usize) -> f32 {
+    if pos == 0 || pos == x.len() - 1 {
+        return 0.0;
+    }
     let x0 = pos - 1;
     let x2 = pos + 1;
     let s0 = x[x0];
