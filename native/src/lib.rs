@@ -1,5 +1,7 @@
 #![allow(non_snake_case)]
 
+mod pitch_detector;
+
 use std::cell::RefCell;
 use std::cmp::Ordering;
 use std::sync::{Arc, Mutex};
@@ -22,7 +24,7 @@ struct InputDevice {
     output_stream: Arc<Mutex<cpal::platform::Stream>>,
     pitch_rx: ringbuf::Consumer<f32>,
     pitch_sample_count: usize,
-    pitch_detector: Arc<Mutex<aubio_rs::Pitch>>,
+    pitch_detector: pitch_detector::PitchDetector,
 }
 
 unsafe impl Send for InputDevice {}
@@ -33,9 +35,7 @@ impl InputDevice {
     fn get_pitch(&mut self) -> Result<(f32, f32)> {
         let mut samples = vec![0.0; self.pitch_sample_count];
         self.pitch_rx.pop_slice(&mut samples);
-        let mut pd = self.pitch_detector.lock().unwrap();
-        let midi_number = pd.do_result(&samples)?;
-        Ok((midi_number, pd.get_confidence()))
+        Ok(self.pitch_detector.detect(samples))
     }
 
     fn stop(&self) -> Result<()> {
@@ -44,12 +44,6 @@ impl InputDevice {
         Ok(())
     }
 }
-
-struct Resampler {
-    resampler: aubio_rs::Resampler,
-}
-
-unsafe impl Send for Resampler {}
 
 fn cpal_safe<T: Send + 'static>(f: impl FnOnce() -> T + Send + 'static) -> T {
     // Cpal tries to set the threading model on Windows, which breaks when Node
@@ -221,20 +215,9 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
             ringbuf::RingBuffer::new(2048 * output_channels).split();
 
         let sample_ratio = output_config.sample_rate.0 as f32 / sample_rate as f32;
-        let mut resampler = Resampler {
-            resampler: aubio_rs::Resampler::new(
-                sample_ratio,
-                aubio_rs::ResampleMode::MediumQuality,
-            )?,
-        };
 
-        let pitch_detector = aubio_rs::Pitch::new(
-            aubio_rs::PitchMode::Yinfast,
-            pitch_sample_count,
-            pitch_sample_count,
-            sample_rate,
-        )?
-        .with_unit(aubio_rs::PitchUnit::Midi);
+        let pitch_detector =
+            pitch_detector::PitchDetector::new(sample_rate as f32, pitch_sample_count);
 
         let input_stream = input_device.build_input_stream(
             &input_config,
@@ -262,21 +245,28 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
 
                 echo_tx.push_slice(output_samples.as_slice());
 
-                let resampled_output_samples = if (sample_ratio - 1.0).abs() > f32::EPSILON {
-                    let mut resample_buffer =
-                        vec![0.0; (output_samples.len() as f32 * sample_ratio) as usize];
-                    resampler
-                        .resampler
-                        .do_(output_samples, &mut resample_buffer)
-                        .unwrap();
-                    resample_buffer
+                if (sample_ratio - 1.0).abs() > f32::EPSILON {
+                    let output_signal = dasp::signal::from_iter(output_samples.into_iter());
+                    let sinc_ring_buffer = dasp::ring_buffer::Fixed::from([0.0_f32; 512]);
+                    let sinc = dasp::interpolate::sinc::Sinc::new(sinc_ring_buffer);
+                    let converter = dasp::signal::interpolate::Converter::scale_sample_hz(
+                        output_signal,
+                        sinc,
+                        sample_ratio.into(),
+                    );
+                    for sample in dasp::Signal::until_exhausted(converter) {
+                        for _ in 0..output_channels {
+                            if output_tx.push(sample).is_err() {
+                                eprintln!("output fell behind!");
+                            }
+                        }
+                    }
                 } else {
-                    output_samples
-                };
-                for sample in resampled_output_samples {
-                    for _ in 0..output_channels {
-                        if output_tx.push(sample).is_err() {
-                            eprintln!("output fell behind!");
+                    for sample in output_samples {
+                        for _ in 0..output_channels {
+                            if output_tx.push(sample).is_err() {
+                                eprintln!("output fell behind!");
+                            }
                         }
                     }
                 }
@@ -303,7 +293,7 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
             output_stream: Arc::new(Mutex::new(output_stream)),
             pitch_rx,
             pitch_sample_count,
-            pitch_detector: Arc::new(Mutex::new(pitch_detector)),
+            pitch_detector,
         })
     }) {
         Ok(device) => device,

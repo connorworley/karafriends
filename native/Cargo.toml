@@ -10,10 +10,11 @@ name = "karafriends"
 crate-type = ["cdylib"]
 
 [dependencies]
-aubio-rs = "0.1.3"
 futures = "0.3.14"
 cpal = "0.13.3"
+dasp = { version = "0.11.0", features = ["signal", "interpolate", "interpolate-sinc", "ring_buffer"] }
 neon = { version = "0.8.0", default-features = false, features = ["napi-4"] }
+realfft = "3.0.0"
 ringbuf = "0.2.4"
 
 [build-dependencies]
