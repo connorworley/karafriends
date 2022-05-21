@@ -10,7 +10,7 @@
     "build": "yarn get-external-resources && yarn native-release && yarn compile && electron-builder -c.extraMetadata.main=./build/main/main.js --publish never",
     "start": "cross-env-shell NODE_ENV=development \"yarn _start\"",
     "_start": "yarn get-external-resources && yarn native-debug && yarn compile && concurrently \"webpack serve\" \"wait-on http://localhost:3000 && electron .\"",
-    "get-external-resources": "node --harmony-top-level-await scripts/getExternalResources.mjs",
+    "get-external-resources": "node scripts/getExternalResources.mjs",
     "postinstall": "husky install"
   },
   "dependencies": {
@@ -39,6 +39,7 @@
     "niconico": "^1.2.0",
     "node-fetch": "^2.6.1",
     "polyline-normals": "^2.0.2",
+    "postcss": "8.4.14",
     "promise-retry": "^2.0.1",
     "qrcode": "^1.4.4",
     "react": "^17.0.1",
