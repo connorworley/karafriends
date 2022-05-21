@@ -7,8 +7,7 @@
 Dependencies
 
 - Yarn
-- Rust (be sure to install `stable-x86_64-pc-windows-gnu` on Windows)
-- MinGW (Windows only, must be in PATH)
+- Rust
 
 ## Running
 
