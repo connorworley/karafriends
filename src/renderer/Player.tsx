@@ -41,6 +41,9 @@ const popSongMutation = graphql`
 `;
 
 const POLL_INTERVAL_MS = 5 * 1000;
+// XXX: Another idea is to add some gain to the DAM videos?
+const DAM_GAIN = 1.0;
+const NON_DAM_GAIN = 0.8;
 
 function Player(props: { mics: InputDevice[] }) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -52,6 +55,7 @@ function Player(props: { mics: InputDevice[] }) {
   );
   const { playbackState, setPlaybackState } = usePlaybackState();
   const pollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const gainNode = useRef<GainNode | null>(null);
   let hls: Hls | null = null;
 
   useEffect(() => {
@@ -67,6 +71,17 @@ function Player(props: { mics: InputDevice[] }) {
             trackRef.current.default = false;
             trackRef.current.src = "";
           }
+
+          if (!gainNode.current) {
+            const audioCtx = new AudioContext();
+            const audioSource = audioCtx.createMediaElementSource(
+              videoRef.current
+            );
+            gainNode.current = audioCtx.createGain();
+            audioSource.connect(gainNode.current);
+            gainNode.current.connect(audioCtx.destination);
+          }
+
           if (popSong !== null) {
             if (hls) hls.destroy();
 
@@ -108,7 +123,9 @@ function Player(props: { mics: InputDevice[] }) {
                       );
                       loadRemote();
                     }
-
+                    // XXX: Youtube API should be able to use the Youtube-calculated "Content loudness" parameter
+                    // rather than a static gain
+                    gainNode.current!.gain.value = DAM_GAIN;
                     videoRef.current.play();
                   })
                   .catch((error) => {
@@ -123,6 +140,7 @@ function Player(props: { mics: InputDevice[] }) {
 
                     // Pretend nothing happened.
                     loadRemote();
+                    gainNode.current!.gain.value = DAM_GAIN;
                     videoRef.current.play();
                   });
                 break;
@@ -134,12 +152,14 @@ function Player(props: { mics: InputDevice[] }) {
                   trackRef.current.default = true;
                   trackRef.current.src = `karafriends://${popSong.songId}.vtt`;
                 }
+                gainNode.current.gain.value = NON_DAM_GAIN;
                 videoRef.current.play();
                 break;
               case "NicoQueueItem":
                 setShouldShowPianoRoll(false);
                 setShouldShowAdhocLyrics(false);
                 videoRef.current.src = `karafriends://${popSong.songId}.mp4`;
+                gainNode.current.gain.value = NON_DAM_GAIN;
                 videoRef.current.play();
                 break;
             }
