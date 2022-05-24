@@ -30,13 +30,15 @@ interface GetVideoInfoResponse {
   };
   captions?: {
     playerCaptionsTracklistRenderer: {
-      captionTracks: [{
-        name: {
-          simpleText: string;
-        };
-        vssId: string;
-        languageCode: string;
-      }];
+      captionTracks: [
+        {
+          name: {
+            simpleText: string;
+          };
+          vssId: string;
+          languageCode: string;
+        }
+      ];
     };
   };
   videoDetails: {
@@ -48,6 +50,15 @@ interface GetVideoInfoResponse {
     shortDescription: string;
     viewCount: string;
     author: string;
+  };
+  playerConfig: {
+    audioConfig: {
+      // https://productionadvice.co.uk/stats-for-nerds/
+      // This is the amount over Youtube's reference level that
+      // will be normalized down to, i.e. the website will apply a -loudnessDb amount of gain somewhere.
+      // However, it doesn't do anything if this value is negative. We will, though.
+      loudnessDb: number;
+    };
   };
 }
 

@@ -27,6 +27,7 @@ const youtubeInfoVideoInfoQuery = graphql`
         lengthSeconds
         title
         viewCount
+        gainValue
       }
       ... on YoutubeVideoInfoError {
         __typename
@@ -122,6 +123,7 @@ function YoutubeInfo(props: YoutubeInfoProps) {
                 nickname: localStorage.getItem("nickname") || "unknown",
                 adhocSongLyrics,
                 captionCode: selectedCaption || null,
+                gainValue: videoData.youtubeVideoInfo.gainValue,
               },
             }}
           />

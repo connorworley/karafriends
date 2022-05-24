@@ -30,6 +30,7 @@ const popSongMutation = graphql`
         timestamp
         hasAdhocLyrics
         hasCaptions
+        gainValue
       }
       ... on NicoQueueItem {
         __typename
@@ -123,8 +124,6 @@ function Player(props: { mics: InputDevice[] }) {
                       );
                       loadRemote();
                     }
-                    // XXX: Youtube API should be able to use the Youtube-calculated "Content loudness" parameter
-                    // rather than a static gain
                     gainNode.current!.gain.value = DAM_GAIN;
                     videoRef.current.play();
                   })
@@ -152,7 +151,10 @@ function Player(props: { mics: InputDevice[] }) {
                   trackRef.current.default = true;
                   trackRef.current.src = `karafriends://${popSong.songId}.vtt`;
                 }
-                gainNode.current.gain.value = NON_DAM_GAIN;
+                console.log(
+                  `Using ${popSong.gainValue} for gain on Youtube queue item`
+                );
+                gainNode.current.gain.value = popSong.gainValue;
                 videoRef.current.play();
                 break;
               case "NicoQueueItem":
