@@ -4,7 +4,6 @@ import { RelayEnvironmentProvider } from "react-relay";
 
 import environment from "../common/graphqlEnvironment";
 import App from "./App";
-import "./index.module.scss";
 
 ReactDOM.render(
   <React.StrictMode>
