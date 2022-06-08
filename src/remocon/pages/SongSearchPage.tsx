@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 
-import DebouncedInput from "./components/DebouncedInput";
-import SongSearchResults from "./SongSearchResults";
+import DebouncedInput from "../components/DebouncedInput";
+import SearchFormWrapper from "../components/SearchFormWrapper";
+import SongSearchResults from "../components/SongSearchResults";
 
 interface SongSearchParams {
   query: string | undefined;
@@ -11,22 +12,24 @@ interface SongSearchParams {
 interface Props extends RouteComponentProps<SongSearchParams> {}
 
 function SongSearch(props: Props) {
-  const [songName, setSongName] = useState<string | null>(
+  const [query, setQuery] = useState<string | null>(
     props.match.params.query || null
   );
+
   return (
-    <div>
-      <h5>Searching by song title</h5>
+    <SearchFormWrapper>
+      <h2>Search by song title</h2>
       <DebouncedInput
         period={500}
+        placeholder="Start typing..."
         onChange={(e) => {
-          setSongName(e.target.value === "" ? null : e.target.value);
+          setQuery(e.target.value === "" ? null : e.target.value);
           history.replaceState({}, "", `#/search/song/${e.target.value}`);
         }}
         defaultValue={props.match.params.query}
       />
-      <SongSearchResults songName={songName} />
-    </div>
+      <SongSearchResults query={query} />
+    </SearchFormWrapper>
   );
 }
 
