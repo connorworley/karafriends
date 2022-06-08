@@ -1,8 +1,11 @@
 .controlBar {
-  width: 100vw;
+  background-color: #1cb3ff;
+  overflow: hidden;
+}
+
+.nowPlaying {
   height: 48px;
   padding: 0 12px;
-  background-color: #1cb3ff;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -10,4 +13,16 @@
   color: #fff;
   font-size: 24px;
   line-height: 24px;
+}
+
+.queue {
+  height: 30vh;
+  padding: 0 12px;
+  background-color: #fff;
+  color: #1cb3ff;
+}
+
+.controls {
+  height: 48px;
+  padding: 0 12px;
 }
