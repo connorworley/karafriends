@@ -5,6 +5,7 @@ import {
   VocalType,
 } from "../../pages/__generated__/SongPageQuery.graphql";
 import DamQueueButton from "./DamQueueButton";
+import styles from "./DamQueueButtons.module.scss";
 
 interface Props {
   song: SongPageQueryResponse["songById"];
@@ -19,7 +20,7 @@ const DamQueueButtons = ({ song }: Props) => {
   }, []);
 
   return (
-    <div>
+    <div className={styles.container}>
       {song.vocalTypes.map((vocalType, i) => (
         <DamQueueButton
           key={vocalType}

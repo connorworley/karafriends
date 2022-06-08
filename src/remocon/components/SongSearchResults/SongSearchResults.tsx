@@ -1,8 +1,8 @@
 import React from "react";
 import { graphql, useLazyLoadQuery, usePaginationFragment } from "react-relay";
 import { Link } from "react-router-dom";
-import { isRomaji, toRomaji } from "wanakana";
 
+import Button from "../Button";
 import { default as Loader, withLoader } from "../Loader";
 import styles from "./SongSearchResults.module.scss";
 import SongSearchResultsItem from "./SongSearchResultsItem";
@@ -71,13 +71,13 @@ const SongSearchResults = ({ query }: Props) => {
         <Loader />
       ) : (
         hasNext && (
-          <button
+          <Button
             className={styles.moreButton}
             disabled={isLoadingNext}
             onClick={() => loadNext(30)}
           >
             More
-          </button>
+          </Button>
         )
       )}
     </div>

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { graphql, useMutation } from "react-relay";
 
 import { SongPageQueryResponse } from "../../pages/__generated__/SongPageQuery.graphql";
+import Button from "../Button";
 import {
   DamQueueButtonMutation,
   DamQueueButtonMutationVariables,
@@ -82,7 +83,7 @@ const DamQueueButton = ({ song, streamingUrlIndex, nickname }: Props) => {
     });
   };
 
-  return <button onClick={onClick}>{text}</button>;
+  return <Button onClick={onClick}>{text}</Button>;
 };
 
 export default DamQueueButton;
