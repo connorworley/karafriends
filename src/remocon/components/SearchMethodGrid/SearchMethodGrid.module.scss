@@ -1,3 +1,10 @@
+$search-method-colors: (
+  song: #a5b6ef,
+  artist: #9ce7bb,
+  youtube: #e79ca1,
+  niconico: #ababab,
+);
+
 .grid {
   margin-top: 4px;
   display: flex;
@@ -22,18 +29,13 @@
   flex-direction: column-reverse;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 0 4px #ccc;
 
-  &.song {
-    background-color: #4b6dde;
-  }
-  &.artist {
-    background-color: #38cf77;
-  }
-  &.youtube {
-    background-color: #cf3842;
-  }
-  &.niconico {
-    background-color: #575757;
+  @each $method, $color in $search-method-colors {
+    &.#{$method} {
+      background: linear-gradient(to right, $color, #fff);
+      color: $color;
+    }
   }
 }
 
@@ -42,12 +44,13 @@
   position: absolute;
   font-size: 108px;
   transform: rotate(-15deg) translateY(60px);
-  color: rgba(255, 255, 255, 0.5);
 }
 
 .text {
-  color: #fff;
+  color: #333;
   font-size: 36px;
   font-weight: bold;
   z-index: 1;
+  mix-blend-mode: difference;
+  filter: contrast(0.1);
 }
