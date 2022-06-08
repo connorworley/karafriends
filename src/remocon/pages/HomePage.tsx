@@ -1,11 +1,10 @@
 import React from "react";
 import { RouteComponentProps } from "react-router-dom";
-
-import SearchMethodsGrid from "../components/SearchMethodsGrid";
+import SearchMethodGrid from "../components/SearchMethodGrid";
 
 const HomePage = (props: RouteComponentProps) => (
   <>
-    <SearchMethodsGrid />
+    <SearchMethodGrid />
   </>
 );
 

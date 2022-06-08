@@ -1,0 +1,53 @@
+.grid {
+  margin-top: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.gridItem {
+  flex: 1;
+
+  a {
+    text-decoration: none;
+  }
+}
+
+.button {
+  min-width: 120px;
+  height: 80px;
+  padding: 0 6px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column-reverse;
+  position: relative;
+  overflow: hidden;
+
+  &.song {
+    background-color: #4b6dde;
+  }
+  &.artist {
+    background-color: #38cf77;
+  }
+  &.youtube {
+    background-color: #cf3842;
+  }
+  &.niconico {
+    background-color: #575757;
+  }
+}
+
+.icon {
+  align-self: flex-end;
+  position: absolute;
+  font-size: 108px;
+  transform: rotate(-15deg) translateY(60px);
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.text {
+  color: #fff;
+  font-size: 36px;
+  font-weight: bold;
+  z-index: 1;
+}
