@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 // tslint:disable-next-line:no-submodule-imports
-import { BsMusicNoteBeamed } from "react-icons/bs";
-// tslint:disable-next-line:no-submodule-imports
 import { FaAngleDown, FaAngleUp } from "react-icons/fa";
 
 import PlaybackControls from "../PlaybackControls";
@@ -13,8 +11,8 @@ const ControlBar = () => {
 
   return (
     <div className={styles.controlBar}>
-      <div className={styles.nowPlaying}>
-        <BsMusicNoteBeamed />
+      <div className={styles.expander}>
+        <div />
         <div onClick={() => setExpanded(!expanded)}>
           {expanded ? <FaAngleDown /> : <FaAngleUp />}
         </div>

@@ -3,6 +3,7 @@ import { HashRouter, Route, Switch } from "react-router-dom";
 
 import ControlBar from "./components/ControlBar";
 import NavBar from "./components/NavBar";
+import HistoryPage from "./pages/HistoryPage";
 import HomePage from "./pages/HomePage";
 import SongPage from "./pages/SongPage";
 import SongSearchPage from "./pages/SongSearchPage";
@@ -19,6 +20,7 @@ const App = () => (
         <Switch>
           <Route path="/song/:id" component={SongPage} />
           <Route path="/search/song/:query?" component={SongSearchPage} />
+          <Route path="/history" component={HistoryPage} />
           <Route path="/" component={HomePage} />
         </Switch>
       </main>

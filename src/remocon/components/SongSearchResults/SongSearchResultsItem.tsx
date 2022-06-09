@@ -5,13 +5,7 @@ import { isRomaji, toRomaji } from "wanakana";
 import styles from "./SongSearchResults.module.scss";
 import { SongSearchResults_songsByName } from "./__generated__/SongSearchResults_songsByName.graphql";
 
-interface Props {
-  id: string;
-  name: string;
-  nameYomi: string;
-  artistName: string;
-  artistNameYomi: string;
-}
+type Props = SongSearchResults_songsByName["songsByName"]["edges"][0]["node"];
 
 const SongSearchResultsItem = ({
   id,
