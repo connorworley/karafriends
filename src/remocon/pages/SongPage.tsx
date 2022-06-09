@@ -37,7 +37,7 @@ const SongPage = ({ match }: Props) => {
     <div>
       <h2>{song.name}</h2>
       <span>{song.artistName}</span>
-      {!!song.tieUp && <span>{song.tieUp}</span>}
+      {!!song.tieUp && <span> • {song.tieUp}</span>}
       {!!song.lyricsPreview && (
         <blockquote>{song.lyricsPreview} ...</blockquote>
       )}

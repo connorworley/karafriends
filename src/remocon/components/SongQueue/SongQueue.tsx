@@ -1,17 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
+import { cyrb53 } from "../../../common/hash";
 import useQueue from "../../../common/hooks/useQueue";
+import SongQueueItem from "./SongQueueItem";
 
 const SongQueue = () => {
   const queue = useQueue();
+  const [nickname, setNickname] = useState("Unknown");
+
+  useEffect(() => {
+    const maybeNickname = localStorage.getItem("nickname");
+    if (maybeNickname) setNickname(maybeNickname);
+  }, []);
 
   return (
     <div>
       {queue.map(([item, eta], i) => (
-        <div key={`${item.songId}_${i}`}>
-          {item.artistName} - {item.name}
-        </div>
+        <SongQueueItem
+          key={`${item.songId}_${i}`}
+          item={item}
+          eta={eta}
+          myNickname={nickname}
+        />
       ))}
+      {queue.length === 0 && <span>The queue is empty</span>}
     </div>
   );
 };

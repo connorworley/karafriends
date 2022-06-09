@@ -12,7 +12,7 @@ interface Props {
 }
 
 const DamQueueButtons = ({ song }: Props) => {
-  const [nickname, setNickname] = useState("unknown");
+  const [nickname, setNickname] = useState("Unknown");
 
   useEffect(() => {
     const maybeNickname = localStorage.getItem("nickname");
