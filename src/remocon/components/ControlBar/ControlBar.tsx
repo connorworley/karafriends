@@ -7,7 +7,7 @@ import SongQueue from "../SongQueue";
 import styles from "./ControlBar.module.scss";
 
 const ControlBar = () => {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
 
   return (
     <div className={styles.controlBar}>
