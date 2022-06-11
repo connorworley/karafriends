@@ -247,7 +247,7 @@ function pushSongToQueue(queueItem: QueueItem): QueueSongResult {
     (x) => x.nickname === queueItem.nickname
   ).length;
   if (
-    karafriendsConfig.paxSongQueueLimit >= 0 &&
+    karafriendsConfig.paxSongQueueLimit > 0 &&
     songsQueuedByUser >= karafriendsConfig.paxSongQueueLimit
   ) {
     return {
