@@ -31,7 +31,8 @@ const YouTubePage = (props: Props) => {
     props.match.params.videoId || ""
   );
 
-  const onPreviewClick = () => {
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
     if (!inputRef.current) return;
     const newVideoId = getVideoId(inputRef.current.value);
     if (newVideoId !== null) {
@@ -43,12 +44,14 @@ const YouTubePage = (props: Props) => {
   return (
     <SearchFormWrapper>
       <h2>Add YouTube video</h2>
-      <input
-        ref={inputRef}
-        placeholder="YouTube video URL or ID"
-        defaultValue={videoId}
-      />
-      <Button onClick={onPreviewClick}>Preview video</Button>
+      <form onSubmit={onSubmit}>
+        <input
+          ref={inputRef}
+          placeholder="YouTube video URL or ID"
+          defaultValue={videoId}
+        />
+        <Button type="submit">Preview video</Button>
+      </form>
       {videoId !== "" && <YouTubeInfo videoId={videoId} />}
     </SearchFormWrapper>
   );

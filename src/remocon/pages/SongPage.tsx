@@ -1,6 +1,6 @@
 import React from "react";
 import { graphql, useLazyLoadQuery } from "react-relay";
-import { RouteComponentProps } from "react-router-dom";
+import { Link, RouteComponentProps } from "react-router-dom";
 
 import DamQueueButtons from "../components/DamQueueButtons";
 import { withLoader } from "../components/Loader";
@@ -37,7 +37,7 @@ const SongPage = (props: Props) => {
   return (
     <div>
       <h2>{song.name}</h2>
-      <span>{song.artistName}</span>
+      <Link to={`/search/artist/${song.artistName}`}>{song.artistName}</Link>
       {!!song.tieUp && <span> • {song.tieUp}</span>}
       {!!song.lyricsPreview && (
         <blockquote>{song.lyricsPreview} ...</blockquote>
