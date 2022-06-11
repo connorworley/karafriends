@@ -17,6 +17,16 @@ const Marquee = ({ children, className }: Props) => (
       {children}
       {children}
       {children}
+      {children}
+      {children}
+      {children}
+      {children}
+      {children}
+      {children}
+      {children}
+      {children}
+      {children}
+      {children}
     </div>
   </div>
 );
