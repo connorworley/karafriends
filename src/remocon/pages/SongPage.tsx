@@ -28,9 +28,10 @@ interface RouteParams {
 
 interface Props extends RouteComponentProps<RouteParams> {}
 
-const SongPage = ({ match }: Props) => {
-  const { id } = match.params;
-  const data = useLazyLoadQuery<SongPageQuery>(songPageQuery, { id });
+const SongPage = (props: Props) => {
+  const data = useLazyLoadQuery<SongPageQuery>(songPageQuery, {
+    id: props.match.params.id,
+  });
   const song = data.songById;
 
   return (
