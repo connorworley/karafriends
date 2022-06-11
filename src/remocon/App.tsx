@@ -3,6 +3,7 @@ import { HashRouter, Route, Switch } from "react-router-dom";
 
 import ControlBar from "./components/ControlBar";
 import NavBar from "./components/NavBar";
+import AdhocLyricsPage from "./pages/AdhocLyricsPage";
 import ArtistPage from "./pages/ArtistPage";
 import ArtistSearchPage from "./pages/ArtistSearchPage";
 import HistoryPage from "./pages/HistoryPage";
@@ -23,6 +24,7 @@ const App = () => (
         <Switch>
           <Route path="/song/:id" component={SongPage} />
           <Route path="/artist/:id" component={ArtistPage} />
+          <Route path="/adhocLyrics/:id" component={AdhocLyricsPage} />
           <Route path="/search/song/:query?" component={SongSearchPage} />
           <Route path="/search/artist/:query?" component={ArtistSearchPage} />
           <Route path="/search/youtube/:videoId?" component={YouTubePage} />
