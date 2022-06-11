@@ -83,7 +83,11 @@ const DamQueueButton = ({ song, streamingUrlIndex, nickname }: Props) => {
     });
   };
 
-  return <Button onClick={onClick}>{text}</Button>;
+  return (
+    <Button disabled={text !== defaultText} onClick={onClick}>
+      {text}
+    </Button>
+  );
 };
 
 export default DamQueueButton;

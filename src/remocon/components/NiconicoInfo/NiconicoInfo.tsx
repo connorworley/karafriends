@@ -3,8 +3,8 @@ import { graphql, useLazyLoadQuery } from "react-relay";
 
 import Button from "../Button";
 import { withLoader } from "../Loader";
+import VideoMetadata from "../VideoMetadata";
 import styles from "./NiconicoInfo.module.scss";
-import NiconicoMetadata from "./NiconicoMetadata";
 import NiconicoQueueButton from "./NiconicoQueueButton";
 import { NiconicoInfoVideoInfoQuery } from "./__generated__/NiconicoInfoVideoInfoQuery.graphql";
 
@@ -40,27 +40,29 @@ const NiconicoInfo = ({ videoId }: Props) => {
 
   return (
     <div className={styles.container}>
-      {videoData.nicoVideoInfo.__typename === "NicoVideoInfoError" ? (
+      {videoData.nicoVideoInfo.__typename === "NicoVideoInfoError" && (
         <div>
           Unable to get video info for the following reason:{" "}
           {videoData.nicoVideoInfo.reason}
         </div>
-      ) : (
+      )}
+      {videoData.nicoVideoInfo.__typename === "NicoVideoInfo" && (
         <>
-          {videoData.nicoVideoInfo.__typename === "NicoVideoInfo" && (
-            <a href={`https://www.nicovideo.jp/watch/${videoId}`}>
-              <img src={videoData.nicoVideoInfo.thumbnailUrl} />
-            </a>
-          )}
-          <NiconicoMetadata videoInfo={videoData.nicoVideoInfo} />
+          <a href={`https://www.nicovideo.jp/watch/${videoId}`}>
+            <img src={videoData.nicoVideoInfo.thumbnailUrl} />
+          </a>
+          <VideoMetadata
+            videoSource="niconico"
+            videoInfo={videoData.nicoVideoInfo}
+          />
+          <div className={styles.note}>
+            ※ Note that Niconico videos tend to take longer to add to the queue.
+            Wait for a few minutes before trying again if it doesn't appear.
+          </div>
           <NiconicoQueueButton
             videoId={videoId}
             videoInfo={videoData.nicoVideoInfo}
           />
-          <div>
-            Note that Niconico videos tend to take longer to add to the queue.
-            Wait for a few minutes before trying again if it doesn't appear.
-          </div>
         </>
       )}
     </div>

@@ -5,9 +5,18 @@ import styles from "./Button.module.scss";
 
 const Button = ({
   className,
+  disabled,
   ...rest
 }: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
-  <button className={classnames(styles.button, className)} {...rest} />
+  <button
+    className={classnames(
+      styles.button,
+      { [styles.disabled]: disabled },
+      className
+    )}
+    disabled={disabled}
+    {...rest}
+  />
 );
 
 export default Button;

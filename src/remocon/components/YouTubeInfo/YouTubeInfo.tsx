@@ -5,9 +5,9 @@ import YouTubePlayer from "youtube-player";
 
 import Button from "../Button";
 import { withLoader } from "../Loader";
+import VideoMetadata from "../VideoMetadata";
 import styles from "./YouTubeInfo.module.scss";
 import YouTubeLyricsForm from "./YouTubeLyricsForm";
-import YouTubeMetadata from "./YouTubeMetadata";
 import YouTubeQueueButton from "./YouTubeQueueButton";
 import { YouTubeInfoVideoInfoQuery } from "./__generated__/YouTubeInfoVideoInfoQuery.graphql";
 
@@ -64,14 +64,18 @@ const YouTubeInfo = ({ videoId }: Props) => {
   return (
     <div className={styles.container}>
       <div id="youtube-player" />
-      {videoData.youtubeVideoInfo.__typename === "YoutubeVideoInfoError" ? (
+      {videoData.youtubeVideoInfo.__typename === "YoutubeVideoInfoError" && (
         <div>
           Unable to get video info for the following reason:{" "}
           {videoData.youtubeVideoInfo.reason}
         </div>
-      ) : (
+      )}
+      {videoData.youtubeVideoInfo.__typename === "YoutubeVideoInfo" && (
         <>
-          <YouTubeMetadata videoInfo={videoData.youtubeVideoInfo} />
+          <VideoMetadata
+            videoSource="youtube"
+            videoInfo={videoData.youtubeVideoInfo}
+          />
           <YouTubeLyricsForm
             videoInfo={videoData.youtubeVideoInfo}
             onSelectCaption={(language) => setSelectedCaption(language)}
