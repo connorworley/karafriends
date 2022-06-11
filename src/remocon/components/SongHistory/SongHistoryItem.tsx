@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { isRomaji, toRomaji } from "wanakana";
 
+import { ListItem } from "../List";
 import styles from "./SongHistory.module.scss";
 import { SongHistory_history } from "./__generated__/SongHistory_history.graphql";
 
@@ -16,7 +17,7 @@ const SongHistoryItem = ({ song, playDate }: Props) => {
   );
   return (
     <Link to={`/song/${song.id}`}>
-      <div className={styles.listItem}>
+      <ListItem>
         <div>
           <span className={styles.title}>{song.name}</span>
           {isRomaji(song.name) ? null : (
@@ -33,7 +34,7 @@ const SongHistoryItem = ({ song, playDate }: Props) => {
           )}
           <span className={styles.date}>{date.toLocaleString()}</span>
         </div>
-      </div>
+      </ListItem>
     </Link>
   );
 };

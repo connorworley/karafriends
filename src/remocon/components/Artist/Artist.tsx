@@ -2,6 +2,7 @@ import React from "react";
 import { graphql, useLazyLoadQuery, usePaginationFragment } from "react-relay";
 
 import Button from "../Button";
+import { List } from "../List";
 import { default as Loader, withLoader } from "../Loader";
 import styles from "./Artist.module.scss";
 import ArtistSongItem from "./ArtistSongItem";
@@ -60,11 +61,11 @@ const Artist = ({ id }: Props) => {
       <span>
         {artist.songCount} {artist.songCount === 1 ? "song" : "songs"}
       </span>
-      <div className={styles.list}>
+      <List>
         {artist.songs.edges.map(({ node }) => (
           <ArtistSongItem key={node.id} {...node} />
         ))}
-      </div>
+      </List>
       {isLoadingNext ? (
         <Loader />
       ) : (

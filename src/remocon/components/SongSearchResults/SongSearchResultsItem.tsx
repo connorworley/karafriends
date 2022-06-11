@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { isRomaji, toRomaji } from "wanakana";
 
+import { ListItem } from "../List";
 import styles from "./SongSearchResults.module.scss";
 import { SongSearchResults_songsByName } from "./__generated__/SongSearchResults_songsByName.graphql";
 
@@ -15,7 +16,7 @@ const SongSearchResultsItem = ({
   artistNameYomi,
 }: Props) => (
   <Link to={`/song/${id}`}>
-    <div className={styles.listItem}>
+    <ListItem>
       <div>
         <span className={styles.title}>{name}</span>
         {isRomaji(name) ? null : (
@@ -28,7 +29,7 @@ const SongSearchResultsItem = ({
           <span className={styles.romaji}> {toRomaji(artistNameYomi)}</span>
         )}
       </div>
-    </div>
+    </ListItem>
   </Link>
 );
 

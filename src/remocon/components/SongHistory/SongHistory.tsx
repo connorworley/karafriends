@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { isRomaji, toRomaji } from "wanakana";
 
 import Button from "../Button";
+import { List } from "../List";
 import { default as Loader, withLoader } from "../Loader";
 import styles from "./SongHistory.module.scss";
 import SongHistoryItem from "./SongHistoryItem";
@@ -57,14 +58,14 @@ const History = () => {
       {data.history.edges.length === 0 ? (
         <span>No history</span>
       ) : (
-        <div className={styles.list}>
+        <List>
           {data.history.edges.map(({ node }) => (
             <SongHistoryItem
               key={`${node.song.id}_${node.playDate}`}
               {...node}
             />
           ))}
-        </div>
+        </List>
       )}
       {isLoadingNext ? (
         <Loader />

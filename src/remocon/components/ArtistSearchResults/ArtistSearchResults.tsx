@@ -3,6 +3,7 @@ import { graphql, useLazyLoadQuery, usePaginationFragment } from "react-relay";
 import { Link } from "react-router-dom";
 
 import Button from "../Button";
+import { List } from "../List";
 import { default as Loader, withLoader } from "../Loader";
 import styles from "./ArtistSearchResults.module.scss";
 import ArtistSearchResultsItem from "./ArtistSearchResultsItem";
@@ -60,11 +61,11 @@ const ArtistSearchResults = ({ query }: Props) => {
       {data.artistsByName.edges.length === 0 ? (
         <span>No results found</span>
       ) : (
-        <div className={styles.list}>
+        <List>
           {data.artistsByName.edges.map(({ node }) => (
             <ArtistSearchResultsItem key={node.id} {...node} />
           ))}
-        </div>
+        </List>
       )}
       {isLoadingNext ? (
         <Loader />

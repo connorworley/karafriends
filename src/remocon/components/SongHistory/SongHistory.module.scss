@@ -2,21 +2,6 @@
   margin-top: 8px;
 }
 
-.list {
-  margin-bottom: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.listItem {
-  padding: 4px;
-  box-shadow: 0 0 4px #ccc;
-  border-radius: 4px;
-  overflow: hidden;
-  overflow-wrap: anywhere;
-}
-
 .title {
   font-weight: bold;
 }
