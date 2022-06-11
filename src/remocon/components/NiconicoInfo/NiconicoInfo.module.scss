@@ -1,0 +1,33 @@
+.container {
+  margin: 8px 0;
+  display: flex;
+  flex-direction: column;
+
+  img,
+  button {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+
+  img {
+    max-width: 640px;
+  }
+}
+
+.metadata {
+  margin-bottom: 8px;
+
+  .channel {
+    color: #1cb3ff;
+  }
+
+  .title {
+    font-weight: bold;
+  }
+
+  .numbers {
+    color: #999;
+    display: flex;
+    gap: 16px;
+  }
+}

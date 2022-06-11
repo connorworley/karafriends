@@ -3,12 +3,12 @@ import React, { useEffect, useState } from "react";
 import { graphql, useMutation } from "react-relay";
 
 import Button from "../Button";
-import { YouTubeInfoVideoInfoQueryResponse } from "./__generated__/YouTubeInfoVideoInfoQuery.graphql";
-import { YouTubeQueueButtonMutation } from "./__generated__/YouTubeQueueButtonMutation.graphql";
+import { NiconicoInfoVideoInfoQueryResponse } from "./__generated__/NiconicoInfoVideoInfoQuery.graphql";
+import { NiconicoQueueButtonMutation } from "./__generated__/NiconicoQueueButtonMutation.graphql";
 
-const youTubeQueueButtonMutation = graphql`
-  mutation YouTubeQueueButtonMutation($input: QueueYoutubeSongInput!) {
-    queueYoutubeSong(input: $input) {
+const niconicoQueueButtonMutation = graphql`
+  mutation NiconicoQueueButtonMutation($input: QueueNicoSongInput!) {
+    queueNicoSong(input: $input) {
       ... on QueueSongInfo {
         __typename
         eta
@@ -23,23 +23,16 @@ const youTubeQueueButtonMutation = graphql`
 
 interface Props {
   videoId: string;
-  videoInfo: YouTubeInfoVideoInfoQueryResponse["youtubeVideoInfo"];
-  adhocSongLyrics: string | null;
-  selectedCaption: string | null;
+  videoInfo: NiconicoInfoVideoInfoQueryResponse["nicoVideoInfo"];
 }
 
-const YouTubeQueueButton = ({
-  videoId,
-  videoInfo,
-  adhocSongLyrics,
-  selectedCaption,
-}: Props) => {
-  if (videoInfo.__typename !== "YoutubeVideoInfo") return null;
+const NiconicoQueueButton = ({ videoId, videoInfo }: Props) => {
+  if (videoInfo.__typename !== "NicoVideoInfo") return null;
 
   const defaultText = "Queue video";
   const [text, setText] = useState(defaultText);
-  const [commit] = useMutation<YouTubeQueueButtonMutation>(
-    youTubeQueueButtonMutation
+  const [commit] = useMutation<NiconicoQueueButtonMutation>(
+    niconicoQueueButtonMutation
   );
 
   useEffect(() => {
@@ -56,19 +49,17 @@ const YouTubeQueueButton = ({
           artistName: videoInfo.author,
           playtime: videoInfo.lengthSeconds,
           nickname: localStorage.getItem("nickname") || "unknown",
-          adhocSongLyrics,
-          captionCode: selectedCaption || null,
         },
       },
-      onCompleted: ({ queueYoutubeSong }) => {
-        switch (queueYoutubeSong.__typename) {
+      onCompleted: ({ queueNicoSong }) => {
+        switch (queueNicoSong.__typename) {
           case "QueueSongInfo":
             setText(
-              `Estimated wait: T-${formatDuration(queueYoutubeSong.eta * 1000)}`
+              `Estimated wait: T-${formatDuration(queueNicoSong.eta * 1000)}`
             );
             break;
           case "QueueSongError":
-            setText(`Error: ${queueYoutubeSong.reason}`);
+            setText(`Error: ${queueNicoSong.reason}`);
             break;
         }
       },
@@ -78,4 +69,4 @@ const YouTubeQueueButton = ({
   return <Button onClick={onClick}>{text}</Button>;
 };
 
-export default YouTubeQueueButton;
+export default NiconicoQueueButton;

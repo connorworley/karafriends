@@ -9,10 +9,7 @@ import styles from "./YouTubeInfo.module.scss";
 import YouTubeLyricsForm from "./YouTubeLyricsForm";
 import YouTubeMetadata from "./YouTubeMetadata";
 import YouTubeQueueButton from "./YouTubeQueueButton";
-import {
-  YouTubeInfoVideoInfoQuery,
-  YouTubeInfoVideoInfoQueryResponse,
-} from "./__generated__/YouTubeInfoVideoInfoQuery.graphql";
+import { YouTubeInfoVideoInfoQuery } from "./__generated__/YouTubeInfoVideoInfoQuery.graphql";
 
 const youTubeInfoVideoInfoQuery = graphql`
   query YouTubeInfoVideoInfoQuery($videoId: String!) {
