@@ -4,7 +4,6 @@ import { graphql, useLazyLoadQuery, usePaginationFragment } from "react-relay";
 import Button from "../Button";
 import { List } from "../List";
 import { default as Loader, withLoader } from "../Loader";
-import styles from "./Artist.module.scss";
 import ArtistSongItem from "./ArtistSongItem";
 import { ArtistPaginationQuery } from "./__generated__/ArtistPaginationQuery.graphql";
 import { ArtistQuery } from "./__generated__/ArtistQuery.graphql";
@@ -70,11 +69,7 @@ const Artist = ({ id }: Props) => {
         <Loader />
       ) : (
         hasNext && (
-          <Button
-            className={styles.moreButton}
-            disabled={isLoadingNext}
-            onClick={() => loadNext(30)}
-          >
+          <Button full disabled={isLoadingNext} onClick={() => loadNext(30)}>
             More
           </Button>
         )

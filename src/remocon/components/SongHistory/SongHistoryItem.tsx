@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { isRomaji, toRomaji } from "wanakana";
 
 import { ListItem } from "../List";
+import WeebText from "../WeebText";
 import styles from "./SongHistory.module.scss";
 import { SongHistory_history } from "./__generated__/SongHistory_history.graphql";
 
@@ -19,19 +19,10 @@ const SongHistoryItem = ({ song, playDate }: Props) => {
     <Link to={`/song/${song.id}`}>
       <ListItem>
         <div>
-          <span className={styles.title}>{song.name}</span>
-          {isRomaji(song.name) ? null : (
-            <span className={styles.romaji}> {toRomaji(song.nameYomi)}</span>
-          )}
+          <WeebText bold text={song.name} yomi={song.nameYomi} />
         </div>
         <div>
-          <span>{song.artistName}</span>
-          {isRomaji(song.artistName) ? null : (
-            <span className={styles.romaji}>
-              {" "}
-              {toRomaji(song.artistNameYomi)}
-            </span>
-          )}
+          <WeebText text={song.artistName} yomi={song.artistNameYomi} />
           <span className={styles.date}>{date.toLocaleString()}</span>
         </div>
       </ListItem>

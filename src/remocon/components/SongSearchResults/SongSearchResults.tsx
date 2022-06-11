@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import Button from "../Button";
 import { List } from "../List";
 import { default as Loader, withLoader } from "../Loader";
-import styles from "./SongSearchResults.module.scss";
 import SongSearchResultsItem from "./SongSearchResultsItem";
 import { SongSearchResultsPaginationQuery } from "./__generated__/SongSearchResultsPaginationQuery.graphql";
 import { SongSearchResultsViewQuery } from "./__generated__/SongSearchResultsViewQuery.graphql";
@@ -58,7 +57,7 @@ const SongSearchResults = ({ query }: Props) => {
   >(songSearchResultsPaginationQuery, queryData);
 
   return (
-    <div className={styles.results}>
+    <>
       {data.songsByName.edges.length === 0 ? (
         <span>No results found</span>
       ) : (
@@ -72,16 +71,12 @@ const SongSearchResults = ({ query }: Props) => {
         <Loader />
       ) : (
         hasNext && (
-          <Button
-            className={styles.moreButton}
-            disabled={isLoadingNext}
-            onClick={() => loadNext(30)}
-          >
+          <Button full disabled={isLoadingNext} onClick={() => loadNext(30)}>
             More
           </Button>
         )
       )}
-    </div>
+    </>
   );
 };
 

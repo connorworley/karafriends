@@ -3,15 +3,18 @@ import React from "react";
 
 import styles from "./Button.module.scss";
 
-const Button = ({
-  className,
-  disabled,
-  ...rest
-}: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
+interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  full?: boolean;
+}
+
+const Button = ({ className, disabled, full, ...rest }: Props) => (
   <button
     className={classnames(
       styles.button,
-      { [styles.disabled]: disabled },
+      {
+        [styles.disabled]: disabled,
+        [styles.full]: full,
+      },
       className
     )}
     disabled={disabled}

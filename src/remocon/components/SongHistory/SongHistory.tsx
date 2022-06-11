@@ -1,12 +1,9 @@
 import React from "react";
 import { graphql, useLazyLoadQuery, usePaginationFragment } from "react-relay";
-import { Link } from "react-router-dom";
-import { isRomaji, toRomaji } from "wanakana";
 
 import Button from "../Button";
 import { List } from "../List";
 import { default as Loader, withLoader } from "../Loader";
-import styles from "./SongHistory.module.scss";
 import SongHistoryItem from "./SongHistoryItem";
 import { SongHistoryPaginationQuery } from "./__generated__/SongHistoryPaginationQuery.graphql";
 import { SongHistoryViewQuery } from "./__generated__/SongHistoryViewQuery.graphql";
@@ -54,7 +51,7 @@ const History = () => {
   >(historyPaginationQuery, queryData);
 
   return (
-    <div className={styles.history}>
+    <>
       {data.history.edges.length === 0 ? (
         <span>No history</span>
       ) : (
@@ -71,16 +68,12 @@ const History = () => {
         <Loader />
       ) : (
         hasNext && (
-          <Button
-            className={styles.moreButton}
-            disabled={isLoadingNext}
-            onClick={() => loadNext(30)}
-          >
+          <Button full disabled={isLoadingNext} onClick={() => loadNext(30)}>
             More
           </Button>
         )
       )}
-    </div>
+    </>
   );
 };
 

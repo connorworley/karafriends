@@ -1,9 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { isRomaji, toRomaji } from "wanakana";
 
 import { ListItem } from "../List";
-import styles from "./SongSearchResults.module.scss";
+import WeebText from "../WeebText";
 import { SongSearchResults_songsByName } from "./__generated__/SongSearchResults_songsByName.graphql";
 
 type Props = SongSearchResults_songsByName["songsByName"]["edges"][0]["node"];
@@ -18,16 +17,10 @@ const SongSearchResultsItem = ({
   <Link to={`/song/${id}`}>
     <ListItem>
       <div>
-        <span className={styles.title}>{name}</span>
-        {isRomaji(name) ? null : (
-          <span className={styles.romaji}> {toRomaji(nameYomi)}</span>
-        )}
+        <WeebText bold text={name} yomi={nameYomi} />
       </div>
       <div>
-        <span>{artistName}</span>
-        {isRomaji(artistName) ? null : (
-          <span className={styles.romaji}> {toRomaji(artistNameYomi)}</span>
-        )}
+        <WeebText text={artistName} yomi={artistNameYomi} />
       </div>
     </ListItem>
   </Link>

@@ -1,11 +1,9 @@
 import React from "react";
 import { graphql, useLazyLoadQuery, usePaginationFragment } from "react-relay";
-import { Link } from "react-router-dom";
 
 import Button from "../Button";
 import { List } from "../List";
 import { default as Loader, withLoader } from "../Loader";
-import styles from "./ArtistSearchResults.module.scss";
 import ArtistSearchResultsItem from "./ArtistSearchResultsItem";
 import { ArtistSearchResultsPaginationQuery } from "./__generated__/ArtistSearchResultsPaginationQuery.graphql";
 import { ArtistSearchResultsViewQuery } from "./__generated__/ArtistSearchResultsViewQuery.graphql";
@@ -57,7 +55,7 @@ const ArtistSearchResults = ({ query }: Props) => {
   >(songSearchResultsPaginationQuery, queryData);
 
   return (
-    <div className={styles.results}>
+    <>
       {data.artistsByName.edges.length === 0 ? (
         <span>No results found</span>
       ) : (
@@ -71,16 +69,12 @@ const ArtistSearchResults = ({ query }: Props) => {
         <Loader />
       ) : (
         hasNext && (
-          <Button
-            className={styles.moreButton}
-            disabled={isLoadingNext}
-            onClick={() => loadNext(30)}
-          >
+          <Button full disabled={isLoadingNext} onClick={() => loadNext(30)}>
             More
           </Button>
         )
       )}
-    </div>
+    </>
   );
 };
 
