@@ -2,16 +2,12 @@ import React, { useEffect, useState } from "react";
 
 import { cyrb53 } from "../../../common/hash";
 import useQueue from "../../../common/hooks/useQueue";
+import useNickname from "../../hooks/useNickname";
 import SongQueueItem from "./SongQueueItem";
 
 const SongQueue = () => {
   const queue = useQueue();
-  const [nickname, setNickname] = useState("Unknown");
-
-  useEffect(() => {
-    const maybeNickname = localStorage.getItem("nickname");
-    if (maybeNickname) setNickname(maybeNickname);
-  }, []);
+  const nickname = useNickname();
 
   return (
     <div>

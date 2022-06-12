@@ -2,6 +2,7 @@ import formatDuration from "format-duration";
 import React, { useEffect, useState } from "react";
 import { graphql, useMutation } from "react-relay";
 
+import useNickname from "../../hooks/useNickname";
 import Button from "../Button";
 import { YouTubeInfoVideoInfoQueryResponse } from "./__generated__/YouTubeInfoVideoInfoQuery.graphql";
 import { YouTubeQueueButtonMutation } from "./__generated__/YouTubeQueueButtonMutation.graphql";
@@ -36,6 +37,7 @@ const YouTubeQueueButton = ({
 }: Props) => {
   if (videoInfo.__typename !== "YoutubeVideoInfo") return null;
 
+  const nickname = useNickname();
   const defaultText = "Queue video";
   const [text, setText] = useState(defaultText);
   const [commit] = useMutation<YouTubeQueueButtonMutation>(
@@ -55,7 +57,7 @@ const YouTubeQueueButton = ({
           name: videoInfo.title,
           artistName: videoInfo.author,
           playtime: videoInfo.lengthSeconds,
-          nickname: localStorage.getItem("nickname") || "unknown",
+          nickname,
           adhocSongLyrics,
           captionCode: selectedCaption || null,
         },

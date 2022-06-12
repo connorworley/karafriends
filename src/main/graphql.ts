@@ -205,6 +205,7 @@ type NotARealDb = {
 };
 
 enum SubscriptionEvent {
+  CurrentSongChanged = "CurrentSongChanged",
   CurrentSongAdhocLyricsChanged = "CurrentSongAdhocLyricsChanged",
   PlaybackStateChanged = "PlaybackStateChanged",
   QueueChanged = "QueueChanged",
@@ -701,6 +702,9 @@ const resolvers = {
         currentSongAdhocLyricsChanged: db.currentSongAdhocLyrics,
       });
       db.currentSong = newSong;
+      pubsub.publish(SubscriptionEvent.CurrentSongChanged, {
+        currentSongChanged: db.currentSong,
+      });
       return newSong;
     },
     removeSong: (
@@ -732,6 +736,10 @@ const resolvers = {
     playbackStateChanged: {
       subscribe: () =>
         pubsub.asyncIterator([SubscriptionEvent.PlaybackStateChanged]),
+    },
+    currentSongChanged: {
+      subscribe: () =>
+        pubsub.asyncIterator([SubscriptionEvent.CurrentSongChanged]),
     },
     currentSongAdhocLyricsChanged: {
       subscribe: () =>

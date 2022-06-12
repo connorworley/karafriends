@@ -28,9 +28,10 @@ interface Props {
   item: useQueueQueueQueryResponse["queue"][0];
   eta: number;
   myNickname: string;
+  isCurrent?: boolean;
 }
 
-const SongQueueItem = ({ item, eta, myNickname }: Props) => {
+const SongQueueItem = ({ item, eta, myNickname, isCurrent }: Props) => {
   const history = useHistory();
   const [expanded, setExpanded] = useState(false);
   const [commit, isInFlight] = useMutation(removeSongMutation);
@@ -68,7 +69,7 @@ const SongQueueItem = ({ item, eta, myNickname }: Props) => {
           >
             {nickname}
           </div>
-          {item.songId && item.timestamp && (
+          {item.songId && item.timestamp && !isCurrent && (
             <div
               className={styles.remove}
               onClick={() => onRemove(item.songId, item.timestamp)}
@@ -93,7 +94,7 @@ const SongQueueItem = ({ item, eta, myNickname }: Props) => {
           </div>
         </Marquee>
       </div>
-      <div>+{formatDuration(eta * 1000)}</div>
+      {!isCurrent && <div>+{formatDuration(eta * 1000)}</div>}
     </div>
   );
 };

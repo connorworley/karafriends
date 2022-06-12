@@ -5,6 +5,7 @@ import { FaAngleDown, FaAngleUp } from "react-icons/fa";
 import PlaybackControls from "../PlaybackControls";
 import SongQueue from "../SongQueue";
 import styles from "./ControlBar.module.scss";
+import NowPlaying from "./NowPlaying";
 
 const ControlBar = () => {
   const [expanded, setExpanded] = useState(true);
@@ -12,7 +13,7 @@ const ControlBar = () => {
   return (
     <div className={styles.controlBar}>
       <div className={styles.expander}>
-        <div />
+        <NowPlaying />
         <div onClick={() => setExpanded(!expanded)}>
           {expanded ? <FaAngleDown /> : <FaAngleUp />}
         </div>

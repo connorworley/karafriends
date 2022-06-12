@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 
+import useNickname from "../../hooks/useNickname";
 import {
   SongPageQueryResponse,
   VocalType,
@@ -12,12 +13,7 @@ interface Props {
 }
 
 const DamQueueButtons = ({ song }: Props) => {
-  const [nickname, setNickname] = useState("Unknown");
-
-  useEffect(() => {
-    const maybeNickname = localStorage.getItem("nickname");
-    if (maybeNickname) setNickname(maybeNickname);
-  }, []);
+  const nickname = useNickname();
 
   return (
     <div className={styles.container}>

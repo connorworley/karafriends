@@ -3,6 +3,7 @@ import { HashRouter, Route, Switch } from "react-router-dom";
 
 import ControlBar from "./components/ControlBar";
 import NavBar from "./components/NavBar";
+import useNickname from "./hooks/useNickname";
 import AdhocLyricsPage from "./pages/AdhocLyricsPage";
 import ArtistPage from "./pages/ArtistPage";
 import ArtistSearchPage from "./pages/ArtistSearchPage";
@@ -16,14 +17,7 @@ import YouTubePage from "./pages/YouTubePage";
 import styles from "./App.module.scss";
 
 const App = () => {
-  useEffect(() => {
-    while ((localStorage.getItem("nickname") || "").length === 0) {
-      localStorage.setItem(
-        "nickname",
-        prompt("Please set your nickname:") || ""
-      );
-    }
-  });
+  useNickname(true);
 
   return (
     <HashRouter>
