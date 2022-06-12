@@ -36,7 +36,7 @@ const subscriptionClient = new SubscriptionClient(
   window.location.protocol === "file:"
     ? "ws://localhost:8080/subscriptions"
     : `${window.location.protocol === "https:" ? "wss" : "ws"}://${
-        window.location.host
+        window.location.hostname
       }:${window.location.port}/subscriptions`,
   {
     reconnect: true,
