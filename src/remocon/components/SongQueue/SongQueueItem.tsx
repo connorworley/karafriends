@@ -3,6 +3,7 @@ import React, { useState } from "react";
 // tslint:disable-next-line:no-submodule-imports
 import { MdClose } from "react-icons/md";
 import { graphql, useMutation } from "react-relay";
+import { useHistory } from "react-router-dom";
 
 import { cyrb53 } from "../../../common/hash";
 import { useQueueQueueQueryResponse } from "../../../common/hooks/__generated__/useQueueQueueQuery.graphql";
@@ -26,12 +27,22 @@ interface Props {
 }
 
 const SongQueueItem = ({ item, eta, myNickname }: Props) => {
+  const history = useHistory();
   const [expanded, setExpanded] = useState(false);
   const [commit, isInFlight] = useMutation(removeSongMutation);
 
   const nickname = item.nickname || "Unknown";
   const nicknameHash = cyrb53(nickname);
   const nicknameBgColor = `hsl(${(nicknameHash % 180) + 180}, 50%, 50%)`;
+
+  const onClick = () => {
+    const itemType = item.__typename;
+    if (itemType === "DamQueueItem") history.push(`/song/${item.songId}`);
+    if (itemType === "YoutubeQueueItem")
+      window.open(`https://youtu.be/${item.songId}`, "_blank");
+    if (itemType === "NicoQueueItem")
+      window.open(`https://www.nicovideo.jp/watch/${item.songId}`, "_blank");
+  };
 
   const onRemove = (songId?: string, timestamp?: string) => {
     commit({ variables: { songId, timestamp } });
@@ -66,11 +77,13 @@ const SongQueueItem = ({ item, eta, myNickname }: Props) => {
           {nickname.slice(0, 1)}
         </div>
       )}
-      <Marquee className={styles.songMeta}>
-        <div className={styles.songMetaContent}>
-          {item.artistName} - {item.name}
-        </div>
-      </Marquee>
+      <div className={styles.songMeta} onClick={onClick}>
+        <Marquee>
+          <div className={styles.songMetaContent}>
+            {item.artistName} - {item.name}
+          </div>
+        </Marquee>
+      </div>
       <div>+{formatDuration(eta * 1000)}</div>
     </div>
   );
