@@ -1,7 +1,11 @@
 import formatDuration from "format-duration";
 import React, { useState } from "react";
 // tslint:disable-next-line:no-submodule-imports
-import { MdClose } from "react-icons/md";
+import { FaYoutube } from "react-icons/fa";
+// tslint:disable-next-line:no-submodule-imports
+import { MdClose, MdMusicVideo } from "react-icons/md";
+// tslint:disable-next-line:no-submodule-imports
+import { SiNiconico } from "react-icons/si";
 import { graphql, useMutation } from "react-relay";
 import { useHistory } from "react-router-dom";
 
@@ -31,12 +35,12 @@ const SongQueueItem = ({ item, eta, myNickname }: Props) => {
   const [expanded, setExpanded] = useState(false);
   const [commit, isInFlight] = useMutation(removeSongMutation);
 
+  const itemType = item.__typename;
   const nickname = item.nickname || "Unknown";
   const nicknameHash = cyrb53(nickname);
   const nicknameBgColor = `hsl(${(nicknameHash % 180) + 180}, 50%, 50%)`;
 
   const onClick = () => {
-    const itemType = item.__typename;
     if (itemType === "DamQueueItem") history.push(`/song/${item.songId}`);
     if (itemType === "YoutubeQueueItem")
       history.push(`/search/youtube/${item.songId}`);
@@ -47,6 +51,11 @@ const SongQueueItem = ({ item, eta, myNickname }: Props) => {
   const onRemove = (songId?: string, timestamp?: string) => {
     commit({ variables: { songId, timestamp } });
   };
+
+  let icon = null;
+  if (itemType === "DamQueueItem") icon = <MdMusicVideo />;
+  if (itemType === "YoutubeQueueItem") icon = <FaYoutube />;
+  if (itemType === "NicoQueueItem") icon = <SiNiconico />;
 
   return (
     <div className={styles.queueItem}>
@@ -80,7 +89,7 @@ const SongQueueItem = ({ item, eta, myNickname }: Props) => {
       <div className={styles.songMeta} onClick={onClick}>
         <Marquee>
           <div className={styles.songMetaContent}>
-            {item.artistName} - {item.name}
+            {icon} {item.artistName} - {item.name}
           </div>
         </Marquee>
       </div>
