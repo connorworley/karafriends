@@ -59,7 +59,7 @@ const SongQueueItem = ({ item, eta, myNickname }: Props) => {
           >
             {nickname}
           </div>
-          {item.songId && item.timestamp && nickname === myNickname && (
+          {item.songId && item.timestamp && (
             <div
               className={styles.remove}
               onClick={() => onRemove(item.songId, item.timestamp)}
