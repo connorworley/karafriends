@@ -48,7 +48,7 @@ const NiconicoInfo = ({ videoId }: Props) => {
       )}
       {videoData.nicoVideoInfo.__typename === "NicoVideoInfo" && (
         <>
-          <a href={`https://www.nicovideo.jp/watch/${videoId}`}>
+          <a href={`https://www.nicovideo.jp/watch/${videoId}`} target="_blank">
             <img src={videoData.nicoVideoInfo.thumbnailUrl} />
           </a>
           <VideoMetadata

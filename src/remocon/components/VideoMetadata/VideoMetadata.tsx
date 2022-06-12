@@ -23,7 +23,7 @@ const VideoMetadata = ({ videoSource, videoInfo }: Props) => {
 
   return (
     <div>
-      <a className={styles.channel} href={channelUrl}>
+      <a className={styles.channel} href={channelUrl} target="_blank">
         {videoInfo.author}
       </a>
       <div className={styles.title}>{videoInfo.title}</div>

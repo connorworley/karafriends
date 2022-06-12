@@ -39,9 +39,9 @@ const SongQueueItem = ({ item, eta, myNickname }: Props) => {
     const itemType = item.__typename;
     if (itemType === "DamQueueItem") history.push(`/song/${item.songId}`);
     if (itemType === "YoutubeQueueItem")
-      window.open(`https://youtu.be/${item.songId}`, "_blank");
+      history.push(`/search/youtube/${item.songId}`);
     if (itemType === "NicoQueueItem")
-      window.open(`https://www.nicovideo.jp/watch/${item.songId}`, "_blank");
+      history.push(`/search/niconico/${item.songId}`);
   };
 
   const onRemove = (songId?: string, timestamp?: string) => {
