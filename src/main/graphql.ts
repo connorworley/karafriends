@@ -205,6 +205,7 @@ type NotARealDb = {
 };
 
 enum SubscriptionEvent {
+  CurrentSongChanged = "CurrentSongChanged",
   CurrentSongAdhocLyricsChanged = "CurrentSongAdhocLyricsChanged",
   PlaybackStateChanged = "PlaybackStateChanged",
   QueueChanged = "QueueChanged",
@@ -247,7 +248,7 @@ function pushSongToQueue(queueItem: QueueItem): QueueSongResult {
     (x) => x.nickname === queueItem.nickname
   ).length;
   if (
-    karafriendsConfig.paxSongQueueLimit >= 0 &&
+    karafriendsConfig.paxSongQueueLimit > 0 &&
     songsQueuedByUser >= karafriendsConfig.paxSongQueueLimit
   ) {
     return {
@@ -622,7 +623,7 @@ const resolvers = {
     queueYoutubeSong: (
       _: any,
       args: { input: QueueYoutubeSongInput }
-    ): number => {
+    ): QueueSongResult => {
       const queueItem: YoutubeQueueItem = {
         timestamp: Date.now().toString(),
         ...args.input,
@@ -642,12 +643,17 @@ const resolvers = {
       );
       // The song likely hasn't actually been added to the queue yet since it needs to download,
       // but let's optimistically return the eta assuming it will successfully queue
-      return (
-        db.songQueue.reduce((acc, cur) => acc + (cur.playtime || 0), 0) +
-        (args.input.playtime || 0)
-      );
+      return {
+        __typename: "QueueSongInfo",
+        eta:
+          db.songQueue.reduce((acc, cur) => acc + (cur.playtime || 0), 0) +
+          (args.input.playtime || 0),
+      };
     },
-    queueNicoSong: (_: any, args: { input: QueueNicoSongInput }): number => {
+    queueNicoSong: (
+      _: any,
+      args: { input: QueueNicoSongInput }
+    ): QueueSongResult => {
       const queueItem: NicoQueueItem = {
         timestamp: Date.now().toString(),
         ...args.input,
@@ -659,10 +665,12 @@ const resolvers = {
       );
       // The song likely hasn't actually been added to the queue yet since it needs to download,
       // but let's optimistically return the eta assuming it will successfully queue
-      return (
-        db.songQueue.reduce((acc, cur) => acc + (cur.playtime || 0), 0) +
-        (args.input.playtime || 0)
-      );
+      return {
+        __typename: "QueueSongInfo",
+        eta:
+          db.songQueue.reduce((acc, cur) => acc + (cur.playtime || 0), 0) +
+          (args.input.playtime || 0),
+      };
     },
     pushAdhocLyrics: (
       _: any,
@@ -694,6 +702,9 @@ const resolvers = {
         currentSongAdhocLyricsChanged: db.currentSongAdhocLyrics,
       });
       db.currentSong = newSong;
+      pubsub.publish(SubscriptionEvent.CurrentSongChanged, {
+        currentSongChanged: db.currentSong,
+      });
       return newSong;
     },
     removeSong: (
@@ -725,6 +736,10 @@ const resolvers = {
     playbackStateChanged: {
       subscribe: () =>
         pubsub.asyncIterator([SubscriptionEvent.PlaybackStateChanged]),
+    },
+    currentSongChanged: {
+      subscribe: () =>
+        pubsub.asyncIterator([SubscriptionEvent.CurrentSongChanged]),
     },
     currentSongAdhocLyricsChanged: {
       subscribe: () =>

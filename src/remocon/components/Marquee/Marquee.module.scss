@@ -1,0 +1,16 @@
+.marquee {
+  overflow: hidden;
+}
+
+.track {
+  width: fit-content;
+  display: flex;
+  animation: marquee 20s linear infinite;
+  animation-delay: 0.1s;
+}
+
+@keyframes marquee {
+  100% {
+    transform: translateX(-50%);
+  }
+}

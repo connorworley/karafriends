@@ -1,0 +1,36 @@
+.controlBar {
+  background-color: #1cb3ff;
+  overflow: hidden;
+}
+
+.nowPlaying {
+  margin-right: 12px;
+  overflow: hidden;
+  font-size: 16px;
+}
+
+.expander {
+  height: 48px;
+  padding: 0 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  color: #fff;
+  font-size: 24px;
+  line-height: 24px;
+}
+
+.queue {
+  height: 30vh;
+  padding: 4px 12px;
+  overflow: auto;
+  background-color: #fff;
+  color: #1cb3ff;
+  text-align: center;
+}
+
+.controls {
+  height: 48px;
+  padding: 0 12px;
+}

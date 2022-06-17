@@ -1,86 +1,49 @@
-import React, { useEffect, useRef, useState } from "react";
-import { graphql, QueryRenderer } from "react-relay";
-import { HashRouter, Link, Route, Switch } from "react-router-dom";
+import React, { useEffect } from "react";
+import { HashRouter, Route, Switch } from "react-router-dom";
 
-import M from "materialize-css";
-import "materialize-css/dist/css/materialize.css"; // tslint:disable-line:no-submodule-imports
+import ControlBar from "./components/ControlBar";
+import NavBar from "./components/NavBar";
+import useNickname from "./hooks/useNickname";
+import AdhocLyricsPage from "./pages/AdhocLyricsPage";
+import ArtistPage from "./pages/ArtistPage";
+import ArtistSearchPage from "./pages/ArtistSearchPage";
+import HistoryPage from "./pages/HistoryPage";
+import HomePage from "./pages/HomePage";
+import NiconicoPage from "./pages/NiconicoPage";
+import SongPage from "./pages/SongPage";
+import SongSearchPage from "./pages/SongSearchPage";
+import YouTubePage from "./pages/YouTubePage";
 
-import AdhocLyricsGuide from "./AdhocLyricsGuide";
-import Artist from "./Artist";
-import Controls from "./Controls";
-import CurrentSong from "./CurrentSong";
-import History from "./History";
-import Search from "./Search";
-import { RoutedSong } from "./Song";
+import styles from "./App.module.scss";
 
-function App() {
-  useEffect(() => {
-    const elems = document.querySelectorAll(".sidenav");
-    M.Sidenav.init(elems, {});
-
-    while ((localStorage.getItem("nickname") || "").length === 0) {
-      localStorage.setItem(
-        "nickname",
-        prompt("Please set your nickname:") || ""
-      );
-    }
-  });
+const App = () => {
+  useNickname(true);
 
   return (
     <HashRouter>
-      <div>
-        <nav>
-          <div className="nav-wrapper">
-            <a href="#" data-target="mobile-demo" className="sidenav-trigger">
-              <i className="material-icons">menu</i>
-            </a>
-            <ul id="nav-mobile" className="hide-on-med-and-down">
-              <li>
-                <Link to="/search">Search Songs</Link>
-              </li>
-              <li>
-                <Link to="/history">History</Link>
-              </li>
-              <li>
-                <Link to="/controls">Controls</Link>
-              </li>
-              <li>
-                <Link to="/current">Current Song</Link>
-              </li>
-            </ul>
-          </div>
-        </nav>
-        <ul className="sidenav" id="mobile-demo">
-          <li>
-            <Link to="/search">Search Songs</Link>
-          </li>
-          <li>
-            <Link to="/history">History</Link>
-          </li>
-          <li>
-            <Link to="/">Controls</Link>
-          </li>
-          <li>
-            <Link to="/current">Current Song</Link>
-          </li>
-        </ul>
-
-        <div className="container">
+      <div className={styles.app}>
+        <header>
+          <NavBar />
+        </header>
+        <main>
           <Switch>
-            <Route path="/adhocLyrics/:id" component={AdhocLyricsGuide} />
-            <Route path="/artist/:id" component={Artist} />
-            <Route path="/current" component={CurrentSong} />
-            <Route path="/song/:id" component={RoutedSong} />
-            <Route path="/search" component={Search} />
-            <Route path="/history" component={History} />
-            <Route path="/">
-              <Controls />
-            </Route>
+            <Route path="/song/:id" component={SongPage} />
+            <Route path="/artist/:id" component={ArtistPage} />
+            <Route path="/adhocLyrics/:id" component={AdhocLyricsPage} />
+            <Route path="/search/song/:query?" component={SongSearchPage} />
+            <Route path="/search/artist/:query?" component={ArtistSearchPage} />
+            <Route path="/search/youtube/:videoId?" component={YouTubePage} />
+            <Route path="/search/niconico/:videoId?" component={NiconicoPage} />
+            <Route path="/history" component={HistoryPage} />
+            <Route path="/" component={HomePage} />
           </Switch>
-        </div>
+        </main>
+        <footer>
+          <ControlBar />
+        </footer>
       </div>
     </HashRouter>
   );
-}
+};
 
 export default App;
