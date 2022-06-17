@@ -15,6 +15,7 @@ type Query {
 type Mutation {
   # Maybe we can merge these queue endpoints once Input Unions become real
   # https://github.com/graphql/graphql-spec/issues/488
+  sendEmote(emote: EmoteInput!): Boolean!
   popAdhocLyrics: Boolean!
   popSong: QueueItem
   pushAdhocLyrics(input: PushAdhocLyricsInput): Boolean!
@@ -26,8 +27,9 @@ type Mutation {
 }
 
 type Subscription {
-  currentSongChanged: QueueItem
   currentSongAdhocLyricsChanged: [AdhocLyricsEntry!]!
+  currentSongChanged: QueueItem
+  emote: Emote!
   playbackStateChanged: PlaybackState!
   queueAdded: QueueItem!
   queueChanged: [QueueItem!]!
@@ -104,6 +106,16 @@ type Song {
   scoringData: [Int!]!
   tieUp: String
   playtime: Int
+}
+
+type Emote {
+  nickname: String!
+  emote: String!
+}
+
+input EmoteInput {
+  nickname: String!
+  emote: String!
 }
 
 input QueueDamSongInput {

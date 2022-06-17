@@ -147,6 +147,11 @@ interface QueueSongError {
 
 type QueueSongResult = QueueSongInfo | QueueSongError;
 
+type Emote = {
+  readonly nickname: string;
+  readonly emote: string;
+};
+
 type QueueDamSongInput = {
   readonly songId: string;
   readonly name: string;
@@ -207,11 +212,12 @@ type NotARealDb = {
 };
 
 enum SubscriptionEvent {
-  CurrentSongChanged = "CurrentSongChanged",
   CurrentSongAdhocLyricsChanged = "CurrentSongAdhocLyricsChanged",
+  CurrentSongChanged = "CurrentSongChanged",
+  Emote = "Emote",
   PlaybackStateChanged = "PlaybackStateChanged",
-  QueueChanged = "QueueChanged",
   QueueAdded = "QueueAdded",
+  QueueChanged = "QueueChanged",
 }
 
 const db: NotARealDb = {
@@ -596,6 +602,10 @@ const resolvers = {
     playbackState: () => db.playbackState,
   },
   Mutation: {
+    sendEmote: (_: any, args: { emote: Emote }): boolean => {
+      pubsub.publish(SubscriptionEvent.Emote, { emote: args.emote });
+      return true;
+    },
     queueDamSong: (
       _: any,
       args: { input: QueueDamSongInput },
@@ -737,23 +747,26 @@ const resolvers = {
     },
   },
   Subscription: {
-    playbackStateChanged: {
+    currentSongAdhocLyricsChanged: {
       subscribe: () =>
-        pubsub.asyncIterator([SubscriptionEvent.PlaybackStateChanged]),
+        pubsub.asyncIterator([SubscriptionEvent.CurrentSongAdhocLyricsChanged]),
     },
     currentSongChanged: {
       subscribe: () =>
         pubsub.asyncIterator([SubscriptionEvent.CurrentSongChanged]),
     },
-    currentSongAdhocLyricsChanged: {
-      subscribe: () =>
-        pubsub.asyncIterator([SubscriptionEvent.CurrentSongAdhocLyricsChanged]),
+    emote: {
+      subscribe: () => pubsub.asyncIterator([SubscriptionEvent.Emote]),
     },
-    queueChanged: {
-      subscribe: () => pubsub.asyncIterator([SubscriptionEvent.QueueChanged]),
+    playbackStateChanged: {
+      subscribe: () =>
+        pubsub.asyncIterator([SubscriptionEvent.PlaybackStateChanged]),
     },
     queueAdded: {
       subscribe: () => pubsub.asyncIterator([SubscriptionEvent.QueueAdded]),
+    },
+    queueChanged: {
+      subscribe: () => pubsub.asyncIterator([SubscriptionEvent.QueueChanged]),
     },
   },
 };

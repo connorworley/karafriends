@@ -2,6 +2,7 @@ import React, { useState } from "react";
 // tslint:disable-next-line:no-submodule-imports
 import { FaAngleDown, FaAngleUp } from "react-icons/fa";
 
+import EmoteButtons from "../EmoteButtons";
 import PlaybackControls from "../PlaybackControls";
 import SongQueue from "../SongQueue";
 import styles from "./ControlBar.module.scss";
@@ -28,6 +29,7 @@ const ControlBar = () => {
           </div>
         </>
       )}
+      <EmoteButtons />
     </div>
   );
 };
