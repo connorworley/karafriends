@@ -23,6 +23,8 @@ const popSongMutation = graphql`
         scoringData
         timestamp
         streamingUrlIdx
+        name
+        artistName
       }
       ... on YoutubeQueueItem {
         __typename
@@ -31,11 +33,13 @@ const popSongMutation = graphql`
         hasAdhocLyrics
         hasCaptions
         gainValue
+        name
       }
       ... on NicoQueueItem {
         __typename
         songId
         timestamp
+        name
       }
     }
   }
@@ -125,6 +129,12 @@ function Player(props: { mics: InputDevice[] }) {
                       loadRemote();
                     }
                     gainNode.current!.gain.value = DAM_GAIN;
+
+                    navigator.mediaSession.metadata = new MediaMetadata({
+                      title: popSong.name,
+                      artist: popSong.artistName,
+                    });
+
                     videoRef.current.play();
                   })
                   .catch((error) => {
@@ -139,7 +149,14 @@ function Player(props: { mics: InputDevice[] }) {
 
                     // Pretend nothing happened.
                     loadRemote();
+
                     gainNode.current!.gain.value = DAM_GAIN;
+
+                    navigator.mediaSession.metadata = new MediaMetadata({
+                      title: popSong.name,
+                      artist: popSong.artistName,
+                    });
+
                     videoRef.current.play();
                   });
                 break;
@@ -151,17 +168,29 @@ function Player(props: { mics: InputDevice[] }) {
                   trackRef.current.default = true;
                   trackRef.current.src = `karafriends://${popSong.songId}.vtt`;
                 }
+
                 console.log(
                   `Using ${popSong.gainValue} for gain on Youtube queue item`
                 );
                 gainNode.current.gain.value = popSong.gainValue;
+
+                navigator.mediaSession.metadata = new MediaMetadata({
+                  title: popSong.name,
+                });
+
                 videoRef.current.play();
                 break;
               case "NicoQueueItem":
                 setShouldShowPianoRoll(false);
                 setShouldShowAdhocLyrics(false);
                 videoRef.current.src = `karafriends://${popSong.songId}.mp4`;
+
                 gainNode.current.gain.value = NON_DAM_GAIN;
+
+                navigator.mediaSession.metadata = new MediaMetadata({
+                  title: popSong.name,
+                });
+
                 videoRef.current.play();
                 break;
             }
