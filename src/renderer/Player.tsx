@@ -23,6 +23,8 @@ const popSongMutation = graphql`
         scoringData
         timestamp
         streamingUrlIdx
+        name
+        artistName
       }
       ... on YoutubeQueueItem {
         __typename
@@ -30,11 +32,13 @@ const popSongMutation = graphql`
         timestamp
         hasAdhocLyrics
         hasCaptions
+        name
       }
       ... on NicoQueueItem {
         __typename
         songId
         timestamp
+        name
       }
     }
   }
@@ -109,6 +113,10 @@ function Player(props: { mics: InputDevice[] }) {
                       loadRemote();
                     }
 
+                    navigator.mediaSession.metadata = new MediaMetadata({
+                      title: popSong.name,
+                      artist: popSong.artistName,
+                    });
                     videoRef.current.play();
                   })
                   .catch((error) => {
@@ -123,6 +131,10 @@ function Player(props: { mics: InputDevice[] }) {
 
                     // Pretend nothing happened.
                     loadRemote();
+                    navigator.mediaSession.metadata = new MediaMetadata({
+                      title: popSong.name,
+                      artist: popSong.artistName,
+                    });
                     videoRef.current.play();
                   });
                 break;
@@ -134,12 +146,18 @@ function Player(props: { mics: InputDevice[] }) {
                   trackRef.current.default = true;
                   trackRef.current.src = `karafriends://${popSong.songId}.vtt`;
                 }
+                navigator.mediaSession.metadata = new MediaMetadata({
+                  title: popSong.name,
+                });
                 videoRef.current.play();
                 break;
               case "NicoQueueItem":
                 setShouldShowPianoRoll(false);
                 setShouldShowAdhocLyrics(false);
                 videoRef.current.src = `karafriends://${popSong.songId}.mp4`;
+                navigator.mediaSession.metadata = new MediaMetadata({
+                  title: popSong.name,
+                });
                 videoRef.current.play();
                 break;
             }
