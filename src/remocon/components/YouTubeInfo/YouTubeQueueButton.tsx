@@ -60,6 +60,7 @@ const YouTubeQueueButton = ({
           nickname,
           adhocSongLyrics,
           captionCode: selectedCaption || null,
+          gainValue: videoInfo.gainValue,
         },
       },
       onCompleted: ({ queueYoutubeSong }) => {

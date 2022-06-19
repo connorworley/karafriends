@@ -126,6 +126,7 @@ interface YoutubeQueueItem extends QueueItemInterface {
   readonly __typename: "YoutubeQueueItem";
   readonly hasAdhocLyrics: boolean;
   readonly hasCaptions: boolean;
+  readonly gainValue: number;
 }
 
 interface NicoQueueItem extends QueueItemInterface {
@@ -163,6 +164,7 @@ type QueueYoutubeSongInput = {
   readonly nickname: string;
   readonly adhocSongLyrics: string;
   readonly captionCode: string | null;
+  readonly gainValue: number;
 };
 
 type QueueNicoSongInput = {
@@ -563,6 +565,7 @@ const resolvers = {
           description: data.videoDetails.shortDescription,
           title: data.videoDetails.title,
           viewCount: parseInt(data.videoDetails.viewCount, 10),
+          gainValue: 10 ** (-data.playerConfig.audioConfig.loudnessDb / 20),
         };
       });
     },
@@ -629,6 +632,7 @@ const resolvers = {
         ...args.input,
         hasAdhocLyrics: args.input.adhocSongLyrics ? true : false,
         hasCaptions: args.input.captionCode ? true : false,
+        gainValue: args.input.gainValue,
         __typename: "YoutubeQueueItem",
       };
       if (args.input.adhocSongLyrics) {

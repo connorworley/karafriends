@@ -26,6 +26,7 @@ const youTubeInfoVideoInfoQuery = graphql`
         lengthSeconds
         title
         viewCount
+        gainValue
       }
       ... on YoutubeVideoInfoError {
         __typename

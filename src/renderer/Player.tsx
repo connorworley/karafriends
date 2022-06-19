@@ -32,6 +32,7 @@ const popSongMutation = graphql`
         timestamp
         hasAdhocLyrics
         hasCaptions
+        gainValue
         name
       }
       ... on NicoQueueItem {
@@ -45,6 +46,9 @@ const popSongMutation = graphql`
 `;
 
 const POLL_INTERVAL_MS = 5 * 1000;
+// XXX: Another idea is to add some gain to the DAM videos?
+const DAM_GAIN = 1.0;
+const NON_DAM_GAIN = 0.8;
 
 function Player(props: { mics: InputDevice[] }) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -56,6 +60,7 @@ function Player(props: { mics: InputDevice[] }) {
   );
   const { playbackState, setPlaybackState } = usePlaybackState();
   const pollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const gainNode = useRef<GainNode | null>(null);
   let hls: Hls | null = null;
 
   useEffect(() => {
@@ -71,6 +76,17 @@ function Player(props: { mics: InputDevice[] }) {
             trackRef.current.default = false;
             trackRef.current.src = "";
           }
+
+          if (!gainNode.current) {
+            const audioCtx = new AudioContext();
+            const audioSource = audioCtx.createMediaElementSource(
+              videoRef.current
+            );
+            gainNode.current = audioCtx.createGain();
+            audioSource.connect(gainNode.current);
+            gainNode.current.connect(audioCtx.destination);
+          }
+
           if (popSong !== null) {
             if (hls) hls.destroy();
 
@@ -112,11 +128,13 @@ function Player(props: { mics: InputDevice[] }) {
                       );
                       loadRemote();
                     }
+                    gainNode.current!.gain.value = DAM_GAIN;
 
                     navigator.mediaSession.metadata = new MediaMetadata({
                       title: popSong.name,
                       artist: popSong.artistName,
                     });
+
                     videoRef.current.play();
                   })
                   .catch((error) => {
@@ -131,10 +149,14 @@ function Player(props: { mics: InputDevice[] }) {
 
                     // Pretend nothing happened.
                     loadRemote();
+
+                    gainNode.current!.gain.value = DAM_GAIN;
+
                     navigator.mediaSession.metadata = new MediaMetadata({
                       title: popSong.name,
                       artist: popSong.artistName,
                     });
+
                     videoRef.current.play();
                   });
                 break;
@@ -146,18 +168,29 @@ function Player(props: { mics: InputDevice[] }) {
                   trackRef.current.default = true;
                   trackRef.current.src = `karafriends://${popSong.songId}.vtt`;
                 }
+
+                console.log(
+                  `Using ${popSong.gainValue} for gain on Youtube queue item`
+                );
+                gainNode.current.gain.value = popSong.gainValue;
+
                 navigator.mediaSession.metadata = new MediaMetadata({
                   title: popSong.name,
                 });
+
                 videoRef.current.play();
                 break;
               case "NicoQueueItem":
                 setShouldShowPianoRoll(false);
                 setShouldShowAdhocLyrics(false);
                 videoRef.current.src = `karafriends://${popSong.songId}.mp4`;
+
+                gainNode.current.gain.value = NON_DAM_GAIN;
+
                 navigator.mediaSession.metadata = new MediaMetadata({
                   title: popSong.name,
                 });
+
                 videoRef.current.play();
                 break;
             }

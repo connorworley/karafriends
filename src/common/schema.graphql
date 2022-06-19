@@ -123,6 +123,7 @@ input QueueYoutubeSongInput {
   nickname: String!
   adhocSongLyrics: String
   captionCode: String
+  gainValue: Float!
 }
 
 input QueueNicoSongInput {
@@ -189,6 +190,7 @@ type YoutubeQueueItem implements QueueItemInterface {
   nickname: String!
   hasAdhocLyrics: Boolean!
   hasCaptions: Boolean!
+  gainValue: Float!
 }
 
 type NicoQueueItem implements QueueItemInterface {
@@ -235,6 +237,7 @@ type YoutubeVideoInfo implements VideoInfo {
   description: String!
   title: String!
   viewCount: Int!
+  gainValue: Float!
 }
 
 type YoutubeVideoInfoError {

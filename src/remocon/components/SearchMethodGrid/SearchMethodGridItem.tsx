@@ -1,4 +1,4 @@
-import classnames from 'classnames';
+import classnames from "classnames";
 import React from "react";
 // tslint:disable-next-line:no-submodule-imports
 import { BsPersonSquare } from "react-icons/bs";
@@ -8,7 +8,7 @@ import { FaYoutube } from "react-icons/fa";
 import { MdMusicVideo } from "react-icons/md";
 // tslint:disable-next-line:no-submodule-imports
 import { SiNiconico } from "react-icons/si";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 import styles from "./SearchMethodGrid.module.scss";
 
@@ -28,9 +28,7 @@ const SearchMethodGridItem = ({ method, text }: Props) => (
   <div className={styles.gridItem}>
     <Link to={`/search/${method}`}>
       <div className={classnames(styles.button, styles[method])}>
-        <span className={styles.icon}>
-          {backgroundIcons[method]}
-        </span>
+        <span className={styles.icon}>{backgroundIcons[method]}</span>
         <span className={styles.text}>{text}</span>
       </div>
     </Link>
