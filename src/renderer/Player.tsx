@@ -90,8 +90,6 @@ function Player(props: { mics: InputDevice[] }) {
           if (popSong !== null) {
             if (hls) hls.destroy();
 
-            const staticUrl = `http://localhost:8080/static`;
-
             switch (popSong.__typename) {
               case "DamQueueItem":
                 setShouldShowPianoRoll(true);

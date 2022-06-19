@@ -10,12 +10,15 @@ interface KarafriendsConfig {
   predownloadDAM: boolean;
   // Max number of songs each user can add to the queue. Set to 0 for unlimited
   paxSongQueueLimit: number;
+  // Which port to listen on for the remocon server
+  remoconPort: number;
 }
 
 const DEFAULT_CONFIG: KarafriendsConfig = {
   useLowBitrateUrl: false,
   predownloadDAM: false,
   paxSongQueueLimit: 1,
+  remoconPort: 8080,
 };
 
 function getConfig(): KarafriendsConfig {

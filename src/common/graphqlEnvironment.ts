@@ -10,11 +10,13 @@ import {
 } from "relay-runtime";
 import { SubscriptionClient } from "subscriptions-transport-ws";
 
+import karafriendsConfig from "../common/config";
+
 function fetchQuery(request: RequestParameters, variables: Variables) {
   return fetch(
     window.location.hostname === "localhost" ||
       window.location.protocol === "file:"
-      ? "http://localhost:8080/graphql"
+      ? `http://localhost:${karafriendsConfig.remoconPort}/graphql`
       : "/graphql",
     {
       method: "POST",
@@ -34,7 +36,7 @@ function fetchQuery(request: RequestParameters, variables: Variables) {
 const subscriptionClient = new SubscriptionClient(
   window.location.hostname === "localhost" ||
   window.location.protocol === "file:"
-    ? "ws://localhost:8080/subscriptions"
+    ? `ws://localhost:${karafriendsConfig.remoconPort}/subscriptions`
     : `${window.location.protocol === "https:" ? "wss" : "ws"}://${
         window.location.hostname
       }:${window.location.port}/subscriptions`,
