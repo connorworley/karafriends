@@ -1,0 +1,17 @@
+.loader {
+  margin: 8px auto;
+  width: 36px;
+  height: 36px;
+  font-size: 36px;
+  color: #1cb3ff;
+  animation: rotation 1s infinite linear;
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}

@@ -26,6 +26,7 @@ type Mutation {
 }
 
 type Subscription {
+  currentSongChanged: QueueItem
   currentSongAdhocLyricsChanged: [AdhocLyricsEntry!]!
   playbackStateChanged: PlaybackState!
   queueAdded: QueueItem!

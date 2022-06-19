@@ -1,0 +1,56 @@
+$search-method-colors: (
+  song: #a5b6ef,
+  artist: #9ce7bb,
+  youtube: #e79ca1,
+  niconico: #ababab,
+);
+
+.grid {
+  margin-top: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.gridItem {
+  flex: 1;
+
+  a {
+    text-decoration: none;
+  }
+}
+
+.button {
+  min-width: 120px;
+  height: 80px;
+  padding: 0 6px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column-reverse;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 4px #ccc;
+
+  @each $method, $color in $search-method-colors {
+    &.#{$method} {
+      background: linear-gradient(to right, $color, #fff);
+      color: $color;
+    }
+  }
+}
+
+.icon {
+  align-self: flex-end;
+  position: absolute;
+  font-size: 108px;
+  transform: rotate(-15deg) translateY(60px);
+}
+
+.text {
+  color: #333;
+  font-size: 36px;
+  font-weight: bold;
+  z-index: 1;
+  mix-blend-mode: difference;
+  filter: contrast(0.1);
+}

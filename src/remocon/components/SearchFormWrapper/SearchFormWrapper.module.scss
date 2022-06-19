@@ -1,0 +1,31 @@
+.searchForm {
+  input {
+    border: none;
+    border-bottom: 4px solid #1cb3ff;
+    font-size: 20px;
+    width: 100%;
+    margin: 8px 0;
+
+    &:focus {
+      outline: none;
+    }
+
+    &::placeholder {
+      color: #aaa;
+    }
+  }
+
+  select,
+  textarea {
+    border: 2px solid #1cb3ff;
+    border-radius: 4px;
+    width: 100%;
+    margin: 4px 0;
+    padding: 8px;
+  }
+
+  textarea {
+    height: 80px;
+    resize: vertical;
+  }
+}
