@@ -7,6 +7,7 @@ import Loader from "../common/components/Loader";
 import { HOSTNAME } from "../common/constants";
 import "./App.css";
 import { InputDevice } from "./audioSystem";
+import Effects from "./Effects";
 import HostnameSetting from "./HostnameSetting";
 import Login from "./Login";
 import MicrophoneSetting from "./MicrophoneSetting";
@@ -80,6 +81,7 @@ function App() {
         <div className="appMainContainer black row">
           <div className="appPlayer col s11 valign-wrapper">
             <Player mics={mics} />
+            <Effects />
           </div>
           <div className="appSidebar col s1 grey lighten-3">
             <QRCode hostname={hostname} />

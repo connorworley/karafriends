@@ -1,0 +1,26 @@
+#effects {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+#effects > div {
+  position: absolute;
+  bottom: 0;
+  animation: emote 1s ease-out forwards;
+}
+
+@keyframes emote {
+  from {
+    transform: scale(2) translateY(0%);
+    opacity: 0.75;
+  }
+  to {
+    transform: scale(10) translateY(-100%);
+    opacity: 0;
+  }
+}
