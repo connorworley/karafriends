@@ -1,22 +1,26 @@
 .emotes {
-  position: fixed;
-  align-items: center;
-  left: 8px;
-  bottom: 8px;
   display: flex;
-  color: #1cb3ff;
-  background-color: white;
-  height: 32px;
-  border-radius: 16px;
-  padding: 8px;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: 16px;
+  height: 48px;
+  overflow-x: auto;
+  margin: 0 8px 0 56px;
 }
 
 .emoteItem {
-  margin-right: 16px;
-  font-size: 12px;
+  font-size: 28px;
+  line-height: 48px;
   user-select: none;
+  -webkit-user-select: none;
 }
 
-.toggle {
-  line-height: 0;
+.custom {
+  color: #1cb3ff;
+  background-color: white;
+  height: 32px;
+  width: 32px;
+  line-height: 0px;
+  border-radius: 16px;
+  padding: 8px;
 }
