@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 // tslint:disable-next-line:no-submodule-imports
-import { FaSmile } from "react-icons/fa";
+import { MdEdit } from "react-icons/md";
 import { graphql, useMutation } from "react-relay";
 
 import useNickname from "../../hooks/useNickname";
@@ -13,11 +13,14 @@ const emoteButtonsMutation = graphql`
   }
 `;
 
-const emotes = ["🔥", "🆓"];
+const DEFAULT_EMOTES = ["🆓", "🔥", "❤️"];
 
 const EmoteButtons = () => {
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [emotes, setEmotes] = useState<string[]>(
+    JSON.parse(localStorage.getItem("emotes") || JSON.stringify(DEFAULT_EMOTES))
+  );
   const nickname = useNickname();
-  const [expanded, setExpanded] = useState(false);
   const [commit] = useMutation<EmoteButtonsMutation>(emoteButtonsMutation);
 
   const sendEmote = (emote: string) => {
@@ -28,21 +31,49 @@ const EmoteButtons = () => {
     });
   };
 
+  const endEmotes = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+  };
+
+  const startEmotes = (emote: string) => {
+    endEmotes();
+    sendEmote(emote);
+    intervalRef.current = setInterval(() => sendEmote(emote), 200);
+  };
+
+  const showEmotesPrompt = () => {
+    const input =
+      prompt("Enter a list of emojis", emotes.join("")) || emotes.join("");
+    const emojis =
+      input.match(/\p{Emoji_Presentation}|\p{Emoji}\uFE0F/gu) || DEFAULT_EMOTES;
+    const uniqueEmojis = [...new Set(emojis)];
+    localStorage.setItem("emotes", JSON.stringify(uniqueEmojis));
+    setEmotes(uniqueEmojis);
+  };
+
   return (
     <div className={styles.emotes}>
-      {expanded &&
-        emotes.map((emote) => (
+      <div className={styles.custom} onClick={() => showEmotesPrompt()}>
+        <MdEdit />
+      </div>
+      {emotes
+        .slice()
+        .reverse()
+        .map((emote) => (
           <div
             key={emote}
             className={styles.emoteItem}
-            onClick={() => sendEmote(emote)}
+            onMouseDown={() => startEmotes(emote)}
+            onMouseLeave={() => endEmotes()}
+            onMouseUp={() => endEmotes()}
+            onTouchStart={() => startEmotes(emote)}
+            onTouchEnd={() => endEmotes()}
           >
             {emote}
           </div>
         ))}
-      <div className={styles.toggle} onClick={() => setExpanded(!expanded)}>
-        <FaSmile />
-      </div>
     </div>
   );
 };
