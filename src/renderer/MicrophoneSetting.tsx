@@ -1,12 +1,27 @@
 import M from "materialize-css";
 import React, { useEffect } from "react";
 
+import { InputDevice } from "./audioSystem";
 import "./global";
 
-export default function MicrophoneSetting(props: {
-  onChange: (name: string, channelSelection: number) => void;
-  value: string;
-}) {
+const MicrophoneSettingOption = ({
+  name,
+  channel,
+}: {
+  name: string;
+  channel: number;
+}) => (
+  <option data-name={name} data-channel={channel} value={`${name}_${channel}`}>
+    {`${name} (${channel === -1 ? "All Channels" : `Channel ${channel}`})`}
+  </option>
+);
+
+interface Props {
+  mic: InputDevice | null;
+  onChange: (mic: InputDevice) => void;
+}
+
+export default function MicrophoneSetting({ mic, onChange }: Props) {
   useEffect(() => {
     M.AutoInit();
   }, []);
@@ -14,10 +29,14 @@ export default function MicrophoneSetting(props: {
   return (
     <div className="input-field">
       <select
-        value={props.value}
+        value={mic ? `${mic.name}_${mic.channelSelection}` : ""}
         onChange={(e) => {
           const dataset = e.target.options[e.target.selectedIndex].dataset;
-          props.onChange(dataset.name!, parseInt(dataset.channel!, 10));
+          const newMic = new InputDevice(
+            dataset.name!,
+            parseInt(dataset.channel!, 10)
+          );
+          onChange(newMic);
         }}
       >
         <option value="" disabled={true}>
@@ -26,17 +45,13 @@ export default function MicrophoneSetting(props: {
         {window.karafriends.nativeAudio
           .inputDevices()
           .map(([name, channelCount]) =>
-            [
-              <option data-name={name} data-channel={-1} key={`${name}_${-1}`}>
-                {`${name} (All Channels)`}
-              </option>,
-            ].concat(
-              [...Array(channelCount)].map((_, i) => (
-                <option data-name={name} data-channel={i} key={`${name}_${i}`}>
-                  {`${name} (Channel ${i})`}
-                </option>
-              ))
-            )
+            [...Array(channelCount + 1)].map((_, i) => (
+              <MicrophoneSettingOption
+                key={`${name}_${i - 1}`}
+                name={name}
+                channel={i - 1}
+              />
+            ))
           )}
       </select>
       <label>Microphone</label>

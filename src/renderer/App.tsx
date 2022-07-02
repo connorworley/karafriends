@@ -93,6 +93,18 @@ function App() {
     )
   );
 
+  const onChangeMic = (index: number, newMic: InputDevice) => {
+    const updatedMics = [...mics];
+    const oldMic = updatedMics.splice(index, 1, newMic)[0];
+    if (oldMic) oldMic.stop();
+    setMics(updatedMics);
+  };
+
+  const clearMics = () => {
+    mics.forEach((mic) => mic.stop());
+    setMics([]);
+  };
+
   switch (appState) {
     case AppState.Loading:
     default:
@@ -117,20 +129,22 @@ function App() {
           <div className="appSidebar col s1 grey lighten-3">
             <QRCode hostname={hostname} />
             <nav className="center-align">Settings</nav>
-            <div>
+            <div className="section center-align">
               <HostnameSetting onChange={setHostname} />
-              {[...Array(mics.length + 1).keys()].map((i) => (
+              {mics.map((mic, i) => (
                 <MicrophoneSetting
-                  key={i}
-                  onChange={(name, channel) => {
-                    if (mics[i]) mics[i].stop();
-                    const updatedMics = [...mics];
-                    updatedMics[i] = new InputDevice(name, channel);
-                    setMics(updatedMics);
-                  }}
-                  value={mics[i] ? mics[i].name : ""}
+                  key={mic.deviceId}
+                  onChange={onChangeMic.bind(null, i)}
+                  mic={mic}
                 />
               ))}
+              <MicrophoneSetting
+                onChange={onChangeMic.bind(null, mics.length)}
+                mic={null}
+              />
+              <button className="btn" onClick={clearMics}>
+                Clear mics
+              </button>
             </div>
             <nav className="center-align">Queue</nav>
             <Queue />
