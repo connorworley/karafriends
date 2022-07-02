@@ -5,6 +5,7 @@ const registry = new FinalizationRegistry(
 export class InputDevice {
   deviceId: number;
   name: string;
+  channelSelection: number;
 
   constructor(name: string, channelSelection: number) {
     this.deviceId = window.karafriends.nativeAudio.inputDevice_new(
@@ -12,6 +13,7 @@ export class InputDevice {
       channelSelection
     );
     this.name = name;
+    this.channelSelection = channelSelection;
     registry.register(this, this.deviceId);
   }
 
