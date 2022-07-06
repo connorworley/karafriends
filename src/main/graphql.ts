@@ -788,7 +788,7 @@ export function applyGraphQLMiddleware(
     }),
     schema,
     playground: {
-      subscriptionEndpoint: "ws://localhost:8080/subscriptions",
+      subscriptionEndpoint: `ws://localhost:${karafriendsConfig.remoconPort}/subscriptions`,
     },
   });
   if (isDev) {

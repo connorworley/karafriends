@@ -14,10 +14,21 @@ export default function HostnameSetting(props: {
   return (
     <div className="input-field">
       <select value={HOSTNAME} onChange={(e) => props.onChange(e.target.value)}>
-        <option value={`${HOSTNAME}:8080`}>{HOSTNAME}</option>
+        <option
+          value={`${HOSTNAME}:${
+            window.karafriends.karafriendsConfig().remoconPort
+          }`}
+        >
+          {HOSTNAME}
+        </option>
         <option value="kara.rarelyupset.com">kara.rarelyupset.com</option>
         {window.karafriends.ipAddresses().map((address) => (
-          <option value={`${address}:8080`} key={address}>
+          <option
+            value={`${address}:${
+              window.karafriends.karafriendsConfig().remoconPort
+            }`}
+            key={address}
+          >
             {address}
           </option>
         ))}

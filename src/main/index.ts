@@ -20,6 +20,7 @@ import {
   getCredentials,
   setCredentials,
 } from "../common/auth";
+import karafriendsConfig from "../common/config";
 import { TEMP_FOLDER } from "./../common/videoDownloader";
 import { MinseiAPI, MinseiCredentials } from "./damApi";
 import { applyGraphQLMiddleware, subscriptionServer } from "./graphql";
@@ -55,7 +56,7 @@ function attemptLogin(creds: Credentials) {
       expressApp.use(remoconMiddleware());
       applyGraphQLMiddleware(expressApp, minseiCreds);
       const server = createServer(expressApp);
-      server.listen(8080, subscriptionServer(server));
+      server.listen(karafriendsConfig.remoconPort, subscriptionServer(server));
     });
 }
 
@@ -80,7 +81,10 @@ function createWindow() {
   // Ignore CORS when fetching ipcasting HLS and when sending requests to remocon
   const session = rendererWindow.webContents.session;
   const ignoreCORSFilter = {
-    urls: ["https://*.ipcasting.jp/*", "http://localhost:8080/*"],
+    urls: [
+      "https://*.ipcasting.jp/*",
+      `http://localhost:${karafriendsConfig.remoconPort}/*`,
+    ],
   };
 
   session.webRequest.onBeforeSendHeaders(
@@ -130,6 +134,11 @@ function createWindow() {
       )
       .catch((e) => dialog.showErrorBox("Error logging in", e))
   );
+
+  ipcMain.on("config", (event: IpcMainEvent) => {
+    console.log("Sending config over ipc");
+    event.returnValue = karafriendsConfig;
+  });
 }
 
 app.on("ready", createWindow);

@@ -15,7 +15,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: karafriends-macos
-          path: dist/karafriends-*.dmg
+          path: dist/mac/
           if-no-files-found: error
   build-windows:
     runs-on: windows-latest
@@ -27,5 +27,5 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: karafriends-windows
-          path: dist/karafriends *.exe
+          path: dist/win-unpacked/
           if-no-files-found: error

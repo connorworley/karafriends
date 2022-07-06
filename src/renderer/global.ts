@@ -1,9 +1,12 @@
+import type { KarafriendsConfig } from "../common/config";
+
 declare global {
   interface Window {
     karafriends: {
       isLoggedIn(): Promise<boolean>;
       attemptLogin(creds: { account: string; password: string }): void;
       ipAddresses(): string[];
+      karafriendsConfig(): KarafriendsConfig;
       nativeAudio: {
         inputDevices: () => [string, number][];
         outputDevices: () => string[];

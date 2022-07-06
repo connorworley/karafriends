@@ -1,6 +1,7 @@
 import { contextBridge, ipcRenderer } from "electron"; // tslint:disable-line:no-implicit-dependencies
 
 import { Credentials, hasCredentials } from "../common/auth";
+import { KarafriendsConfig } from "../common/config";
 import ipAddresses from "../common/ipAddresses";
 
 const nativeAudio = require("../../native"); // tslint:disable-line:no-var-requires
@@ -8,10 +9,20 @@ const nativeAudio = require("../../native"); // tslint:disable-line:no-var-requi
 let inputDeviceCount = 0;
 const inputDevices: { [deviceId: number]: any } = {};
 
+let karafriendsConfig: KarafriendsConfig | null = null;
+
 contextBridge.exposeInMainWorld("karafriends", {
   isLoggedIn: hasCredentials,
   attemptLogin: (creds: Credentials) => ipcRenderer.send("attemptLogin", creds),
   ipAddresses,
+  karafriendsConfig: () => {
+    if (karafriendsConfig === null) {
+      console.log("Making sync request for configs");
+      karafriendsConfig = ipcRenderer.sendSync("config");
+    }
+
+    return karafriendsConfig;
+  },
   nativeAudio: {
     inputDevices: nativeAudio.inputDevices,
     outputDevices: nativeAudio.outputDevices,

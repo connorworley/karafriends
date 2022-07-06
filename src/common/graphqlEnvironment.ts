@@ -12,9 +12,10 @@ import { SubscriptionClient } from "subscriptions-transport-ws";
 
 function fetchQuery(request: RequestParameters, variables: Variables) {
   return fetch(
-    window.location.hostname === "localhost" ||
-      window.location.protocol === "file:"
-      ? "http://localhost:8080/graphql"
+    window.karafriends !== undefined
+      ? `http://localhost:${
+          window.karafriends.karafriendsConfig().remoconPort
+        }/graphql`
       : "/graphql",
     {
       method: "POST",
@@ -32,9 +33,10 @@ function fetchQuery(request: RequestParameters, variables: Variables) {
 }
 
 const subscriptionClient = new SubscriptionClient(
-  window.location.hostname === "localhost" ||
-  window.location.protocol === "file:"
-    ? "ws://localhost:8080/subscriptions"
+  window.karafriends !== undefined
+    ? `ws://localhost:${
+        window.karafriends.karafriendsConfig().remoconPort
+      }/subscriptions`
     : `${window.location.protocol === "https:" ? "wss" : "ws"}://${
         window.location.hostname
       }:${window.location.port}/subscriptions`,
