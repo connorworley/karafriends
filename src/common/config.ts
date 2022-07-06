@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 import { parse } from "yaml";
 
-interface KarafriendsConfig {
+export interface KarafriendsConfig {
   // Whether to use the low bitrate URLs for DAM songs
   useLowBitrateUrl: boolean;
   // Whether to download DAM songs locally instead of streaming them

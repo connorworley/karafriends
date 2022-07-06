@@ -134,6 +134,11 @@ function createWindow() {
       )
       .catch((e) => dialog.showErrorBox("Error logging in", e))
   );
+
+  ipcMain.on("config", (event: IpcMainEvent) => {
+    console.log("Sending config over ipc");
+    event.returnValue = karafriendsConfig;
+  });
 }
 
 app.on("ready", createWindow);

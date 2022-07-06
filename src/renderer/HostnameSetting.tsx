@@ -1,7 +1,6 @@
 import M from "materialize-css";
 import React, { useEffect } from "react";
 
-import karafriendsConfig from "../common/config";
 import { HOSTNAME } from "../common/constants";
 import "./global";
 
@@ -15,13 +14,19 @@ export default function HostnameSetting(props: {
   return (
     <div className="input-field">
       <select value={HOSTNAME} onChange={(e) => props.onChange(e.target.value)}>
-        <option value={`${HOSTNAME}:${karafriendsConfig.remoconPort}`}>
+        <option
+          value={`${HOSTNAME}:${
+            window.karafriends.karafriendsConfig().remoconPort
+          }`}
+        >
           {HOSTNAME}
         </option>
         <option value="kara.rarelyupset.com">kara.rarelyupset.com</option>
         {window.karafriends.ipAddresses().map((address) => (
           <option
-            value={`${address}:${karafriendsConfig.remoconPort}`}
+            value={`${address}:${
+              window.karafriends.karafriendsConfig().remoconPort
+            }`}
             key={address}
           >
             {address}

@@ -7,7 +7,7 @@
     "native-debug": "cargo build --manifest-path native/Cargo.toml",
     "native-release": "cargo build --manifest-path native/Cargo.toml --release",
     "compile": "relay-compiler --schema src/common/schema.graphql --src src --language typescript && webpack",
-    "build": "yarn get-external-resources && yarn native-release && yarn compile && electron-builder -c.extraMetadata.main=./build/main/main.js --publish never",
+    "build": "yarn get-external-resources && yarn native-release && yarn compile && electron-builder -c.extraMetadata.main=./build/main/main.js --publish never --dir",
     "start": "cross-env-shell NODE_ENV=development \"yarn _start\"",
     "_start": "yarn get-external-resources && yarn native-debug && yarn compile && concurrently \"webpack serve\" \"wait-on http://localhost:3000 && electron .\"",
     "get-external-resources": "node scripts/getExternalResources.mjs",
