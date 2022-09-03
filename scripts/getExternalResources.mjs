@@ -39,7 +39,9 @@ const winTasks = {
   doChecks: () => [
     fs.existsSync(`${extraResourcesDir}/ytdlp/yt-dlp.exe`),
     fs.existsSync(`${extraResourcesDir}/ffmpeg/win/ffmpeg.exe`),
-    fs.existsSync(`${buildResourcesDir}/asio/readme.txt`),
+    fs.existsSync(
+      `${buildResourcesDir}/asio/asiosdk_2.3.3_2019-06-14/readme.txt`
+    ),
   ],
   prepareDirs: async (tmpDir) =>
     Promise.all([
