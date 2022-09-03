@@ -27,7 +27,7 @@ import { applyGraphQLMiddleware, subscriptionServer } from "./graphql";
 import setupMdns from "./mdns";
 import remoconMiddleware from "./remoconMiddleware";
 
-import nativeAudio = require("../../native");
+const nativeAudio = require("../../native"); // tslint:disable-line:no-var-requires
 
 try {
   nativeAudio.allocConsole();
