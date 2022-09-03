@@ -4,7 +4,7 @@ import { Credentials, hasCredentials } from "../common/auth";
 import { KarafriendsConfig } from "../common/config";
 import ipAddresses from "../common/ipAddresses";
 
-const nativeAudio = require("../../native"); // tslint:disable-line:no-var-requires
+import nativeAudio = require("../../native"); // tslint:disable-line:no-var-requires
 
 let inputDeviceCount = 0;
 const inputDevices: { [deviceId: number]: any } = {};

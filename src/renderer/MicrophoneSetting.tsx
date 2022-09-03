@@ -12,7 +12,7 @@ const MicrophoneSettingOption = ({
   channel: number;
 }) => (
   <option data-name={name} data-channel={channel} value={`${name}_${channel}`}>
-    {`${name} (${channel === -1 ? "All Channels" : `Channel ${channel}`})`}
+    {`${name} (Channel ${channel})`}
   </option>
 );
 
@@ -25,6 +25,8 @@ export default function MicrophoneSetting({ mic, onChange }: Props) {
   useEffect(() => {
     M.AutoInit();
   }, []);
+
+  console.log(window.karafriends.nativeAudio.inputDevices());
 
   return (
     <div className="input-field">
@@ -45,11 +47,11 @@ export default function MicrophoneSetting({ mic, onChange }: Props) {
         {window.karafriends.nativeAudio
           .inputDevices()
           .map(([name, channelCount]) =>
-            [...Array(channelCount + 1)].map((_, i) => (
+            [...Array(channelCount)].map((_, i) => (
               <MicrophoneSettingOption
-                key={`${name}_${i - 1}`}
+                key={`${name}_${i}`}
                 name={name}
-                channel={i - 1}
+                channel={i}
               />
             ))
           )}

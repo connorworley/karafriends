@@ -4,8 +4,8 @@
   "private": true,
   "main": "build/main/main.js",
   "scripts": {
-    "native-debug": "cargo build --manifest-path native/Cargo.toml",
-    "native-release": "cargo build --manifest-path native/Cargo.toml --release",
+    "native-debug": "cargo build --manifest-path native/Cargo.toml --features asio",
+    "native-release": "cargo build --manifest-path native/Cargo.toml --release --features asio",
     "compile": "relay-compiler --schema src/common/schema.graphql --src src --language typescript && webpack",
     "build": "yarn get-external-resources && yarn native-release && yarn compile && electron-builder -c.extraMetadata.main=./build/main/main.js --publish never --dir",
     "start": "cross-env-shell NODE_ENV=development \"yarn _start\"",

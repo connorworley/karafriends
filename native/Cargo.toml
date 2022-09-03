@@ -10,14 +10,24 @@ name = "karafriends"
 crate-type = ["cdylib"]
 
 [dependencies]
-futures = "0.3.14"
-cpal = "0.13.3"
-dasp = { version = "0.11.0", features = ["signal", "interpolate", "interpolate-sinc", "ring_buffer"] }
-neon = { version = "0.8.0", default-features = false, features = ["napi-4"] }
-realfft = "3.0.0"
-ringbuf = "0.2.4"
+asio-sys = { git = "https://github.com/connorworley/cpal", optional = true }
+cpal = { git = "https://github.com/connorworley/cpal" }
+lazy_static = "1.4.0"
+neon = { version = "0.10.1", default-features = false, features = ["napi-4"] }
+realfft = "3.0.1"
+ringbuf = "0.2.8"
+rubato = "0.12.0"
+
+[target.'cfg(target_os = "windows")'.dependencies]
+win32console = "0.1.5"
 
 [build-dependencies]
-neon-build = "0.8.0"
+neon-build = "0.10.1"
+
+[env]
+ASIO_SDK_DIR = { value = "../buildResources/asio", relative = true }
+
+[features]
+asio = ["asio-sys", "cpal/asio"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

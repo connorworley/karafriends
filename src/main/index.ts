@@ -27,6 +27,14 @@ import { applyGraphQLMiddleware, subscriptionServer } from "./graphql";
 import setupMdns from "./mdns";
 import remoconMiddleware from "./remoconMiddleware";
 
+import nativeAudio = require("../../native");
+
+try {
+  nativeAudio.allocConsole();
+} catch (e) {
+  console.error(e);
+}
+
 setupMdns();
 
 protocol.registerSchemesAsPrivileged([
