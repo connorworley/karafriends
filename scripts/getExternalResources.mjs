@@ -86,7 +86,7 @@ const winTasks = {
       }
     );
     exec(
-      `${pathTo7zip} e ${tmpDir}/asio/asio.zip -y -o${buildResourcesDir}/asio`,
+      `${pathTo7zip} x ${tmpDir}/asio/asio.zip -y -o${buildResourcesDir}/asio`,
       (error, stdout, stderr) => {
         if (error) {
           console.error(error);
