@@ -24,9 +24,6 @@ win32console = "0.1.5"
 [build-dependencies]
 neon-build = "0.10.1"
 
-[env]
-ASIO_SDK_DIR = { value = "../buildResources/asio", relative = true }
-
 [features]
 asio = ["asio-sys", "cpal/asio"]
 

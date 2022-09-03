@@ -1,0 +1,2 @@
+[env]
+ASIO_SDK_DIR = { value = "../buildResources/asio", relative = true }

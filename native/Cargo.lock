@@ -45,7 +45,7 @@ dependencies = [
 [[package]]
 name = "asio-sys"
 version = "0.2.1"
-source = "git+https://github.com/connorworley/cpal#1b9e53a64611bcb646a7fe7bfc56bb52fb4934d0"
+source = "git+https://github.com/connorworley/cpal?branch=connorworley-patch-1#65626cc6a8ddc24525f8a2c4f687f95eb7f2f0b2"
 dependencies = [
  "bindgen",
  "cc",
@@ -213,7 +213,7 @@ dependencies = [
 [[package]]
 name = "cpal"
 version = "0.13.5"
-source = "git+https://github.com/connorworley/cpal#1b9e53a64611bcb646a7fe7bfc56bb52fb4934d0"
+source = "git+https://github.com/connorworley/cpal?branch=connorworley-patch-1#65626cc6a8ddc24525f8a2c4f687f95eb7f2f0b2"
 dependencies = [
  "alsa",
  "asio-sys",
