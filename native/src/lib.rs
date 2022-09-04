@@ -30,8 +30,8 @@ extern "C" {
 
 enum DeviceType {
     #[cfg(feature = "asio")]
-    ASIO,
-    USB,
+    Asio,
+    Usb,
 }
 
 const ECHO_DELAY_SECS: f32 = 0.06;
@@ -206,13 +206,13 @@ fn supported_config_to_config(
 fn _input_devices() -> Result<impl Iterator<Item = (cpal::Device, DeviceType)>> {
     let default_devices = CPAL_DEFAULT_HOST
         .input_devices()?
-        .map(|device| (device, DeviceType::USB));
+        .map(|device| (device, DeviceType::Usb));
     #[cfg(feature = "asio")]
     {
         Ok(default_devices.chain(
             CPAL_ASIO_HOST
                 .input_devices()?
-                .map(|device| (device, DeviceType::ASIO)),
+                .map(|device| (device, DeviceType::Asio)),
         ))
     }
     #[cfg(not(feature = "asio"))]
@@ -225,8 +225,8 @@ fn _device_name(device: &cpal::Device, device_type: &DeviceType) -> String {
         device.name().unwrap(),
         match device_type {
             #[cfg(feature = "asio")]
-            DeviceType::ASIO => "ASIO",
-            DeviceType::USB => "USB",
+            DeviceType::Asio => "ASIO",
+            DeviceType::Usb => "USB",
         }
     )
 }
@@ -335,13 +335,12 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
                 let mono_samples: Vec<_> = samples
                     .chunks(input_channels)
                     .map(|channel_samples| {
-                        let sample = channel_samples[channel_selection];
                         #[cfg(feature = "asio")]
                         {
-                            sample as f32 / InputSample::MAX as f32
+                            channel_samples[channel_selection] as f32 / InputSample::MAX as f32
                         }
                         #[cfg(not(feature = "asio"))]
-                        sample
+                        channel_samples[channel_selection]
                     })
                     .collect();
 

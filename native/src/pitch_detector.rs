@@ -112,12 +112,12 @@ fn quadratic_peak_pos(x: &Vec<f32>, pos: usize) -> f32 {
     let s0 = x[x0];
     let s1 = x[pos];
     let s2 = x[x2];
-    return pos as f32 + 0.5 * (s0 - s2) / (s0 - 2.0 * s1 + s2);
+    pos as f32 + 0.5 * (s0 - s2) / (s0 - 2.0 * s1 + s2)
 }
 
 fn freq2midi(freq: f32) -> f32 {
-    if freq < 2.0 || freq > 100000.0 {
+    if !(2.0..=100000.0).contains(&freq) {
         return 0.0;
     }
-    return (freq / 6.875).ln() / 2.0_f32.ln() * 12.0 - 3.0;
+    (freq / 6.875).ln() / 2.0_f32.ln() * 12.0 - 3.0
 }
