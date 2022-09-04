@@ -9,6 +9,7 @@ import process from "process";
 import { exec } from "child_process";
 
 const pathTo7zip = sevenBin.path7za;
+const buildResourcesDir = `${process.cwd()}/buildResources`;
 const extraResourcesDir = `${process.cwd()}/extraResources`;
 const maxMsToWaitForExtraction = 20000;
 
@@ -38,6 +39,9 @@ const winTasks = {
   doChecks: () => [
     fs.existsSync(`${extraResourcesDir}/ytdlp/yt-dlp.exe`),
     fs.existsSync(`${extraResourcesDir}/ffmpeg/win/ffmpeg.exe`),
+    fs.existsSync(
+      `${buildResourcesDir}/asio/asiosdk_2.3.3_2019-06-14/readme.txt`
+    ),
   ],
   prepareDirs: async (tmpDir) =>
     Promise.all([
@@ -48,6 +52,8 @@ const winTasks = {
         { recursive: true },
         () => null
       ),
+      fs.mkdir(`${tmpDir}/asio`, { recursive: true }, () => null),
+      fs.mkdir(`${buildResourcesDir}/asio`, { recursive: true }, () => null),
     ]),
   getAssets: async (tmpDir) =>
     Promise.all([
@@ -58,6 +64,10 @@ const winTasks = {
       downloadFile(
         "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-full.7z",
         `${tmpDir}/ffmpeg/win/ffmpeg.7z`
+      ),
+      downloadFile(
+        "https://www.steinberg.net/asiosdk",
+        `${tmpDir}/asio/asio.zip`
       ),
     ]),
   extractAssets: async (tmpDir, hasFinishedExtracting) => {
@@ -75,6 +85,16 @@ const winTasks = {
             hasFinishedExtracting[0] = true;
           }
         );
+      }
+    );
+    exec(
+      `${pathTo7zip} x ${tmpDir}/asio/asio.zip -y -o${buildResourcesDir}/asio`,
+      (error, stdout, stderr) => {
+        if (error) {
+          console.error(error);
+          throw error;
+        }
+        hasFinishedExtracting[1] = true;
       }
     );
   },
@@ -124,6 +144,7 @@ const macosTasks = {
         );
       }
     );
+    hasFinishedExtracting[1] = true;
   },
   setPermissions: () => {
     fs.chmodSync(`${extraResourcesDir}/ffmpeg/macos/ffmpeg`, "755");
@@ -179,6 +200,7 @@ const linuxTasks = {
         );
       }
     );
+    hasFinishedExtracting[1] = true;
   },
   setPermissions: () => {
     fs.chmodSync(`${extraResourcesDir}/ffmpeg/linux/ffmpeg`, "755");
@@ -196,22 +218,25 @@ async function getExternalResources(tasks) {
   await tasks.prepareDirs(tmpDir);
   await tasks.getAssets(tmpDir);
 
-  let hasFinishedExtracting = [false];
+  let hasFinishedExtracting = [false, false];
   let msToWaitForExtraction = maxMsToWaitForExtraction;
   await tasks.extractAssets(tmpDir, hasFinishedExtracting);
   await new Promise(async () => {
-    while (msToWaitForExtraction > 0 && !hasFinishedExtracting[0]) {
+    while (
+      msToWaitForExtraction > 0 &&
+      !hasFinishedExtracting.every((x) => x)
+    ) {
       await new Promise((r) => setTimeout(r, 200));
       msToWaitForExtraction -= 200;
     }
     fs.rmdirSync(tmpDir, { recursive: true });
-    if (!hasFinishedExtracting[0]) {
+    if (!hasFinishedExtracting.every((x) => x)) {
       console.error(
-        `Extracting ffmpeg did not complete after ${maxMsToWaitForExtraction} ms and was aborted!`
+        `Extracting resources did not complete after ${maxMsToWaitForExtraction} ms and was aborted!`
       );
       process.exit(1);
     }
-    if (!tasks.doChecks().every((check) => check === true)) {
+    if (!tasks.doChecks(tmpDir).every((check) => check === true)) {
       console.error("An external resource wasn't successfuly downloaded!");
       process.exit(1);
     }

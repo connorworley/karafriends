@@ -36,3 +36,4 @@ __generated__
 # Extra resources that are downloaded on build
 /extraResources/ffmpeg/**/*
 /extraResources/ytdlp/*
+/buildResources/asio/*
