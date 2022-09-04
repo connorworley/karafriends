@@ -16,8 +16,6 @@ jobs:
           cache: "yarn"
       - run: yarn install --frozen-lockfile
       - run: yarn build
-        env:
-          CARGO_ARGS: --frozen
       - uses: actions/upload-artifact@v2
         with:
           name: karafriends-macos
@@ -34,7 +32,7 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn build
         env:
-          CARGO_ARGS: --frozen --features asio
+          CARGO_ARGS: --features asio
       - uses: actions/upload-artifact@v2
         with:
           name: karafriends-windows
