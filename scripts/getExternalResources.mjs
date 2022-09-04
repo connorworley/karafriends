@@ -144,6 +144,7 @@ const macosTasks = {
         );
       }
     );
+    hasFinishedExtracting[1] = true;
   },
   setPermissions: () => {
     fs.chmodSync(`${extraResourcesDir}/ffmpeg/macos/ffmpeg`, "755");
@@ -199,6 +200,7 @@ const linuxTasks = {
         );
       }
     );
+    hasFinishedExtracting[1] = true;
   },
   setPermissions: () => {
     fs.chmodSync(`${extraResourcesDir}/ffmpeg/linux/ffmpeg`, "755");
