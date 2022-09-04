@@ -212,7 +212,7 @@ fn _input_devices() -> Result<impl Iterator<Item = (cpal::Device, DeviceType)>> 
         Ok(default_devices.chain(
             CPAL_ASIO_HOST
                 .as_ref()
-                .map_err(|_| "ASIO cpal host unavailable!".into())?
+                .map_err(|_| "ASIO cpal host unavailable!")?
                 .input_devices()?
                 .map(|device| (device, DeviceType::Asio)),
         ))
