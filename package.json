@@ -4,11 +4,11 @@
   "private": true,
   "main": "build/main/main.js",
   "scripts": {
-    "native-debug": "cargo build --manifest-path native/Cargo.toml --features asio",
-    "native-release": "cargo build --manifest-path native/Cargo.toml --release --features asio",
+    "native-debug": "cross-env-shell \"cargo build --manifest-path native/Cargo.toml $CARGO_ARGS\"",
+    "native-release": "cross-env-shell \"cargo build --manifest-path native/Cargo.toml --release --features asio $CARGO_ARGS\"",
     "compile": "relay-compiler --schema src/common/schema.graphql --src src --language typescript && webpack",
     "build": "yarn get-external-resources && yarn native-release && yarn compile && electron-builder -c.extraMetadata.main=./build/main/main.js --publish never --dir",
-    "start": "cross-env-shell NODE_ENV=development \"yarn _start\"",
+    "start": "cross-env NODE_ENV=development yarn _start",
     "_start": "yarn get-external-resources && yarn native-debug && yarn compile && concurrently \"webpack serve\" \"wait-on http://localhost:3000 && electron .\"",
     "get-external-resources": "node scripts/getExternalResources.mjs",
     "postinstall": "husky install"
