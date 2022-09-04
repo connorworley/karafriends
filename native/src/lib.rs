@@ -5,6 +5,7 @@ mod pitch_detector;
 use std::cell::RefCell;
 use std::cmp::Ordering;
 use std::collections::HashMap;
+use std::iter::Iterator;
 use std::sync::{Arc, Mutex};
 
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
@@ -20,9 +21,17 @@ type InputSample = f32;
 
 #[cfg(feature = "asio")]
 extern "C" {
-    // gcc: #[link_name = "\u{1}__Z16ASIOControlPanelv"]
+    #[cfg(target_env = "gnu")]
+    #[link_name = "\u{1}__Z16ASIOControlPanelv"]
+    #[cfg(target_env = "msvc")]
     #[link_name = "?ASIOControlPanel@@YAJXZ"]
-    fn ASIOControlPanel() -> asio_sys::bindings::asio_import::ASIOError; // TODO: add a JS binding to call this
+    fn ASIOControlPanel() -> asio_sys::bindings::asio_import::ASIOError;
+}
+
+enum DeviceType {
+    #[cfg(feature = "asio")]
+    ASIO,
+    USB,
 }
 
 const ECHO_DELAY_SECS: f32 = 0.06;
@@ -58,7 +67,7 @@ fn cpal_safe<T: Send + 'static>(f: impl FnOnce() -> T + Send + 'static) -> T {
     // Cpal tries to set the threading model on Windows, which breaks when Node
     // has already set a different threading model. To work around this, we need
     // to make cpal calls in a different thread on Windows.
-    #[cfg(all(windows, not(feature = "asio")))]
+    #[cfg(windows)]
     {
         let (tx, rx) = std::sync::mpsc::channel();
         std::thread::spawn(move || {
@@ -66,33 +75,21 @@ fn cpal_safe<T: Send + 'static>(f: impl FnOnce() -> T + Send + 'static) -> T {
         });
         rx.recv().unwrap()
     }
-    #[cfg(any(not(windows), feature = "asio"))]
+    #[cfg(not(windows))]
     f()
 }
 
 #[cfg(feature = "asio")]
 lazy_static::lazy_static! {
-    static ref CPAL_HOST: std::result::Result<cpal::Host, cpal::HostUnavailable> = cpal::host_from_id(cpal::HostId::Asio);
+    static ref CPAL_ASIO_HOST: std::result::Result<cpal::Host, cpal::HostUnavailable> = cpal::host_from_id(cpal::HostId::Asio);
 }
 
-#[cfg(not(feature = "asio"))]
 lazy_static::lazy_static! {
-    static ref CPAL_HOST: cpal::Host = cpal::default_host();
+    static ref CPAL_DEFAULT_HOST: cpal::Host = cpal::default_host();
 }
 
 lazy_static::lazy_static! {
     static ref INPUT_DEVICES: Mutex<HashMap<String, cpal::Device>> = Mutex::new(HashMap::new());
-}
-
-fn cpal_input_host() -> Result<&'static cpal::Host> {
-    #[cfg(feature = "asio")]
-    {
-        CPAL_HOST
-            .as_ref()
-            .map_err(|_| "ASIO cpal host unavailable!".into())
-    }
-    #[cfg(not(feature = "asio"))]
-    Ok(&CPAL_HOST)
 }
 
 fn alloc_console(mut cx: FunctionContext) -> JsResult<JsUndefined> {
@@ -100,16 +97,17 @@ fn alloc_console(mut cx: FunctionContext) -> JsResult<JsUndefined> {
     if let Err(e) = win32console::console::WinConsole::alloc_console() {
         return cx.throw_error(e.to_string());
     } else {
-        win32console::console::WinConsole::set_title("karafriends native console").ok();
+        if let Err(e) = win32console::console::WinConsole::set_title("karafriends native console") {
+            return cx.throw_error(e.to_string());
+        }
     }
     Ok(cx.undefined())
 }
 
 fn input_devices(mut cx: FunctionContext) -> JsResult<JsArray> {
     let input_devices: Vec<_> = match cpal_safe(|| -> Result<Vec<_>> {
-        Ok(cpal_input_host()?
-            .input_devices()?
-            .map(|input_device| {
+        Ok(_input_devices()?
+            .map(|(input_device, device_type)| {
                 let mut supported_input_configs: Vec<_> =
                     input_device.supported_input_configs().unwrap().collect();
                 supported_input_configs.sort_by(|a, b| compare_configs(a, b, None));
@@ -118,7 +116,10 @@ fn input_devices(mut cx: FunctionContext) -> JsResult<JsArray> {
                     .ok_or("No supported input configs")
                     .unwrap();
                 let input_config = supported_config_to_config(best_supported_input_config);
-                (input_device.name().unwrap(), input_config.channels)
+                (
+                    _device_name(&input_device, &device_type),
+                    input_config.channels,
+                )
             })
             .collect())
     }) {
@@ -134,7 +135,6 @@ fn input_devices(mut cx: FunctionContext) -> JsResult<JsArray> {
         inner_array.set(&mut cx, 1, js_channel_count)?;
         js_array.set(&mut cx, i as u32, inner_array)?;
     }
-    println!("input_devices -> {:?}", js_array);
     Ok(js_array)
 }
 
@@ -203,6 +203,34 @@ fn supported_config_to_config(
     }
 }
 
+fn _input_devices() -> Result<impl Iterator<Item = (cpal::Device, DeviceType)>> {
+    let default_devices = CPAL_DEFAULT_HOST
+        .input_devices()?
+        .map(|device| (device, DeviceType::USB));
+    #[cfg(feature = "asio")]
+    {
+        Ok(default_devices.chain(
+            CPAL_ASIO_HOST
+                .input_devices()?
+                .map(|device| (device, DeviceType::ASIO)),
+        ))
+    }
+    #[cfg(not(feature = "asio"))]
+    Ok(default_devices)
+}
+
+fn _device_name(device: &cpal::Device, device_type: &DeviceType) -> String {
+    format!(
+        "{} ({})",
+        device.name().unwrap(),
+        match device_type {
+            #[cfg(feature = "asio")]
+            DeviceType::ASIO => "ASIO",
+            DeviceType::USB => "USB",
+        }
+    )
+}
+
 fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDevice>>> {
     let name = cx.argument::<JsString>(0)?.value(&mut cx);
     let channel_selection = cx.argument::<JsNumber>(1)?.value(&mut cx) as usize;
@@ -211,13 +239,14 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
         let input_device = match input_devices.get(&name) {
             Some(device) => device,
             None => {
-                println!("creating new input device {}", name);
                 input_devices.insert(
                     name.clone(),
-                    cpal_input_host()?
-                        .input_devices()?
-                        .find(|device| device.name().unwrap() == name)
-                        .ok_or(format!("Could not find device: {}", name))?,
+                    _input_devices()?
+                        .find(|(input_device, device_type)| {
+                            _device_name(input_device, device_type) == name
+                        })
+                        .ok_or(format!("Could not find device: {}", name))?
+                        .0,
                 );
                 &input_devices[&name]
             }
@@ -227,15 +256,20 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
         let best_supported_input_config = supported_input_configs
             .last()
             .ok_or("No supported input configs")?;
-        let mut input_config = supported_config_to_config(best_supported_input_config);
-        input_config.sample_rate = cpal::SampleRate(48000); // TODO: remove after fixing resampling
+        let input_config = supported_config_to_config(best_supported_input_config);
         let input_channels = input_config.channels as usize;
+        let input_sample_rate = input_config.sample_rate.0;
 
-        let output_host = cpal::default_host();
+        println!(
+            "Created input device {} with config {:#?}",
+            input_device.name().unwrap(),
+            input_config
+        );
+
+        let output_host = &CPAL_DEFAULT_HOST;
         let output_device = output_host
             .default_output_device()
             .ok_or("No default output device")?;
-        println!("default output device: {}", output_device.name()?);
         let mut supported_output_configs: Vec<_> =
             output_device.supported_output_configs()?.collect();
         supported_output_configs
@@ -250,13 +284,18 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
             output_config.sample_rate = input_config.sample_rate;
         }
         let output_channels = output_config.channels as usize;
+        let output_sample_rate = output_config.sample_rate.0;
 
-        let sample_rate = input_config.sample_rate.0;
+        println!(
+            "Created output device {} with config {:#?}",
+            output_device.name().unwrap(),
+            output_config
+        );
 
-        let pitch_sample_count = (sample_rate / 40) as usize;
+        let pitch_sample_count = (input_sample_rate / 40) as usize;
         let (mut pitch_tx, pitch_rx) = ringbuf::RingBuffer::new(pitch_sample_count).split();
 
-        let latency_sample_count = (sample_rate as f32 * ECHO_DELAY_SECS) as usize;
+        let latency_sample_count = (input_sample_rate as f32 * ECHO_DELAY_SECS) as usize;
         let (mut echo_tx, mut echo_rx) =
             ringbuf::RingBuffer::new(latency_sample_count * 2 * output_channels).split();
         for _ in 0..latency_sample_count * output_channels {
@@ -265,32 +304,27 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
                 .map_err(|_| "Failed to push to echo buffer")?;
         }
 
-        let sample_ratio = output_config.sample_rate.0 as f32 / sample_rate as f32;
-
         let (mut output_tx, mut output_rx) =
             ringbuf::RingBuffer::new(2048 * output_channels).split();
 
         let pitch_detector =
-            pitch_detector::PitchDetector::new(sample_rate as f32, pitch_sample_count);
+            pitch_detector::PitchDetector::new(input_sample_rate as f32, pitch_sample_count);
 
-        let mut resampler = rubato::FftFixedIn::<f32>::new(
-            input_config.sample_rate.0 as usize,
-            output_config.sample_rate.0 as usize,
-            // sample_ratio as f64,
-            // 2.0,
-            // rubato::InterpolationParameters {
-            //     sinc_len: 256,
-            //     f_cutoff: 0.95,
-            //     interpolation: rubato::InterpolationType::Linear,
-            //     oversampling_factor: 256,
-            //     window: rubato::WindowFunction::BlackmanHarris2,
-            // },
-            if let cpal::BufferSize::Fixed(count) = input_config.buffer_size {
-                count as usize
-            } else {
-                (1.0 / sample_ratio) as usize
+        let mut resampler = rubato::SincFixedIn::<f32>::new(
+            output_sample_rate as f64 / input_sample_rate as f64 as f64,
+            1.0,
+            rubato::InterpolationParameters {
+                sinc_len: 256,
+                f_cutoff: 0.95,
+                interpolation: rubato::InterpolationType::Linear,
+                oversampling_factor: 256,
+                window: rubato::WindowFunction::BlackmanHarris2,
             },
-            4,
+            match input_config.buffer_size {
+                cpal::BufferSize::Fixed(count) => count as usize,
+                cpal::BufferSize::Default => (input_sample_rate / output_sample_rate) as usize,
+            },
+            // 1,
             1,
         )?;
         let mut resampler_output = resampler.output_buffer_allocate();
@@ -324,16 +358,14 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
 
                 echo_tx.push_slice(output_samples.as_slice());
 
-                if (sample_ratio - 1.0).abs() > f32::EPSILON {
-                    println!("{:?}", output_samples);
+                if input_sample_rate != output_sample_rate {
                     resampler
-                        .process_into_buffer(&vec![&output_samples; 1], &mut resampler_output, None)
+                        .process_into_buffer(&[&output_samples], &mut resampler_output, None)
                         .unwrap();
                     for sample in &resampler_output[0] {
-                        println!("{}", sample);
                         for _ in 0..output_channels {
                             if output_tx.push(*sample).is_err() {
-                                // eprintln!("output fell behind (with sample rate conversion)!");
+                                eprintln!("output fell behind (with sample rate conversion)!");
                             }
                         }
                     }
@@ -347,19 +379,18 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
                     }
                 }
             },
-            |e| std::panic!("{}", e),
+            |e| eprintln!("{}", e),
         )?;
 
         let output_stream = output_device.build_output_stream(
             &output_config,
             move |samples: &mut [f32], _| {
                 let samples_read = output_rx.pop_slice(samples);
-                // println!("outputting {:?}", samples);
                 if samples_read < samples.len() {
                     eprintln!("input fell behind");
                 }
             },
-            |e| std::panic!("{}", e),
+            |e| eprintln!("{}", e),
         )?;
 
         input_stream.play()?;
@@ -403,10 +434,15 @@ fn input_device__stop(mut cx: FunctionContext) -> JsResult<JsUndefined> {
 }
 
 register_module!(mut m, {
+    std::panic::set_hook(Box::new(|panic_info| {
+        std::eprintln!("{:#?}", panic_info);
+    }));
+
     m.export_function("allocConsole", alloc_console)?;
     m.export_function("inputDevices", input_devices)?;
     m.export_function("inputDevice_new", input_device__new)?;
     m.export_function("inputDevice_getPitch", input_device__get_pitch)?;
     m.export_function("inputDevice_stop", input_device__stop)?;
+
     Ok(())
 });
