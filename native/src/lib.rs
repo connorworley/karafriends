@@ -85,10 +85,6 @@ lazy_static::lazy_static! {
 }
 
 lazy_static::lazy_static! {
-    static ref CPAL_DEFAULT_HOST: cpal::Host = cpal::default_host();
-}
-
-lazy_static::lazy_static! {
     static ref INPUT_DEVICES: Mutex<HashMap<String, cpal::Device>> = Mutex::new(HashMap::new());
 }
 
@@ -96,10 +92,10 @@ fn alloc_console(mut cx: FunctionContext) -> JsResult<JsUndefined> {
     #[cfg(windows)]
     if let Err(e) = win32console::console::WinConsole::alloc_console() {
         return cx.throw_error(e.to_string());
-    } else {
-        if let Err(e) = win32console::console::WinConsole::set_title("karafriends native console") {
-            return cx.throw_error(e.to_string());
-        }
+    } else if let Err(e) =
+        win32console::console::WinConsole::set_title("karafriends native console")
+    {
+        return cx.throw_error(e.to_string());
     }
     Ok(cx.undefined())
 }
@@ -204,7 +200,7 @@ fn supported_config_to_config(
 }
 
 fn _input_devices() -> Result<impl Iterator<Item = (cpal::Device, DeviceType)>> {
-    let default_devices = CPAL_DEFAULT_HOST
+    let default_devices = cpal::default_host()
         .input_devices()?
         .map(|device| (device, DeviceType::Usb));
     #[cfg(feature = "asio")]
@@ -268,7 +264,7 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
             input_config
         );
 
-        let output_host = &CPAL_DEFAULT_HOST;
+        let output_host = cpal::default_host();
         let output_device = output_host
             .default_output_device()
             .ok_or("No default output device")?;
@@ -380,7 +376,7 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
                     }
                 }
             },
-            |e| eprintln!("{}", e),
+            |e| panic!("{}", e),
         )?;
 
         let output_stream = output_device.build_output_stream(
@@ -391,7 +387,7 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
                     eprintln!("input fell behind");
                 }
             },
-            |e| eprintln!("{}", e),
+            |e| panic!("{}", e),
         )?;
 
         input_stream.play()?;

@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron"; // tslint:disable-line:no-implicit-dependencies
+import { memoize } from "lodash";
 
 import { Credentials, hasCredentials } from "../common/auth";
 import { KarafriendsConfig } from "../common/config";
@@ -24,7 +25,10 @@ contextBridge.exposeInMainWorld("karafriends", {
     return karafriendsConfig;
   },
   nativeAudio: {
-    inputDevices: nativeAudio.inputDevices,
+    // Repeatedly asking CPAL for input devices seems to cause unexpected
+    // breakages, like the default output device being released. Let's avoid
+    // that.
+    inputDevices: memoize(nativeAudio.inputDevices),
     outputDevices: nativeAudio.outputDevices,
     inputDevice_new(name: string, channelSelection: number) {
       console.debug(
