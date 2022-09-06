@@ -63,22 +63,6 @@ impl InputDevice {
     }
 }
 
-fn cpal_safe<T: Send + 'static>(f: impl FnOnce() -> T + Send + 'static) -> T {
-    // Cpal tries to set the threading model on Windows, which breaks when Node
-    // has already set a different threading model. To work around this, we need
-    // to make cpal calls in a different thread on Windows.
-    #[cfg(windows)]
-    {
-        let (tx, rx) = std::sync::mpsc::channel();
-        std::thread::spawn(move || {
-            tx.send(f()).unwrap();
-        });
-        rx.recv().unwrap()
-    }
-    #[cfg(not(windows))]
-    f()
-}
-
 #[cfg(feature = "asio")]
 lazy_static::lazy_static! {
     static ref CPAL_ASIO_HOST: std::result::Result<cpal::Host, cpal::HostUnavailable> = cpal::host_from_id(cpal::HostId::Asio);
@@ -101,7 +85,7 @@ fn alloc_console(mut cx: FunctionContext) -> JsResult<JsUndefined> {
 }
 
 fn input_devices(mut cx: FunctionContext) -> JsResult<JsArray> {
-    let input_devices: Vec<_> = match cpal_safe(|| -> Result<Vec<_>> {
+    let input_devices = match (|| -> Result<Vec<(String, u16)>> {
         Ok(_input_devices()?
             .map(|(input_device, device_type)| {
                 let mut supported_input_configs: Vec<_> =
@@ -118,7 +102,7 @@ fn input_devices(mut cx: FunctionContext) -> JsResult<JsArray> {
                 )
             })
             .collect())
-    }) {
+    })() {
         Ok(devices) => devices,
         Err(e) => return cx.throw_error(e.to_string()),
     };
@@ -232,7 +216,7 @@ fn _device_name(device: &cpal::Device, device_type: &DeviceType) -> String {
 fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDevice>>> {
     let name = cx.argument::<JsString>(0)?.value(&mut cx);
     let channel_selection = cx.argument::<JsNumber>(1)?.value(&mut cx) as usize;
-    let device = match cpal_safe(move || -> Result<InputDevice> {
+    let device = match (|| -> Result<InputDevice> {
         let mut input_devices = INPUT_DEVICES.lock().unwrap();
         let input_device = match input_devices.get(&name) {
             Some(device) => device,
@@ -400,7 +384,7 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
             pitch_sample_count,
             pitch_detector,
         })
-    }) {
+    })() {
         Ok(device) => device,
         Err(e) => return cx.throw_error(e.to_string()),
     };
