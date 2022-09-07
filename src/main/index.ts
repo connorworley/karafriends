@@ -1,3 +1,7 @@
+import inspector from "inspector";
+
+inspector.open();
+
 import { createServer } from "http";
 import path from "path";
 
