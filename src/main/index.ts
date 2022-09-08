@@ -1,3 +1,10 @@
+import * as Sentry from "@sentry/node";
+
+Sentry.init({
+  dsn: "https://80cbda8ca4af42d9b95c60eb1f00566f@sentry.io/6728669",
+  debug: true,
+});
+
 import inspector from "inspector";
 
 inspector.open();
