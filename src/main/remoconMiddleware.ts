@@ -12,7 +12,7 @@ function remoconMiddleware() {
         next();
         return;
       }
-      fetch(`http://localhost:3000/remocon${req.originalUrl}`, {
+      fetch(`http://127.0.0.1:3000/remocon${req.originalUrl}`, {
         method: req.method,
         headers: Object.keys(req.headers).map((header) => [
           header,
