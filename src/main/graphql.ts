@@ -1,3 +1,4 @@
+import fs from "fs";
 import { Server } from "http";
 
 import { ApolloServer, makeExecutableSchema } from "apollo-server-express";
@@ -13,20 +14,38 @@ import { HOSTNAME } from "../common/constants";
 import rawSchema from "../common/schema.graphql";
 import {
   downloadDamVideo,
+  downloadJoysoundData,
   downloadNicoVideo,
   downloadYoutubeVideo,
+  TEMP_FOLDER,
 } from "./../common/videoDownloader";
 import { DkwebsysAPI, MinseiAPI, MinseiCredentials } from "./damApi";
 import { YoutubeAPI } from "./youtubeApi";
 
+import { JoysoundAPI, JoysoundCreds } from "./joysoundApi";
+
 import "regenerator-runtime/runtime"; // tslint:disable-line:no-submodule-imports
 
-interface IDataSources {
+export interface IDataSources {
   dataSources: {
     minsei: MinseiAPI;
+    joysound: JoysoundAPI;
     dkwebsys: DkwebsysAPI;
     youtube: YoutubeAPI;
   };
+}
+
+interface JoysoundSongParent {
+  readonly id: string;
+  readonly name: string;
+  readonly artistName: string;
+  readonly lyricsPreview?: string | null;
+  readonly tieUp?: string | null;
+}
+
+interface JoysoundArtistParent {
+  readonly id: string;
+  readonly name: string;
 }
 
 interface SongParent {
@@ -117,6 +136,11 @@ interface QueueItemInterface {
   readonly nickname: string;
 }
 
+interface JoysoundQueueItem extends QueueItemInterface {
+  readonly __typename: "JoysoundQueueItem";
+  readonly isRomaji: boolean;
+}
+
 interface DamQueueItem extends QueueItemInterface {
   readonly __typename: "DamQueueItem";
   readonly streamingUrlIdx: string;
@@ -133,7 +157,11 @@ interface NicoQueueItem extends QueueItemInterface {
   readonly __typename: "NicoQueueItem";
 }
 
-type QueueItem = DamQueueItem | YoutubeQueueItem | NicoQueueItem;
+type QueueItem =
+  | DamQueueItem
+  | JoysoundQueueItem
+  | YoutubeQueueItem
+  | NicoQueueItem;
 
 type QueueSongInfo = {
   readonly __typename: "QueueSongInfo";
@@ -159,6 +187,15 @@ type QueueDamSongInput = {
   readonly playtime?: number | null;
   readonly streamingUrlIdx: string;
   readonly nickname: string;
+};
+
+type QueueJoysoundSongInput = {
+  readonly songId: string;
+  readonly name: string;
+  readonly artistName: string;
+  readonly playtime?: number | null;
+  readonly nickname: string;
+  readonly isRomaji: boolean;
 };
 
 type QueueYoutubeSongInput = {
@@ -282,6 +319,18 @@ function cleanupAdhocSongLyrics(lyrics: string): string[] {
 }
 
 const resolvers = {
+  JoysoundSong: {
+    id(parent: JoysoundSongParent) {
+      return parent.id;
+    },
+    name(parent: JoysoundSongParent) {
+      return parent.name;
+    },
+    artistName(parent: JoysoundSongParent) {
+      return parent.artistName;
+    },
+  },
+
   Song: {
     id(parent: SongParent) {
       return parent.id;
@@ -389,6 +438,96 @@ const resolvers = {
   Query: {
     adhocLyrics(_: any, args: { id: string }): string[] {
       return db.idToAdhocLyrics[args.id];
+    },
+    joysoundSongDetail: (
+      _: any,
+      args: { id: string },
+      { dataSources }: IDataSources
+    ): Promise<JoysoundSongParent> => {
+      return dataSources.joysound.getSongDetail(args.id).then((data) => ({
+        id: args.id,
+        ...data,
+      }));
+    },
+    joysoundSongsByArtist: (
+      _: any,
+      args: { artistId: string; first: number | null; after: string | null },
+      { dataSources }: IDataSources
+    ): Promise<Connection<JoysoundSongParent, string>> => {
+      const firstInt = args.first || 100;
+      const afterInt = args.after ? parseInt(args.after, 10) : 1;
+
+      return dataSources.joysound
+        .getSongListByArtist(args.artistId, afterInt, firstInt)
+        .then((result) => ({
+          edges: result.map((song, i) => ({
+            node: {
+              id: song.selSongNo,
+              name: song.songName,
+              artistName: song.artistName,
+            },
+            cursor: (firstInt + i).toString(),
+          })),
+          pageInfo: {
+            hasPreviousPage: false,
+            hasNextPage: result.length === firstInt,
+            startCursor: "1",
+            endCursor: (firstInt + afterInt).toString(),
+          },
+        }));
+    },
+    joysoundSongsByKeyword: (
+      _: any,
+      args: { keyword: string; first: number | null; after: string | null },
+      { dataSources }: IDataSources
+    ): Promise<Connection<JoysoundSongParent, string>> => {
+      const firstInt = args.first || 100;
+      const afterInt = args.after ? parseInt(args.after, 10) : 1;
+
+      return dataSources.joysound
+        .getSongListByKeyword(args.keyword, afterInt, firstInt)
+        .then((result) => ({
+          edges: result.map((song, i) => ({
+            node: {
+              id: song.selSongNo,
+              name: song.songName,
+              artistName: song.artistName,
+            },
+            cursor: (firstInt + i).toString(),
+          })),
+          pageInfo: {
+            hasPreviousPage: false,
+            hasNextPage: result.length === firstInt,
+            startCursor: "1",
+            endCursor: (firstInt + afterInt).toString(),
+          },
+        }));
+    },
+    joysoundArtistsByKeyword: (
+      _: any,
+      args: { keyword: string; first: number | null; after: string | null },
+      { dataSources }: IDataSources
+    ): Promise<Connection<JoysoundArtistParent, string>> => {
+      const firstInt = args.first || 100;
+      const afterInt = args.after ? parseInt(args.after, 10) : 1;
+
+      return dataSources.joysound
+        .getArtistListByKeyword(args.keyword, afterInt, firstInt)
+        .then((result) => ({
+          edges: result.map((artist, i) => ({
+            node: {
+              id: artist.artistId_digi,
+              name: artist.artistName,
+            },
+            cursor: (firstInt + i).toString(),
+          })),
+          pageInfo: {
+            hasPreviousPage: false,
+            hasNextPage: result.length === firstInt,
+            startCursor: "1",
+            endCursor: (firstInt + afterInt).toString(),
+          },
+        }));
     },
     songsByName: (
       _: any,
@@ -606,6 +745,31 @@ const resolvers = {
       pubsub.publish(SubscriptionEvent.Emote, { emote: args.emote });
       return true;
     },
+    queueJoysoundSong: (
+      _: any,
+      args: { input: QueueJoysoundSongInput },
+      { dataSources }: IDataSources
+    ): QueueSongResult => {
+      const queueItem: JoysoundQueueItem = {
+        __typename: "JoysoundQueueItem",
+        timestamp: Date.now().toString(),
+        ...args.input,
+      };
+
+      dataSources.joysound.getMovieUrls(queueItem.songId).then((data) => {
+        downloadJoysoundData(
+          data.movie.mov1,
+          queueItem.songId,
+          dataSources.joysound.getSongRawData(queueItem.songId),
+          pushSongToQueue.bind(null, queueItem)
+        );
+      });
+
+      return {
+        __typename: "QueueSongInfo",
+        eta: db.songQueue.reduce((acc, cur) => acc + (cur.playtime || 0), 0),
+      };
+    },
     queueDamSong: (
       _: any,
       args: { input: QueueDamSongInput },
@@ -778,11 +942,13 @@ const schema = makeExecutableSchema({
 
 export function applyGraphQLMiddleware(
   app: Application,
-  creds: MinseiCredentials
+  minseiCreds: MinseiCredentials,
+  joysoundCreds: JoysoundCreds
 ) {
   const server = new ApolloServer({
     dataSources: () => ({
-      minsei: new MinseiAPI(creds),
+      minsei: new MinseiAPI(minseiCreds),
+      joysound: new JoysoundAPI(joysoundCreds),
       dkwebsys: new DkwebsysAPI(),
       youtube: new YoutubeAPI(),
     }),

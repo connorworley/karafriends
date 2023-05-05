@@ -16,7 +16,14 @@ const COMMON_CONFIG = {
     rules: [
       {
         test: /\.s?css$/,
-        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: { publicPath: "/build/renderer" },
+          },
+          "css-loader",
+          "sass-loader",
+        ],
       },
       {
         test: /\.tsx?$/,
@@ -31,6 +38,10 @@ const COMMON_CONFIG = {
       {
         test: /\.node$/,
         loader: "node-loader",
+      },
+      {
+        test: /\.(otf|ttf)$/,
+        type: "asset/resource",
       },
     ],
   },

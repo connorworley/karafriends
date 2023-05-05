@@ -9,6 +9,10 @@ import ArtistPage from "./pages/ArtistPage";
 import ArtistSearchPage from "./pages/ArtistSearchPage";
 import HistoryPage from "./pages/HistoryPage";
 import HomePage from "./pages/HomePage";
+import JoysoundArtistPage from "./pages/JoysoundArtistPage";
+import JoysoundArtistSearchPage from "./pages/JoysoundArtistSearchPage";
+import JoysoundSongPage from "./pages/JoysoundSongPage";
+import JoysoundSongSearchPage from "./pages/JoysoundSongSearchPage";
 import NiconicoPage from "./pages/NiconicoPage";
 import SongPage from "./pages/SongPage";
 import SongSearchPage from "./pages/SongSearchPage";
@@ -30,10 +34,20 @@ const App = () => {
             <Route path="/song/:id" component={SongPage} />
             <Route path="/artist/:id" component={ArtistPage} />
             <Route path="/adhocLyrics/:id" component={AdhocLyricsPage} />
+            <Route path="/joysoundSong/:id" component={JoysoundSongPage} />
+            <Route path="/joysoundArtist/:id" component={JoysoundArtistPage} />
             <Route path="/search/song/:query?" component={SongSearchPage} />
             <Route path="/search/artist/:query?" component={ArtistSearchPage} />
             <Route path="/search/youtube/:videoId?" component={YouTubePage} />
             <Route path="/search/niconico/:videoId?" component={NiconicoPage} />
+            <Route
+              path="/search/joysoundSong/:query?"
+              component={JoysoundSongSearchPage}
+            />
+            <Route
+              path="/search/joysoundArtist/:query?"
+              component={JoysoundArtistSearchPage}
+            />
             <Route path="/history" component={HistoryPage} />
             <Route path="/" component={HomePage} />
           </Switch>

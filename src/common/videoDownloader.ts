@@ -3,6 +3,8 @@ import { app } from "electron"; // tslint:disable-line:no-implicit-dependencies
 import fs from "fs";
 import process from "process";
 
+import { JoysoundSongRawData } from "../main/joysoundApi";
+
 export const TEMP_FOLDER: string = `${app.getPath("temp")}/karafriends_tmp`;
 const youtubeIdRe: RegExp = new RegExp(/^[0-9A-Za-z_-]{10}[048AEIMQUYcgkosw]$/);
 const nicoIdRe: RegExp = new RegExp(/^[sm]{2}\d*$/);
@@ -76,6 +78,96 @@ export function downloadDamVideo(
         `Error downloading DAM video with ID ${songId}: code=${code}, signal=${signal}`
       );
     }
+  });
+}
+
+export function downloadJoysoundData(
+  url: string,
+  songId: string,
+  songDataPromise: Promise<JoysoundSongRawData>,
+  onComplete: () => any
+): void {
+  if (!fs.existsSync(TEMP_FOLDER)) {
+    fs.mkdirSync(TEMP_FOLDER);
+  }
+
+  const ffmpegFilename: string =
+    process.platform === "win32" ? "ffmpeg.exe" : "ffmpeg";
+
+  const telopFilename = `${TEMP_FOLDER}/joysound-${songId}.joy_02`;
+  const oggFilename = `${TEMP_FOLDER}/joysound-${songId}.ogg`;
+  const videoFilename = `${TEMP_FOLDER}/joysound-${songId}.mp4`;
+
+  const tempFilename = `${videoFilename}.tmp`;
+
+  if (fs.existsSync(videoFilename)) {
+    console.info(`${videoFilename} already exists, not redownloading`);
+    onComplete();
+
+    return;
+  } else if (fs.existsSync(tempFilename)) {
+    console.error(`${videoFilename} was already queued, not redownloading`);
+    return;
+  }
+
+  fs.closeSync(fs.openSync(tempFilename, "w"));
+
+  const ffmpegPromise = new Promise((resolve, reject) => {
+    const ffmpeg = spawn(
+      `${resourcePaths.ffmpeg}/${ffmpegFilename} -y -i "${url}" -c copy -movflags faststart -f mp4 "${tempFilename}"`,
+      { shell: true, stdio: "inherit" }
+    );
+
+    ffmpeg.on("exit", (code, signal) => {
+      if (code === 0) {
+        resolve(code);
+      } else {
+        console.error(
+          `Error downloading Joysound video with ID ${songId}: url=${url}, code=${code}, signal=${signal}`
+        );
+
+        reject(code);
+      }
+    });
+  });
+
+  console.info(`Downloading Joysound video to ${videoFilename}`);
+
+  Promise.all([ffmpegPromise, songDataPromise]).then((values) => {
+    console.log("promise fulfilled");
+
+    const joysoundSongRawData = values[1];
+
+    const telopBase64 = joysoundSongRawData.telop;
+    const oggBase64 = joysoundSongRawData.ogg;
+
+    const telopBuffer = Buffer.from(
+      telopBase64.slice(30) + telopBase64.slice(0, 30),
+      "base64"
+    );
+    const oggBuffer = Buffer.from(
+      oggBase64.slice(30) + oggBase64.slice(0, 30),
+      "base64"
+    );
+
+    fs.writeFileSync(telopFilename, telopBuffer);
+    fs.writeFileSync(oggFilename, oggBuffer);
+
+    const ffmpeg = spawn(
+      `${resourcePaths.ffmpeg}/${ffmpegFilename} -y -stream_loop -1 -i "${tempFilename}" -i "${oggFilename}" -c copy -shortest -movflags faststart -f mp4 "${videoFilename}"`,
+      { shell: true, stdio: "inherit" }
+    );
+
+    ffmpeg.on("exit", (code, signal) => {
+      if (code === 0) {
+        fs.unlinkSync(tempFilename);
+        onComplete();
+      } else {
+        console.error(
+          `Error downloading Joysound video with ID ${songId}: url=${url}, code=${code}, signal=${signal}`
+        );
+      }
+    });
   });
 }
 

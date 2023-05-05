@@ -12,7 +12,7 @@ function getVideoId(videoQuery: string): string | null {
       ? url.pathname.replace("/", "")
       : url.searchParams.get("v");
   } catch (e) {
-    if (e.name !== "TypeError") {
+    if (e instanceof Error && e.name !== "TypeError") {
       throw e;
     }
   }

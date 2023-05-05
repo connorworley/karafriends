@@ -8,8 +8,10 @@ const SearchMethodGrid = () => (
   <div className={styles.container}>
     <h2>Find a song</h2>
     <div className={styles.grid}>
-      <SearchMethodGridItem method="song" text="Title" />
-      <SearchMethodGridItem method="artist" text="Artist" />
+      <SearchMethodGridItem method="joysoundSong" text="Title (Joysound)" />
+      <SearchMethodGridItem method="joysoundArtist" text="Artist (Joysound)" />
+      <SearchMethodGridItem method="song" text="Title (DAM)" />
+      <SearchMethodGridItem method="artist" text="Artist (DAM)" />
       <SearchMethodGridItem method="youtube" text="YouTube" />
       <SearchMethodGridItem method="niconico" text="Niconico" />
     </div>

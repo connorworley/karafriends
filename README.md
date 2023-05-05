@@ -11,6 +11,8 @@ Dependencies
 
 ## Running
 
+XXX: Set `JOYSOUND_EMAIL` and `JOYSOUND_PASSWORD` consts in `src/main/index.ts` before building.
+
 Electron
 
 ```sh

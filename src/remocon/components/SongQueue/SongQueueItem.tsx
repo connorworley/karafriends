@@ -43,6 +43,8 @@ const SongQueueItem = ({ item, eta, myNickname, isCurrent }: Props) => {
 
   const onClick = () => {
     if (itemType === "DamQueueItem") history.push(`/song/${item.songId}`);
+    if (itemType === "JoysoundQueueItem")
+      history.push(`/joysoundSong/${item.songId}`);
     if (itemType === "YoutubeQueueItem")
       history.push(`/search/youtube/${item.songId}`);
     if (itemType === "NicoQueueItem")
@@ -55,6 +57,7 @@ const SongQueueItem = ({ item, eta, myNickname, isCurrent }: Props) => {
 
   let icon = null;
   if (itemType === "DamQueueItem") icon = <MdMusicVideo />;
+  if (itemType === "JoysoundQueueItem") icon = <MdMusicVideo />;
   if (itemType === "YoutubeQueueItem") icon = <FaYoutube />;
   if (itemType === "NicoQueueItem") icon = <SiNiconico />;
 

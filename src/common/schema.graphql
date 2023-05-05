@@ -4,6 +4,22 @@ type Query {
   artistsByName(name: String, first: Int, after: String): ArtistConnection!
   currentSong: QueueItem
   history(first: Int, after: String): HistoryConnection!
+  joysoundArtistsByKeyword(
+    keyword: String
+    first: Int
+    after: String
+  ): JoysoundArtistConnection!
+  joysoundSongDetail(id: String): JoysoundSong!
+  joysoundSongsByArtist(
+    artistId: String
+    first: Int
+    after: String
+  ): JoysoundSongConnection!
+  joysoundSongsByKeyword(
+    keyword: String
+    first: Int
+    after: String
+  ): JoysoundSongConnection!
   nicoVideoInfo(videoId: String): NicoVideoInfoResult!
   playbackState: PlaybackState!
   queue: [QueueItem!]!
@@ -20,6 +36,7 @@ type Mutation {
   popSong: QueueItem
   pushAdhocLyrics(input: PushAdhocLyricsInput): Boolean!
   queueDamSong(input: QueueDamSongInput): QueueSongResult!
+  queueJoysoundSong(input: QueueJoysoundSongInput): QueueSongResult!
   queueYoutubeSong(input: QueueYoutubeSongInput): QueueSongResult!
   queueNicoSong(input: QueueNicoSongInput): QueueSongResult!
   removeSong(songId: String!, timestamp: String!): Boolean!
@@ -87,6 +104,21 @@ type ArtistPageInfo {
   endCursor: String!
 }
 
+type JoysoundArtist {
+  id: ID!
+  name: String!
+}
+
+type JoysoundArtistConnection {
+  edges: [JoysoundArtistEdge!]!
+  pageInfo: ArtistPageInfo!
+}
+
+type JoysoundArtistEdge {
+  node: JoysoundArtist!
+  cursor: String!
+}
+
 enum VocalType {
   NORMAL
   GUIDE_MALE
@@ -108,6 +140,14 @@ type Song {
   playtime: Int
 }
 
+type JoysoundSong {
+  id: ID!
+  name: String!
+  artistName: String!
+  lyricsPreview: String
+  tieUp: String
+}
+
 type Emote {
   nickname: String!
   emote: String!
@@ -125,6 +165,15 @@ input QueueDamSongInput {
   playtime: Int
   streamingUrlIdx: Int!
   nickname: String!
+}
+
+input QueueJoysoundSongInput {
+  songId: String!
+  name: String!
+  artistName: String!
+  playtime: Int
+  nickname: String!
+  isRomaji: Boolean!
 }
 
 input QueueYoutubeSongInput {
@@ -151,8 +200,18 @@ type SongConnection {
   pageInfo: SongPageInfo!
 }
 
+type JoysoundSongConnection {
+  edges: [JoysoundSongEdge!]!
+  pageInfo: SongPageInfo!
+}
+
 type SongEdge {
   node: Song!
+  cursor: String!
+}
+
+type JoysoundSongEdge {
+  node: JoysoundSong!
   cursor: String!
 }
 
@@ -193,6 +252,16 @@ type DamQueueItem implements QueueItemInterface {
   streamingUrlIdx: Int!
 }
 
+type JoysoundQueueItem implements QueueItemInterface {
+  songId: String!
+  name: String!
+  artistName: String!
+  playtime: Int
+  timestamp: String!
+  nickname: String!
+  isRomaji: Boolean!
+}
+
 type YoutubeQueueItem implements QueueItemInterface {
   songId: String!
   name: String!
@@ -214,7 +283,11 @@ type NicoQueueItem implements QueueItemInterface {
   nickname: String!
 }
 
-union QueueItem = DamQueueItem | YoutubeQueueItem | NicoQueueItem
+union QueueItem =
+    DamQueueItem
+  | JoysoundQueueItem
+  | YoutubeQueueItem
+  | NicoQueueItem
 
 type QueueSongInfo {
   eta: Int!
