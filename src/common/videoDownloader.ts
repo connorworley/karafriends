@@ -3,7 +3,10 @@ import { app } from "electron"; // tslint:disable-line:no-implicit-dependencies
 import fs from "fs";
 import process from "process";
 
-import { JoysoundSongRawData } from "../main/joysoundApi";
+import invariant from "ts-invariant";
+
+import { JoysoundQueueItem } from "../main/graphql";
+import { JoysoundAPI } from "../main/joysoundApi";
 
 export const TEMP_FOLDER: string = `${app.getPath("temp")}/karafriends_tmp`;
 const youtubeIdRe: RegExp = new RegExp(/^[0-9A-Za-z_-]{10}[048AEIMQUYcgkosw]$/);
@@ -81,15 +84,29 @@ export function downloadDamVideo(
   });
 }
 
+function getJoysoundPlaytime(ffmpegLogFilename: string): number | null {
+  const ffmpegLog = fs.readFileSync(ffmpegLogFilename).toString();
+
+  const matchData = ffmpegLog.match(/playtime\s+: (\d+)/i);
+  
+  if (matchData) {
+    return Math.floor(parseInt(matchData[1], 10) / 1000);
+  }
+
+  return null;
+}
+
 export function downloadJoysoundData(
-  url: string,
-  songId: string,
-  songDataPromise: Promise<JoysoundSongRawData>,
-  onComplete: () => any
+  joysoundApi: JoysoundAPI,
+  queueItem: JoysoundQueueItem,
+  pushSongToQueue: (queueItem: JoysoundQueueItem) => any,
 ): void {
   if (!fs.existsSync(TEMP_FOLDER)) {
     fs.mkdirSync(TEMP_FOLDER);
   }
+
+  const songId = queueItem.songId;
+  let finalQueueItem: JoysoundQueueItem = queueItem;
 
   const ffmpegFilename: string =
     process.platform === "win32" ? "ffmpeg.exe" : "ffmpeg";
@@ -97,45 +114,56 @@ export function downloadJoysoundData(
   const telopFilename = `${TEMP_FOLDER}/joysound-${songId}.joy_02`;
   const oggFilename = `${TEMP_FOLDER}/joysound-${songId}.ogg`;
   const videoFilename = `${TEMP_FOLDER}/joysound-${songId}.mp4`;
+  const ffmpegLogFilename = `${TEMP_FOLDER}/joyosund-${songId}.log`;
 
   const tempFilename = `${videoFilename}.tmp`;
 
   if (fs.existsSync(videoFilename)) {
     console.info(`${videoFilename} already exists, not redownloading`);
-    onComplete();
+    
+    finalQueueItem = {
+      ...finalQueueItem,
+      playtime: getJoysoundPlaytime(ffmpegLogFilename),
+    };
 
+    pushSongToQueue(finalQueueItem);
     return;
   } else if (fs.existsSync(tempFilename)) {
     console.error(`${videoFilename} was already queued, not redownloading`);
+    
     return;
   }
 
   fs.closeSync(fs.openSync(tempFilename, "w"));
 
-  const ffmpegPromise = new Promise((resolve, reject) => {
-    const ffmpeg = spawn(
-      `${resourcePaths.ffmpeg}/${ffmpegFilename} -y -i "${url}" -c copy -movflags faststart -f mp4 "${tempFilename}"`,
-      { shell: true, stdio: "inherit" }
-    );
+  joysoundApi.getMovieUrls(songId).then((data) => {
+    const url = data.movie.mov1;
 
-    ffmpeg.on("exit", (code, signal) => {
-      if (code === 0) {
-        resolve(code);
-      } else {
-        console.error(
-          `Error downloading Joysound video with ID ${songId}: url=${url}, code=${code}, signal=${signal}`
-        );
+    const ffmpegPromise = new Promise((resolve, reject) => {
+      const ffmpeg = spawn(
+        `${resourcePaths.ffmpeg}/${ffmpegFilename} -y -i "${url}" -c copy -movflags faststart -f mp4 "${tempFilename}"`,
+        { shell: true, stdio: "inherit" },
+      );
 
-        reject(code);
-      }
+      ffmpeg.on("exit", (code, signal) => {
+        if (code === 0) {
+          resolve(code);
+        } else {
+          console.error(
+            `Error downloading Joysound video with ID ${songId}: url=${url}, code=${code}, signal=${signal}`
+          );
+
+          reject(code);
+        }
+      });
     });
-  });
 
-  console.info(`Downloading Joysound video to ${videoFilename}`);
+    const songDataPromise = joysoundApi.getSongRawData(songId);
 
-  Promise.all([ffmpegPromise, songDataPromise]).then((values) => {
-    console.log("promise fulfilled");
+    console.info(`Downloading Joysound video to ${videoFilename}`);
 
+    return Promise.all([ffmpegPromise, songDataPromise]);
+  }).then((values) => {
     const joysoundSongRawData = values[1];
 
     const telopBase64 = joysoundSongRawData.telop;
@@ -151,23 +179,33 @@ export function downloadJoysoundData(
     );
 
     fs.writeFileSync(telopFilename, telopBuffer);
-    fs.writeFileSync(oggFilename, oggBuffer);
 
     const ffmpeg = spawn(
-      `${resourcePaths.ffmpeg}/${ffmpegFilename} -y -stream_loop -1 -i "${tempFilename}" -i "${oggFilename}" -c copy -shortest -movflags faststart -f mp4 "${videoFilename}"`,
-      { shell: true, stdio: "inherit" }
+      `${resourcePaths.ffmpeg}/${ffmpegFilename} -y -stream_loop -1 -i "${tempFilename}" -i - -c copy -shortest -movflags faststart -f mp4 "${videoFilename}" 2>"${ffmpegLogFilename}"`,
+      { shell: true, stdio: ["pipe", 1, 2] }
     );
 
     ffmpeg.on("exit", (code, signal) => {
       if (code === 0) {
         fs.unlinkSync(tempFilename);
-        onComplete();
+
+        finalQueueItem = {
+          ...finalQueueItem,
+          playtime: getJoysoundPlaytime(ffmpegLogFilename),
+        };
+
+        pushSongToQueue(finalQueueItem);
       } else {
         console.error(
-          `Error downloading Joysound video with ID ${songId}: url=${url}, code=${code}, signal=${signal}`
+          `Error downloading Joysound video with ID ${songId}: code=${code}, signal=${signal}`
         );
       }
     });
+
+    invariant(ffmpeg.stdin);
+
+    ffmpeg.stdin.write(oggBuffer);
+    ffmpeg.stdin.end();
   });
 }
 
