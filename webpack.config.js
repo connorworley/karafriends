@@ -74,6 +74,7 @@ module.exports = [
       new MiniCssExtractPlugin(),
     ],
     devServer: {
+      host: "127.0.0.1",
       port: 3000,
       headers: {
         "Access-Control-Allow-Origin": "*",
