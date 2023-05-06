@@ -68,12 +68,13 @@ const fsSource = `#version 300 es
 
 // XXX: Move these to some setting somewhere?
 
-const MAIN_FONT_SIZE = 38;
-const RUBY_FONT_SIZE = 19;
-const ROMAJI_FONT_SIZE = 16;
-
+const MAIN_FONT_SIZE = 40;
 const MAIN_FONT_STROKE = 4;
-const RUBY_FONT_STROKE = 3;
+
+export const RUBY_FONT_SIZE = 19;
+export const RUBY_FONT_STROKE = 3;
+
+const ROMAJI_FONT_SIZE = 16;
 const ROMAJI_FONT_STROKE = 3;
 
 let EXPAND_RATE = 1.0;
@@ -207,20 +208,106 @@ function createLyricsBlockTexture(
   return createTextureFromImage(gl, textCtx.canvas);
 }
 
+function getTextOffset(
+  textCtx: CanvasRenderingContext2D,
+  text: string,
+  charWidth: number
+) {
+  const measure = textCtx.measureText(text);
+
+  if (charWidth >= measure.width) {
+    return 0;
+  }
+
+  if (
+    measure.actualBoundingBoxLeft === 0 ||
+    measure.actualBoundingBoxRight === 0
+  ) {
+    return (charWidth - measure.width) / 2;
+  }
+
+  const boundingBoxWidth =
+    measure.actualBoundingBoxLeft + measure.actualBoundingBoxRight;
+  const widthDiff = measure.width - charWidth;
+  const halfDiff = widthDiff / 2;
+
+  let leftOverflow = -1 * measure.actualBoundingBoxLeft;
+  let rightOverflow = measure.width - measure.actualBoundingBoxRight;
+
+  let isLeftOverflow = false;
+
+  if (leftOverflow >= halfDiff) {
+    leftOverflow -= halfDiff;
+    isLeftOverflow = true;
+  }
+
+  let isRightOverflow = false;
+
+  if (rightOverflow >= halfDiff) {
+    rightOverflow -= halfDiff;
+    isRightOverflow = true;
+  }
+
+  if (isLeftOverflow && isRightOverflow) {
+    return leftOverflow + measure.actualBoundingBoxLeft;
+  }
+
+  if (isLeftOverflow && !isRightOverflow) {
+    if (leftOverflow >= halfDiff - rightOverflow) {
+      return (
+        leftOverflow -
+        (halfDiff - rightOverflow) +
+        measure.actualBoundingBoxLeft
+      );
+    } else {
+      return (charWidth - boundingBoxWidth) / 2 + measure.actualBoundingBoxLeft;
+    }
+  }
+
+  if (!isLeftOverflow && isRightOverflow) {
+    if (rightOverflow >= widthDiff - leftOverflow) {
+      return measure.actualBoundingBoxLeft;
+    } else {
+      return (charWidth - boundingBoxWidth) / 2 + measure.actualBoundingBoxLeft;
+    }
+  }
+
+  return (charWidth - boundingBoxWidth) / 2 + measure.actualBoundingBoxLeft;
+}
+
+function getRomajiTextOffset(
+  textCtx: CanvasRenderingContext2D,
+  text: string,
+  sourceWidth: number
+) {
+  const measure = textCtx.measureText(text);
+
+  return (sourceWidth - measure.width) / 2;
+}
+
 function drawTextToCanvas(
   textCtx: CanvasRenderingContext2D,
   fontSize: number,
   fontStroke: number,
   xPos: number,
   yPos: number,
-  text: string
+  text: string,
+  isRomaji: boolean,
+  charWidth?: number
 ): void {
+  let offX = 0;
+
+  if (charWidth !== undefined) {
+    textCtx.font = `${fontSize + fontStroke}px ${JP_FONT_FACE}`;
+    textCtx.lineWidth = fontStroke * 2;
+
+    offX = isRomaji
+      ? getRomajiTextOffset(textCtx, text, charWidth)
+      : getTextOffset(textCtx, text, charWidth);
+  }
+
   textCtx.font = `${fontSize * EXPAND_RATE}px ${JP_FONT_FACE}`;
   textCtx.lineWidth = fontStroke * 2 * EXPAND_RATE;
-
-  // XXX: This is a hack but I have no clue what the actual kerning is
-  //      supposed to be
-  const offX = textCtx.measureText(text).actualBoundingBoxLeft / 2;
 
   textCtx.strokeText(
     text,
@@ -242,7 +329,7 @@ function drawMainTextToCanvas(
   let currX = 0;
 
   for (const glyphChar of lyricsBlock.chars) {
-    const unicodeChar = decodeSJIS(glyphChar.charCode);
+    const text = decodeSJIS(glyphChar.charCode);
 
     drawTextToCanvas(
       textCtx,
@@ -250,7 +337,9 @@ function drawMainTextToCanvas(
       MAIN_FONT_STROKE,
       currX,
       RUBY_FONT_SIZE + RUBY_FONT_STROKE * 2,
-      unicodeChar
+      text,
+      false,
+      glyphChar.width
     );
 
     currX += glyphChar.width;
@@ -273,10 +362,11 @@ function drawFuriganaTextToCanvas(
         RUBY_FONT_STROKE,
         currX,
         0,
-        unicodeChar
+        unicodeChar,
+        false
       );
 
-      currX += RUBY_FONT_SIZE + 2;
+      currX += RUBY_FONT_SIZE + RUBY_FONT_STROKE;
     }
   }
 }
@@ -294,7 +384,9 @@ function drawRomajiTextToCanvas(
       ROMAJI_FONT_STROKE,
       romajiBlock.xPos,
       0,
-      romajiBlock.phrase
+      romajiBlock.phrase,
+      true,
+      romajiBlock.sourceWidth
     );
   }
 }

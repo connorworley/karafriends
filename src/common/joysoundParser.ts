@@ -4,6 +4,11 @@ import invariant from "ts-invariant";
 
 import { toRomaji } from "wanakana";
 
+import {
+  RUBY_FONT_SIZE,
+  RUBY_FONT_STROKE,
+} from "../renderer/JoysoundRenderer.tsx";
+
 export interface JoysoundPaletteColor {
   id: number;
   rgb: number[];
@@ -24,6 +29,7 @@ interface JoysoundLyricsFurigana {
 interface JoysoundLyricsRomaji {
   phrase: string;
   xPos: number;
+  sourceWidth: number;
 }
 
 interface JoysoundScrollEvent {
@@ -164,6 +170,7 @@ function getMainRomajiBlocks(chars: JoysoundLyricsChar[]) {
         mainRomajiBlocks.push({
           phrase: toRomaji(unicodeChar + nextUnicodeChar),
           xPos: currXPos,
+          sourceWidth: glyph.width + nextGlyph.width,
         });
 
         currXPos += glyph.width + nextGlyph.width;
@@ -176,6 +183,7 @@ function getMainRomajiBlocks(chars: JoysoundLyricsChar[]) {
     mainRomajiBlocks.push({
       phrase: toRomaji(unicodeChar),
       xPos: currXPos,
+      sourceWidth: glyph.width,
     });
 
     currXPos += glyph.width;
@@ -197,6 +205,9 @@ function getFuriganaRomajiBlocks(furigana: JoysoundLyricsFurigana[]) {
     furiganaRomajiBlocks.push({
       phrase: romajiPhrase,
       xPos: furiganaBlock.xPos,
+      sourceWidth:
+        furiganaPhrase.length * (RUBY_FONT_SIZE + RUBY_FONT_STROKE) +
+        RUBY_FONT_STROKE,
     });
   }
 
