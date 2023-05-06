@@ -7663,12 +7663,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"husky@npm:^5.0.4":
-  version: 5.0.4
-  resolution: "husky@npm:5.0.4"
+"husky@npm:^8.0.3":
+  version: 8.0.3
+  resolution: "husky@npm:8.0.3"
   bin:
     husky: lib/bin.js
-  checksum: 1653b81744e577c6e67b657560e461fd1e88a33413abf0c625cd9c3581a2950aae15856242ffca32e2a9485a401de39060b71f9b43314e43a0ff236c4116ed71
+  checksum: 837bc7e4413e58c1f2946d38fb050f5d7324c6f16b0fd66411ffce5703b294bd21429e8ba58711cd331951ee86ed529c5be4f76805959ff668a337dbfa82a1b0
   languageName: node
   linkType: hard
 
@@ -9166,7 +9166,7 @@ __metadata:
     graphql-subscriptions: ^1.2.1
     hls.js: ^0.14.16
     html-webpack-plugin: ^4.5.0
-    husky: ^5.0.4
+    husky: ^8.0.3
     keytar: ^7.9.0
     lint-staged: ^13.2.2
     lodash: ^4.17.21
