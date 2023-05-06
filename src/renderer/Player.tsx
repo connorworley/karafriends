@@ -1,3 +1,5 @@
+import invariant from "ts-invariant";
+
 import Hls from "hls.js";
 import React, { useEffect, useRef, useState } from "react";
 import { commitMutation, fetchQuery, graphql } from "react-relay";
@@ -6,8 +8,10 @@ import { PlayerPopSongMutation } from "./__generated__/PlayerPopSongMutation.gra
 
 import environment from "../common/graphqlEnvironment";
 import usePlaybackState from "../common/hooks/usePlaybackState";
+import parseJoysoundData, { JoysoundTelopData } from "../common/joysoundParser";
 import AdhocLyrics from "./AdhocLyrics";
 import { InputDevice } from "./audioSystem";
+import JoysoundRenderer from "./JoysoundRenderer";
 import PianoRoll from "./PianoRoll";
 import "./Player.css";
 
@@ -25,6 +29,14 @@ const popSongMutation = graphql`
         streamingUrlIdx
         name
         artistName
+      }
+      ... on JoysoundQueueItem {
+        __typename
+        songId
+        timestamp
+        name
+        artistName
+        isRomaji
       }
       ... on YoutubeQueueItem {
         __typename
@@ -54,6 +66,11 @@ function Player(props: { mics: InputDevice[] }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const trackRef = useRef<HTMLTrackElement>(null);
   const [scoringData, setScoringData] = useState<readonly number[]>([]);
+
+  const [joysoundTelop, setJoysoundTelop] = useState<ArrayBuffer | null>(null);
+  const [shouldShowJoysound, setShouldShowJoysound] = useState<boolean>(false);
+  const [joysoundIsRomaji, setJoysoundIsRomaji] = useState<boolean>(false);
+
   const [shouldShowPianoRoll, setShouldShowPianoRoll] = useState<boolean>(true);
   const [shouldShowAdhocLyrics, setShouldShowAdhocLyrics] = useState<boolean>(
     false
@@ -93,6 +110,7 @@ function Player(props: { mics: InputDevice[] }) {
             switch (popSong.__typename) {
               case "DamQueueItem":
                 setShouldShowPianoRoll(true);
+                setShouldShowJoysound(false);
                 setShouldShowAdhocLyrics(false);
                 setScoringData(popSong.scoringData);
 
@@ -158,9 +176,34 @@ function Player(props: { mics: InputDevice[] }) {
                     videoRef.current.play();
                   });
                 break;
+              case "JoysoundQueueItem":
+                setShouldShowPianoRoll(false);
+                setShouldShowJoysound(true);
+                setShouldShowAdhocLyrics(false);
+
+                videoRef.current.src = `karafriends://joysound-${popSong.songId}.mp4`;
+
+                navigator.mediaSession.metadata = new MediaMetadata({
+                  title: popSong.name,
+                  artist: popSong.artistName,
+                });
+
+                fetch(`karafriends://joysound-${popSong.songId}.joy_02`)
+                  .then((resp) => resp.arrayBuffer())
+                  .then((data) => {
+                    setJoysoundTelop(data);
+                    setJoysoundIsRomaji(popSong.isRomaji);
+
+                    invariant(videoRef.current);
+                    videoRef.current.play();
+                  });
+
+                break;
               case "YoutubeQueueItem":
                 setShouldShowPianoRoll(false);
+                setShouldShowJoysound(false);
                 setShouldShowAdhocLyrics(popSong.hasAdhocLyrics);
+
                 videoRef.current.src = `karafriends://${popSong.songId}.mp4`;
                 if (trackRef?.current && popSong?.hasCaptions) {
                   trackRef.current.default = true;
@@ -180,7 +223,9 @@ function Player(props: { mics: InputDevice[] }) {
                 break;
               case "NicoQueueItem":
                 setShouldShowPianoRoll(false);
+                setShouldShowJoysound(false);
                 setShouldShowAdhocLyrics(false);
+
                 videoRef.current.src = `karafriends://${popSong.songId}.mp4`;
 
                 gainNode.current.gain.value = NON_DAM_GAIN;
@@ -228,6 +273,13 @@ function Player(props: { mics: InputDevice[] }) {
 
   return (
     <div className="karaVidContainer">
+      {shouldShowJoysound && joysoundTelop !== null ? (
+        <JoysoundRenderer
+          telop={joysoundTelop}
+          isRomaji={joysoundIsRomaji}
+          videoRef={videoRef}
+        />
+      ) : null}
       {shouldShowPianoRoll ? (
         <PianoRoll
           scoringData={scoringData}

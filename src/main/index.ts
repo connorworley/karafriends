@@ -35,8 +35,12 @@ import karafriendsConfig from "../common/config";
 import { TEMP_FOLDER } from "./../common/videoDownloader";
 import { MinseiAPI, MinseiCredentials } from "./damApi";
 import { applyGraphQLMiddleware, subscriptionServer } from "./graphql";
+import { JoysoundAPI } from "./joysoundApi";
 import setupMdns from "./mdns";
 import remoconMiddleware from "./remoconMiddleware";
+
+const JOYSOUND_EMAIL = "EMAIL_GOES_HERE";
+const JOYSOUND_PASSWORD = "PASSWORD_GOES_HERE";
 
 const nativeAudio = require("../../native"); // tslint:disable-line:no-var-requires
 
@@ -58,22 +62,36 @@ protocol.registerSchemesAsPrivileged([
   },
 ]);
 
-function attemptLogin(creds: Credentials) {
-  return MinseiAPI.login(creds.account, creds.password)
-    .then((json) => ({
-      userCode: creds.account,
-      authToken: json.data.authToken,
+async function attemptLogin(minseiLoginCreds: Credentials) {
+  const joysoundEmail = encodeURIComponent(JOYSOUND_EMAIL);
+  const joysoundPassword = encodeURIComponent(JOYSOUND_PASSWORD);
+
+  return Promise.all([
+    MinseiAPI.login(minseiLoginCreds.account, minseiLoginCreds.password),
+    JoysoundAPI.login(joysoundEmail, joysoundPassword),
+  ])
+    .then((values) => ({
+      minseiUserCode: minseiLoginCreds.account,
+      minseiAuthToken: values[0].data.authToken,
+      joysoundCreds: values[1],
     }))
     .catch((e) =>
       deleteCredentials().then(() =>
         Promise.reject(`credentials were invalid (${e})\n\n${e.stack}`)
       )
     )
-    .then((minseiCreds: MinseiCredentials) => {
+    .then((creds) => {
+      const minseiCreds: MinseiCredentials = {
+        userCode: creds.minseiUserCode,
+        authToken: creds.minseiAuthToken,
+      };
+
       const expressApp = express();
       expressApp.use(compression());
       expressApp.use(remoconMiddleware());
-      applyGraphQLMiddleware(expressApp, minseiCreds);
+
+      applyGraphQLMiddleware(expressApp, minseiCreds, creds.joysoundCreds);
+
       const server = createServer(expressApp);
       server.listen(karafriendsConfig.remoconPort, subscriptionServer(server));
     });

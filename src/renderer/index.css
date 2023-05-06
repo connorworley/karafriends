@@ -1,3 +1,8 @@
+@font-face {
+  font-family: "notoSerifJP";
+  src: url("./fonts/NotoSerifJP-SemiBold.otf");
+}
+
 html,
 body,
 #root {
@@ -17,4 +22,15 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+#fontPreload {
+  font-family: notoSerifJP;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  height: 0;
+  width: 0;
+  display: inline-block;
 }

@@ -10,7 +10,7 @@ function getVideoId(videoQuery: string): string | null {
     const url = new URL(videoQuery);
     return url.pathname.split("/").slice(-1)[0];
   } catch (e) {
-    if (e.name !== "TypeError") {
+    if (e instanceof Error && e.name !== "TypeError") {
       throw e;
     }
   }
