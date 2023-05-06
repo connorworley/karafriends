@@ -113,7 +113,7 @@
     "webpack": "^5.10.0",
     "webpack-cli": "^4.2.0",
     "webpack-dev-server": "^3.11.0",
-    "webpack-merge": "^5.4.0"
+    "webpack-merge": "^5.8.0"
   },
   "resolutions": {
     "graphql": "^15.4.0"
