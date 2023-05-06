@@ -2197,10 +2197,10 @@
   dependencies:
     source-map "^0.6.1"
 
-"@types/user-agents@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/@types/user-agents/-/user-agents-1.0.1.tgz"
-  integrity sha512-+iKPJHdSyqyoo3NMLEPEiCVlTY6d6iCg8ob5YumgtLRDMxIa8UHjuBIDOmqkT4sgl488In/pr3I0N/0el+kbRg==
+"@types/user-agents@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@types/user-agents/-/user-agents-1.0.2.tgz#3499d4aaf01a004ae9cab4e52b8d8c8b32637733"
+  integrity sha512-WOoL2UJTI6RxV8RB2kS3ZhxjjijI5G1i7mgU7mtlm4LsC1XGCfiV56h+GV4VZnAUkkkLQ4gbFGR/dggT01n0RA==
 
 "@types/verror@^1.10.3":
   version "1.10.6"
@@ -4560,10 +4560,10 @@ dot-case@^3.0.4:
     no-case "^3.0.4"
     tslib "^2.0.3"
 
-dot-json@^1.2.2:
-  version "1.2.2"
-  resolved "https://registry.npmjs.org/dot-json/-/dot-json-1.2.2.tgz"
-  integrity sha512-AKL+GsO4wSEU4LU+fAk/PqN4nQ6PB1vT3HpMiZous9xCzK5S0kh4DzfUY0EfU67jsIXLlu0ty71659N9Nmg+Tw==
+dot-json@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/dot-json/-/dot-json-1.3.0.tgz#d9e498558c44bb41b22ceffe070a28b2d836314a"
+  integrity sha512-Pu11Prog/Yjf2lBICow82/DSV46n3a2XT1Rqt/CeuhkO1fuacF7xydYhI0SwQx2Ue0jCyLtQzgKPFEO6ewv+bQ==
   dependencies:
     detect-indent "~6.0.0"
     docopt "~0.6.2"
@@ -10399,12 +10399,12 @@ use@^3.1.0:
   resolved "https://registry.npmjs.org/use/-/use-3.1.1.tgz"
   integrity sha512-cwESVXlO3url9YWlFW/TA9cshCEhtu7IKJ/p5soJ/gGpj7vbvFrAY/eIioQ6Dw23KjZhYgiIo8HOs1nQ2vr/oQ==
 
-user-agents@^1.0.658:
-  version "1.0.659"
-  resolved "https://registry.npmjs.org/user-agents/-/user-agents-1.0.659.tgz"
-  integrity sha512-r1ykfVDf7kGGTAkiea0P4K5rhbvK8gtN3lCYiB1a0jIhOorgWyTBNTg8otCCqpZ0Ws4HiiKDiEDcco2A/l8LIg==
+user-agents@^1.0.1370:
+  version "1.0.1370"
+  resolved "https://registry.yarnpkg.com/user-agents/-/user-agents-1.0.1370.tgz#ff62d485ea2f02589cc8583cf165585d3576623f"
+  integrity sha512-hpAo6Caf1xNr7FcZ46et8AWYvZxE3lgahdtCLls63KR+V1kU1M7DXmiCWbtMXKAS5NI2eScR5hk4Zdqs0RPXRA==
   dependencies:
-    dot-json "^1.2.2"
+    dot-json "^1.3.0"
     lodash.clonedeep "^4.5.0"
 
 utf8-byte-length@^1.0.1:
