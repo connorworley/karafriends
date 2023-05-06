@@ -2445,13 +2445,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/materialize-css@npm:^1.0.8":
-  version: 1.0.8
-  resolution: "@types/materialize-css@npm:1.0.8"
+"@types/materialize-css@npm:^1.0.11":
+  version: 1.0.11
+  resolution: "@types/materialize-css@npm:1.0.11"
   dependencies:
     "@types/jquery": "*"
     cash-dom: "*"
-  checksum: 2ed75994fe0c5bc8d3213d0d29e71297b9a240a4e20049c8a87e5e6b5c2dfff53964ad3a68b23b5905facfa6790000c8c89a049a3210e24cf2acca26b7df9cbc
+  checksum: 23b56b20fd77de4fd842741c41a579e94d969de035a8da8e8624cb6c9451620172ba87ec090d3db9d2961fcec97429ad9ec499cecd5ec1df86b29d398dc14df0
   languageName: node
   linkType: hard
 
@@ -9197,7 +9197,7 @@ __metadata:
     "@types/hls.js": ^0.13.3
     "@types/keytar": ^4.4.2
     "@types/lodash": ^4.14.194
-    "@types/materialize-css": ^1.0.8
+    "@types/materialize-css": ^1.0.11
     "@types/node": ^16.0.0
     "@types/node-fetch": ^2.5.7
     "@types/promise-retry": ^1.1.3
@@ -9239,7 +9239,7 @@ __metadata:
     keytar: ^7.9.0
     lint-staged: ^13.2.2
     lodash: ^4.17.21
-    materialize-css: ^1.0.0-rc.2
+    materialize-css: ^1.0.0
     mini-css-extract-plugin: ^1.3.2
     multicast-dns: ^7.2.5
     mv: ^2.1.1
@@ -9704,10 +9704,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"materialize-css@npm:^1.0.0-rc.2":
-  version: 1.0.0-rc.2
-  resolution: "materialize-css@npm:1.0.0-rc.2"
-  checksum: f84fd449b2640c7e05932b2f1cef5c5c8a413b346c6d57da80cef7bb48aa7aeb16ae0906bbc0a1c502f395dbc07267b2e019f1c342d6d5810787d1aca0acf4d5
+"materialize-css@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "materialize-css@npm:1.0.0"
+  checksum: 60ce8c16a65ec458db46a1270017972eabbc4c3dad63f2104ca9a58e8b22b58c1cd90fc9b6737b1a354a85958f359cb766b095c27114eda4954242077500017a
   languageName: node
   linkType: hard
 
