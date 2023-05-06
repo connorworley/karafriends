@@ -9142,7 +9142,7 @@ __metadata:
     webpack-cli: ^4.2.0
     webpack-dev-server: ^3.11.0
     webpack-merge: ^5.8.0
-    yaml: ^2.0.1
+    yaml: ^2.2.2
     youtube-player: ^5.5.2
   languageName: unknown
   linkType: soft
@@ -14380,10 +14380,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yaml@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "yaml@npm:2.0.1"
-  checksum: 23f95ff0d646c894048ac5072b5b6d393a398af1b2553916f0de276d62dbb3279ae3c969d7fcefe7a213be4efc9b4aa3ae1439c97095d3d3765fc6bc424807ac
+"yaml@npm:^2.2.2":
+  version: 2.2.2
+  resolution: "yaml@npm:2.2.2"
+  checksum: d90c235e099e30094dcff61ba3350437aef53325db4a6bcd04ca96e1bfe7e348b191f6a7a52b5211e2dbc4eeedb22a00b291527da030de7c189728ef3f2b4eb3
   languageName: node
   linkType: hard
 
