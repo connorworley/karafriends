@@ -9125,7 +9125,7 @@ __metadata:
     regenerator-runtime: ^0.13.9
     relay-compiler: ^10.1.0
     relay-compiler-language-typescript: ^14.0.0
-    relay-config: ^10.1.0
+    relay-config: ^12.0.1
     relay-runtime: ^10.1.0
     sass: ^1.52.2
     sass-loader: ^13.0.0
@@ -11652,14 +11652,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"relay-config@npm:^10.1.0":
-  version: 10.1.0
-  resolution: "relay-config@npm:10.1.0"
+"relay-config@npm:^12.0.1":
+  version: 12.0.1
+  resolution: "relay-config@npm:12.0.1"
   dependencies:
     cosmiconfig: ^5.0.5
-  peerDependencies:
-    relay-compiler: 10.1.0
-  checksum: 387d03c7daa7a5a47964a2cccd7c9e4b841cac99ff723ac72b8dfb4393ab2abe935918553728ba6373fbd49e325447cd71f1a23d78697e9d361c5dd7544052ab
+  checksum: bad9578b1e2525dd21897cb35e89acbf21cc3a19852c916aec81baf3c5246493a1ac8c5c0f40736325a04116aa66129ec854dfe089b28eca65b79844788fd9d9
   languageName: node
   linkType: hard
 
