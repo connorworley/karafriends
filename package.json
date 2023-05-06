@@ -60,7 +60,7 @@
     "relay-runtime": "^10.1.0",
     "subscriptions-transport-ws": "^0.9.18",
     "ts-invariant": "^0.9.1",
-    "user-agents": "^1.0.1370",
+    "user-agents": "^1.0.1371",
     "wanakana": "^4.0.2",
     "yaml": "^2.2.2",
     "youtube-player": "^5.5.2"
