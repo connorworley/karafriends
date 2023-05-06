@@ -4,8 +4,8 @@
   "private": true,
   "main": "build/main/main.js",
   "scripts": {
-    "native-debug": "cross-env-shell \"cargo build --manifest-path native/Cargo.toml $CARGO_ARGS\"",
-    "native-release": "cross-env-shell \"cargo build --manifest-path native/Cargo.toml --release $CARGO_ARGS\"",
+    "native-debug": "cross-env-shell \"cargo build --manifest-path native/Cargo.toml ${CARGO_ARGS:-}\"",
+    "native-release": "cross-env-shell \"cargo build --manifest-path native/Cargo.toml --release ${CARGO_ARGS:-}\"",
     "compile": "relay-compiler --schema src/common/schema.graphql --src src --language typescript && webpack",
     "build": "yarn get-external-resources && yarn native-release && yarn compile && electron-builder -c.extraMetadata.main=./build/main/main.js --publish never --dir",
     "start": "cross-env NODE_ENV=development yarn _start",
@@ -140,5 +140,6 @@
     "**/*": "prettier --write --ignore-unknown",
     "**/*.(ts|tsx)": "tslint --fix",
     "**/*.rs": "rustfmt"
-  }
+  },
+  "packageManager": "yarn@3.5.1"
 }
