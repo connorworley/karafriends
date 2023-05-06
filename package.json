@@ -25,7 +25,7 @@
     "@types/youtube-player": "^5.5.3",
     "apollo-datasource-rest": "^0.13.0",
     "apollo-server-express": "^2.19.1",
-    "classnames": "^2.3.1",
+    "classnames": "^2.3.2",
     "color-convert": "^2.0.1",
     "compression": "^1.7.4",
     "cubic-spline": "^3.0.3",
