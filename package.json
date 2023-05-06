@@ -15,7 +15,7 @@
     "postinstall": "husky install"
   },
   "dependencies": {
-    "@sentry/browser": "^7.12.1",
+    "@sentry/browser": "^7.51.0",
     "@sentry/node": "^7.51.0",
     "@types/compression": "^1.7.2",
     "@types/react-fade-in": "^2.0.2",
