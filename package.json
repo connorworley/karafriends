@@ -56,7 +56,7 @@
     "react-relay": "^11.0.0",
     "react-router-dom": "^5.2.0",
     "react-swipeable": "^7.0.0",
-    "regenerator-runtime": "^0.13.9",
+    "regenerator-runtime": "^0.13.11",
     "relay-runtime": "^10.1.0",
     "subscriptions-transport-ws": "^0.9.18",
     "ts-invariant": "^0.9.1",
