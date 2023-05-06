@@ -361,6 +361,7 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
                 }
             },
             |e| panic!("{}", e),
+            None,
         )?;
 
         let output_stream = output_device.build_output_stream(
@@ -372,6 +373,7 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
                 }
             },
             |e| panic!("{}", e),
+            None,
         )?;
 
         input_stream.play()?;
