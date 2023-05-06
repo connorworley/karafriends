@@ -92,7 +92,7 @@
     "copy-webpack-plugin": "^8.1.1",
     "cross-env": "^7.0.3",
     "css-loader": "^5.0.1",
-    "electron": "^13.0.1",
+    "electron": "^18.3.7",
     "electron-builder": "^23.3.3",
     "html-webpack-plugin": "^4.5.0",
     "husky": "^5.0.4",
