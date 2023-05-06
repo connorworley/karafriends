@@ -5329,10 +5329,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dataloader@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "dataloader@npm:2.0.0"
-  checksum: 9f10b9d2e35225b08a72435facfe40c0c124e329f43bd0fe4d67411ee667d12145f7ce63f9b74f73af8556dc6a98bae59147a5cca2171315dc1de509d4db04c0
+"dataloader@npm:^2.2.2":
+  version: 2.2.2
+  resolution: "dataloader@npm:2.2.2"
+  checksum: 4dabd247089c29f194e94d5434d504f99156c5c214a03463c20f3f17f40398d7e179edee69a27c16e315519ac8739042a810090087ae26449a0e685156a02c65
   languageName: node
   linkType: hard
 
@@ -9139,7 +9139,7 @@ __metadata:
     cross-env: ^7.0.3
     css-loader: ^5.0.1
     cubic-spline: ^3.0.3
-    dataloader: ^2.0.0
+    dataloader: ^2.2.2
     electron: ^18.3.7
     electron-builder: ^23.3.3
     electron-is-dev: ^2.0.0
