@@ -38,3 +38,19 @@ jobs:
           name: karafriends-windows
           path: dist/win-unpacked/
           if-no-files-found: error
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: "yarn"
+      - run: yarn install --frozen-lockfile
+      - run: yarn build
+      - run: ls dist
+      - uses: actions/upload-artifact@v2
+        with:
+          name: karafriends-linux
+          path: dist/linux/
+          if-no-files-found: error
