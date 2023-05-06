@@ -4,10 +4,7 @@ import invariant from "ts-invariant";
 
 import { toRomaji } from "wanakana";
 
-import {
-  RUBY_FONT_SIZE,
-  RUBY_FONT_STROKE,
-} from "../renderer/JoysoundRenderer.tsx";
+import { RUBY_FONT_SIZE, RUBY_FONT_STROKE } from "../renderer/JoysoundRenderer";
 
 export interface JoysoundPaletteColor {
   id: number;
