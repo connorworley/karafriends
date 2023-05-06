@@ -46,6 +46,7 @@ jobs:
         with:
           node-version: 16
           cache: "yarn"
+      - run: apt-get update && apt-get install -y libasound2-dev
       - run: yarn install --frozen-lockfile
       - run: yarn build
       - run: ls dist
