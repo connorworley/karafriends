@@ -48,9 +48,8 @@ const nowPlayingSubscription = graphql`
 
 const NowPlaying = () => {
   const nickname = useNickname();
-  const [currentSong, setCurrentSong] = useState<
-    NowPlayingSubscriptionResponse["currentSongChanged"]
-  >(null);
+  const [currentSong, setCurrentSong] =
+    useState<NowPlayingSubscriptionResponse["currentSongChanged"]>(null);
 
   useEffect(() => {
     const initialQuery = fetchQuery<NowPlayingQuery>(

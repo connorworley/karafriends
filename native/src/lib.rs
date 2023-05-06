@@ -293,7 +293,7 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
             pitch_detector::PitchDetector::new(input_sample_rate as f32, pitch_sample_count);
 
         let mut resampler = rubato::SincFixedIn::<f32>::new(
-            output_sample_rate as f64 / input_sample_rate as f64 as f64,
+            output_sample_rate as f64 / input_sample_rate as f64,
             1.0,
             rubato::InterpolationParameters {
                 sinc_len: 256,

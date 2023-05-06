@@ -46,8 +46,8 @@ function AdhocLyrics() {
       const freshLyricIndices = newLyricIndices.filter(
         (lyricIndex) => !currentLyricIndices.includes(lyricIndex)
       );
-      const newLyricEntry: LyricEntry[] = response.currentSongAdhocLyricsChanged.map(
-        (lyricEntry, index) => {
+      const newLyricEntry: LyricEntry[] =
+        response.currentSongAdhocLyricsChanged.map((lyricEntry, index) => {
           const { width, height } = getTextWidthHeight(
             lyricEntry.lyric,
             // This must match the width specified in AdhocLyrics.css
@@ -63,8 +63,7 @@ function AdhocLyrics() {
             marginTop: -1 * (newLyricsLineCount - index) * height * 1.1,
             isNewLyricLine: freshLyricIndices.includes(lyricEntry.lyricIndex),
           };
-        }
-      );
+        });
       return newLyricEntry;
     });
   }

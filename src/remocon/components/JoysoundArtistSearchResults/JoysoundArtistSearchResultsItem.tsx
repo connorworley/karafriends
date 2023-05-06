@@ -5,7 +5,8 @@ import { ListItem } from "../List";
 import styles from "./JoysoundArtistSearchResults.module.scss";
 import { JoysoundArtistSearchResults_joysoundArtistsByKeyword } from "./__generated__/JoysoundArtistSearchResults_joysoundArtistsByKeyword.graphql";
 
-type Props = JoysoundArtistSearchResults_joysoundArtistsByKeyword["joysoundArtistsByKeyword"]["edges"][0]["node"];
+type Props =
+  JoysoundArtistSearchResults_joysoundArtistsByKeyword["joysoundArtistsByKeyword"]["edges"][0]["node"];
 
 const JoysoundArtistSearchResultsItem = ({ id, name }: Props) => (
   <Link to={`/joysoundArtist/${id}`}>

@@ -502,17 +502,15 @@ export default function PianoRoll(props: {
       },
       []
     );
-    const [
-      freeTimeIntervals,
-      lastLyricsIntervalEnd,
-    ] = combinedLyricsIntervals.reduce<[[number, number][], number]>(
-      (acc, cur) => {
-        const [intervals, prevEnd] = acc;
-        const [curStart, curEnd] = cur;
-        return [intervals.concat([[prevEnd, curStart]]), curEnd];
-      },
-      [[], 0]
-    );
+    const [freeTimeIntervals, lastLyricsIntervalEnd] =
+      combinedLyricsIntervals.reduce<[[number, number][], number]>(
+        (acc, cur) => {
+          const [intervals, prevEnd] = acc;
+          const [curStart, curEnd] = cur;
+          return [intervals.concat([[prevEnd, curStart]]), curEnd];
+        },
+        [[], 0]
+      );
     freeTimeIntervals.push([lastLyricsIntervalEnd, 9999]);
     const freeTimePositions = freeTimeIntervals
       .map(([start, end]) => quadToTriangles(start, 1.0, end, 0.0))
@@ -562,23 +560,20 @@ export default function PianoRoll(props: {
       premultipliedAlpha: false,
     })!;
 
-    const pitchPollers: [
-      PitchDetectionBuffer,
-      PitchProgram,
-      NodeJS.Timeout
-    ][] = props.mics.map((mic, i) => {
-      const buffer = new PitchDetectionBuffer();
-      return [
-        buffer,
-        new PitchProgram(
-          gl,
-          convert.hsv
-            .rgb([(360 / props.mics.length) * i, 30, 100])
-            .map((channel) => channel / 255) as [number, number, number]
-        ),
-        setInterval(() => pollPitch(mic, buffer), 25),
-      ];
-    });
+    const pitchPollers: [PitchDetectionBuffer, PitchProgram, NodeJS.Timeout][] =
+      props.mics.map((mic, i) => {
+        const buffer = new PitchDetectionBuffer();
+        return [
+          buffer,
+          new PitchProgram(
+            gl,
+            convert.hsv
+              .rgb([(360 / props.mics.length) * i, 30, 100])
+              .map((channel) => channel / 255) as [number, number, number]
+          ),
+          setInterval(() => pollPitch(mic, buffer), 25),
+        ];
+      });
 
     const noteProgram = new NoteProgram(gl, positions);
     const seekProgram = new SeekProgram(gl);

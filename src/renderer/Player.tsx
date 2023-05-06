@@ -72,9 +72,8 @@ function Player(props: { mics: InputDevice[] }) {
   const [joysoundIsRomaji, setJoysoundIsRomaji] = useState<boolean>(false);
 
   const [shouldShowPianoRoll, setShouldShowPianoRoll] = useState<boolean>(true);
-  const [shouldShowAdhocLyrics, setShouldShowAdhocLyrics] = useState<boolean>(
-    false
-  );
+  const [shouldShowAdhocLyrics, setShouldShowAdhocLyrics] =
+    useState<boolean>(false);
   const { playbackState, setPlaybackState } = usePlaybackState();
   const pollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const gainNode = useRef<GainNode | null>(null);

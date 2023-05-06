@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import { fetchQuery, graphql, requestSubscription, useMutation } from "react-relay";
+import {
+  fetchQuery,
+  graphql,
+  requestSubscription,
+  useMutation,
+} from "react-relay";
 
 import environment from "../graphqlEnvironment";
 import { usePlaybackStateMutation } from "./__generated__/usePlaybackStateMutation.graphql";
@@ -38,7 +43,8 @@ export default function usePlaybackState() {
     )
       // @ts-ignore: @types/react-relay has wrong return type for fetchQuery
       .subscribe({
-        next: (response: usePlaybackStateQuery["response"]) => setLocalPlaybackState(response.playbackState),
+        next: (response: usePlaybackStateQuery["response"]) =>
+          setLocalPlaybackState(response.playbackState),
       });
 
     const subscription = requestSubscription<usePlaybackStateSubscription>(
