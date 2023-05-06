@@ -1754,6 +1754,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@leichtgewicht/ip-codec@npm:^2.0.1":
+  version: 2.0.4
+  resolution: "@leichtgewicht/ip-codec@npm:2.0.4"
+  checksum: 468de1f04d33de6d300892683d7c8aecbf96d1e2c5fe084f95f816e50a054d45b7c1ebfb141a1447d844b86a948733f6eebd92234da8581c84a1ad4de2946a2d
+  languageName: node
+  linkType: hard
+
 "@malept/cross-spawn-promise@npm:^1.1.0":
   version: 1.1.1
   resolution: "@malept/cross-spawn-promise@npm:1.1.1"
@@ -5772,13 +5779,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dns-packet@npm:^4.0.0":
-  version: 4.2.0
-  resolution: "dns-packet@npm:4.2.0"
+"dns-packet@npm:^5.2.2":
+  version: 5.6.0
+  resolution: "dns-packet@npm:5.6.0"
   dependencies:
-    ip: ^1.1.5
-    safe-buffer: ^5.1.1
-  checksum: 0c218046c400a01f4bbbe689f2017f9b6a1e43800904c28fc71f0149c6cbc89a8857c604e9056026c7d1c608d6ced6343eea855279e719a49a8de88e626cee83
+    "@leichtgewicht/ip-codec": ^2.0.1
+  checksum: 1b643814e5947a87620f8a906287079347492282964ce1c236d52c414e3e3941126b96581376b180ba6e66899e70b86b587bc1aa23e3acd9957765be952d83fc
   languageName: node
   linkType: hard
 
@@ -9235,7 +9241,7 @@ __metadata:
     lodash: ^4.17.21
     materialize-css: ^1.0.0-rc.2
     mini-css-extract-plugin: ^1.3.2
-    multicast-dns: ^7.2.2
+    multicast-dns: ^7.2.5
     mv: ^2.1.1
     niconico: ^1.2.0
     node-fetch: ^2.6.1
@@ -10112,15 +10118,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"multicast-dns@npm:^7.2.2":
-  version: 7.2.2
-  resolution: "multicast-dns@npm:7.2.2"
+"multicast-dns@npm:^7.2.5":
+  version: 7.2.5
+  resolution: "multicast-dns@npm:7.2.5"
   dependencies:
-    dns-packet: ^4.0.0
+    dns-packet: ^5.2.2
     thunky: ^1.0.2
   bin:
     multicast-dns: cli.js
-  checksum: 8a41c94ca2cff5ea8623ec166a147a71aa1d5f0937831f8f1926f8741b2ae7f291192fbf1adbbedf03961ba01eca805ebde7ef832ac718b1793f3b23a352427b
+  checksum: 00b8a57df152d4cd0297946320a94b7c3cdf75a46a2247f32f958a8927dea42958177f9b7fdae69fab2e4e033fb3416881af1f5e9055a3e1542888767139e2fb
   languageName: node
   linkType: hard
 
@@ -12207,7 +12213,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"safe-buffer@npm:>=5.1.0, safe-buffer@npm:^5.0.1, safe-buffer@npm:^5.1.0, safe-buffer@npm:^5.1.1, safe-buffer@npm:~5.2.0":
+"safe-buffer@npm:>=5.1.0, safe-buffer@npm:^5.0.1, safe-buffer@npm:^5.1.0, safe-buffer@npm:~5.2.0":
   version: 5.2.1
   resolution: "safe-buffer@npm:5.2.1"
   checksum: b99c4b41fdd67a6aaf280fcd05e9ffb0813654894223afb78a31f14a19ad220bba8aba1cb14eddce1fcfb037155fe6de4e861784eb434f7d11ed58d1e70dd491
