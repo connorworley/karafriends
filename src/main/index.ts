@@ -106,7 +106,6 @@ function createWindow() {
     webPreferences: {
       allowRunningInsecureContent: false,
       contextIsolation: true,
-      enableRemoteModule: false,
       nodeIntegration: false,
       nodeIntegrationInSubFrames: false,
       nodeIntegrationInWorker: false,
