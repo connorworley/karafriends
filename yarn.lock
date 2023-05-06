@@ -9196,7 +9196,7 @@ __metadata:
     relay-compiler-language-typescript: ^14.0.0
     relay-config: ^12.0.1
     relay-runtime: ^10.1.0
-    sass: ^1.52.2
+    sass: ^1.62.1
     sass-loader: ^13.2.2
     subscriptions-transport-ws: ^0.9.18
     ts-invariant: ^0.9.1
@@ -12226,16 +12226,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sass@npm:^1.52.2":
-  version: 1.52.2
-  resolution: "sass@npm:1.52.2"
+"sass@npm:^1.62.1":
+  version: 1.62.1
+  resolution: "sass@npm:1.62.1"
   dependencies:
     chokidar: ">=3.0.0 <4.0.0"
     immutable: ^4.0.0
     source-map-js: ">=0.6.2 <2.0.0"
   bin:
     sass: sass.js
-  checksum: d5efcbad4bc2efe638cd12665f8aeedc20f4e6b1cd2454624334f9189e9ab8a73708241232f102f6f873ee56fb64d993a67ff23bf669da5c2cf7495412007739
+  checksum: 1b1b3584b38a63dd94156b65f13b90e3f84b170a38c3d5e3fa578b7a32a37aeb349b4926b0eaf9448d48e955e86b1ee01b13993f19611dad8068af07a607c13b
   languageName: node
   linkType: hard
 
