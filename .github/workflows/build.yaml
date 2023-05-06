@@ -14,13 +14,12 @@ jobs:
         with:
           node-version: 16
           cache: "yarn"
-      - run: yarn install --frozen-lockfile
-      - run: yarn build
-      - uses: actions/upload-artifact@v3
+      - uses: actions/cache@v3
         with:
-          name: karafriends-macos
-          path: dist/mac/
-          if-no-files-found: error
+          path: ["buildResources", "extraResources"]
+          key: ${{ runner.os }}-resources
+      - run: yarn install --frozen-lockfile
+      - run: yarn compile
   build-windows:
     runs-on: windows-latest
     steps:
@@ -29,15 +28,12 @@ jobs:
         with:
           node-version: 16
           cache: "yarn"
-      - run: yarn install --frozen-lockfile
-      - run: yarn build
-        env:
-          CARGO_ARGS: --features asio
-      - uses: actions/upload-artifact@v3
+      - uses: actions/cache@v3
         with:
-          name: karafriends-windows
-          path: dist/win-unpacked/
-          if-no-files-found: error
+          path: ["buildResources", "extraResources"]
+          key: ${{ runner.os }}-resources
+      - run: yarn install --frozen-lockfile
+      - run: yarn compile
   build-linux:
     runs-on: ubuntu-latest
     steps:
@@ -46,11 +42,10 @@ jobs:
         with:
           node-version: 16
           cache: "yarn"
+      - uses: actions/cache@v3
+        with:
+          path: ["buildResources", "extraResources"]
+          key: ${{ runner.os }}-resources
       - run: sudo apt-get update && sudo apt-get install -y libasound2-dev
       - run: yarn install --frozen-lockfile
-      - run: yarn build
-      - uses: actions/upload-artifact@v3
-        with:
-          name: karafriends-linux
-          path: dist/linux-unpacked/
-          if-no-files-found: error
+      - run: yarn compile
