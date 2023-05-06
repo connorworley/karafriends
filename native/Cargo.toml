@@ -10,6 +10,7 @@ name = "karafriends"
 crate-type = ["cdylib"]
 
 [dependencies]
+asio-sys = { version = "0.2.1", optional = true }
 cpal = "0.15.2"
 lazy_static = "1.4.0"
 neon = { version = "0.10.1", default-features = false, features = ["napi-4"] }
