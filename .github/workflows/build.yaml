@@ -16,7 +16,7 @@ jobs:
           cache: "yarn"
       - run: yarn install --frozen-lockfile
       - run: yarn build
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: karafriends-macos
           path: dist/mac/
@@ -33,7 +33,7 @@ jobs:
       - run: yarn build
         env:
           CARGO_ARGS: --features asio
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: karafriends-windows
           path: dist/win-unpacked/
@@ -49,7 +49,7 @@ jobs:
       - run: sudo apt-get update && sudo apt-get install -y libasound2-dev
       - run: yarn install --frozen-lockfile
       - run: yarn build
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: karafriends-linux
           path: dist/linux-unpacked/
