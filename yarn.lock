@@ -5,14 +5,7 @@ __metadata:
   version: 6
   cacheKey: 8
 
-"7zip-bin@npm:5.2.0":
-  version: 5.2.0
-  resolution: "7zip-bin@npm:5.2.0"
-  checksum: 85d3102275342f1f4ba7d17e778e526dee3dbec0f57d29be7afaa6e3c26687d40a6eccf520e9140143f85a51f3353f6b545f760eff3f776c6ffb30dc5252fb7c
-  languageName: node
-  linkType: hard
-
-"7zip-bin@npm:~5.1.1":
+"7zip-bin@npm:5.1.1, 7zip-bin@npm:~5.1.1":
   version: 5.1.1
   resolution: "7zip-bin@npm:5.1.1"
   checksum: 1e58ba3742ac86daa84d2e60c46fd545f235c9f60a00cd36a87a70bf824cc0c821fdc418994f1745081b17e7bc83d155e1e82bd44b06996e7cab0a491ce644c1
@@ -9005,7 +8998,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "karafriends@workspace:."
   dependencies:
-    7zip-bin: 5.2.0
+    7zip-bin: 5.1.1
     "@babel/core": 7.21.8
     "@babel/preset-env": 7.21.5
     "@babel/preset-react": 7.18.6
