@@ -1850,7 +1850,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/schema@npm:^9.0.18":
+"@graphql-tools/schema@npm:^9.0.18, @graphql-tools/schema@npm:^9.0.19":
   version: 9.0.19
   resolution: "@graphql-tools/schema@npm:9.0.19"
   dependencies:
@@ -3395,15 +3395,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/compression@npm:^1.7.2":
-  version: 1.7.2
-  resolution: "@types/compression@npm:1.7.2"
-  dependencies:
-    "@types/express": "*"
-  checksum: 3457f9d39ed73d58387bccf15bcfe8e140298c5d6e90fe354dfeb24ec7828432658caebee8ab6f4e4ac39a7d03bc0a6a52686d7fb2fe405fbdefede41d6b5834
-  languageName: node
-  linkType: hard
-
 "@types/connect@npm:*":
   version: 3.4.33
   resolution: "@types/connect@npm:3.4.33"
@@ -3456,17 +3447,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/express-serve-static-core@npm:*":
-  version: 4.17.17
-  resolution: "@types/express-serve-static-core@npm:4.17.17"
-  dependencies:
-    "@types/node": "*"
-    "@types/qs": "*"
-    "@types/range-parser": "*"
-  checksum: 023cc7c6521662d5172ed8be449d73f4e52817a1a1ea479804462640f977e5b97271dd25c83922f81b7be8c0d440efbea23d23bf722a44a366cf598f88a0dc87
-  languageName: node
-  linkType: hard
-
 "@types/express-serve-static-core@npm:4.17.31":
   version: 4.17.31
   resolution: "@types/express-serve-static-core@npm:4.17.31"
@@ -3487,18 +3467,6 @@ __metadata:
     "@types/range-parser": "*"
     "@types/send": "*"
   checksum: 3b5242e7d6cfecca5300635fd2af0f63aca3a92754da79a4a355c4d85b57099aa2cabb1c8557fc38a8a9e6f0be996339140ad017e5be405ea1b877a8294a136d
-  languageName: node
-  linkType: hard
-
-"@types/express@npm:*":
-  version: 4.17.9
-  resolution: "@types/express@npm:4.17.9"
-  dependencies:
-    "@types/body-parser": "*"
-    "@types/express-serve-static-core": "*"
-    "@types/qs": "*"
-    "@types/serve-static": "*"
-  checksum: e1d6388ec28ab67db5559011d16c63d6fcfb128f27daf217a02ecdb2ede968d2187e83ef3f7c54cbd050686aaed4c80585b64f055c76e79c055d7d4efb7bc3b1
   languageName: node
   linkType: hard
 
@@ -4233,7 +4201,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"accepts@npm:^1.3.5, accepts@npm:~1.3.5":
+"accepts@npm:^1.3.5":
   version: 1.3.7
   resolution: "accepts@npm:1.3.7"
   dependencies:
@@ -5287,13 +5255,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bytes@npm:3.0.0":
-  version: 3.0.0
-  resolution: "bytes@npm:3.0.0"
-  checksum: a2b386dd8188849a5325f58eef69c3b73c51801c08ffc6963eddc9be244089ba32d19347caf6d145c86f315ae1b1fc7061a32b0c1aa6379e6a719090287ed101
-  languageName: node
-  linkType: hard
-
 "bytes@npm:3.1.2":
   version: 3.1.2
   resolution: "bytes@npm:3.1.2"
@@ -5797,30 +5758,6 @@ __metadata:
   version: 1.3.0
   resolution: "component-emitter@npm:1.3.0"
   checksum: b3c46de38ffd35c57d1c02488355be9f218e582aec72d72d1b8bbec95a3ac1b38c96cd6e03ff015577e68f550fbb361a3bfdbd9bb248be9390b7b3745691be6b
-  languageName: node
-  linkType: hard
-
-"compressible@npm:~2.0.16":
-  version: 2.0.18
-  resolution: "compressible@npm:2.0.18"
-  dependencies:
-    mime-db: ">= 1.43.0 < 2"
-  checksum: 58321a85b375d39230405654721353f709d0c1442129e9a17081771b816302a012471a9b8f4864c7dbe02eef7f2aaac3c614795197092262e94b409c9be108f0
-  languageName: node
-  linkType: hard
-
-"compression@npm:^1.7.4":
-  version: 1.7.4
-  resolution: "compression@npm:1.7.4"
-  dependencies:
-    accepts: ~1.3.5
-    bytes: 3.0.0
-    compressible: ~2.0.16
-    debug: 2.6.9
-    on-headers: ~1.0.2
-    safe-buffer: 5.1.2
-    vary: ~1.1.2
-  checksum: 35c0f2eb1f28418978615dc1bc02075b34b1568f7f56c62d60f4214d4b7cc00d0f6d282b5f8a954f59872396bd770b6b15ffd8aa94c67d4bce9b8887b906999b
   languageName: node
   linkType: hard
 
@@ -9306,12 +9243,12 @@ __metadata:
     7zip-bin: ^5.2.0
     "@babel/preset-env": ^7.21.5
     "@babel/preset-react": ^7.18.6
+    "@graphql-tools/schema": ^9.0.19
     "@parcel/transformer-glsl": 2.8.3
     "@parcel/transformer-sass": 2.8.3
     "@sentry/browser": ^7.51.0
     "@sentry/node": ^7.51.0
     "@types/color-convert": ^2.0.0
-    "@types/compression": ^1.7.2
     "@types/express": ^4.17.17
     "@types/format-duration": ^1.0.1
     "@types/gl-vec2": ^1.3.2
@@ -9339,7 +9276,6 @@ __metadata:
     babel-plugin-relay: ^15.0.0
     classnames: ^2.3.2
     color-convert: ^2.0.1
-    compression: ^1.7.4
     concurrently: ^8.0.1
     cross-env: ^7.0.3
     cubic-spline: ^3.0.3
@@ -9970,13 +9906,6 @@ __metadata:
   version: 1.52.0
   resolution: "mime-db@npm:1.52.0"
   checksum: 0d99a03585f8b39d68182803b12ac601d9c01abfa28ec56204fa330bc9f3d1c5e14beb049bafadb3dbdf646dfb94b87e24d4ec7b31b7279ef906a8ea9b6a513f
-  languageName: node
-  linkType: hard
-
-"mime-db@npm:>= 1.43.0 < 2":
-  version: 1.45.0
-  resolution: "mime-db@npm:1.45.0"
-  checksum: 00aa67af7a2014c12380bec57b3efe988e45c51979acca792633e2ba4d45c601b4160ceaf9666e2b8fa6822f5cb81e12206f9921d1bc3d78226aee813d4244fd
   languageName: node
   linkType: hard
 
@@ -10738,13 +10667,6 @@ __metadata:
   dependencies:
     ee-first: 1.1.1
   checksum: d20929a25e7f0bb62f937a425b5edeb4e4cde0540d77ba146ec9357f00b0d497cdb3b9b05b9c8e46222407d1548d08166bff69cc56dfa55ba0e4469228920ff0
-  languageName: node
-  linkType: hard
-
-"on-headers@npm:~1.0.2":
-  version: 1.0.2
-  resolution: "on-headers@npm:1.0.2"
-  checksum: 2bf13467215d1e540a62a75021e8b318a6cfc5d4fc53af8e8f84ad98dbcea02d506c6d24180cd62e1d769c44721ba542f3154effc1f7579a8288c9f7873ed8e5
   languageName: node
   linkType: hard
 
@@ -11989,17 +11911,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"safe-buffer@npm:5.1.2, safe-buffer@npm:~5.1.1":
-  version: 5.1.2
-  resolution: "safe-buffer@npm:5.1.2"
-  checksum: f2f1f7943ca44a594893a852894055cf619c1fbcb611237fc39e461ae751187e7baf4dc391a72125e0ac4fb2d8c5c0b3c71529622e6a58f46b960211e704903c
-  languageName: node
-  linkType: hard
-
 "safe-buffer@npm:5.2.1, safe-buffer@npm:^5.0.1, safe-buffer@npm:^5.1.0, safe-buffer@npm:~5.2.0":
   version: 5.2.1
   resolution: "safe-buffer@npm:5.2.1"
   checksum: b99c4b41fdd67a6aaf280fcd05e9ffb0813654894223afb78a31f14a19ad220bba8aba1cb14eddce1fcfb037155fe6de4e861784eb434f7d11ed58d1e70dd491
+  languageName: node
+  linkType: hard
+
+"safe-buffer@npm:~5.1.1":
+  version: 5.1.2
+  resolution: "safe-buffer@npm:5.1.2"
+  checksum: f2f1f7943ca44a594893a852894055cf619c1fbcb611237fc39e461ae751187e7baf4dc391a72125e0ac4fb2d8c5c0b3c71529622e6a58f46b960211e704903c
   languageName: node
   linkType: hard
 

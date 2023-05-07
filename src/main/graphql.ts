@@ -1,8 +1,7 @@
-import fs from "fs";
 import { Server } from "http";
-import path from "path";
 
-import { ApolloServer, makeExecutableSchema } from "apollo-server-express";
+import { makeExecutableSchema } from "@graphql-tools/schema";
+import { ApolloServer } from "apollo-server-express";
 import isDev from "electron-is-dev";
 import { Application } from "express";
 import { execute, subscribe } from "graphql";
@@ -11,7 +10,6 @@ import { Nicovideo } from "niconico";
 import { SubscriptionServer } from "subscriptions-transport-ws";
 
 import karafriendsConfig from "../common/config";
-import { HOSTNAME } from "../common/constants";
 import rawSchema from "../common/schema.graphql";
 import {
   downloadDamVideo,
@@ -984,9 +982,6 @@ export function applyGraphQLMiddleware(
       youtube: new YoutubeAPI(),
     }),
     schema,
-    playground: {
-      subscriptionEndpoint: `ws://localhost:${karafriendsConfig.remoconPort}/subscriptions`,
-    },
   });
   if (isDev) {
     app.use("/graphql", (req, res, next) => {
@@ -999,7 +994,7 @@ export function applyGraphQLMiddleware(
       next();
     });
   }
-  server.applyMiddleware({ app });
+  server.start().then(() => server.applyMiddleware({ app }));
 }
 
 export function subscriptionServer(server: Server) {

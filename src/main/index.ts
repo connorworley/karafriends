@@ -12,7 +12,6 @@ inspector.open();
 import { createServer } from "http";
 import path from "path";
 
-import compression from "compression";
 import {
   app,
   BrowserWindow,
@@ -87,7 +86,6 @@ async function attemptLogin(minseiLoginCreds: Credentials) {
       };
 
       const expressApp = express();
-      expressApp.use(compression());
       expressApp.use(remoconMiddleware());
 
       applyGraphQLMiddleware(expressApp, minseiCreds, creds.joysoundCreds);
