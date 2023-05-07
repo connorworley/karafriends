@@ -13,14 +13,17 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: "yarn"
       - uses: actions/cache@v3
         with:
           path: |
             buildResources
             extraResources
           key: ${{ runner.os }}-resources
-      - run: yarn install --frozen-lockfile
+      - uses: actions/cache@v3
+        with:
+          path: .yarn/unplugged
+          key: ${{ runner.os }}-unplugged
+      - run: yarn install --immutable
       - run: yarn build-dev
   build-windows:
     runs-on: windows-latest
@@ -29,14 +32,17 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: "yarn"
       - uses: actions/cache@v3
         with:
           path: |
             buildResources
             extraResources
           key: ${{ runner.os }}-resources
-      - run: yarn install --frozen-lockfile
+      - uses: actions/cache@v3
+        with:
+          path: .yarn/unplugged
+          key: ${{ runner.os }}-unplugged
+      - run: yarn install --immutable
       - run: yarn build-dev
   build-linux:
     runs-on: ubuntu-latest
@@ -45,13 +51,16 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: "yarn"
       - uses: actions/cache@v3
         with:
           path: |
             buildResources
             extraResources
           key: ${{ runner.os }}-resources
+      - uses: actions/cache@v3
+        with:
+          path: .yarn/unplugged
+          key: ${{ runner.os }}-unplugged
       - run: sudo apt-get update && sudo apt-get install -y libasound2-dev
-      - run: yarn install --frozen-lockfile
+      - run: yarn install --immutable
       - run: yarn build-dev

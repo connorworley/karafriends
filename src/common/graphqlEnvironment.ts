@@ -1,6 +1,5 @@
 import {
   Environment,
-  GraphQLResponse,
   Network,
   Observable,
   RecordSource,
