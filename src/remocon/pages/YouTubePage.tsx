@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { RouteComponentProps } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import Button from "../components/Button";
 import SearchFormWrapper from "../components/SearchFormWrapper";
@@ -19,17 +19,14 @@ function getVideoId(videoQuery: string): string | null {
   return videoQuery;
 }
 
-interface YouTubeParams {
-  videoId: string | undefined;
-}
+type YouTubeParams = {
+  videoId: string;
+};
 
-interface Props extends RouteComponentProps<YouTubeParams> {}
-
-const YouTubePage = (props: Props) => {
+const YouTubePage = () => {
+  const params = useParams<YouTubeParams>();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [videoId, setVideoId] = useState<string>(
-    props.match.params.videoId || ""
-  );
+  const [videoId, setVideoId] = useState<string>(params.videoId || "");
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { graphql, requestSubscription } from "react-relay";
-import { RouteComponentProps } from "react-router-dom";
 import invariant from "ts-invariant";
 
 import FadeIn from "react-fade-in";

@@ -1,14 +1,15 @@
 import React from "react";
-import { RouteComponentProps } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import Artist from "../components/Artist";
 
-interface RouteParams {
+type RouteParams = {
   id: string;
-}
+};
 
-interface Props extends RouteComponentProps<RouteParams> {}
-
-const ArtistPage = ({ match }: Props) => <Artist id={match.params.id} />;
+const ArtistPage = () => {
+  const params = useParams<RouteParams>();
+  return <Artist id={params.id!} />;
+};
 
 export default ArtistPage;

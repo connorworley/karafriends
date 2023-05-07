@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { HashRouter, Route, Switch } from "react-router-dom";
+import { HashRouter, Route, Routes } from "react-router-dom";
 
 import ControlBar from "./components/ControlBar";
 import NavBar from "./components/NavBar";
@@ -30,27 +30,36 @@ const App = () => {
           <NavBar />
         </header>
         <main>
-          <Switch>
-            <Route path="/song/:id" component={SongPage} />
-            <Route path="/artist/:id" component={ArtistPage} />
-            <Route path="/adhocLyrics/:id" component={AdhocLyricsPage} />
-            <Route path="/joysoundSong/:id" component={JoysoundSongPage} />
-            <Route path="/joysoundArtist/:id" component={JoysoundArtistPage} />
-            <Route path="/search/song/:query?" component={SongSearchPage} />
-            <Route path="/search/artist/:query?" component={ArtistSearchPage} />
-            <Route path="/search/youtube/:videoId?" component={YouTubePage} />
-            <Route path="/search/niconico/:videoId?" component={NiconicoPage} />
+          <Routes>
+            <Route path="/song/:id" element={<SongPage />} />
+            <Route path="/artist/:id" element={<ArtistPage />} />
+            <Route path="/adhocLyrics/:id" element={<AdhocLyricsPage />} />
+            <Route path="/joysoundSong/:id" element={<JoysoundSongPage />} />
+            <Route
+              path="/joysoundArtist/:id"
+              element={<JoysoundArtistPage />}
+            />
+            <Route path="/search/song/:query?" element={<SongSearchPage />} />
+            <Route
+              path="/search/artist/:query?"
+              element={<ArtistSearchPage />}
+            />
+            <Route path="/search/youtube/:videoId?" element={<YouTubePage />} />
+            <Route
+              path="/search/niconico/:videoId?"
+              element={<NiconicoPage />}
+            />
             <Route
               path="/search/joysoundSong/:query?"
-              component={JoysoundSongSearchPage}
+              element={<JoysoundSongSearchPage />}
             />
             <Route
               path="/search/joysoundArtist/:query?"
-              component={JoysoundArtistSearchPage}
+              element={<JoysoundArtistSearchPage />}
             />
-            <Route path="/history" component={HistoryPage} />
-            <Route path="/" component={HomePage} />
-          </Switch>
+            <Route path="/history" element={<HistoryPage />} />
+            <Route path="/" element={<HomePage />} />
+          </Routes>
         </main>
         <footer>
           <ControlBar />

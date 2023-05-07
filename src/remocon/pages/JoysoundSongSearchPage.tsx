@@ -1,20 +1,17 @@
 import React, { useState } from "react";
-import { RouteComponentProps } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import DebouncedInput from "../components/DebouncedInput";
 import JoysoundSongSearchResults from "../components/JoysoundSongSearchResults";
 import SearchFormWrapper from "../components/SearchFormWrapper";
 
-interface SongSearchParams {
-  query: string | undefined;
-}
+type SongSearchParams = {
+  query: string;
+};
 
-interface Props extends RouteComponentProps<SongSearchParams> {}
-
-function JoysoundSongSearchPage(props: Props) {
-  const [query, setQuery] = useState<string | null>(
-    props.match.params.query || null
-  );
+function JoysoundSongSearchPage() {
+  const params = useParams<SongSearchParams>();
+  const [query, setQuery] = useState<string | null>(params.query || null);
 
   return (
     <SearchFormWrapper>
@@ -30,7 +27,7 @@ function JoysoundSongSearchPage(props: Props) {
             `#/search/joysoundSong/${e.target.value}`
           );
         }}
-        defaultValue={props.match.params.query}
+        defaultValue={params.query}
       />
       <JoysoundSongSearchResults query={query} />
     </SearchFormWrapper>

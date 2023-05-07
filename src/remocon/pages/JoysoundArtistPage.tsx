@@ -1,16 +1,15 @@
 import React from "react";
-import { RouteComponentProps } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import JoysoundArtist from "../components/JoysoundArtist";
 
-interface RouteParams {
+type RouteParams = {
   id: string;
-}
+};
 
-interface Props extends RouteComponentProps<RouteParams> {}
-
-const JoysoundArtistPage = ({ match }: Props) => (
-  <JoysoundArtist id={match.params.id} />
-);
+const JoysoundArtistPage = () => {
+  const params = useParams<RouteParams>();
+  return <JoysoundArtist id={params.id!} />;
+};
 
 export default JoysoundArtistPage;

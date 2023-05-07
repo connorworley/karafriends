@@ -1,20 +1,17 @@
 import React, { useState } from "react";
-import { RouteComponentProps } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import DebouncedInput from "../components/DebouncedInput";
 import JoysoundArtistSearchResults from "../components/JoysoundArtistSearchResults";
 import SearchFormWrapper from "../components/SearchFormWrapper";
 
-interface JoysoundArtistSearchParams {
-  query: string | undefined;
-}
+type JoysoundArtistSearchParams = {
+  query: string;
+};
 
-interface Props extends RouteComponentProps<JoysoundArtistSearchParams> {}
-
-const JoysoundArtistSearchPage = (props: Props) => {
-  const [query, setQuery] = useState<string | null>(
-    props.match.params.query || null
-  );
+const JoysoundArtistSearchPage = () => {
+  const params = useParams<JoysoundArtistSearchParams>();
+  const [query, setQuery] = useState<string | null>(params.query || null);
 
   return (
     <SearchFormWrapper>
@@ -30,7 +27,7 @@ const JoysoundArtistSearchPage = (props: Props) => {
             `#/search/joysoundArtist/${e.target.value}`
           );
         }}
-        defaultValue={props.match.params.query}
+        defaultValue={params.query}
       />
       <JoysoundArtistSearchResults query={query} />
     </SearchFormWrapper>
