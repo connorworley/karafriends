@@ -21,7 +21,7 @@ jobs:
             extraResources
           key: ${{ runner.os }}-resources
       - run: yarn install --frozen-lockfile
-      - run: yarn build
+      - run: yarn build-dev
   build-windows:
     runs-on: windows-latest
     steps:
@@ -37,7 +37,7 @@ jobs:
             extraResources
           key: ${{ runner.os }}-resources
       - run: yarn install --frozen-lockfile
-      - run: yarn build
+      - run: yarn build-dev
   build-linux:
     runs-on: ubuntu-latest
     steps:
@@ -54,4 +54,4 @@ jobs:
           key: ${{ runner.os }}-resources
       - run: sudo apt-get update && sudo apt-get install -y libasound2-dev
       - run: yarn install --frozen-lockfile
-      - run: yarn build
+      - run: yarn build-dev

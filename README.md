@@ -16,5 +16,5 @@ XXX: Set `JOYSOUND_EMAIL` and `JOYSOUND_PASSWORD` consts in `src/main/index.ts` 
 Electron
 
 ```sh
-yarn install && yarn start
+yarn install && yarn run-dev
 ```
