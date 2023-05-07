@@ -53,6 +53,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@apollo/utils.keyvaluecache@npm:^1.0.1":
+  version: 1.0.2
+  resolution: "@apollo/utils.keyvaluecache@npm:1.0.2"
+  dependencies:
+    "@apollo/utils.logger": ^1.0.0
+    lru-cache: 7.10.1 - 7.13.1
+  checksum: e07414e44fd4d79e14c97999cb53335cffdd419f3df9364cc32e865f4802b79b50e7f3b5fbdd6a5f21b1cb01a9de290fae8dd55cc616e0e32310c5dfdb4dcc5e
+  languageName: node
+  linkType: hard
+
+"@apollo/utils.logger@npm:^1.0.0":
+  version: 1.0.1
+  resolution: "@apollo/utils.logger@npm:1.0.1"
+  checksum: 621bd80ce43a73f97342568b712fd46fee9041212d4c7264a63676e29d17ab292773c3c21b91f8a2dffb1fe7931ece3954886bd04e3100e1765c6d05e231e2a7
+  languageName: node
+  linkType: hard
+
 "@apollographql/apollo-tools@npm:^0.5.0":
   version: 0.5.0
   resolution: "@apollographql/apollo-tools@npm:0.5.0"
@@ -4593,16 +4610,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"apollo-datasource-rest@npm:^0.13.0":
-  version: 0.13.0
-  resolution: "apollo-datasource-rest@npm:0.13.0"
+"apollo-datasource-rest@npm:^3.7.0":
+  version: 3.7.0
+  resolution: "apollo-datasource-rest@npm:3.7.0"
   dependencies:
-    apollo-datasource: ^0.9.0
-    apollo-server-caching: ^0.7.0
-    apollo-server-env: ^3.1.0
-    apollo-server-errors: ^2.5.0
-    http-cache-semantics: ^4.0.0
-  checksum: 307b990ddd2f2d7eb597199653448b35e8316833408b2814ff1f63f7f2dcaf92c73e6863f23ef1b8555fff49737f3ad3aa3f9b314e6780ab1c12d8a023ad72e7
+    "@apollo/utils.keyvaluecache": ^1.0.1
+    apollo-datasource: ^3.3.2
+    apollo-server-env: ^4.2.1
+    apollo-server-errors: ^3.3.1
+    http-cache-semantics: ^4.1.0
+  peerDependencies:
+    graphql: ^15.3.0 || ^16.0.0
+  checksum: 843e132fd024f15e556b05df00f98e50d7942efb7ed12b860fd528f898c2fa2186e1371f3e5fceb0e55b825c2684c3153a5c19a3724a4b2787d83a44df4193bd
   languageName: node
   linkType: hard
 
@@ -4613,6 +4632,16 @@ __metadata:
     apollo-server-caching: ^0.7.0
     apollo-server-env: ^3.1.0
   checksum: 7b9cd7ffe52b8c465db94c790e8b4dfc136f8f6e552da7bda82382de4637266b945d0e1ec421731350a4710d37561a675353f33c951ed695cf43509b7afa954c
+  languageName: node
+  linkType: hard
+
+"apollo-datasource@npm:^3.3.2":
+  version: 3.3.2
+  resolution: "apollo-datasource@npm:3.3.2"
+  dependencies:
+    "@apollo/utils.keyvaluecache": ^1.0.1
+    apollo-server-env: ^4.2.1
+  checksum: 70244e792655b357213b92e9dd0e8ca553724857847c9bedb53a1dbf7a92fc0d8b05a60d77203d6c30331599b44c5d7cc5f4d94c934465fa05b146b681ed2293
   languageName: node
   linkType: hard
 
@@ -4747,12 +4776,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"apollo-server-env@npm:^4.2.1":
+  version: 4.2.1
+  resolution: "apollo-server-env@npm:4.2.1"
+  dependencies:
+    node-fetch: ^2.6.7
+  checksum: 039c7eeed82aff072237f9943629ab24b7c62b97535d756a31178f9e7352187951ee654a377d49d775d2ac221fe024914d9989257ca8a7e65c8e5f438c044f18
+  languageName: node
+  linkType: hard
+
 "apollo-server-errors@npm:^2.5.0":
   version: 2.5.0
   resolution: "apollo-server-errors@npm:2.5.0"
   peerDependencies:
     graphql: ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0
   checksum: c93129f0b0a9a4aeb35dfdb958ee70c7a55b70eaa44cba9f177eaa95cdba44095db574e85bd9dc6ae96ed6dbb713fa16ad22dbc274f60e8f5272d4f446099244
+  languageName: node
+  linkType: hard
+
+"apollo-server-errors@npm:^3.3.1":
+  version: 3.3.1
+  resolution: "apollo-server-errors@npm:3.3.1"
+  peerDependencies:
+    graphql: ^15.3.0 || ^16.0.0
+  checksum: d09b66e7ac3e2cbc60774280d30118ac4d98f945b5cc1013bb81b9970aae49c0717a550e161fe978d69d7039ec053aeba495890f6eebf452532a2c5e94071a80
   languageName: node
   linkType: hard
 
@@ -9970,7 +10017,7 @@ __metadata:
     "@types/webpack-env": ^1.18.0
     "@types/wicg-mediasession": ^1.1.4
     "@types/youtube-player": ^5.5.3
-    apollo-datasource-rest: ^0.13.0
+    apollo-datasource-rest: ^3.7.0
     apollo-server-express: ^2.19.1
     babel-loader: ^9.1.2
     babel-plugin-relay: ^10.1.0
@@ -10421,6 +10468,13 @@ __metadata:
   version: 2.0.0
   resolution: "lowercase-keys@npm:2.0.0"
   checksum: 24d7ebd56ccdf15ff529ca9e08863f3c54b0b9d1edb97a3ae1af34940ae666c01a1e6d200707bce730a8ef76cb57cc10e65f245ecaaf7e6bc8639f2fb460ac23
+  languageName: node
+  linkType: hard
+
+"lru-cache@npm:7.10.1 - 7.13.1":
+  version: 7.13.1
+  resolution: "lru-cache@npm:7.13.1"
+  checksum: f53c7dd098a7afd6342b23f7182629edff206c7665de79445a7f5455440e768a4d1c6ec52e1a16175580c71535c9437dfb6f6bc22ca1a0e4a7454a97cde87329
   languageName: node
   linkType: hard
 
@@ -11077,6 +11131,20 @@ __metadata:
     encoding:
       optional: true
   checksum: 8d816ffd1ee22cab8301c7756ef04f3437f18dace86a1dae22cf81db8ef29c0bf6655f3215cb0cdb22b420b6fe141e64b26905e7f33f9377a7fa59135ea3e10b
+  languageName: node
+  linkType: hard
+
+"node-fetch@npm:^2.6.7":
+  version: 2.6.9
+  resolution: "node-fetch@npm:2.6.9"
+  dependencies:
+    whatwg-url: ^5.0.0
+  peerDependencies:
+    encoding: ^0.1.0
+  peerDependenciesMeta:
+    encoding:
+      optional: true
+  checksum: acb04f9ce7224965b2b59e71b33c639794d8991efd73855b0b250921382b38331ffc9d61bce502571f6cc6e11a8905ca9b1b6d4aeb586ab093e2756a1fd190d0
   languageName: node
   linkType: hard
 
