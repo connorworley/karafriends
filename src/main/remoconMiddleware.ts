@@ -12,13 +12,18 @@ function remoconMiddleware() {
         next();
         return;
       }
-      fetch(`http://127.0.0.1:3000/remocon${req.originalUrl}`, {
-        method: req.method,
-        headers: Object.keys(req.headers).map((header) => [
-          header,
-          req.headers[header] as string,
-        ]),
-      }).then((proxiedRes) => {
+      fetch(
+        `http://127.0.0.1:3000/${
+          !req.path.startsWith("/remocon") ? "remocon" : ""
+        }${req.originalUrl}`,
+        {
+          method: req.method,
+          headers: Object.keys(req.headers).map((header) => [
+            header,
+            req.headers[header] as string,
+          ]),
+        }
+      ).then((proxiedRes) => {
         res.status(proxiedRes.status);
         proxiedRes.headers.forEach((value, name) => res.set(name, value));
         proxiedRes.arrayBuffer().then((buf) => {

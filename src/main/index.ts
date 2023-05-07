@@ -39,8 +39,8 @@ import { JoysoundAPI } from "./joysoundApi";
 import setupMdns from "./mdns";
 import remoconMiddleware from "./remoconMiddleware";
 
-const JOYSOUND_EMAIL = "EMAIL_GOES_HERE";
-const JOYSOUND_PASSWORD = "PASSWORD_GOES_HERE";
+const JOYSOUND_EMAIL = "otwojoy@gmail.com";
+const JOYSOUND_PASSWORD = "qwer1234";
 
 const nativeAudio = require("../../native"); // tslint:disable-line:no-var-requires
 
