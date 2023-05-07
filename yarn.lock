@@ -5911,7 +5911,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-fetch@npm:^3.0.4":
+"cross-fetch@npm:^3.0.4, cross-fetch@npm:^3.1.5":
   version: 3.1.5
   resolution: "cross-fetch@npm:3.1.5"
   dependencies:
@@ -7317,6 +7317,21 @@ __metadata:
     setimmediate: ^1.0.5
     ua-parser-js: ^0.7.18
   checksum: 85ec57d8dbeddd7c82bf8f111a3c7de1abc1f4d7c603d6ccbcc1ec8dce35ff5b7a113dd34acbf7930093e5533c37a2298a92d342077f967bef34dc7cf2f3f07e
+  languageName: node
+  linkType: hard
+
+"fbjs@npm:^3.0.2":
+  version: 3.0.4
+  resolution: "fbjs@npm:3.0.4"
+  dependencies:
+    cross-fetch: ^3.1.5
+    fbjs-css-vars: ^1.0.0
+    loose-envify: ^1.0.0
+    object-assign: ^4.1.0
+    promise: ^7.1.1
+    setimmediate: ^1.0.5
+    ua-parser-js: ^0.7.30
+  checksum: 8b23a3550fcda8a9109fca9475a3416590c18bb6825ea884192864ed686f67fcd618e308a140c9e5444fbd0168732e1ff3c092ba3d0c0ae1768969f32ba280c7
   languageName: node
   linkType: hard
 
@@ -9849,7 +9864,7 @@ __metadata:
     react-fade-in: ^2.0.1
     react-icons: ^4.8.0
     react-mobile-picker-scroll: ^0.2.14
-    react-relay: ^11.0.0
+    react-relay: ^15.0.0
     react-router-dom: ^5.2.0
     react-swipeable: ^7.0.0
     regenerator-runtime: ^0.13.11
@@ -12149,18 +12164,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-relay@npm:^11.0.0":
-  version: 11.0.2
-  resolution: "react-relay@npm:11.0.2"
+"react-relay@npm:^15.0.0":
+  version: 15.0.0
+  resolution: "react-relay@npm:15.0.0"
   dependencies:
     "@babel/runtime": ^7.0.0
-    fbjs: ^3.0.0
+    fbjs: ^3.0.2
     invariant: ^2.2.4
     nullthrows: ^1.1.1
-    relay-runtime: 11.0.2
+    relay-runtime: 15.0.0
   peerDependencies:
-    react: ^16.9.0 || ^17
-  checksum: f48518a961e1bb291dc96f941f20176e813bb15c1db898e9f9b52281a66e96c23a8fa201b0142f0be288031d5511273b96510646ce079f5040f301ce632aa067
+    react: ^16.9.0 || ^17 || ^18
+  checksum: d318c3b153f193e1b93fb5d8501426f7a9eb2e013407cbfadc1cbc17e319d99dad9c145147c0cea194eeb6ffbb4fc6d41914ad69db0d589808d4484e4a6fd718
   languageName: node
   linkType: hard
 
@@ -12474,14 +12489,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"relay-runtime@npm:11.0.2":
-  version: 11.0.2
-  resolution: "relay-runtime@npm:11.0.2"
+"relay-runtime@npm:15.0.0":
+  version: 15.0.0
+  resolution: "relay-runtime@npm:15.0.0"
   dependencies:
     "@babel/runtime": ^7.0.0
-    fbjs: ^3.0.0
+    fbjs: ^3.0.2
     invariant: ^2.2.4
-  checksum: aa6507f4ccf9acb0de02865e65174824c2699bebc216e862e9db4aa7b42bb1825d41e63e6149918d80fd6acea9ae9af3048147fabfc9be53d2a2431baf8fc946
+  checksum: ccf41ac4778b54560ea35901076a00eaa60597a89c908f6fb7b15812b76aad6aa57bfe81fe5af159dd6aaf716eb46208ec6e77cf8357c479d288af6f5a04698d
   languageName: node
   linkType: hard
 
@@ -14262,7 +14277,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ua-parser-js@npm:^0.7.18":
+"ua-parser-js@npm:^0.7.18, ua-parser-js@npm:^0.7.30":
   version: 0.7.35
   resolution: "ua-parser-js@npm:0.7.35"
   checksum: 0a332e8d72d277e62f29ecb3a33843b274de93eb9378350b746ea0f89ef05ee09c94f2c1fdab8001373ad5e95a48beb0a94f39dc1670c908db9fc9b8f0876204
