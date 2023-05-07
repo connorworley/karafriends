@@ -73,37 +73,9 @@ const SUTEGANA = [
   "ゎ",
   "ゕ",
   "ゖ",
-  "ァ",
-  "ィ",
-  "ゥ",
-  "ェ",
-  "ォ",
-  "ヵ",
-  "ㇰ",
-  "ヶ",
-  "ㇱ",
-  "ㇲ",
-  "ㇳ",
-  "ㇴ",
-  "ㇵ",
-  "ㇶ",
-  "ㇷ",
-  "ㇷ゚",
-  "ㇸ",
-  "ㇹ",
-  "ㇺ",
-  "ャ",
-  "ュ",
-  "ョ",
-  "ㇻ",
-  "ㇼ",
-  "ㇽ",
-  "ㇾ",
-  "ㇿ",
-  "ヮ",
 ];
 
-const SOKUON_KANA = ["っ", "ッ"];
+const SOKUON_KANA = ["っ"];
 
 const sjisDecoder = new TextDecoder("sjis");
 
@@ -127,6 +99,12 @@ export function decodeSJIS(charCode: number): string {
   return sjisDecoder.decode(bytes);
 }
 
+function isKatakanaUnicodeChar(unicodeChar: string) {
+  const charCode = unicodeChar.charCodeAt(0);
+
+  return charCode >= 0x30a0 && charCode <= 0x30ff;
+}
+
 function isKanaUnicodeChar(unicodeChar: string) {
   const charCode = unicodeChar.charCodeAt(0);
 
@@ -141,49 +119,57 @@ function getMainRomajiBlocks(chars: JoysoundLyricsChar[]) {
 
   while (i < chars.length) {
     const glyph = chars[i];
-    const unicodeChar = decodeSJIS(glyph.charCode);
+    let unicodeChar = decodeSJIS(glyph.charCode);
 
-    if (!isKanaUnicodeChar(unicodeChar)) {
+    if (!isKanaUnicodeChar(unicodeChar) || unicodeChar === "・") {
       currXPos += glyph.width;
       i += 1;
 
       continue;
     }
 
-    let nextGlyph = null;
+    let kanaPhrase = unicodeChar;
+    let sourceWidth = glyph.width;
 
-    if (i < chars.length - 1) {
-      nextGlyph = chars[i + 1];
-    }
+    let nextGlyph: JoysoundLyricsChar | null | undefined;
 
-    if (nextGlyph) {
+    // tslint:disable-next-line:no-conditional-assignment
+    while ((nextGlyph = chars[i + 1])) {
       const nextUnicodeChar = decodeSJIS(nextGlyph.charCode);
 
+      if (!isKanaUnicodeChar(nextUnicodeChar)) {
+        break;
+      }
+
       if (
-        isKanaUnicodeChar(nextUnicodeChar) &&
-        (SOKUON_KANA.includes(unicodeChar) ||
-          SUTEGANA.includes(nextUnicodeChar))
+        isKatakanaUnicodeChar(unicodeChar) &&
+        isKatakanaUnicodeChar(nextUnicodeChar)
       ) {
-        mainRomajiBlocks.push({
-          phrase: toRomaji(unicodeChar + nextUnicodeChar),
-          xPos: currXPos,
-          sourceWidth: glyph.width + nextGlyph.width,
-        });
+        kanaPhrase += nextUnicodeChar;
+        sourceWidth += nextGlyph.width;
+        unicodeChar = nextUnicodeChar;
 
-        currXPos += glyph.width + nextGlyph.width;
-        i += 2;
+        i += 1;
+        continue;
+      } else if (unicodeChar === "っ" || SUTEGANA.includes(nextUnicodeChar)) {
+        kanaPhrase += nextUnicodeChar;
+        sourceWidth += nextGlyph.width;
+        unicodeChar = nextUnicodeChar;
 
+        i += 1;
         continue;
       }
+
+      break;
     }
 
     mainRomajiBlocks.push({
-      phrase: toRomaji(unicodeChar),
+      phrase: toRomaji(kanaPhrase),
       xPos: currXPos,
-      sourceWidth: glyph.width,
+      sourceWidth,
     });
 
-    currXPos += glyph.width;
+    currXPos += sourceWidth;
     i += 1;
   }
 
