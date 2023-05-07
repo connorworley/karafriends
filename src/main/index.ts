@@ -110,6 +110,7 @@ function createWindow() {
       nodeIntegrationInSubFrames: false,
       nodeIntegrationInWorker: false,
       preload: path.join(__dirname, "..", "preload", "main.js"),
+      sandbox: false,
       webSecurity: true,
     },
   });
