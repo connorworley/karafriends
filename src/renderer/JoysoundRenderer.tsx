@@ -1,18 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
-import { graphql, requestSubscription } from "react-relay";
-import { RouteComponentProps } from "react-router-dom";
+import React, { useEffect, useRef } from "react";
 import invariant from "ts-invariant";
 
 import "./JoysoundRenderer.css";
 
-import { withLoader } from "../common/components/Loader";
-import environment from "../common/graphqlEnvironment";
 import parseJoysoundData, {
   decodeSJIS,
   JoysoundLyricsBlock,
-  JoysoundPaletteColor,
 } from "../common/joysoundParser";
-import { AdhocLyricsCurrentLyricsSubscriptionResponse } from "./__generated__/AdhocLyricsCurrentLyricsSubscription.graphql";
 
 // XXX: These should be in their own file
 

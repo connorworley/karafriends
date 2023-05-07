@@ -2,12 +2,9 @@ import formatDuration from "format-duration";
 import React, { useEffect, useState } from "react";
 import { graphql, useMutation } from "react-relay";
 
-import { SongPageQueryResponse } from "../../pages/__generated__/SongPageQuery.graphql";
+import { SongPageQuery$data } from "../../pages/__generated__/SongPageQuery.graphql";
 import Button from "../Button";
-import {
-  DamQueueButtonMutation,
-  DamQueueButtonMutationVariables,
-} from "./__generated__/DamQueueButtonMutation.graphql";
+import { DamQueueButtonMutation } from "./__generated__/DamQueueButtonMutation.graphql";
 
 const damQueueButtonMutation = graphql`
   mutation DamQueueButtonMutation($input: QueueDamSongInput!) {
@@ -41,7 +38,7 @@ function getDefaultText(vocalType: string) {
 }
 
 interface Props {
-  song: SongPageQueryResponse["songById"];
+  song: SongPageQuery$data["songById"];
   streamingUrlIndex: number;
   nickname: string;
 }

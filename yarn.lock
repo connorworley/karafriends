@@ -3694,13 +3694,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-relay@npm:^11.0.0":
-  version: 11.0.1
-  resolution: "@types/react-relay@npm:11.0.1"
+"@types/react-relay@npm:^14.1.3":
+  version: 14.1.3
+  resolution: "@types/react-relay@npm:14.1.3"
   dependencies:
     "@types/react": "*"
     "@types/relay-runtime": "*"
-  checksum: 637ee2ccdb879a61b8de227b1450c6c21a1867a437fc50dc6ddaaa219068874c1c2fa38d423adde6341db426902ff05e4ca10447493022bdf895217f377fe2cb
+  checksum: b161e5dd1328159b64f6875a9a0595d3f7ce5e8216bdf17bf1d188c544e675c44bb6cf368cf4c9e6e90d0a4a9f10a1dc38cb068004024c4489f84491d0551390
   languageName: node
   linkType: hard
 
@@ -9704,7 +9704,7 @@ __metadata:
     "@types/react": ^16.9.53
     "@types/react-dom": ^16.9.8
     "@types/react-fade-in": ^2.0.2
-    "@types/react-relay": ^11.0.0
+    "@types/react-relay": ^14.1.3
     "@types/react-router-dom": ^5.1.6
     "@types/react-swipeable": ^5.2.0
     "@types/user-agents": ^1.0.2

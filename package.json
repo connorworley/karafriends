@@ -6,8 +6,8 @@
   "scripts": {
     "build-native-dev": "cross-env-shell \"cargo build --manifest-path native/Cargo.toml ${CARGO_ARGS:-}\"",
     "build-native-prod": "cross-env-shell \"cargo build --manifest-path native/Cargo.toml --release ${CARGO_ARGS:-}\"",
-    "build-relay-dev": "relay-compiler --schema src/common/schema.graphql --src src --language typescript",
-    "build-relay-prod": "yarn build-relay-dev",
+    "build-relay-dev": "relay-compiler",
+    "build-relay-prod": "relay-compiler",
     "build-electron-dev": "webpack --mode development",
     "build-electron-prod": "webpack --mode production",
     "build-frontend-dev": "parcel build --dist-dir build --public-url . --no-optimize --no-scope-hoist",
@@ -90,7 +90,7 @@
     "@types/qrcode": "^1.5.0",
     "@types/react": "^16.9.53",
     "@types/react-dom": "^16.9.8",
-    "@types/react-relay": "^11.0.0",
+    "@types/react-relay": "^14.1.3",
     "@types/react-router-dom": "^5.1.6",
     "@types/webpack-env": "^1.18.0",
     "babel-loader": "^9.1.2",
@@ -152,5 +152,10 @@
     "remocon": {
       "source": "src/remocon/index.html"
     }
+  },
+  "relay": {
+    "src": "src",
+    "schema": "src/common/schema.graphql",
+    "language": "typescript"
   }
 }

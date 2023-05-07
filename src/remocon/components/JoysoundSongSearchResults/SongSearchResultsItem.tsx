@@ -2,10 +2,10 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 import { ListItem } from "../List";
-import { JoysoundSongSearchResults_joysoundSongsByKeyword } from "./__generated__/JoysoundSongSearchResults_joysoundSongsByKeyword.graphql";
+import { JoysoundSongSearchResults_joysoundSongsByKeyword$data } from "./__generated__/JoysoundSongSearchResults_joysoundSongsByKeyword.graphql";
 
 type Props =
-  JoysoundSongSearchResults_joysoundSongsByKeyword["joysoundSongsByKeyword"]["edges"][0]["node"];
+  JoysoundSongSearchResults_joysoundSongsByKeyword$data["joysoundSongsByKeyword"]["edges"][0]["node"];
 
 const SongSearchResultsItem = ({ id, name, artistName }: Props) => (
   <Link to={`/joysoundSong/${id}`}>

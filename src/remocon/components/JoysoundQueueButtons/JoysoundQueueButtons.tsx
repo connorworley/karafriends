@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 
 import useNickname from "../../hooks/useNickname";
-import { JoysoundSongPageQueryResponse } from "../../pages/__generated__/JoysoundSongPageQuery.graphql";
+import { JoysoundSongPageQuery$data } from "../../pages/__generated__/JoysoundSongPageQuery.graphql";
 import JoysoundQueueButton from "./JoysoundQueueButton";
 import styles from "./JoysoundQueueButtons.module.scss";
 
 interface Props {
-  song: JoysoundSongPageQueryResponse["joysoundSongDetail"];
+  song: JoysoundSongPageQuery$data["joysoundSongDetail"];
 }
 
 const JoysoundQueueButtons = ({ song }: Props) => {

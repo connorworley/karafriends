@@ -4,7 +4,7 @@ import { graphql, useMutation } from "react-relay";
 
 import useNickname from "../../hooks/useNickname";
 import Button from "../Button";
-import { YouTubeInfoVideoInfoQueryResponse } from "./__generated__/YouTubeInfoVideoInfoQuery.graphql";
+import { YouTubeInfoVideoInfoQuery$data } from "./__generated__/YouTubeInfoVideoInfoQuery.graphql";
 import { YouTubeQueueButtonMutation } from "./__generated__/YouTubeQueueButtonMutation.graphql";
 
 const youTubeQueueButtonMutation = graphql`
@@ -24,7 +24,7 @@ const youTubeQueueButtonMutation = graphql`
 
 interface Props {
   videoId: string;
-  videoInfo: YouTubeInfoVideoInfoQueryResponse["youtubeVideoInfo"];
+  videoInfo: YouTubeInfoVideoInfoQuery$data["youtubeVideoInfo"];
   adhocSongLyrics: string | null;
   selectedCaption: string | null;
 }

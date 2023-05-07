@@ -6,7 +6,7 @@ import invariant from "ts-invariant";
 import FadeIn from "react-fade-in";
 import { withLoader } from "../common/components/Loader";
 import environment from "../common/graphqlEnvironment";
-import { AdhocLyricsCurrentLyricsSubscriptionResponse } from "./__generated__/AdhocLyricsCurrentLyricsSubscription.graphql";
+import { AdhocLyricsCurrentLyricsSubscription$data } from "./__generated__/AdhocLyricsCurrentLyricsSubscription.graphql";
 
 import "./AdhocLyrics.css";
 
@@ -33,7 +33,7 @@ function AdhocLyrics() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   function handleNewLyrics(
-    response: AdhocLyricsCurrentLyricsSubscriptionResponse
+    response: AdhocLyricsCurrentLyricsSubscription$data
   ) {
     setLyricLines((prevLyricLines) => {
       const newLyricsLineCount = response.currentSongAdhocLyricsChanged.length;
