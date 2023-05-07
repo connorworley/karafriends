@@ -9408,7 +9408,7 @@ __metadata:
     typescript: ^4.1.2
     user-agents: ^1.0.1371
     wait-on: ^7.0.1
-    wanakana: ^4.0.2
+    wanakana: ^5.1.0
     webpack: ^5.82.0
     webpack-cli: ^5.0.2
     webpack-merge: ^5.8.0
@@ -13872,10 +13872,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"wanakana@npm:^4.0.2":
-  version: 4.0.2
-  resolution: "wanakana@npm:4.0.2"
-  checksum: b492ee6c952b2163320fcff69c029a74c97b7866b00e18407c781652a0f6d8d0c6ade8ce5d667698c997891c500604ab44631f1d33b5fdc6de876fc5240202a0
+"wanakana@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "wanakana@npm:5.1.0"
+  checksum: 4f683e129e3cfe05d75130b1d46b1259c0a6ceda5e46ebcfcd6036f79721a27e0ea7711ee1d61d5dde7455c42261661dfd933653d16d4f0b4fb26a71a420d52f
   languageName: node
   linkType: hard
 
