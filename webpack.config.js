@@ -1,47 +1,29 @@
 const path = require("path");
 
-const CopyPlugin = require("copy-webpack-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { merge } = require("webpack-merge");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const COMMON_CONFIG = {
   resolve: {
     alias: {
       graphql$: path.resolve(__dirname, "./node_modules/graphql/index.js"),
     },
-    extensions: [".js", ".ts", ".tsx", ".graphql", ".glsl", ".node"],
+    extensions: [".js", ".ts", ".graphql", ".node"],
   },
   module: {
     rules: [
       {
-        test: /\.s?css$/,
-        use: [
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: { publicPath: "/build/renderer" },
-          },
-          "css-loader",
-          "sass-loader",
-        ],
-      },
-      {
-        test: /\.tsx?$/,
+        test: /\.ts$/,
         use: ["babel-loader", "ts-loader"],
         exclude: /node_modules/,
       },
       {
-        test: /\.(graphql|glsl)$/,
+        test: /\.graphql$/,
         use: "raw-loader",
         exclude: /node_modules/,
       },
       {
         test: /\.node$/,
         loader: "node-loader",
-      },
-      {
-        test: /\.(otf|ttf)$/,
-        type: "asset/resource",
       },
     ],
   },

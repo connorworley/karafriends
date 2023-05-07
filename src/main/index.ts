@@ -168,7 +168,7 @@ function createWindow() {
           if (rendererWindow) rendererWindow.reload();
         })
       )
-      .catch((e) => dialog.showErrorBox("Error logging in", e))
+      .catch((e) => dialog.showErrorBox("Error logging in", e.toString()))
   );
 
   ipcMain.on("config", (event: IpcMainEvent) => {

@@ -1,5 +1,6 @@
 import fs from "fs";
 import { Server } from "http";
+import path from "path";
 
 import { ApolloServer, makeExecutableSchema } from "apollo-server-express";
 import isDev from "electron-is-dev";
