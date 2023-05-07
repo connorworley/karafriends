@@ -12,6 +12,10 @@ export interface KarafriendsConfig {
   paxSongQueueLimit: number;
   // Which port to listen on for the remocon server
   remoconPort: number;
+  // Joysound email for joysound creds
+  joysoundEmail: string;
+  // Joysound password for joysound creds
+  joysoundPassword: string;
 }
 
 const DEFAULT_CONFIG: KarafriendsConfig = {
@@ -19,6 +23,8 @@ const DEFAULT_CONFIG: KarafriendsConfig = {
   predownloadDAM: false,
   paxSongQueueLimit: 1,
   remoconPort: 8080,
+  joysoundEmail: "YOUR_EMAIL_HERE",
+  joysoundPassword: "YOUR_PASSWORD_HERE",
 };
 
 function getConfig(): KarafriendsConfig {
@@ -28,7 +34,9 @@ function getConfig(): KarafriendsConfig {
     app.getPath("userData"),
     "config.yaml"
   );
+
   console.log(`Checking ${configFilepath} for configs`);
+
   if (fs.existsSync(configFilepath)) {
     console.log(`Configs found. Loading them up.`);
     const localConfig: KarafriendsConfig = parse(
@@ -39,6 +47,7 @@ function getConfig(): KarafriendsConfig {
       ...localConfig,
     };
   }
+
   console.log("No local configs found. Using default.");
   return DEFAULT_CONFIG;
 }
