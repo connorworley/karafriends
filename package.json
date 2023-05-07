@@ -2,7 +2,6 @@
   "name": "karafriends",
   "version": "0.1.0",
   "private": true,
-  "main": "build/main/main.js",
   "scripts": {
     "build-native-dev": "cross-env-shell \"cargo build --manifest-path native/Cargo.toml ${CARGO_ARGS:-}\"",
     "build-native-prod": "cross-env-shell \"cargo build --manifest-path native/Cargo.toml --release ${CARGO_ARGS:-}\"",
@@ -10,12 +9,12 @@
     "build-relay-prod": "relay-compiler",
     "build-electron-dev": "webpack --mode development",
     "build-electron-prod": "webpack --mode production",
-    "build-frontend-dev": "parcel build --dist-dir build --public-url . --no-optimize --no-scope-hoist",
-    "build-frontend-prod": "parcel build --dist-dir build --public-url .",
+    "build-frontend-dev": "parcel build --dist-dir build/dev --public-url . --no-optimize --no-scope-hoist",
+    "build-frontend-prod": "parcel build --dist-dir build/prod --public-url .",
     "build-dev": "concurrently \"yarn get-external-resources\" \"yarn build-native-dev\" \"yarn build-relay-dev\" && concurrently \"yarn build-electron-dev\" \"yarn build-frontend-dev\"",
-    "build-prod": "concurrently \"yarn get-external-resources\" \"yarn build-native-prod\" \"yarn build-relay-prod\" && concurrently \"yarn build-electron-prod\" \"yarn build-frontend-prod\" && electron-builder build --config.extraMetadata.main=./build/main/main.js --publish never --dir",
+    "build-prod": "concurrently \"yarn get-external-resources\" \"yarn build-native-prod\" \"yarn build-relay-prod\" && concurrently \"yarn build-electron-prod\" \"yarn build-frontend-prod\" && electron-builder build --config.extraMetadata.main=./build/prod/main/main.js --publish never --dir",
     "run-dev": "cross-env NODE_ENV=development yarn _run-dev",
-    "_run-dev": "yarn build-dev && concurrently \"parcel serve --dist-dir build --port 3000\" \"wait-on http://127.0.0.1:3000/renderer/ && electron .\"",
+    "_run-dev": "yarn build-dev && concurrently \"parcel serve --dist-dir build/dev --port 3000\" \"wait-on http://127.0.0.1:3000/renderer/ && cross-env NODE_OPTIONS='--require ./.pnp.cjs' electron build/dev/main/main.js\"",
     "get-external-resources": "node scripts/getExternalResources.mjs",
     "postinstall": "husky install"
   },
@@ -30,6 +29,7 @@
     "@types/youtube-player": "^5.5.7",
     "apollo-datasource-rest": "^3.7.0",
     "apollo-server-express": "^3.12.0",
+    "bufferutil": "^4.0.7",
     "classnames": "^2.3.2",
     "color-convert": "^2.0.1",
     "cubic-spline": "^3.0.3",
@@ -38,7 +38,7 @@
     "express": "^4.18.2",
     "format-duration": "^3.0.2",
     "gl-vec2": "^1.3.0",
-    "graphql": "^16.6.0",
+    "graphql": "^15.4.0",
     "graphql-subscriptions": "^1.2.1",
     "hls.js": "^1.4.1",
     "keytar": "^7.9.0",
@@ -63,18 +63,23 @@
     "regenerator-runtime": "^0.13.11",
     "relay-runtime": "^15.0.0",
     "subscriptions-transport-ws": "^0.9.18",
+    "supports-color": "^9.3.1",
     "ts-invariant": "^0.10.3",
     "user-agents": "^1.0.1371",
+    "utf-8-validate": "^6.0.3",
     "wanakana": "^5.1.0",
     "yaml": "^2.2.2",
     "youtube-player": "^5.6.0"
   },
   "devDependencies": {
-    "7zip-bin": "^5.2.0",
+    "7zip-bin": "5.1.1",
+    "@babel/core": "^7.21.8",
     "@babel/preset-env": "^7.21.5",
     "@babel/preset-react": "^7.18.6",
+    "@babel/runtime": "^7.21.5",
     "@parcel/transformer-glsl": "2.8.3",
     "@parcel/transformer-sass": "2.8.3",
+    "@types/babel__core": "^7",
     "@types/color-convert": "^2.0.0",
     "@types/express": "^4.17.17",
     "@types/format-duration": "^1.0.1",
@@ -91,19 +96,19 @@
     "@types/react-dom": "^16.9.8",
     "@types/react-relay": "^14.1.3",
     "@types/react-router-dom": "^5.1.6",
+    "@types/relay-runtime": "^14.1.10",
     "@types/webpack-env": "^1.18.0",
     "babel-loader": "^9.1.2",
     "babel-plugin-relay": "^15.0.0",
     "concurrently": "^8.0.1",
     "cross-env": "^7.0.3",
-    "electron": "^24.2.0",
+    "electron": "24.2.0",
     "electron-builder": "^23.6.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.2",
     "node-loader": "^2.0.0",
     "parcel": "^2.8.3",
     "prettier": "2.8.8",
-    "process": "^0.11.10",
     "raw-loader": "^4.0.2",
     "relay-compiler": "^15.0.0",
     "relay-compiler-language-typescript": "^14.0.0",
@@ -117,11 +122,8 @@
     "webpack-cli": "^5.0.2",
     "webpack-merge": "^5.8.0"
   },
-  "resolutions": {
-    "graphql": "^15.4.0"
-  },
   "build": {
-    "appId": "com.karafriends.kara",
+    "appId": "party.karafriends",
     "extraResources": [
       "./extraResources/**"
     ],
@@ -156,5 +158,8 @@
     "src": "src",
     "schema": "src/common/schema.graphql",
     "language": "typescript"
+  },
+  "alias": {
+    "process": false
   }
 }
