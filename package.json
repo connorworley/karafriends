@@ -27,7 +27,7 @@
     "@types/react-swipeable": "^5.2.0",
     "@types/user-agents": "^1.0.2",
     "@types/wicg-mediasession": "^1.1.4",
-    "@types/youtube-player": "^5.5.3",
+    "@types/youtube-player": "^5.5.7",
     "apollo-datasource-rest": "^3.7.0",
     "apollo-server-express": "^2.19.1",
     "classnames": "^2.3.2",
@@ -68,7 +68,7 @@
     "user-agents": "^1.0.1371",
     "wanakana": "^5.1.0",
     "yaml": "^2.2.2",
-    "youtube-player": "^5.5.2"
+    "youtube-player": "^5.6.0"
   },
   "devDependencies": {
     "7zip-bin": "^5.2.0",

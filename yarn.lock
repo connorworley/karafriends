@@ -3872,10 +3872,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/youtube-player@npm:^5.5.3":
-  version: 5.5.3
-  resolution: "@types/youtube-player@npm:5.5.3"
-  checksum: d1a9da6eef8d732e082cfd4f38101844b6c5f1a48e01321db6890fab815b87b5debd0d1040f1939de605ec86f48da8aa82ff9aa67acc2a8e06eae78089c3ab41
+"@types/youtube-player@npm:^5.5.7":
+  version: 5.5.7
+  resolution: "@types/youtube-player@npm:5.5.7"
+  checksum: 5e18dc1b48a62e416a920b5dd3076c443c15537f2c96d9a834c715864c4cde2e7f8a2b5de7d8a6addfb2b26e5dbc4dd5d61319e7e9c8a9fbb90275dd06e61ef7
   languageName: node
   linkType: hard
 
@@ -6241,7 +6241,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:2.6.9, debug@npm:^2.2.0, debug@npm:^2.3.3, debug@npm:^2.6.6, debug@npm:^2.6.8":
+"debug@npm:2.6.9, debug@npm:^2.2.0, debug@npm:^2.3.3, debug@npm:^2.6.8":
   version: 2.6.9
   resolution: "debug@npm:2.6.9"
   dependencies:
@@ -9710,7 +9710,7 @@ __metadata:
     "@types/user-agents": ^1.0.2
     "@types/webpack-env": ^1.18.0
     "@types/wicg-mediasession": ^1.1.4
-    "@types/youtube-player": ^5.5.3
+    "@types/youtube-player": ^5.5.7
     apollo-datasource-rest: ^3.7.0
     apollo-server-express: ^2.19.1
     babel-loader: ^9.1.2
@@ -9775,7 +9775,7 @@ __metadata:
     webpack-cli: ^5.0.2
     webpack-merge: ^5.8.0
     yaml: ^2.2.2
-    youtube-player: ^5.5.2
+    youtube-player: ^5.6.0
   languageName: unknown
   linkType: soft
 
@@ -14729,14 +14729,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"youtube-player@npm:^5.5.2":
-  version: 5.5.2
-  resolution: "youtube-player@npm:5.5.2"
+"youtube-player@npm:^5.6.0":
+  version: 5.6.0
+  resolution: "youtube-player@npm:5.6.0"
   dependencies:
-    debug: ^2.6.6
+    debug: ^4.3.4
     load-script: ^1.0.0
     sister: ^3.0.0
-  checksum: 42693af5d7cef728fb9d60f31e79bb9551fc6ec594fdcec45faa7b54f5b5f9800d3cda591dcc57ed5e6fa201b53a08571f776fbe4df919759b05e5a25aec9754
+  checksum: 2b4c800e37468b78279434e868dd0817b28e0dcb9aca47045935673cd37aeb3b88eddd90fa5cd305b014ac13d3e856c101ab8a94039b3c24cb6080dd28f242a8
   languageName: node
   linkType: hard
 
