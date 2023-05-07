@@ -12,10 +12,10 @@
     "build-electron-prod": "yarn build-relay-prod && webpack --mode   production",
     "build-frontend-dev": "yarn build-relay-dev && parcel build --dist-dir build --public-url . --no-optimize --no-scope-hoist",
     "build-frontend-prod": "yarn build-relay-prod && parcel build --dist-dir build --public-url .",
-    "build-dev": "concurrently --max-processes 3 \"yarn get-external-resources\" \"yarn build-native-dev\" \"yarn build-relay-dev\" && concurrently --max-processes 2 \"yarn build-electron-dev\" \"yarn build-frontend-dev\"",
-    "build-prod": "concurrently --max-processes 3 \"yarn get-external-resources\" \"yarn build-native-prod\" \"yarn build-relay-prod\" && concurrently --max-processes 2 \"yarn build-electron-prod\" \"yarn build-frontend-prod\" && electron-builder build --config.extraMetadata.main=./build/main/main.js --publish never --dir",
+    "build-dev": "concurrently \"yarn get-external-resources\" \"yarn build-native-dev\" \"yarn build-relay-dev\" && concurrently \"yarn build-electron-dev\" \"yarn build-frontend-dev\"",
+    "build-prod": "concurrently \"yarn get-external-resources\" \"yarn build-native-prod\" \"yarn build-relay-prod\" && concurrently \"yarn build-electron-prod\" \"yarn build-frontend-prod\" && electron-builder build --config.extraMetadata.main=./build/main/main.js --publish never --dir",
     "run-dev": "cross-env NODE_ENV=development yarn _run-dev",
-    "_run-dev": "yarn build-dev && concurrently --max-processes 2 \"parcel serve --dist-dir build --port 3000\" \"wait-on http://127.0.0.1:3000/renderer/ && electron .\"",
+    "_run-dev": "yarn build-dev && concurrently \"parcel serve --dist-dir build --port 3000\" \"wait-on http://127.0.0.1:3000/renderer/ && electron .\"",
     "get-external-resources": "node scripts/getExternalResources.mjs",
     "postinstall": "husky install"
   },
