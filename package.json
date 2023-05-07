@@ -64,7 +64,7 @@
     "regenerator-runtime": "^0.13.11",
     "relay-runtime": "^10.1.0",
     "subscriptions-transport-ws": "^0.9.18",
-    "ts-invariant": "^0.9.1",
+    "ts-invariant": "^0.10.3",
     "user-agents": "^1.0.1371",
     "wanakana": "^5.1.0",
     "yaml": "^2.2.2",
