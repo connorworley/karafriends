@@ -2,10 +2,14 @@ const path = require("path");
 
 const { merge } = require("webpack-merge");
 
+// We need to ensure that all dependencies use the same graphql installation, so we force the top-level one.
+const topLevelGraphql = require.resolve("graphql");
+
 const COMMON_CONFIG = {
+  devtool: "inline-cheap-module-source-map",
   resolve: {
     alias: {
-      graphql$: path.resolve(__dirname, "./node_modules/graphql/index.js"),
+      graphql$: topLevelGraphql,
     },
     extensions: [".js", ".ts", ".graphql", ".node"],
   },
@@ -29,12 +33,17 @@ const COMMON_CONFIG = {
   },
 };
 
-module.exports = [
+module.exports = (env, argv) => [
   merge(COMMON_CONFIG, {
     target: "electron-main",
     entry: "./src/main/index.ts",
     output: {
-      path: path.resolve(__dirname, "build", "main"),
+      path: path.resolve(
+        __dirname,
+        "build",
+        argv.mode === "production" ? "prod" : "dev",
+        "main"
+      ),
     },
     externals: {
       // Needed because niconico needs jsdom and jsdom wants canvas
@@ -47,7 +56,12 @@ module.exports = [
     target: "electron-preload",
     entry: "./src/preload/index.ts",
     output: {
-      path: path.resolve(__dirname, "build", "preload"),
+      path: path.resolve(
+        __dirname,
+        "build",
+        argv.mode === "production" ? "prod" : "dev",
+        "preload"
+      ),
     },
   }),
 ];

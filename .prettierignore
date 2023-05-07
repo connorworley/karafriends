@@ -1,3 +1,5 @@
 dist
 node_modules
 __generated__
+.pnp.cjs
+.pnp.loader.mjs
