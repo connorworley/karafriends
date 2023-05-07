@@ -124,8 +124,8 @@ export class MinseiAPI extends RESTDataSource {
         },
       }
     )
-      .then((data) => data.json())
-      .then((data: MinseiLogin) => MinseiAPI.checkError(data));
+      .then((data) => data.json() as Promise<MinseiLogin>)
+      .then((data) => MinseiAPI.checkError(data));
   }
 
   getMusicStreamingUrls(requestNo: string) {
