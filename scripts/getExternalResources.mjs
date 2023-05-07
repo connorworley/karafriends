@@ -6,7 +6,7 @@ import mv from "mv";
 import os from "os";
 import path from "path";
 import process from "process";
-import { exec } from "child_process";
+import { exec, execFile } from "child_process";
 
 const pathTo7zip = sevenBin.path7za;
 const buildResourcesDir = `${process.cwd()}/buildResources`;
@@ -39,9 +39,7 @@ const winTasks = {
   doChecks: () => [
     fs.existsSync(`${extraResourcesDir}/ytdlp/yt-dlp.exe`),
     fs.existsSync(`${extraResourcesDir}/ffmpeg/win/ffmpeg.exe`),
-    fs.existsSync(
-      `${buildResourcesDir}/asio/asiosdk_2.3.3_2019-06-14/readme.txt`
-    ),
+    fs.existsSync(`${buildResourcesDir}/asio/asio.h`),
   ],
   prepareDirs: async (tmpDir) =>
     Promise.all([
@@ -71,8 +69,14 @@ const winTasks = {
       ),
     ]),
   extractAssets: async (tmpDir, hasFinishedExtracting) => {
-    exec(
-      `${pathTo7zip} e ${tmpDir}/ffmpeg/win/ffmpeg.7z -y -o${tmpDir}/ffmpeg/win/contents`,
+    execFile(
+      pathTo7zip,
+      [
+        "e",
+        `${tmpDir}/ffmpeg/win/ffmpeg.7z`,
+        "-y",
+        `-o${tmpDir}/ffmpeg/win/contents`,
+      ],
       (error, stdout, stderr) => {
         mv(
           `${tmpDir}/ffmpeg/win/contents/ffmpeg.exe`,
@@ -87,8 +91,9 @@ const winTasks = {
         );
       }
     );
-    exec(
-      `${pathTo7zip} x ${tmpDir}/asio/asio.zip -y -o${buildResourcesDir}/asio`,
+    execFile(
+      pathTo7zip,
+      ["e", `${tmpDir}/asio/asio.zip`, "-y", `-o${buildResourcesDir}/asio`],
       (error, stdout, stderr) => {
         if (error) {
           console.error(error);
@@ -128,8 +133,14 @@ const macosTasks = {
       ),
     ]),
   extractAssets: async (tmpDir, hasFinishedExtracting) => {
-    exec(
-      `${pathTo7zip} e ${tmpDir}/ffmpeg/macos/ffmpeg.zip -y -o${tmpDir}/ffmpeg/macos/contents`,
+    execFile(
+      pathTo7zip,
+      [
+        "e",
+        `${tmpDir}/ffmpeg/macos/ffmpeg.zip`,
+        "-y",
+        `-o${tmpDir}/ffmpeg/macos/contents`,
+      ],
       (error, stdout, stderr) => {
         mv(
           `${tmpDir}/ffmpeg/macos/contents/ffmpeg`,
@@ -179,11 +190,23 @@ const linuxTasks = {
       ),
     ]),
   extractAssets: async (tmpDir, hasFinishedExtracting) => {
-    exec(
-      `${pathTo7zip} e ${tmpDir}/ffmpeg/linux/ffmpeg.tar.xz -y -o${tmpDir}/ffmpeg/linux/xz`,
+    execFile(
+      pathTo7zip,
+      [
+        "e",
+        `${tmpDir}/ffmpeg/linux/ffmpeg.tar.xz`,
+        "-y",
+        `-o${tmpDir}/ffmpeg/linux/xz`,
+      ],
       (error, stdout, stderr) => {
-        exec(
-          `${pathTo7zip} e ${tmpDir}/ffmpeg/linux/xz/ffmpeg.tar -y -o${tmpDir}/ffmpeg/linux/contents`,
+        execfile(
+          pathTo7zip,
+          [
+            "e",
+            `${tmpDir}/ffmpeg/linux/xz/ffmpeg.tar`,
+            "-y",
+            `-o${tmpDir}/ffmpeg/linux/contents`,
+          ],
           (error, stdout, stderr) => {
             mv(
               `${tmpDir}/ffmpeg/linux/contents/ffmpeg`,
