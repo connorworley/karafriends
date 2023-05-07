@@ -40,7 +40,7 @@ const ECHO_AMPLITUDE: f32 = 0.25;
 struct InputDevice {
     input_stream: Arc<Mutex<cpal::Stream>>,
     output_stream: Arc<Mutex<cpal::Stream>>,
-    pitch_rx: ringbuf::Consumer<f32>,
+    pitch_rx: ringbuf::HeapConsumer<f32>,
     pitch_sample_count: usize,
     pitch_detector: pitch_detector::PitchDetector,
 }
@@ -275,19 +275,18 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
         );
 
         let pitch_sample_count = (input_sample_rate / 40) as usize;
-        let (mut pitch_tx, pitch_rx) = ringbuf::RingBuffer::new(pitch_sample_count).split();
+        let (mut pitch_tx, pitch_rx) = ringbuf::HeapRb::new(pitch_sample_count).split();
 
         let latency_sample_count = (input_sample_rate as f32 * ECHO_DELAY_SECS) as usize;
         let (mut echo_tx, mut echo_rx) =
-            ringbuf::RingBuffer::new(latency_sample_count * 2 * output_channels).split();
+            ringbuf::HeapRb::new(latency_sample_count * 2 * output_channels).split();
         for _ in 0..latency_sample_count * output_channels {
             echo_tx
                 .push(0.0)
                 .map_err(|_| "Failed to push to echo buffer")?;
         }
 
-        let (mut output_tx, mut output_rx) =
-            ringbuf::RingBuffer::new(2048 * output_channels).split();
+        let (mut output_tx, mut output_rx) = ringbuf::HeapRb::new(2048 * output_channels).split();
 
         let pitch_detector =
             pitch_detector::PitchDetector::new(input_sample_rate as f32, pitch_sample_count);
