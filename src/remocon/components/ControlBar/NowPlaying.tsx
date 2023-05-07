@@ -7,11 +7,11 @@ import SongQueueItem from "../SongQueue/SongQueueItem";
 import styles from "./ControlBar.module.scss";
 import {
   NowPlayingQuery,
-  NowPlayingQueryResponse,
+  NowPlayingQuery$data,
 } from "./__generated__/NowPlayingQuery.graphql";
 import {
   NowPlayingSubscription,
-  NowPlayingSubscriptionResponse,
+  NowPlayingSubscription$data,
 } from "./__generated__/NowPlayingSubscription.graphql";
 
 const nowPlayingQuery = graphql`
@@ -49,7 +49,7 @@ const nowPlayingSubscription = graphql`
 const NowPlaying = () => {
   const nickname = useNickname();
   const [currentSong, setCurrentSong] =
-    useState<NowPlayingSubscriptionResponse["currentSongChanged"]>(null);
+    useState<NowPlayingSubscription$data["currentSongChanged"]>(null);
 
   useEffect(() => {
     const initialQuery = fetchQuery<NowPlayingQuery>(
@@ -59,7 +59,7 @@ const NowPlaying = () => {
     )
       // @ts-ignore: @types/react-relay has wrong return type for fetchQuery
       .subscribe({
-        next: (response: NowPlayingQueryResponse) =>
+        next: (response: NowPlayingQuery$data) =>
           setCurrentSong(response.currentSong),
       });
     const subscription = requestSubscription<NowPlayingSubscription>(

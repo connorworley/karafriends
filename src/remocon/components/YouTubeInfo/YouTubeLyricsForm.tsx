@@ -1,10 +1,10 @@
 import React from "react";
 
 import styles from "./YouTubeInfo.module.scss";
-import { YouTubeInfoVideoInfoQueryResponse } from "./__generated__/YouTubeInfoVideoInfoQuery.graphql";
+import { YouTubeInfoVideoInfoQuery$data } from "./__generated__/YouTubeInfoVideoInfoQuery.graphql";
 
 interface Props {
-  videoInfo: YouTubeInfoVideoInfoQueryResponse["youtubeVideoInfo"];
+  videoInfo: YouTubeInfoVideoInfoQuery$data["youtubeVideoInfo"];
   onSelectCaption: (language: string | undefined) => void;
   onAdhocLyricsChanged: (lyrics: string | null) => void;
 }

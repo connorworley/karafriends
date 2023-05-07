@@ -4,9 +4,9 @@ import { Link } from "react-router-dom";
 import { ListItem } from "../List";
 import WeebText from "../WeebText";
 import styles from "./SongHistory.module.scss";
-import { SongHistory_history } from "./__generated__/SongHistory_history.graphql";
+import { SongHistory_history$data } from "./__generated__/SongHistory_history.graphql";
 
-type Props = SongHistory_history["history"]["edges"][0]["node"];
+type Props = SongHistory_history$data["history"]["edges"][0]["node"];
 
 const SongHistoryItem = ({ song, playDate }: Props) => {
   const [year, month, day, hour, minute, second] = playDate

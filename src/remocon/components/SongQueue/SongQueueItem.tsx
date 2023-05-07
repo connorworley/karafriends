@@ -10,7 +10,7 @@ import { graphql, useMutation } from "react-relay";
 import { useHistory } from "react-router-dom";
 
 import { cyrb53 } from "../../../common/hash";
-import { useQueueQueueQueryResponse } from "../../../common/hooks/__generated__/useQueueQueueQuery.graphql";
+import { useQueueQueueQuery$data } from "../../../common/hooks/__generated__/useQueueQueueQuery.graphql";
 import Marquee from "../Marquee";
 import styles from "./SongQueue.module.scss";
 import { SongQueueItemRemoveSongMutation } from "./__generated__/SongQueueItemRemoveSongMutation.graphql";
@@ -25,7 +25,7 @@ const removeSongMutation = graphql`
 `;
 
 interface Props {
-  item: useQueueQueueQueryResponse["queue"][0];
+  item: useQueueQueueQuery$data["queue"][0];
   eta: number;
   myNickname: string;
   isCurrent?: boolean;

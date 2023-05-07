@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { graphql, useMutation } from "react-relay";
 
 import Button from "../Button";
-import { NiconicoInfoVideoInfoQueryResponse } from "./__generated__/NiconicoInfoVideoInfoQuery.graphql";
+import { NiconicoInfoVideoInfoQuery$data } from "./__generated__/NiconicoInfoVideoInfoQuery.graphql";
 import { NiconicoQueueButtonMutation } from "./__generated__/NiconicoQueueButtonMutation.graphql";
 
 const niconicoQueueButtonMutation = graphql`
@@ -23,7 +23,7 @@ const niconicoQueueButtonMutation = graphql`
 
 interface Props {
   videoId: string;
-  videoInfo: NiconicoInfoVideoInfoQueryResponse["nicoVideoInfo"];
+  videoInfo: NiconicoInfoVideoInfoQuery$data["nicoVideoInfo"];
 }
 
 const NiconicoQueueButton = ({ videoId, videoInfo }: Props) => {

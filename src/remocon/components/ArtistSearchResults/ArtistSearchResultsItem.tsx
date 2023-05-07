@@ -4,10 +4,10 @@ import { Link } from "react-router-dom";
 import { ListItem } from "../List";
 import WeebText from "../WeebText";
 import styles from "./ArtistSearchResults.module.scss";
-import { ArtistSearchResults_artistsByName } from "./__generated__/ArtistSearchResults_artistsByName.graphql";
+import { ArtistSearchResults_artistsByName$data } from "./__generated__/ArtistSearchResults_artistsByName.graphql";
 
 type Props =
-  ArtistSearchResults_artistsByName["artistsByName"]["edges"][0]["node"];
+  ArtistSearchResults_artistsByName$data["artistsByName"]["edges"][0]["node"];
 
 const ArtistSearchResultsItem = ({ id, name, nameYomi, songCount }: Props) => (
   <Link to={`/artist/${id}`}>

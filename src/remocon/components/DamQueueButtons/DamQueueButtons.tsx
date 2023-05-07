@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 
 import useNickname from "../../hooks/useNickname";
 import {
-  SongPageQueryResponse,
+  SongPageQuery$data,
   VocalType,
 } from "../../pages/__generated__/SongPageQuery.graphql";
 import DamQueueButton from "./DamQueueButton";
 import styles from "./DamQueueButtons.module.scss";
 
 interface Props {
-  song: SongPageQueryResponse["songById"];
+  song: SongPageQuery$data["songById"];
 }
 
 const DamQueueButtons = ({ song }: Props) => {

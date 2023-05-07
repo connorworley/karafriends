@@ -2,13 +2,10 @@ import formatDuration from "format-duration";
 import React, { useEffect, useState } from "react";
 import { graphql, useMutation } from "react-relay";
 
-import { JoysoundSongPageQueryResponse } from "../../pages/__generated__/JoysoundSongPageQuery.graphql";
+import { JoysoundSongPageQuery$data } from "../../pages/__generated__/JoysoundSongPageQuery.graphql";
 import Button from "../Button";
 
-import {
-  JoysoundQueueButtonMutation,
-  JoysoundQueueButtonMutationVariables,
-} from "./__generated__/JoysoundQueueButtonMutation.graphql";
+import { JoysoundQueueButtonMutation } from "./__generated__/JoysoundQueueButtonMutation.graphql";
 
 const joysoundQueueButtonMutation = graphql`
   mutation JoysoundQueueButtonMutation($input: QueueJoysoundSongInput!) {
@@ -27,7 +24,7 @@ const joysoundQueueButtonMutation = graphql`
 `;
 
 interface Props {
-  song: JoysoundSongPageQueryResponse["joysoundSongDetail"];
+  song: JoysoundSongPageQuery$data["joysoundSongDetail"];
   nickname: string;
   isRomaji: boolean;
   isDisabled: boolean;

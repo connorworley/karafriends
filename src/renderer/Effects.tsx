@@ -3,10 +3,7 @@ import { graphql, requestSubscription } from "react-relay";
 
 import environment from "../common/graphqlEnvironment";
 import "./Effects.css";
-import {
-  EffectsEmoteSubscription,
-  EffectsEmoteSubscriptionResponse,
-} from "./__generated__/EffectsEmoteSubscription.graphql";
+import { EffectsEmoteSubscription } from "./__generated__/EffectsEmoteSubscription.graphql";
 
 const effectsEmoteSubscription = graphql`
   subscription EffectsEmoteSubscription {

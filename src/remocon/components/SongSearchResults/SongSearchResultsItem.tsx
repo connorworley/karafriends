@@ -3,9 +3,10 @@ import { Link } from "react-router-dom";
 
 import { ListItem } from "../List";
 import WeebText from "../WeebText";
-import { SongSearchResults_songsByName } from "./__generated__/SongSearchResults_songsByName.graphql";
+import { SongSearchResults_songsByName$data } from "./__generated__/SongSearchResults_songsByName.graphql";
 
-type Props = SongSearchResults_songsByName["songsByName"]["edges"][0]["node"];
+type Props =
+  SongSearchResults_songsByName$data["songsByName"]["edges"][0]["node"];
 
 const SongSearchResultsItem = ({
   id,
