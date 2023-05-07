@@ -1,20 +1,17 @@
 import React, { useState } from "react";
-import { RouteComponentProps } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import DebouncedInput from "../components/DebouncedInput";
 import SearchFormWrapper from "../components/SearchFormWrapper";
 import SongSearchResults from "../components/SongSearchResults";
 
-interface SongSearchParams {
-  query: string | undefined;
-}
+type SongSearchParams = {
+  query: string;
+};
 
-interface Props extends RouteComponentProps<SongSearchParams> {}
-
-function SongSearch(props: Props) {
-  const [query, setQuery] = useState<string | null>(
-    props.match.params.query || null
-  );
+function SongSearch() {
+  const params = useParams<SongSearchParams>();
+  const [query, setQuery] = useState<string | null>(params.query || null);
 
   return (
     <SearchFormWrapper>
@@ -26,7 +23,7 @@ function SongSearch(props: Props) {
           setQuery(e.target.value === "" ? null : e.target.value);
           history.replaceState({}, "", `#/search/song/${e.target.value}`);
         }}
-        defaultValue={props.match.params.query}
+        defaultValue={params.query}
       />
       <SongSearchResults query={query} />
     </SearchFormWrapper>

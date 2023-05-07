@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { RouteComponentProps } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import Button from "../components/Button";
 import NiconicoInfo from "../components/NiconicoInfo";
@@ -17,17 +17,14 @@ function getVideoId(videoQuery: string): string | null {
   return videoQuery;
 }
 
-interface NiconicoParams {
-  videoId: string | undefined;
-}
+type NiconicoParams = {
+  videoId: string;
+};
 
-interface Props extends RouteComponentProps<NiconicoParams> {}
-
-const NiconicoPage = (props: Props) => {
+const NiconicoPage = () => {
+  const params = useParams<NiconicoParams>();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [videoId, setVideoId] = useState<string>(
-    props.match.params.videoId || ""
-  );
+  const [videoId, setVideoId] = useState<string>(params.videoId || "");
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();

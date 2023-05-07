@@ -7,7 +7,7 @@ import { MdClose, MdMusicVideo } from "react-icons/md";
 // tslint:disable-next-line:no-submodule-imports
 import { SiNiconico } from "react-icons/si";
 import { graphql, useMutation } from "react-relay";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { cyrb53 } from "../../../common/hash";
 import { useQueueQueueQuery$data } from "../../../common/hooks/__generated__/useQueueQueueQuery.graphql";
@@ -32,7 +32,7 @@ interface Props {
 }
 
 const SongQueueItem = ({ item, eta, myNickname, isCurrent }: Props) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [expanded, setExpanded] = useState(false);
   const [commit, isInFlight] = useMutation(removeSongMutation);
 
@@ -42,13 +42,13 @@ const SongQueueItem = ({ item, eta, myNickname, isCurrent }: Props) => {
   const nicknameBgColor = `hsl(${(nicknameHash % 180) + 180}, 50%, 50%)`;
 
   const onClick = () => {
-    if (itemType === "DamQueueItem") history.push(`/song/${item.songId}`);
+    if (itemType === "DamQueueItem") navigate(`/song/${item.songId}`);
     if (itemType === "JoysoundQueueItem")
-      history.push(`/joysoundSong/${item.songId}`);
+      navigate(`/joysoundSong/${item.songId}`);
     if (itemType === "YoutubeQueueItem")
-      history.push(`/search/youtube/${item.songId}`);
+      navigate(`/search/youtube/${item.songId}`);
     if (itemType === "NicoQueueItem")
-      history.push(`/search/niconico/${item.songId}`);
+      navigate(`/search/niconico/${item.songId}`);
   };
 
   const onRemove = (songId?: string, timestamp?: string) => {

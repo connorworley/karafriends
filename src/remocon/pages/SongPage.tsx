@@ -1,6 +1,6 @@
 import React from "react";
 import { graphql, useLazyLoadQuery } from "react-relay";
-import { Link, RouteComponentProps } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import DamQueueButtons from "../components/DamQueueButtons";
 import { withLoader } from "../components/Loader";
@@ -22,15 +22,14 @@ const songPageQuery = graphql`
   }
 `;
 
-interface RouteParams {
+type RouteParams = {
   id: string;
-}
+};
 
-interface Props extends RouteComponentProps<RouteParams> {}
-
-const SongPage = (props: Props) => {
+const SongPage = () => {
+  const params = useParams<RouteParams>();
   const data = useLazyLoadQuery<SongPageQuery>(songPageQuery, {
-    id: props.match.params.id,
+    id: params.id!,
   });
   const song = data.songById;
 
