@@ -62,51 +62,10 @@ module.exports = [
     },
   }),
   merge(COMMON_CONFIG, {
-    target: "web", // our renderer is rather locked down
-    entry: "./src/renderer/index.tsx",
-    output: {
-      path: path.resolve(__dirname, "build", "renderer"),
-    },
-    plugins: [
-      new HtmlWebpackPlugin({
-        template: "./src/renderer/index.html",
-      }),
-      new MiniCssExtractPlugin(),
-    ],
-    devServer: {
-      host: "127.0.0.1",
-      port: 3000,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-      },
-      allowedHosts: [".karafriends.local"],
-    },
-  }),
-  merge(COMMON_CONFIG, {
     target: "electron-preload",
     entry: "./src/preload/index.ts",
     output: {
       path: path.resolve(__dirname, "build", "preload"),
     },
-  }),
-  merge(COMMON_CONFIG, {
-    target: "web",
-    entry: "./src/remocon/index.tsx",
-    output: {
-      path: path.resolve(__dirname, "build", "remocon"),
-    },
-    plugins: [
-      new HtmlWebpackPlugin({
-        template: "./src/remocon/index.html",
-      }),
-      new MiniCssExtractPlugin(),
-      new CopyPlugin({
-        patterns: [
-          {
-            from: "icon.png",
-          },
-        ],
-      }),
-    ],
   }),
 ];

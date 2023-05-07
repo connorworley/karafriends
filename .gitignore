@@ -28,6 +28,8 @@ yarn-error.log*
 *.node
 */**/*.swp
 
+.parcel-cache/
+
 # Added by cargo
 /native/target
 
