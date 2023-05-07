@@ -38,9 +38,6 @@ import { JoysoundAPI } from "./joysoundApi";
 import setupMdns from "./mdns";
 import remoconMiddleware from "./remoconMiddleware";
 
-const JOYSOUND_EMAIL = "otwojoy@gmail.com";
-const JOYSOUND_PASSWORD = "qwer1234";
-
 const nativeAudio = require("../../native"); // tslint:disable-line:no-var-requires
 
 try {
@@ -62,8 +59,10 @@ protocol.registerSchemesAsPrivileged([
 ]);
 
 async function attemptLogin(minseiLoginCreds: Credentials) {
-  const joysoundEmail = encodeURIComponent(JOYSOUND_EMAIL);
-  const joysoundPassword = encodeURIComponent(JOYSOUND_PASSWORD);
+  const joysoundEmail = encodeURIComponent(karafriendsConfig.joysoundEmail);
+  const joysoundPassword = encodeURIComponent(
+    karafriendsConfig.joysoundPassword
+  );
 
   return Promise.all([
     MinseiAPI.login(minseiLoginCreds.account, minseiLoginCreds.password),

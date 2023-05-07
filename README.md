@@ -11,7 +11,7 @@ Dependencies
 
 ## Running
 
-XXX: Set `JOYSOUND_EMAIL` and `JOYSOUND_PASSWORD` consts in `src/main/index.ts` before building.
+Set `joysoundEmail` and `joysoundPassword` in `AppData/Roaming/Karafriends/config.yaml` before running.
 
 Electron
 

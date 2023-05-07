@@ -194,7 +194,14 @@ export class JoysoundAPI extends RESTDataSource {
     return this.get<JoysoundSongRawData>(
       "/player/getFME",
       { songNumber: id, serviceType: "003000761" },
-      { headers: { Cookie: generateCookieString(this.cookies) } }
+      {
+        headers: {
+          Cookie: generateCookieString(this.cookies),
+          Referer: "https://www.sound-cafe.jp/player",
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/112.0",
+        },
+      }
     );
   }
 
@@ -228,14 +235,19 @@ export class JoysoundAPI extends RESTDataSource {
         return matchData[1];
       });
 
-    return fetch("https://www.sound-cafe.jp/login", {
+    return fetch("https://www.sound-cafe.jp/login/check", {
       method: "POST",
-      body: `_csrf=${csrfToken}&mailAddress=${email}&password=${password}`,
+      body: `mailAddress=${email}&password=${password}`,
       headers: {
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
         Cookie: generateCookieString(loginCookies),
+        Origin: "https://www.sound-cafe.jp",
+        Referer: "https:/www.sound-cafe.jp/login",
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/112.0",
+        "X-CSRF-TOKEN": csrfToken,
+        "X-Requested-With": "XMLHttpRequest",
       },
-      redirect: "manual",
     })
       .then((resp) => {
         const setCookie = resp.headers.get("set-cookie");
@@ -243,8 +255,32 @@ export class JoysoundAPI extends RESTDataSource {
 
         parseCookies(setCookie, loginCookies);
 
-        return fetch(resp.url, {
-          headers: { Cookie: generateCookieString(loginCookies) },
+        return fetch("https://www.sound-cafe.jp/login", {
+          method: "POST",
+          body: `_csrf=${csrfToken}&mailAddress=${email}&password=${password}`,
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            Cookie: generateCookieString(loginCookies),
+            Origin: "https://www.sound-cafe.jp",
+            Referer: "https:/www.sound-cafe.jp/login",
+            "User-Agent":
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/112.0",
+          },
+          redirect: "manual",
+        });
+      })
+      .then((resp) => {
+        const setCookie = resp.headers.get("set-cookie");
+        invariant(setCookie);
+
+        parseCookies(setCookie, loginCookies);
+
+        return fetch("https://www.sound-cafe.jp", {
+          headers: {
+            Cookie: generateCookieString(loginCookies),
+            "User-Agent":
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/112.0",
+          },
         });
       })
       .then((resp) => {
