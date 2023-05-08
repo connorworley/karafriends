@@ -281,6 +281,7 @@ export class DkwebsysAPI extends RESTDataSource {
   }
 
   post<T>(url: string, data: object): Promise<T> {
+    console.debug(`[dkwebsys] curl ${this.baseURL}${url} -d '${data}'`);
     return super.post(url, {
       ...BASE_DKWEBSYS_REQUEST,
       ...data,

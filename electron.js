@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const { spawnSync } = require("child_process");
-const path = require("path");
+const { resolve } = require("path");
 
 const electron = require("electron");
 
@@ -10,7 +10,7 @@ spawnSync(
   {
     env: {
       ...process.env,
-      NODE_OPTIONS: `--require=${path.join(__dirname, ".pnp.cjs")}`,
+      NODE_OPTIONS: `'--require=${resolve(__dirname, ".pnp.cjs")}'`,
     },
     stdio: "inherit",
   }
