@@ -54,7 +54,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/promise-retry", "npm:1.1.3"],\
             ["@types/qrcode", "npm:1.5.0"],\
             ["@types/react", "npm:18.2.6"],\
-            ["@types/react-dom", "npm:18.2.0"],\
+            ["@types/react-dom", "npm:18.2.4"],\
             ["@types/react-fade-in", "npm:2.0.2"],\
             ["@types/react-relay", "npm:14.1.3"],\
             ["@types/react-router-dom", "npm:5.3.3"],\
@@ -5462,10 +5462,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["@types/react-dom", [\
-        ["npm:18.2.0", {\
-          "packageLocation": "./.yarn/cache/@types-react-dom-npm-18.2.0-5531b5a84f-9212b37937.zip/node_modules/@types/react-dom/",\
+        ["npm:18.2.4", {\
+          "packageLocation": "./.yarn/cache/@types-react-dom-npm-18.2.4-5d62ac2096-8301f35cf1.zip/node_modules/@types/react-dom/",\
           "packageDependencies": [\
-            ["@types/react-dom", "npm:18.2.0"],\
+            ["@types/react-dom", "npm:18.2.4"],\
             ["@types/react", "npm:18.2.0"]\
           ],\
           "linkType": "HARD"\
@@ -13437,7 +13437,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/promise-retry", "npm:1.1.3"],\
             ["@types/qrcode", "npm:1.5.0"],\
             ["@types/react", "npm:18.2.6"],\
-            ["@types/react-dom", "npm:18.2.0"],\
+            ["@types/react-dom", "npm:18.2.4"],\
             ["@types/react-fade-in", "npm:2.0.2"],\
             ["@types/react-relay", "npm:14.1.3"],\
             ["@types/react-router-dom", "npm:5.3.3"],\
@@ -16384,7 +16384,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["react-mobile-picker-scroll", "virtual:1cb46121cac5c3b5fcafbbc2f2be3dbc61042f1d39014468aceb7329098980d765a877a7dd0cc051cfbceff2442aaf5c8fca8d7fe23fd2660746643d17e013bc#npm:0.2.14"],\
             ["@types/react", "npm:18.2.6"],\
-            ["@types/react-dom", "npm:18.2.0"],\
+            ["@types/react-dom", "npm:18.2.4"],\
             ["prop-types", "npm:15.8.1"],\
             ["react", "npm:18.2.0"],\
             ["react-dom", "virtual:1cb46121cac5c3b5fcafbbc2f2be3dbc61042f1d39014468aceb7329098980d765a877a7dd0cc051cfbceff2442aaf5c8fca8d7fe23fd2660746643d17e013bc#npm:18.2.0"]\
@@ -16471,7 +16471,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["react-router-dom", "virtual:1cb46121cac5c3b5fcafbbc2f2be3dbc61042f1d39014468aceb7329098980d765a877a7dd0cc051cfbceff2442aaf5c8fca8d7fe23fd2660746643d17e013bc#npm:6.11.1"],\
             ["@remix-run/router", "npm:1.6.1"],\
             ["@types/react", "npm:18.2.6"],\
-            ["@types/react-dom", "npm:18.2.0"],\
+            ["@types/react-dom", "npm:18.2.4"],\
             ["react", "npm:18.2.0"],\
             ["react-dom", "virtual:1cb46121cac5c3b5fcafbbc2f2be3dbc61042f1d39014468aceb7329098980d765a877a7dd0cc051cfbceff2442aaf5c8fca8d7fe23fd2660746643d17e013bc#npm:18.2.0"],\
             ["react-router", "virtual:07d37d380d77664817bd2c3d4a6360802256a419464245b2049aebf426edd5475a8a593f4577352739ef5811ee39e2a39056d8dc4ccf0fa2ae12a4049d840816#npm:6.11.1"]\
