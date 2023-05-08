@@ -5,7 +5,7 @@ import Button from "../components/Button";
 import SearchFormWrapper from "../components/SearchFormWrapper";
 import YouTubeInfo from "../components/YouTubeInfo";
 
-function getVideoId(videoQuery: string): string | null {
+export function getVideoId(videoQuery: string): string | null {
   try {
     const url = new URL(videoQuery);
     return url.hostname === "youtu.be"
@@ -49,7 +49,7 @@ const YouTubePage = () => {
         />
         <Button type="submit">Preview video</Button>
       </form>
-      {videoId !== "" && <YouTubeInfo videoId={videoId} />}
+      {videoId !== "" && <YouTubeInfo videoId={videoId} isSimple={false} />}
     </SearchFormWrapper>
   );
 };

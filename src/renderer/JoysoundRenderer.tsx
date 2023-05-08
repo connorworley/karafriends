@@ -564,6 +564,8 @@ export default function JoysoundRenderer(props: {
   };
 
   useEffect(() => {
+    console.log("Joysound Renderer -- triggered re-render");
+
     updateSize();
     window.addEventListener("resize", updateSize);
 
@@ -697,7 +699,7 @@ export default function JoysoundRenderer(props: {
       window.removeEventListener("resize", updateSize);
       window.cancelAnimationFrame(animationFrameRequestRef.current);
     };
-  }, [props]);
+  }, [props.telop, props.isRomaji]);
 
   return <canvas ref={canvasRef} className="joysoundDisplay"></canvas>;
 }

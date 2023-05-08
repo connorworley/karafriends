@@ -36,6 +36,10 @@ const App = () => {
             <Route path="/adhocLyrics/:id" element={<AdhocLyricsPage />} />
             <Route path="/joysoundSong/:id" element={<JoysoundSongPage />} />
             <Route
+              path="/joysoundSong/:id/:youtubeVideoId"
+              element={<JoysoundSongPage />}
+            />
+            <Route
               path="/joysoundArtist/:id"
               element={<JoysoundArtistPage />}
             />

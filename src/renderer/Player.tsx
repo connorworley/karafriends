@@ -37,6 +37,7 @@ const popSongMutation = graphql`
         name
         artistName
         isRomaji
+        youtubeVideoId
       }
       ... on YoutubeQueueItem {
         __typename
@@ -180,7 +181,11 @@ function Player(props: { mics: InputDevice[] }) {
                 setShouldShowJoysound(true);
                 setShouldShowAdhocLyrics(false);
 
-                videoRef.current.src = `karafriends://joysound-${popSong.songId}.mp4`;
+                const filenameSuffix = popSong.youtubeVideoId
+                  ? popSong.youtubeVideoId
+                  : "default";
+
+                videoRef.current.src = `karafriends://joysound-${popSong.songId}-${filenameSuffix}.mp4`;
 
                 navigator.mediaSession.metadata = new MediaMetadata({
                   title: popSong.name,
