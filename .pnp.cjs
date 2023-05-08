@@ -57,7 +57,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/react-dom", "npm:18.2.0"],\
             ["@types/react-fade-in", "npm:2.0.2"],\
             ["@types/react-relay", "npm:14.1.3"],\
-            ["@types/react-router-dom", "npm:5.1.6"],\
+            ["@types/react-router-dom", "npm:5.3.3"],\
             ["@types/react-swipeable", "npm:5.2.0"],\
             ["@types/relay-runtime", "npm:14.1.10"],\
             ["@types/user-agents", "npm:1.0.2"],\
@@ -5146,6 +5146,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["@types/history", [\
+        ["npm:4.7.11", {\
+          "packageLocation": "./.yarn/cache/@types-history-npm-4.7.11-fe05d7b2e1-c92e2ba407.zip/node_modules/@types/history/",\
+          "packageDependencies": [\
+            ["@types/history", "npm:4.7.11"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
         ["npm:4.7.8", {\
           "packageLocation": "./.yarn/cache/@types-history-npm-4.7.8-53b2aef3de-9c867532af.zip/node_modules/@types/history/",\
           "packageDependencies": [\
@@ -5487,11 +5494,11 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["@types/react-router-dom", [\
-        ["npm:5.1.6", {\
-          "packageLocation": "./.yarn/cache/@types-react-router-dom-npm-5.1.6-d10d920490-0c24556d0f.zip/node_modules/@types/react-router-dom/",\
+        ["npm:5.3.3", {\
+          "packageLocation": "./.yarn/cache/@types-react-router-dom-npm-5.3.3-9f687b5b3a-28c4ea4890.zip/node_modules/@types/react-router-dom/",\
           "packageDependencies": [\
-            ["@types/react-router-dom", "npm:5.1.6"],\
-            ["@types/history", "npm:4.7.8"],\
+            ["@types/react-router-dom", "npm:5.3.3"],\
+            ["@types/history", "npm:4.7.11"],\
             ["@types/react", "npm:18.2.0"],\
             ["@types/react-router", "npm:5.1.8"]\
           ],\
@@ -13423,7 +13430,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/react-dom", "npm:18.2.0"],\
             ["@types/react-fade-in", "npm:2.0.2"],\
             ["@types/react-relay", "npm:14.1.3"],\
-            ["@types/react-router-dom", "npm:5.1.6"],\
+            ["@types/react-router-dom", "npm:5.3.3"],\
             ["@types/react-swipeable", "npm:5.2.0"],\
             ["@types/relay-runtime", "npm:14.1.10"],\
             ["@types/user-agents", "npm:1.0.2"],\
