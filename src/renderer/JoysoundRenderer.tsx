@@ -67,7 +67,7 @@ const fsSource = `#version 300 es
 let TEXTURE_OFF_X = 0;
 let TEXTURE_OFF_Y = 0;
 
-const TITLE_FONT_SIZE = 40;
+const TITLE_FONT_SIZE = 48;
 const TITLE_FONT_STROKE = 4;
 
 const ARTIST_FONT_SIZE = 32;
@@ -195,10 +195,7 @@ function setupTextCanvas(
   textCtx.strokeStyle = `rgb(${strokeColor.join(", ")})`;
 }
 
-function createTitleRows(
-  textCtx: CanvasRenderingContext2D,
-  title: string,
-) {
+function createTitleRows(textCtx: CanvasRenderingContext2D, title: string) {
   const titleRows = [];
 
   let currTitleText = "";
@@ -231,7 +228,7 @@ function createTitleRows(
 
 function createTitleTexture(
   gl: WebGL2RenderingContext,
-  metadata: JoysoundMetadata,
+  metadata: JoysoundMetadata
 ): WebGLTexture {
   const textCtx = document.createElement("canvas").getContext("2d");
   invariant(textCtx);
@@ -245,31 +242,39 @@ function createTitleTexture(
   textCtx.fillStyle = `rgb(255, 255, 255)`;
   textCtx.strokeStyle = `rgb(8, 8, 8)`;
 
-  const titleFontSize = metadata.musicName.length < 48 ? TITLE_FONT_SIZE : ARTIST_FONT_SIZE;
+  const titleFontSize =
+    metadata.musicName.length < 48 ? TITLE_FONT_SIZE : ARTIST_FONT_SIZE;
   textCtx.font = `${titleFontSize}px ${JP_FONT_FACE}`;
 
   const titleRows = createTitleRows(textCtx, metadata.musicName);
-  const titleHeight = (titleFontSize + TITLE_FONT_STROKE * 2) * titleRows.length;
+  const titleHeight =
+    (titleFontSize + TITLE_FONT_STROKE * 2) * titleRows.length;
 
-  const artistFontSize = metadata.artistName.length < 64 ? ARTIST_FONT_SIZE : METADATA_FONT_SIZE; 
+  const artistFontSize =
+    metadata.artistName.length < 64 ? ARTIST_FONT_SIZE : METADATA_FONT_SIZE;
   textCtx.font = `${artistFontSize}px ${JP_FONT_FACE}`;
 
   const artistRows = createTitleRows(textCtx, "♪ " + metadata.artistName);
-  const artistHeight = (artistFontSize + ARTIST_FONT_STROKE * 2) * artistRows.length;
+  const artistHeight =
+    (artistFontSize + ARTIST_FONT_STROKE * 2) * artistRows.length;
 
   textCtx.font = `${METADATA_FONT_SIZE}px ${JP_FONT_FACE}`;
-  
+
   const lyricistText = "作詞 " + metadata.lyricistName;
-  const lyricistMeasure = textCtx.measureText(metadata.lyricistText);
-  const lyricistHeight = lyricistMeasure.actualBoundingBoxAscent + lyricistMeasure.actualBoundingBoxDescent;
+  const lyricistMeasure = textCtx.measureText(lyricistText);
+  const lyricistHeight =
+    lyricistMeasure.actualBoundingBoxAscent +
+    lyricistMeasure.actualBoundingBoxDescent;
 
   const composerText = "作曲 " + metadata.composerName;
-  const composerMeasure = textCtx.measureText(metadata.composerText);
-  const composerHeight = composerMeasure.actualBoundingBoxAscent + composerMeasure.actualBoundingBoxDescent;
+  const composerMeasure = textCtx.measureText(composerText);
+  const composerHeight =
+    composerMeasure.actualBoundingBoxAscent +
+    composerMeasure.actualBoundingBoxDescent;
 
-  let titleYPos = (480 - titleHeight - artistHeight - 128) / 2;
+  let titleYPos = (480 - titleHeight - artistHeight - 96) / 2;
   let artistYPos = titleYPos + titleHeight + 64;
-  
+
   const lyricistYPos = artistYPos + artistHeight + 32;
   const composerYPos = lyricistYPos + lyricistHeight + 16;
 
@@ -278,15 +283,15 @@ function createTitleTexture(
 
   for (const titleRow of titleRows) {
     const titleXPos = Math.max(0, (720 - titleRow.width) / 2);
-  
+
     drawTextToCanvas(
-      textCtx, 
+      textCtx,
       titleFontSize,
       TITLE_FONT_STROKE,
       titleXPos,
       titleYPos,
       titleRow.text,
-      false,
+      false
     );
 
     titleYPos += TITLE_FONT_SIZE + TITLE_FONT_STROKE * 2;
@@ -296,36 +301,36 @@ function createTitleTexture(
     const artistXPos = Math.max(0, (720 - artistRow.width) / 2);
 
     drawTextToCanvas(
-      textCtx, 
+      textCtx,
       artistFontSize,
       ARTIST_FONT_STROKE,
       artistXPos,
       artistYPos,
       artistRow.text,
-      false,
+      false
     );
 
     artistYPos += ARTIST_FONT_SIZE + ARTIST_FONT_STROKE * 2;
   }
 
   drawTextToCanvas(
-    textCtx, 
+    textCtx,
     METADATA_FONT_SIZE,
     METADATA_FONT_STROKE,
     lyricistXPos,
     lyricistYPos,
     lyricistText,
-    false,
+    false
   );
 
   drawTextToCanvas(
-    textCtx, 
+    textCtx,
     METADATA_FONT_SIZE,
     METADATA_FONT_STROKE,
     composerXPos,
     composerYPos,
     composerText,
-    false,
+    false
   );
 
   const result = createTextureFromImage(gl, textCtx.canvas);
@@ -612,25 +617,18 @@ function getScrollXPos(
 function drawTitle(
   gl: WebGL2RenderingContext,
   glBuffers: JoysoundDisplayBuffers,
-  titleTexture: WebGLTexture,
+  titleTexture: WebGLTexture
 ): void {
   const scrollArray = new Float32Array(Array(6).fill(TEXTURE_OFF_X));
   const positions = quadToTriangles(
     TEXTURE_OFF_X,
     TEXTURE_OFF_Y,
     720 * EXPAND_RATE + TEXTURE_OFF_X,
-    480 * EXPAND_RATE + TEXTURE_OFF_Y,
+    480 * EXPAND_RATE + TEXTURE_OFF_Y
   );
 
-  drawLyricsTexture(
-    gl,
-    glBuffers,
-    titleTexture,
-    positions,
-    scrollArray,
-    false
-  );
-};
+  drawLyricsTexture(gl, glBuffers, titleTexture, positions, scrollArray, false);
+}
 
 function drawLyricsTexture(
   gl: WebGL2RenderingContext,
@@ -672,7 +670,9 @@ function drawLyricsBlock(
   refreshTime: number
 ) {
   const scrollXPos = Math.floor(getScrollXPos(lyricsBlock, refreshTime));
-  const scrollArray = new Float32Array(Array(6).fill(scrollXPos * EXPAND_RATE + TEXTURE_OFF_X));
+  const scrollArray = new Float32Array(
+    Array(6).fill(scrollXPos * EXPAND_RATE + TEXTURE_OFF_X)
+  );
 
   const currX = lyricsBlock.xPos;
   const currY = lyricsBlock.yPos - (RUBY_FONT_SIZE + RUBY_FONT_STROKE * 2 + 8);
@@ -732,9 +732,11 @@ export default function JoysoundRenderer(props: {
     );
 
     if (canvasElement.width / 720 >= canvasElement.height / 480) {
-      TEXTURE_OFF_X = (canvasElement.width - (canvasElement.height / 480) * 720) / 2;
+      TEXTURE_OFF_X =
+        (canvasElement.width - (canvasElement.height / 480) * 720) / 2;
     } else {
-      TEXTURE_OFF_Y = (canvasElement.height - (canvasElement.width / 720) * 480) / 2;
+      TEXTURE_OFF_Y =
+        (canvasElement.height - (canvasElement.width / 720) * 480) / 2;
     }
 
     const gl = canvasElement.getContext("webgl2", {
@@ -860,7 +862,7 @@ export default function JoysoundRenderer(props: {
       if (refreshTime < metadata.fadeoutTime) {
         drawTitle(gl, glBuffers, titleTexture);
       }
-      
+
       for (let i = 0; i < lyricsData.length; i++) {
         const lyricsBlock = lyricsData[i];
 

@@ -8,9 +8,9 @@ import { PlayerPopSongMutation } from "./__generated__/PlayerPopSongMutation.gra
 
 import environment from "../common/graphqlEnvironment";
 import usePlaybackState from "../common/hooks/usePlaybackState";
-import parseJoysoundData, { JoysoundTelopData } from "../common/joysoundParser";
 import AdhocLyrics from "./AdhocLyrics";
 import { InputDevice } from "./audioSystem";
+import parseJoysoundData, { JoysoundTelopData } from "./joysoundParser";
 import JoysoundRenderer from "./JoysoundRenderer";
 import PianoRoll from "./PianoRoll";
 import "./Player.css";
