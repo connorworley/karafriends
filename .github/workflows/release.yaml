@@ -1,0 +1,49 @@
+name: Release
+on:
+  release:
+    types: [published]
+
+jobs:
+  release-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: yarn install --immutable
+      - run: yarn build-prod
+      - uses: actions/upload-artifact@v2
+        with:
+          name: karafriends-macos
+          path: dist/mac/
+          if-no-files-found: error
+  release-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: yarn install --immutable
+      - run: yarn build-prod
+      - uses: actions/upload-artifact@v2
+        with:
+          name: karafriends-windows
+          path: dist/win-unpacked/
+          if-no-files-found: error
+  release-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: sudo apt-get update && sudo apt-get install -y libasound2-dev
+      - run: yarn install --immutable
+      - run: yarn build-prod
+      - uses: actions/upload-artifact@v2
+        with:
+          name: karafriends-linux
+          path: dist/linux-unpacked/
+          if-no-files-found: error
