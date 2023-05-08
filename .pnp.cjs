@@ -126,7 +126,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["tslint", "virtual:1cb46121cac5c3b5fcafbbc2f2be3dbc61042f1d39014468aceb7329098980d765a877a7dd0cc051cfbceff2442aaf5c8fca8d7fe23fd2660746643d17e013bc#npm:6.1.3"],\
             ["tslint-config-prettier", "npm:1.18.0"],\
             ["typescript", "patch:typescript@npm%3A5.0.4#~builtin<compat/typescript>::version=5.0.4&hash=b5f058"],\
-            ["user-agents", "npm:1.0.1372"],\
+            ["user-agents", "npm:1.0.1373"],\
             ["utf-8-validate", "npm:6.0.3"],\
             ["wait-on", "npm:7.0.1"],\
             ["wanakana", "npm:5.1.0"],\
@@ -13492,7 +13492,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["tslint", "virtual:1cb46121cac5c3b5fcafbbc2f2be3dbc61042f1d39014468aceb7329098980d765a877a7dd0cc051cfbceff2442aaf5c8fca8d7fe23fd2660746643d17e013bc#npm:6.1.3"],\
             ["tslint-config-prettier", "npm:1.18.0"],\
             ["typescript", "patch:typescript@npm%3A5.0.4#~builtin<compat/typescript>::version=5.0.4&hash=b5f058"],\
-            ["user-agents", "npm:1.0.1372"],\
+            ["user-agents", "npm:1.0.1373"],\
             ["utf-8-validate", "npm:6.0.3"],\
             ["wait-on", "npm:7.0.1"],\
             ["wanakana", "npm:5.1.0"],\
@@ -19083,10 +19083,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["user-agents", [\
-        ["npm:1.0.1372", {\
-          "packageLocation": "./.yarn/cache/user-agents-npm-1.0.1372-27f8382de4-044bb31f2c.zip/node_modules/user-agents/",\
+        ["npm:1.0.1373", {\
+          "packageLocation": "./.yarn/cache/user-agents-npm-1.0.1373-7ca9e4d073-012a616916.zip/node_modules/user-agents/",\
           "packageDependencies": [\
-            ["user-agents", "npm:1.0.1372"],\
+            ["user-agents", "npm:1.0.1373"],\
             ["dot-json", "npm:1.3.0"],\
             ["lodash.clonedeep", "npm:4.5.0"]\
           ],\
