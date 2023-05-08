@@ -25,6 +25,7 @@ const joysoundQueueButtonMutation = graphql`
 
 interface Props {
   song: JoysoundSongPageQuery$data["joysoundSongDetail"];
+  youtubeVideoId: string | null;
   nickname: string;
   isRomaji: boolean;
   isDisabled: boolean;
@@ -33,6 +34,7 @@ interface Props {
 
 const JoysoundQueueButton = ({
   song,
+  youtubeVideoId,
   nickname,
   isRomaji,
   isDisabled,
@@ -55,6 +57,7 @@ const JoysoundQueueButton = ({
           artistName: song.artistName,
           nickname,
           isRomaji,
+          youtubeVideoId,
         },
       },
       onCompleted: ({ queueJoysoundSong }) => {

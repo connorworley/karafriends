@@ -7,9 +7,10 @@ import styles from "./JoysoundQueueButtons.module.scss";
 
 interface Props {
   song: JoysoundSongPageQuery$data["joysoundSongDetail"];
+  youtubeVideoId: string | null;
 }
 
-const JoysoundQueueButtons = ({ song }: Props) => {
+const JoysoundQueueButtons = ({ song, youtubeVideoId }: Props) => {
   const nickname = useNickname();
   const [isDisabled, setIsDisabled] = useState(false);
 
@@ -17,6 +18,7 @@ const JoysoundQueueButtons = ({ song }: Props) => {
     <div className={styles.container}>
       <JoysoundQueueButton
         song={song}
+        youtubeVideoId={youtubeVideoId}
         nickname={nickname}
         isRomaji={false}
         isDisabled={isDisabled}
@@ -25,6 +27,7 @@ const JoysoundQueueButtons = ({ song }: Props) => {
 
       <JoysoundQueueButton
         song={song}
+        youtubeVideoId={youtubeVideoId}
         nickname={nickname}
         isRomaji={true}
         isDisabled={isDisabled}

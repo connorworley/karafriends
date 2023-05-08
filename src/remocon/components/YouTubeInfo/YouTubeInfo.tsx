@@ -38,9 +38,10 @@ const youTubeInfoVideoInfoQuery = graphql`
 
 interface Props {
   videoId: string;
+  isSimple: boolean;
 }
 
-const YouTubeInfo = ({ videoId }: Props) => {
+const YouTubeInfo = ({ videoId, isSimple }: Props) => {
   const playerRef: React.MutableRefObject<ReturnType<
     typeof YouTubePlayer
   > | null> = useRef(null);
@@ -71,28 +72,38 @@ const YouTubeInfo = ({ videoId }: Props) => {
           {videoData.youtubeVideoInfo.reason}
         </div>
       )}
-      {videoData.youtubeVideoInfo.__typename === "YoutubeVideoInfo" && (
-        <>
-          <VideoMetadata
-            videoSource="youtube"
-            videoInfo={videoData.youtubeVideoInfo}
-          />
-          <YouTubeLyricsForm
-            videoInfo={videoData.youtubeVideoInfo}
-            onSelectCaption={(language) => setSelectedCaption(language)}
-            onAdhocLyricsChanged={(lyrics) => setAdhocSongLyrics(lyrics)}
-          />
-          <YouTubeQueueButton
-            videoId={videoId}
-            videoInfo={videoData.youtubeVideoInfo}
-            adhocSongLyrics={adhocSongLyrics}
-            selectedCaption={selectedCaption || null}
-          />
-          <Link to={`/adhocLyrics/${videoId}`}>
-            <Button>Guide adhoc lyrics</Button>
-          </Link>
-        </>
-      )}
+      {videoData.youtubeVideoInfo.__typename === "YoutubeVideoInfo" &&
+        isSimple && (
+          <>
+            <VideoMetadata
+              videoSource="youtube"
+              videoInfo={videoData.youtubeVideoInfo}
+            />
+          </>
+        )}
+      {videoData.youtubeVideoInfo.__typename === "YoutubeVideoInfo" &&
+        !isSimple && (
+          <>
+            <VideoMetadata
+              videoSource="youtube"
+              videoInfo={videoData.youtubeVideoInfo}
+            />
+            <YouTubeLyricsForm
+              videoInfo={videoData.youtubeVideoInfo}
+              onSelectCaption={(language) => setSelectedCaption(language)}
+              onAdhocLyricsChanged={(lyrics) => setAdhocSongLyrics(lyrics)}
+            />
+            <YouTubeQueueButton
+              videoId={videoId}
+              videoInfo={videoData.youtubeVideoInfo}
+              adhocSongLyrics={adhocSongLyrics}
+              selectedCaption={selectedCaption || null}
+            />
+            <Link to={`/adhocLyrics/${videoId}`}>
+              <Button>Guide adhoc lyrics</Button>
+            </Link>
+          </>
+        )}
     </div>
   );
 };

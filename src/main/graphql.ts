@@ -138,6 +138,7 @@ interface QueueItemInterface {
 export interface JoysoundQueueItem extends QueueItemInterface {
   readonly __typename: "JoysoundQueueItem";
   readonly isRomaji: boolean;
+  readonly youtubeVideoId: string | null;
 }
 
 interface DamQueueItem extends QueueItemInterface {
@@ -195,6 +196,7 @@ type QueueJoysoundSongInput = {
   readonly playtime?: number | null;
   readonly nickname: string;
   readonly isRomaji: boolean;
+  readonly youtubeVideoId: string | null;
 };
 
 type QueueYoutubeSongInput = {
@@ -840,6 +842,7 @@ const resolvers = {
         args.input.captionCode,
         pushSongToQueue.bind(null, queueItem)
       );
+
       // The song likely hasn't actually been added to the queue yet since it needs to download,
       // but let's optimistically return the eta assuming it will successfully queue
       return {
