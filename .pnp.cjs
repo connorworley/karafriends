@@ -53,7 +53,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/node-fetch", "npm:2.6.3"],\
             ["@types/promise-retry", "npm:1.1.3"],\
             ["@types/qrcode", "npm:1.5.0"],\
-            ["@types/react", "npm:18.2.0"],\
+            ["@types/react", "npm:18.2.6"],\
             ["@types/react-dom", "npm:18.2.0"],\
             ["@types/react-fade-in", "npm:2.0.2"],\
             ["@types/react-relay", "npm:14.1.3"],\
@@ -5437,6 +5437,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@types-react-npm-18.2.0-aeeebc9750-db3d92b423.zip/node_modules/@types/react/",\
           "packageDependencies": [\
             ["@types/react", "npm:18.2.0"],\
+            ["@types/prop-types", "npm:15.7.3"],\
+            ["@types/scheduler", "npm:0.16.3"],\
+            ["csstype", "npm:3.1.2"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:18.2.6", {\
+          "packageLocation": "./.yarn/cache/@types-react-npm-18.2.6-cb35fdf4d3-dea9d232d8.zip/node_modules/@types/react/",\
+          "packageDependencies": [\
+            ["@types/react", "npm:18.2.6"],\
             ["@types/prop-types", "npm:15.7.3"],\
             ["@types/scheduler", "npm:0.16.3"],\
             ["csstype", "npm:3.1.2"]\
@@ -13419,7 +13429,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/node-fetch", "npm:2.6.3"],\
             ["@types/promise-retry", "npm:1.1.3"],\
             ["@types/qrcode", "npm:1.5.0"],\
-            ["@types/react", "npm:18.2.0"],\
+            ["@types/react", "npm:18.2.6"],\
             ["@types/react-dom", "npm:18.2.0"],\
             ["@types/react-fade-in", "npm:2.0.2"],\
             ["@types/react-relay", "npm:14.1.3"],\
@@ -16253,7 +16263,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/__virtual__/react-dom-virtual-1c59120a78/0/cache/react-dom-npm-18.2.0-dd675bca1c-7d323310be.zip/node_modules/react-dom/",\
           "packageDependencies": [\
             ["react-dom", "virtual:1cb46121cac5c3b5fcafbbc2f2be3dbc61042f1d39014468aceb7329098980d765a877a7dd0cc051cfbceff2442aaf5c8fca8d7fe23fd2660746643d17e013bc#npm:18.2.0"],\
-            ["@types/react", "npm:18.2.0"],\
+            ["@types/react", "npm:18.2.6"],\
             ["loose-envify", "npm:1.4.0"],\
             ["react", "npm:18.2.0"],\
             ["scheduler", "npm:0.23.0"]\
@@ -16286,7 +16296,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/__virtual__/react-fade-in-virtual-f7fe8f9d5e/0/cache/react-fade-in-npm-2.0.1-e1dff330e1-34e6ddf164.zip/node_modules/react-fade-in/",\
           "packageDependencies": [\
             ["react-fade-in", "virtual:1cb46121cac5c3b5fcafbbc2f2be3dbc61042f1d39014468aceb7329098980d765a877a7dd0cc051cfbceff2442aaf5c8fca8d7fe23fd2660746643d17e013bc#npm:2.0.1"],\
-            ["@types/react", "npm:18.2.0"],\
+            ["@types/react", "npm:18.2.6"],\
             ["react", "npm:18.2.0"]\
           ],\
           "packagePeers": [\
@@ -16321,7 +16331,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/__virtual__/react-icons-virtual-0d530d63c2/0/cache/react-icons-npm-4.8.0-aa5423cd6c-4dbba7ad98.zip/node_modules/react-icons/",\
           "packageDependencies": [\
             ["react-icons", "virtual:1cb46121cac5c3b5fcafbbc2f2be3dbc61042f1d39014468aceb7329098980d765a877a7dd0cc051cfbceff2442aaf5c8fca8d7fe23fd2660746643d17e013bc#npm:4.8.0"],\
-            ["@types/react", "npm:18.2.0"],\
+            ["@types/react", "npm:18.2.6"],\
             ["react", "npm:18.2.0"]\
           ],\
           "packagePeers": [\
@@ -16366,7 +16376,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/__virtual__/react-mobile-picker-scroll-virtual-a4bc22fd4f/0/cache/react-mobile-picker-scroll-npm-0.2.14-e2174b8643-1d9b109c49.zip/node_modules/react-mobile-picker-scroll/",\
           "packageDependencies": [\
             ["react-mobile-picker-scroll", "virtual:1cb46121cac5c3b5fcafbbc2f2be3dbc61042f1d39014468aceb7329098980d765a877a7dd0cc051cfbceff2442aaf5c8fca8d7fe23fd2660746643d17e013bc#npm:0.2.14"],\
-            ["@types/react", "npm:18.2.0"],\
+            ["@types/react", "npm:18.2.6"],\
             ["@types/react-dom", "npm:18.2.0"],\
             ["prop-types", "npm:15.8.1"],\
             ["react", "npm:18.2.0"],\
@@ -16403,7 +16413,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["react-relay", "virtual:1cb46121cac5c3b5fcafbbc2f2be3dbc61042f1d39014468aceb7329098980d765a877a7dd0cc051cfbceff2442aaf5c8fca8d7fe23fd2660746643d17e013bc#npm:15.0.0"],\
             ["@babel/runtime", "npm:7.21.5"],\
-            ["@types/react", "npm:18.2.0"],\
+            ["@types/react", "npm:18.2.6"],\
             ["fbjs", "npm:3.0.4"],\
             ["invariant", "npm:2.2.4"],\
             ["nullthrows", "npm:1.1.1"],\
@@ -16430,7 +16440,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["react-router", "virtual:07d37d380d77664817bd2c3d4a6360802256a419464245b2049aebf426edd5475a8a593f4577352739ef5811ee39e2a39056d8dc4ccf0fa2ae12a4049d840816#npm:6.11.1"],\
             ["@remix-run/router", "npm:1.6.1"],\
-            ["@types/react", "npm:18.2.0"],\
+            ["@types/react", "npm:18.2.6"],\
             ["react", "npm:18.2.0"]\
           ],\
           "packagePeers": [\
@@ -16453,7 +16463,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["react-router-dom", "virtual:1cb46121cac5c3b5fcafbbc2f2be3dbc61042f1d39014468aceb7329098980d765a877a7dd0cc051cfbceff2442aaf5c8fca8d7fe23fd2660746643d17e013bc#npm:6.11.1"],\
             ["@remix-run/router", "npm:1.6.1"],\
-            ["@types/react", "npm:18.2.0"],\
+            ["@types/react", "npm:18.2.6"],\
             ["@types/react-dom", "npm:18.2.0"],\
             ["react", "npm:18.2.0"],\
             ["react-dom", "virtual:1cb46121cac5c3b5fcafbbc2f2be3dbc61042f1d39014468aceb7329098980d765a877a7dd0cc051cfbceff2442aaf5c8fca8d7fe23fd2660746643d17e013bc#npm:18.2.0"],\
@@ -16480,7 +16490,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/__virtual__/react-swipeable-virtual-39c5ac652a/0/cache/react-swipeable-npm-7.0.0-c1dc181afc-54d1593348.zip/node_modules/react-swipeable/",\
           "packageDependencies": [\
             ["react-swipeable", "virtual:1cb46121cac5c3b5fcafbbc2f2be3dbc61042f1d39014468aceb7329098980d765a877a7dd0cc051cfbceff2442aaf5c8fca8d7fe23fd2660746643d17e013bc#npm:7.0.0"],\
-            ["@types/react", "npm:18.2.0"],\
+            ["@types/react", "npm:18.2.6"],\
             ["react", "npm:18.2.0"]\
           ],\
           "packagePeers": [\
