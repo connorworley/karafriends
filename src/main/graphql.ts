@@ -707,6 +707,7 @@ const resolvers = {
             }
           );
         }
+
         return {
           __typename: "YoutubeVideoInfo",
           author: data.videoDetails.author,
@@ -717,7 +718,9 @@ const resolvers = {
           description: data.videoDetails.shortDescription,
           title: data.videoDetails.title,
           viewCount: parseInt(data.videoDetails.viewCount, 10),
-          gainValue: 10 ** (-data.playerConfig.audioConfig.loudnessDb / 20),
+          gainValue:
+            10 **
+            ((-1 * (data.playerConfig.audioConfig.loudnessDb || 0.0)) / 20),
         };
       });
     },

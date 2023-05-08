@@ -14,7 +14,7 @@
     "build-dev": "concurrently \"yarn get-external-resources\" \"yarn build-native-dev\" \"yarn build-relay-dev\" && concurrently \"yarn build-electron-dev\" \"yarn build-frontend-dev\"",
     "build-prod": "concurrently \"yarn get-external-resources\" \"yarn build-native-prod\" \"yarn build-relay-prod\" && concurrently \"yarn build-electron-prod\" \"yarn build-frontend-prod\" && electron-builder build --config.extraMetadata.main=./build/prod/main/main.js --publish never --dir",
     "run-dev": "cross-env NODE_ENV=development yarn _run-dev",
-    "_run-dev": "yarn build-dev && concurrently \"parcel serve --dist-dir build/dev --port 3000\" \"wait-on http://127.0.0.1:3000/renderer/ && ./electron.js build/dev/main/main.js\"",
+    "_run-dev": "yarn build-dev && concurrently \"parcel serve --dist-dir build/dev --port 3000\" \"wait-on http://127.0.0.1:3000/renderer/ && node ./electron.js build/dev/main/main.js\"",
     "get-external-resources": "node scripts/getExternalResources.mjs",
     "test:wdio": "concurrently --success last --kill-others \"parcel serve --dist-dir build/dev --port 3000\" \"wait-on http://127.0.0.1:3000/renderer/ && pnpify wdio run wdio.conf.js\"",
     "postinstall": "husky install"
