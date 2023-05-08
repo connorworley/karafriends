@@ -3477,6 +3477,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/history@npm:^4.7.11":
+  version: 4.7.11
+  resolution: "@types/history@npm:4.7.11"
+  checksum: c92e2ba407dcab0581a9afdf98f533aa41b61a71133420a6d92b1ca9839f741ab1f9395b17454ba5b88cb86020b70b22d74a1950ccfbdfd9beeaa5459fdc3464
+  languageName: node
+  linkType: hard
+
 "@types/hls.js@npm:1.0.0":
   version: 1.0.0
   resolution: "@types/hls.js@npm:1.0.0"
@@ -3740,14 +3747,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-router-dom@npm:5.1.6":
-  version: 5.1.6
-  resolution: "@types/react-router-dom@npm:5.1.6"
+"@types/react-router-dom@npm:5.3.3":
+  version: 5.3.3
+  resolution: "@types/react-router-dom@npm:5.3.3"
   dependencies:
-    "@types/history": "*"
+    "@types/history": ^4.7.11
     "@types/react": "*"
     "@types/react-router": "*"
-  checksum: 0c24556d0fd7fa63d46e1e821f5b5f17254cfaa8fe1cb354e275144b9651d08b3158732e0e2c9078bc61ca71c9b770572c6d8e72ea7d48c2e253de83e1ba6cc2
+  checksum: 28c4ea48909803c414bf5a08502acbb8ba414669b4b43bb51297c05fe5addc4df0b8fd00e0a9d1e3535ec4073ef38aaafac2c4a2b95b787167d113bc059beff3
   languageName: node
   linkType: hard
 
@@ -10673,7 +10680,7 @@ __metadata:
     "@types/react-dom": 18.2.0
     "@types/react-fade-in": 2.0.2
     "@types/react-relay": 14.1.3
-    "@types/react-router-dom": 5.1.6
+    "@types/react-router-dom": 5.3.3
     "@types/react-swipeable": 5.2.0
     "@types/relay-runtime": 14.1.10
     "@types/user-agents": 1.0.2
