@@ -28,7 +28,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         [null, {\
           "packageLocation": "./",\
           "packageDependencies": [\
-            ["7zip-bin", "npm:5.1.1"],\
+            ["7zip-bin", "npm:5.2.0"],\
             ["@babel/core", "npm:7.21.8"],\
             ["@babel/preset-env", "virtual:1cb46121cac5c3b5fcafbbc2f2be3dbc61042f1d39014468aceb7329098980d765a877a7dd0cc051cfbceff2442aaf5c8fca8d7fe23fd2660746643d17e013bc#npm:7.21.5"],\
             ["@babel/preset-react", "virtual:1cb46121cac5c3b5fcafbbc2f2be3dbc61042f1d39014468aceb7329098980d765a877a7dd0cc051cfbceff2442aaf5c8fca8d7fe23fd2660746643d17e013bc#npm:7.18.6"],\
@@ -146,6 +146,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/unplugged/7zip-bin-npm-5.1.1-802410de68/node_modules/7zip-bin/",\
           "packageDependencies": [\
             ["7zip-bin", "npm:5.1.1"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:5.2.0", {\
+          "packageLocation": "./.yarn/unplugged/7zip-bin-npm-5.2.0-965f95d0fd/node_modules/7zip-bin/",\
+          "packageDependencies": [\
+            ["7zip-bin", "npm:5.2.0"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -13394,7 +13401,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./",\
           "packageDependencies": [\
             ["karafriends", "workspace:."],\
-            ["7zip-bin", "npm:5.1.1"],\
+            ["7zip-bin", "npm:5.2.0"],\
             ["@babel/core", "npm:7.21.8"],\
             ["@babel/preset-env", "virtual:1cb46121cac5c3b5fcafbbc2f2be3dbc61042f1d39014468aceb7329098980d765a877a7dd0cc051cfbceff2442aaf5c8fca8d7fe23fd2660746643d17e013bc#npm:7.21.5"],\
             ["@babel/preset-react", "virtual:1cb46121cac5c3b5fcafbbc2f2be3dbc61042f1d39014468aceb7329098980d765a877a7dd0cc051cfbceff2442aaf5c8fca8d7fe23fd2660746643d17e013bc#npm:7.18.6"],\
