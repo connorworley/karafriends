@@ -13,7 +13,7 @@ jobs:
           node-version: 16
       - run: yarn install --immutable
       - run: yarn build-prod
-      - run: zip -r dist/mac karafriends-macos.zip
+      - run: zip -r karafriends-macos.zip dist/mac
       - uses: softprops/action-gh-release@v1
         with:
           files: karafriends-macos.zip
@@ -26,7 +26,7 @@ jobs:
           node-version: 16
       - run: yarn install --immutable
       - run: yarn build-prod
-      - run: zip -r dist/win-unpacked karafriends-windows.zip
+      - run: zip -r karafriends-windows.zip dist/win-unpacked
       - uses: softprops/action-gh-release@v1
         with:
           files: karafriends-windows.zip
@@ -40,7 +40,7 @@ jobs:
       - run: sudo apt-get update && sudo apt-get install -y libasound2-dev
       - run: yarn install --immutable
       - run: yarn build-prod
-      - run: zip -r dist/linux-unpacked karafriends-linux.zip
+      - run: zip -r karafriends-linux.zip dist/linux-unpacked
       - uses: softprops/action-gh-release@v1
         with:
           files: karafriends-linux.zip
