@@ -199,7 +199,7 @@ const linuxTasks = {
         `-o${tmpDir}/ffmpeg/linux/xz`,
       ],
       (error, stdout, stderr) => {
-        execfile(
+        execFile(
           pathTo7zip,
           [
             "e",
