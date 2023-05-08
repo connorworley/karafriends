@@ -206,7 +206,9 @@ export function downloadJoysoundData(
       "base64"
     );
 
-    fs.writeFileSync(telopFilename, telopBuffer);
+    if (!fs.existsSync(telopFilename)) {
+      fs.writeFileSync(telopFilename, telopBuffer);
+    }
 
     const ffmpeg = spawn(
       `${resourcePaths.ffmpeg}/${ffmpegFilename} -y -stream_loop -1 -i "${tempFilename}" -i - -c copy -shortest -movflags faststart -f mp4 "${videoFilename}" 2>"${ffmpegLogFilename}"`,
