@@ -1,0 +1,46 @@
+name: Release
+on:
+  release:
+    types: [published]
+
+jobs:
+  release-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: yarn install --immutable
+      - run: yarn build-prod
+      - run: 7z a -r karafriends-macos.zip dist/mac
+      - uses: softprops/action-gh-release@v1
+        with:
+          files: karafriends-macos.zip
+  release-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: yarn install --immutable
+      - run: yarn build-prod
+      - run: 7z.exe a -r karafriends-windows.zip dist/win-unpacked
+      - uses: softprops/action-gh-release@v1
+        with:
+          files: karafriends-windows.zip
+  release-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: sudo apt-get update && sudo apt-get install -y libasound2-dev
+      - run: yarn install --immutable
+      - run: yarn build-prod
+      - run: 7z a -r karafriends-linux.zip dist/linux-unpacked
+      - uses: softprops/action-gh-release@v1
+        with:
+          files: karafriends-linux.zip

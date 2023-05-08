@@ -21,6 +21,7 @@ jobs:
           key: ${{ runner.os }}-resources
       - run: yarn install --immutable
       - run: yarn build-dev
+      - run: yarn test:wdio
   build-windows:
     runs-on: windows-latest
     steps:
