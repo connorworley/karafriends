@@ -763,8 +763,6 @@ const resolvers = {
         ...args.input,
       };
 
-      console.log(queueItem);
-
       if (hasMaxSongsInQueue(queueItem.nickname)) {
         return {
           __typename: "QueueSongError",

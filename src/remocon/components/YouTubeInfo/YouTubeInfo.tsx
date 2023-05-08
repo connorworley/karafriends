@@ -54,9 +54,6 @@ const YouTubeInfo = ({ videoId, isSimple }: Props) => {
     { videoId }
   );
 
-  console.log("wat");
-  console.log(isSimple);
-
   useEffect(() => {
     if (playerRef.current == null) {
       playerRef.current = YouTubePlayer("youtube-player", { videoId });
