@@ -3,6 +3,11 @@
   src: url("./fonts/NotoSerifJP-SemiBold.otf");
 }
 
+@font-face {
+  font-family: "notoSerifKR";
+  src: url("./fonts/NotoSerifKR-SemiBold.otf");
+}
+
 html,
 body,
 #root {
