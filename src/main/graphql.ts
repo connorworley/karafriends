@@ -1,4 +1,6 @@
+import fs from "fs";
 import { Server } from "http";
+import path from "path";
 
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { ApolloServer } from "apollo-server-express";
@@ -258,13 +260,43 @@ enum SubscriptionEvent {
   QueueChanged = "QueueChanged",
 }
 
-const db: NotARealDb = {
+// TODO: make this gql context instead of global
+let db: NotARealDb = {
   currentSong: null,
   currentSongAdhocLyrics: [],
   idToAdhocLyrics: {},
   playbackState: PlaybackState.WAITING,
   songQueue: [],
 };
+
+const DB_PATH = path.resolve(TEMP_FOLDER, "queue.json");
+
+// TODO: write a db interface and call these from within mutating methods instead of at their call sites
+function saveDb() {
+  fs.writeFileSync(
+    DB_PATH,
+    JSON.stringify({
+      ...db,
+      currentSong: null,
+      currentSongAdhocLyrics: [],
+      songQueue: [db.currentSong, ...db.songQueue],
+    }),
+    "utf-8"
+  );
+}
+
+function loadDb(): NotARealDb {
+  if (!fs.existsSync(DB_PATH)) {
+    return {
+      currentSong: null,
+      currentSongAdhocLyrics: [],
+      idToAdhocLyrics: {},
+      playbackState: PlaybackState.WAITING,
+      songQueue: [],
+    };
+  }
+  return JSON.parse(fs.readFileSync(DB_PATH, "utf-8"));
+}
 
 const pubsub = new PubSub();
 
@@ -314,6 +346,8 @@ function pushSongToQueue(queueItem: QueueItem): QueueSongResult {
   pubsub.publish(SubscriptionEvent.QueueAdded, {
     queueAdded: queueItem,
   });
+
+  saveDb();
 
   return {
     __typename: "QueueSongInfo",
@@ -896,6 +930,7 @@ const resolvers = {
       pubsub.publish(SubscriptionEvent.CurrentSongAdhocLyricsChanged, {
         currentSongAdhocLyricsChanged: db.currentSongAdhocLyrics,
       });
+      saveDb();
       return true;
     },
     popAdhocLyrics: (_: any, args: {}): boolean => {
@@ -903,6 +938,7 @@ const resolvers = {
       pubsub.publish(SubscriptionEvent.CurrentSongAdhocLyricsChanged, {
         currentSongAdhocLyricsChanged: db.currentSongAdhocLyrics,
       });
+      saveDb();
       return true;
     },
     popSong: (_: any, args: {}): QueueItem | null => {
@@ -918,6 +954,7 @@ const resolvers = {
       pubsub.publish(SubscriptionEvent.CurrentSongChanged, {
         currentSongChanged: db.currentSong,
       });
+      saveDb();
       return newSong;
     },
     removeSong: (
@@ -932,6 +969,7 @@ const resolvers = {
       pubsub.publish(SubscriptionEvent.QueueChanged, {
         queueChanged: db.songQueue,
       });
+      saveDb();
       return true;
     },
     setPlaybackState: (
@@ -942,6 +980,7 @@ const resolvers = {
       pubsub.publish(SubscriptionEvent.PlaybackStateChanged, {
         playbackStateChanged: args.playbackState,
       });
+      saveDb();
       return true;
     },
   },
@@ -980,6 +1019,8 @@ export function applyGraphQLMiddleware(
   minseiCreds: MinseiCredentials,
   joysoundCreds: JoysoundCreds
 ) {
+  db = loadDb();
+
   const server = new ApolloServer({
     dataSources: () => ({
       minsei: new MinseiAPI(minseiCreds),
