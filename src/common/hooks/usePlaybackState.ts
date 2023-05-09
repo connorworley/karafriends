@@ -40,12 +40,10 @@ export default function usePlaybackState() {
       environment,
       playbackStateQuery,
       {}
-    )
-      // @ts-ignore: @types/react-relay has wrong return type for fetchQuery
-      .subscribe({
-        next: (response: usePlaybackStateQuery["response"]) =>
-          setLocalPlaybackState(response.playbackState),
-      });
+    ).subscribe({
+      next: (response: usePlaybackStateQuery["response"]) =>
+        setLocalPlaybackState(response.playbackState),
+    });
 
     const subscription = requestSubscription<usePlaybackStateSubscription>(
       environment,

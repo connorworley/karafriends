@@ -69,12 +69,10 @@ export default function useQueue() {
       environment,
       queueQuery,
       {}
-    )
-      // @ts-ignore: @types/react-relay has wrong return type for fetchQuery
-      .subscribe({
-        next: ({ queue }: useQueueQueueQuery["response"]) =>
-          setQueueState(withETAs(queue)),
-      });
+    ).subscribe({
+      next: ({ queue }: useQueueQueueQuery["response"]) =>
+        setQueueState(withETAs(queue)),
+    });
 
     const subscription = requestSubscription<useQueueQueueSubscription>(
       environment,

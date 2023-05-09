@@ -4,6 +4,7 @@
 /node_modules
 /.yarn/install-state.gz
 /.yarn/unplugged
+/.yarn/sdks
 
 
 # testing
@@ -29,6 +30,8 @@ yarn-error.log*
 */**/*.swp
 
 .parcel-cache/
+
+.vscode
 
 # Added by cargo
 /native/target

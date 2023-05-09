@@ -56,12 +56,10 @@ const NowPlaying = () => {
       environment,
       nowPlayingQuery,
       {}
-    )
-      // @ts-ignore: @types/react-relay has wrong return type for fetchQuery
-      .subscribe({
-        next: (response: NowPlayingQuery$data) =>
-          setCurrentSong(response.currentSong),
-      });
+    ).subscribe({
+      next: (response: NowPlayingQuery$data) =>
+        setCurrentSong(response.currentSong),
+    });
     const subscription = requestSubscription<NowPlayingSubscription>(
       environment,
       {
