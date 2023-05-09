@@ -161,11 +161,13 @@ function getMainRomajiBlocks(chars: JoysoundLyricsChar[]) {
     const unicodeChar = decodeJoysoundText(currGlyph.charCode);
 
     if (!isKanaUnicodeChar(unicodeChar) || unicodeChar === "・") {
-      mainRomajiBlocks.push({
-        phrase: toRomaji(currPhrase),
-        xPos: currXPos,
-        sourceWidth: currPhraseWidth,
-      });
+      if (currPhrase) {
+        mainRomajiBlocks.push({
+          phrase: toRomaji(currPhrase),
+          xPos: currXPos,
+          sourceWidth: currPhraseWidth,
+        });
+      }
 
       currXPos += currPhraseWidth + currGlyph.width;
       currPhrase = "";
@@ -195,11 +197,13 @@ function getMainRomajiBlocks(chars: JoysoundLyricsChar[]) {
       continue;
     }
 
-    mainRomajiBlocks.push({
-      phrase: toRomaji(currPhrase),
-      xPos: currXPos,
-      sourceWidth: currPhraseWidth,
-    });
+    if (currPhrase) {
+      mainRomajiBlocks.push({
+        phrase: toRomaji(currPhrase),
+        xPos: currXPos,
+        sourceWidth: currPhraseWidth,
+      });
+    }
 
     currXPos += currPhraseWidth;
     currPhrase = unicodeChar;
@@ -208,11 +212,13 @@ function getMainRomajiBlocks(chars: JoysoundLyricsChar[]) {
     i += 1;
   }
 
-  mainRomajiBlocks.push({
-    phrase: toRomaji(currPhrase),
-    xPos: currXPos,
-    sourceWidth: currPhraseWidth,
-  });
+  if (currPhrase) {
+    mainRomajiBlocks.push({
+      phrase: toRomaji(currPhrase),
+      xPos: currXPos,
+      sourceWidth: currPhraseWidth,
+    });
+  }
 
   return mainRomajiBlocks;
 }
