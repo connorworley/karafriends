@@ -1,4 +1,4 @@
-import { app } from "electron";
+import { app } from "electron"; // tslint:disable-line:no-implicit-dependencies
 import fs from "fs";
 import path from "path";
 import { parse } from "yaml";

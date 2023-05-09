@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from "electron";
+import { contextBridge, ipcRenderer } from "electron"; // tslint:disable-line:no-implicit-dependencies
 import { memoize } from "lodash";
 
 import { Credentials, hasCredentials } from "../common/auth";

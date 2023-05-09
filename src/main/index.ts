@@ -20,7 +20,7 @@ import {
   ipcMain,
   IpcMainEvent,
   protocol,
-} from "electron";
+} from "electron"; // tslint:disable-line:no-implicit-dependencies
 import isDev from "electron-is-dev";
 import express from "express";
 
