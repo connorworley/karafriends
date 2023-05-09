@@ -4,11 +4,21 @@ import invariant from "ts-invariant";
 
 import { toRomaji } from "wanakana";
 
-import { RUBY_FONT_SIZE, RUBY_FONT_STROKE } from "../renderer/JoysoundRenderer";
+import { RUBY_FONT_SIZE, RUBY_FONT_STROKE } from "./JoysoundRenderer";
 
 export interface JoysoundPaletteColor {
   id: number;
   rgb: number[];
+}
+
+export interface JoysoundMetadata {
+  musicName: string;
+  artistName: string;
+  lyricistName: string;
+  composerName: string;
+  musicNameReading: string;
+  artistNameReading: string;
+  fadeoutTime: number;
 }
 
 interface JoysoundLyricsChar {
@@ -57,6 +67,7 @@ interface JoysoundTimelineEvent {
 }
 
 export interface JoysoundTelopData {
+  metadata: JoysoundMetadata;
   lyrics: JoysoundLyricsBlock[];
   timeline: JoysoundTimelineEvent[];
 }
@@ -279,6 +290,99 @@ function parseLyricsBlock(
   };
 }
 
+function readSJISString(view: DataView, offset: number, size: number): string {
+  let unicodeString = "";
+  let currOffset = offset;
+
+  while (currOffset < offset + size) {
+    if (view.getUint8(currOffset) === 0) {
+      break;
+    }
+
+    let charCode;
+    const firstByte = view.getUint8(currOffset);
+
+    if (firstByte <= 0x7f || (firstByte > 0xa0 && firstByte <= 0xdf)) {
+      charCode = view.getUint8(currOffset);
+
+      unicodeString += decodeSJIS(charCode);
+      currOffset += 1;
+
+      continue;
+    }
+
+    charCode = view.getUint16(currOffset);
+    unicodeString += decodeSJIS(charCode);
+
+    currOffset += 2;
+  }
+
+  console.log(unicodeString);
+
+  return unicodeString;
+}
+
+function parseJoy02Metadata(
+  data: ArrayBuffer,
+  offset: number,
+  size: number
+): JoysoundMetadata {
+  const metadataView = new DataView(data, offset, size);
+
+  const currOffset = 0;
+
+  const musicType = metadataView.getUint16(currOffset, true);
+  const musicNameOffset = metadataView.getUint16(currOffset + 2, true);
+  const artistNameOffset = metadataView.getUint16(currOffset + 4, true);
+  const lyricistNameOffset = metadataView.getUint16(currOffset + 6, true);
+  const composerNameOffset = metadataView.getUint16(currOffset + 8, true);
+  const musicNameReadingOffset = metadataView.getUint16(currOffset + 10, true);
+  const artistNameReadingOffset = metadataView.getUint16(currOffset + 12, true);
+  const jasracCodeOffset = metadataView.getUint16(currOffset + 14, true);
+  const musicDuration = metadataView.getUint16(currOffset + 18, true);
+
+  const musicName = readSJISString(
+    metadataView,
+    musicNameOffset,
+    artistNameOffset - musicNameOffset
+  );
+  const artistName = readSJISString(
+    metadataView,
+    artistNameOffset,
+    lyricistNameOffset - artistNameOffset
+  );
+  const lyricistName = readSJISString(
+    metadataView,
+    lyricistNameOffset,
+    composerNameOffset - lyricistNameOffset
+  );
+  const composerName = readSJISString(
+    metadataView,
+    composerNameOffset,
+    musicNameReadingOffset - composerNameOffset
+  );
+  const musicNameReading = readSJISString(
+    metadataView,
+    musicNameReadingOffset,
+    artistNameReadingOffset - musicNameReadingOffset
+  );
+  const artistNameReading = readSJISString(
+    metadataView,
+    artistNameReadingOffset,
+    jasracCodeOffset - artistNameReadingOffset
+  );
+
+  return {
+    musicName,
+    artistName,
+    lyricistName,
+    composerName,
+    musicNameReading,
+    artistNameReading,
+    fadeoutTime: 0,
+  };
+}
+
 function parseJoy02LyricsData(data: ArrayBuffer, offset: number, size: number) {
   const lyricsView = new DataView(data, offset, size);
   const lyricsBlocks = [];
@@ -342,6 +446,7 @@ function parseJoy02TimingData(data: ArrayBuffer, offset: number, size: number) {
 
 function processTimeline(
   timeline: JoysoundTimelineEvent[],
+  metadata: JoysoundMetadata,
   lyricsData: JoysoundLyricsBlock[]
 ) {
   const activeLyricsBlocks = [];
@@ -368,6 +473,8 @@ function processTimeline(
         time: currEvent.currTime,
         speed: scrollSpeed,
       });
+    } else if (currEvent.payload[0] === 4) {
+      metadata.fadeoutTime = currEvent.currTime;
     } else if (currEvent.payload[0] === 5) {
       for (let i = 0; i < currEvent.payload[1]; i++) {
         const fadeoutIndex = activeLyricsBlocks.shift();
@@ -395,6 +502,11 @@ function parseJoysoundData(data: ArrayBuffer): JoysoundTelopData {
   const lyricsOffset = view.getUint32(1 * 4, true);
   const timingOffset = view.getUint32(2 * 4, true);
 
+  const metadata = parseJoy02Metadata(
+    data,
+    metadataOffset,
+    lyricsOffset - metadataOffset
+  );
   const lyricsData = parseJoy02LyricsData(
     data,
     lyricsOffset,
@@ -406,9 +518,10 @@ function parseJoysoundData(data: ArrayBuffer): JoysoundTelopData {
     data.byteLength - timingOffset
   );
 
-  processTimeline(timeline, lyricsData);
+  processTimeline(timeline, metadata, lyricsData);
 
   return {
+    metadata,
     lyrics: lyricsData,
     timeline,
   };
