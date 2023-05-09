@@ -64,6 +64,7 @@ const fsSource = `#version 300 es
 `;
 
 // XXX: Move these to some setting somewhere?
+// XXX: RUBY_FONT_SIZE and RUBY_FONT_STROKE live in src/common/constants.ts for *reasons*
 
 // XXX: This needs to be calculated correctly
 let TEXTURE_OFF_X = 0;
@@ -184,13 +185,24 @@ function createTextureFromImage(
 }
 
 function getLyricsBlockWidth(lyricsBlock: JoysoundLyricsBlock): number {
-  const mainBlockWidth = lyricsBlock.chars.reduce((acc, curr) => acc + curr.width, 0);
-  
-  const rightmostFuriganaBlock = lyricsBlock.furigana[lyricsBlock.furigana.length - 1];
-  const furiganaBlockWidth = rightmostFuriganaBlock ? 
-    rightmostFuriganaBlock.xPos + (RUBY_FONT_SIZE + RUBY_FONT_STROKE * 2) * rightmostFuriganaBlock.chars.length : 0;
+  const mainBlockWidth = lyricsBlock.chars.reduce(
+    (acc, curr) => acc + curr.width,
+    0
+  );
 
-  return MAIN_FONT_STROKE * 2 + Math.max(mainBlockWidth, furiganaBlockWidth) + TEXT_PADDING * 2;
+  const rightmostFuriganaBlock =
+    lyricsBlock.furigana[lyricsBlock.furigana.length - 1];
+  const furiganaBlockWidth = rightmostFuriganaBlock
+    ? rightmostFuriganaBlock.xPos +
+      (RUBY_FONT_SIZE + RUBY_FONT_STROKE * 2) *
+        rightmostFuriganaBlock.chars.length
+    : 0;
+
+  return (
+    MAIN_FONT_STROKE * 2 +
+    Math.max(mainBlockWidth, furiganaBlockWidth) +
+    TEXT_PADDING * 2
+  );
 }
 
 function getLyricsBlockHeight(lyricsBlock: JoysoundLyricsBlock): number {
@@ -219,11 +231,9 @@ function setupTextCanvas(
   textCtx.strokeStyle = `rgb(${strokeColor.join(", ")})`;
 }
 
-function setupTitleCanvas(
-  textCtx: CanvasRenderingContext2D,
-): void {
-  textCtx.canvas.width = SCREEN_WIDTH * EXPAND_RATE;
-  textCtx.canvas.height = SCREEN_HEIGHT * EXPAND_RATE;
+function setupTitleCanvas(textCtx: CanvasRenderingContext2D): void {
+  textCtx.canvas.width = (SCREEN_WIDTH + TEXT_PADDING * 2) * EXPAND_RATE;
+  textCtx.canvas.height = (SCREEN_HEIGHT + TEXT_PADDING * 2) * EXPAND_RATE;
   textCtx.clearRect(0, 0, textCtx.canvas.width, textCtx.canvas.height);
 
   textCtx.textBaseline = "top";
@@ -234,7 +244,7 @@ function setupTitleCanvas(
 
 function createTitleRows(
   textCtx: CanvasRenderingContext2D,
-  title: string,
+  title: string
 ): JoysoundTitleRow[] {
   const titleRows = [];
 
@@ -244,7 +254,7 @@ function createTitleRows(
   for (const nextChar of title) {
     const nextTitleWidth = textCtx.measureText(currTitleText + nextChar).width;
 
-    if (nextTitleWidth >= SCREEN_WIDTH - 16) {
+    if (nextTitleWidth >= SCREEN_WIDTH) {
       titleRows.push({ text: currTitleText, width: currTitleWidth });
 
       currTitleText = nextChar;
@@ -265,29 +275,21 @@ function drawTitleRowsToCanvas(
   titleRows: JoysoundTitleRow[],
   fontSize: number,
   fontStroke: number,
-  yPos: number,
+  yPos: number
 ) {
   for (const titleRow of titleRows) {
     const xPos = Math.max(0, (SCREEN_WIDTH - titleRow.width) / 2);
 
-    drawTextToCanvas(
-      textCtx,
-      fontSize,
-      fontStroke,
-      xPos,
-      yPos,
-      titleRow.text
-    );
+    drawTextToCanvas(textCtx, fontSize, fontStroke, xPos, yPos, titleRow.text);
 
     yPos += fontSize + fontStroke * 2;
   }
 }
 
-
 function createTitleTexture(
   gl: WebGL2RenderingContext,
   metadata: JoysoundMetadata,
-  isRomaji: boolean,
+  isRomaji: boolean
 ): WebGLTexture {
   const textCtx = document.createElement("canvas").getContext("2d");
   invariant(textCtx);
@@ -312,26 +314,46 @@ function createTitleTexture(
 
   textCtx.font = `${METADATA_FONT_SIZE}px ${JP_FONT_FACE}`;
 
-  const lyricistText = (isRomaji ? "Lyrics: " : "作詞 ") + metadata.lyricistName;
+  const lyricistText =
+    (isRomaji ? "Lyrics: " : "作詞 ") + metadata.lyricistName;
   const lyricistMeasure = textCtx.measureText(lyricistText);
   const lyricistHeight =
     lyricistMeasure.actualBoundingBoxAscent +
     lyricistMeasure.actualBoundingBoxDescent;
 
-  const composerText = (isRomaji ? "Composer: " : "作曲 ") + metadata.composerName;
+  const composerText =
+    (isRomaji ? "Composer: " : "作曲 ") + metadata.composerName;
   const composerMeasure = textCtx.measureText(composerText);
   const composerHeight =
     composerMeasure.actualBoundingBoxAscent +
     composerMeasure.actualBoundingBoxDescent;
 
-  const titleYPos = (SCREEN_HEIGHT - titleHeight - artistHeight - 96) / 2;
+  const titleYPos =
+    (SCREEN_HEIGHT -
+      titleHeight -
+      artistHeight -
+      lyricistHeight -
+      composerHeight -
+      128) /
+    2;
   const artistYPos = titleYPos + titleHeight + 64;
-
-  const lyricistYPos = artistYPos + artistHeight + 32;
+  const lyricistYPos = artistYPos + artistHeight + 48;
   const composerYPos = lyricistYPos + lyricistHeight + 16;
 
-  drawTitleRowsToCanvas(textCtx, titleRows, titleFontSize, TITLE_FONT_STROKE, titleYPos);
-  drawTitleRowsToCanvas(textCtx, artistRows, artistFontSize, ARTIST_FONT_STROKE, artistYPos);
+  drawTitleRowsToCanvas(
+    textCtx,
+    titleRows,
+    titleFontSize,
+    TITLE_FONT_STROKE,
+    titleYPos
+  );
+  drawTitleRowsToCanvas(
+    textCtx,
+    artistRows,
+    artistFontSize,
+    ARTIST_FONT_STROKE,
+    artistYPos
+  );
 
   drawTextToCanvas(
     textCtx,
@@ -339,7 +361,7 @@ function createTitleTexture(
     METADATA_FONT_STROKE,
     48,
     lyricistYPos,
-    lyricistText,
+    lyricistText
   );
 
   drawTextToCanvas(
@@ -348,7 +370,7 @@ function createTitleTexture(
     METADATA_FONT_STROKE,
     48,
     composerYPos,
-    composerText,
+    composerText
   );
 
   const result = createTextureFromImage(gl, textCtx.canvas);
@@ -430,7 +452,7 @@ function getTextOffset(
       );
     }
   } else if (isRightOverflow && rightOverflow >= widthDiff - leftOverflow) {
-      return measure.actualBoundingBoxLeft;
+    return measure.actualBoundingBoxLeft;
   }
 
   return (charWidth - boundingBoxWidth) / 2 + measure.actualBoundingBoxLeft;
@@ -453,10 +475,10 @@ function drawTextToCanvas(
   xPos: number,
   yPos: number,
   text: string,
-  fontCode: number = 0,
+  fontCode: number = 0
 ): void {
   textCtx.font = `${fontSize * EXPAND_RATE}px ${getFontFace(fontCode)}`;
-  textCtx.lineWidth = (fontStroke * 2) * EXPAND_RATE;
+  textCtx.lineWidth = fontStroke * 2 * EXPAND_RATE;
 
   textCtx.strokeText(
     text,
@@ -479,8 +501,10 @@ function drawMainTextToCanvas(
 
   for (const glyphChar of lyricsBlock.chars) {
     const text = decodeJoysoundText(glyphChar.charCode, glyphChar.font);
-    
-    textCtx.font = `${MAIN_FONT_SIZE + MAIN_FONT_STROKE}px ${getFontFace(glyphChar.font)}`;
+
+    textCtx.font = `${MAIN_FONT_SIZE + MAIN_FONT_STROKE}px ${getFontFace(
+      glyphChar.font
+    )}`;
     textCtx.lineWidth = MAIN_FONT_STROKE;
 
     const xPos = currX + getTextOffset(textCtx, text, glyphChar.width);
@@ -515,7 +539,7 @@ function drawFuriganaTextToCanvas(
         RUBY_FONT_STROKE,
         currX,
         0,
-        unicodeChar,
+        unicodeChar
       );
 
       currX += RUBY_FONT_SIZE + RUBY_FONT_STROKE;
@@ -531,15 +555,19 @@ function drawRomajiTextToCanvas(
 
   for (const romajiBlock of sortedRomaji) {
     const xPos = Math.max(0, romajiBlock.xPos);
-    const xOff = getRomajiTextOffset(textCtx, romajiBlock.phrase, romajiBlock.sourceWidth);
-    
+    const xOff = getRomajiTextOffset(
+      textCtx,
+      romajiBlock.phrase,
+      romajiBlock.sourceWidth
+    );
+
     drawTextToCanvas(
       textCtx,
       ROMAJI_FONT_SIZE,
       ROMAJI_FONT_STROKE,
       xPos + xOff,
       0,
-      romajiBlock.phrase,
+      romajiBlock.phrase
     );
   }
 }
@@ -621,10 +649,10 @@ function drawTitle(
 ): void {
   const scrollArray = new Float32Array(Array(6).fill(TEXTURE_OFF_X));
   const positions = quadToTriangles(
-    TEXTURE_OFF_X,
-    TEXTURE_OFF_Y,
-    SCREEN_WIDTH * EXPAND_RATE + TEXTURE_OFF_X,
-    SCREEN_HEIGHT * EXPAND_RATE + TEXTURE_OFF_Y
+    TEXTURE_OFF_X - TEXT_PADDING,
+    TEXTURE_OFF_Y - TEXT_PADDING,
+    (SCREEN_WIDTH + TEXT_PADDING) * EXPAND_RATE + TEXTURE_OFF_X,
+    (SCREEN_HEIGHT + TEXT_PADDING) * EXPAND_RATE + TEXTURE_OFF_Y
   );
 
   drawLyricsTexture(gl, glBuffers, titleTexture, positions, scrollArray, false);
@@ -675,7 +703,8 @@ function drawLyricsBlock(
   );
 
   const currX = lyricsBlock.xPos;
-  const currY = lyricsBlock.yPos - (RUBY_FONT_SIZE + RUBY_FONT_STROKE * 2 + TEXT_PADDING);
+  const currY =
+    lyricsBlock.yPos - (RUBY_FONT_SIZE + RUBY_FONT_STROKE * 2 + TEXT_PADDING);
 
   const rectWidth = getLyricsBlockWidth(lyricsBlock);
   const rectHeight = getLyricsBlockHeight(lyricsBlock);
@@ -731,12 +760,19 @@ export default function JoysoundRenderer(props: {
       canvasElement.height / SCREEN_HEIGHT
     );
 
-    if (canvasElement.width / SCREEN_WIDTH >= canvasElement.height / SCREEN_HEIGHT) {
+    if (
+      canvasElement.width / SCREEN_WIDTH >=
+      canvasElement.height / SCREEN_HEIGHT
+    ) {
       TEXTURE_OFF_X =
-        (canvasElement.width - (canvasElement.height / SCREEN_HEIGHT) * SCREEN_WIDTH) / 2;
+        (canvasElement.width -
+          (canvasElement.height / SCREEN_HEIGHT) * SCREEN_WIDTH) /
+        2;
     } else {
       TEXTURE_OFF_Y =
-        (canvasElement.height - (canvasElement.width / SCREEN_WIDTH) * SCREEN_HEIGHT) / 2;
+        (canvasElement.height -
+          (canvasElement.width / SCREEN_WIDTH) * SCREEN_HEIGHT) /
+        2;
     }
 
     const gl = canvasElement.getContext("webgl2", {
@@ -888,7 +924,7 @@ export default function JoysoundRenderer(props: {
 
     return () => {
       console.log("Joysound Renderer -- triggered post-render");
-      
+
       window.removeEventListener("resize", updateSize);
       window.cancelAnimationFrame(animationFrameRequestRef.current);
     };

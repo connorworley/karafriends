@@ -123,8 +123,6 @@ export function downloadJoysoundData(
   const videoFilename = `${TEMP_FOLDER}/joysound-${songId}-${videoFilenameSuffix}.mp4`;
   const ffmpegLogFilename = `${TEMP_FOLDER}/joyosund-${songId}.log`;
 
-  const ffmpegLogStream = fs.createWriteStream(ffmpegLogFilename);
-
   const tempFilename = `${videoFilename}.tmp`;
 
   if (fs.existsSync(videoFilename)) {
@@ -154,6 +152,8 @@ export function downloadJoysoundData(
   }
 
   fs.closeSync(fs.openSync(tempFilename, "w"));
+
+  const ffmpegLogStream = fs.createWriteStream(ffmpegLogFilename);
 
   const songDataPromise = joysoundApi.getSongRawData(songId);
   let videoDataPromise;
