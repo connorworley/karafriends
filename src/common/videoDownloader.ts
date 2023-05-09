@@ -8,6 +8,8 @@ import invariant from "ts-invariant";
 import { JoysoundQueueItem } from "../main/graphql";
 import { JoysoundAPI } from "../main/joysoundApi";
 
+import { getSongDuration } from "./joysoundParser";
+
 export const TEMP_FOLDER: string = `${app.getPath("temp")}/karafriends_tmp`;
 const captionCodeRe: RegExp = new RegExp(/^[a-z]{2}$/);
 
@@ -100,18 +102,6 @@ export function downloadDamVideo(
   });
 }
 
-function getJoysoundPlaytime(ffmpegLogFilename: string): number | null {
-  const ffmpegLog = fs.readFileSync(ffmpegLogFilename).toString();
-
-  const matchData = ffmpegLog.match(/playtime\s+: (\d+)/i);
-
-  if (matchData) {
-    return Math.floor(parseInt(matchData[1], 10) / 1000);
-  }
-
-  return null;
-}
-
 export function downloadJoysoundData(
   joysoundApi: JoysoundAPI,
   queueItem: JoysoundQueueItem,
@@ -133,16 +123,24 @@ export function downloadJoysoundData(
   const videoFilename = `${TEMP_FOLDER}/joysound-${songId}-${videoFilenameSuffix}.mp4`;
   const ffmpegLogFilename = `${TEMP_FOLDER}/joyosund-${songId}.log`;
 
-  const ffmpegLogStream = fs.createWriteStream(ffmpegLogFilename);
-
   const tempFilename = `${videoFilename}.tmp`;
 
   if (fs.existsSync(videoFilename)) {
     console.info(`${videoFilename} already exists, not redownloading`);
 
+    if (!fs.existsSync(telopFilename)) {
+      console.error(
+        `${videoFilename} already exists, but ${telopFilename} does not.`
+      );
+
+      return;
+    }
+
+    const telopBuffer = fs.readFileSync(telopFilename);
+
     finalQueueItem = {
       ...finalQueueItem,
-      playtime: getJoysoundPlaytime(ffmpegLogFilename),
+      playtime: getSongDuration(telopBuffer.buffer),
     };
 
     pushSongToQueue(finalQueueItem);
@@ -154,6 +152,8 @@ export function downloadJoysoundData(
   }
 
   fs.closeSync(fs.openSync(tempFilename, "w"));
+
+  const ffmpegLogStream = fs.createWriteStream(ffmpegLogFilename);
 
   const songDataPromise = joysoundApi.getSongRawData(songId);
   let videoDataPromise;
@@ -298,7 +298,7 @@ export function downloadJoysoundData(
 
         finalQueueItem = {
           ...finalQueueItem,
-          playtime: getJoysoundPlaytime(ffmpegLogFilename),
+          playtime: getSongDuration(telopBuffer.buffer),
         };
 
         pushSongToQueue(finalQueueItem);
