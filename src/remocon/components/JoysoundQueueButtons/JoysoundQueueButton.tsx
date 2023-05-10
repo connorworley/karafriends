@@ -1,4 +1,3 @@
-import formatDuration from "format-duration";
 import React, { useEffect, useState } from "react";
 import { fetchQuery, graphql, useMutation } from "react-relay";
 import { invariant } from "ts-invariant";
@@ -93,7 +92,9 @@ const JoysoundQueueButton = ({
               setText("Finished Downloading");
             } else {
               setText(
-                `Downloading -- ${data.videoDownloadProgress.progress * 100}%`
+                `Downloading -- ${(
+                  data.videoDownloadProgress.progress * 100
+                ).toFixed(1)}%`
               );
             }
           },

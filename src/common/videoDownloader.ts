@@ -344,7 +344,7 @@ export function downloadJoysoundData(
 
           if (frameMatchData) {
             const rawProgress = parseInt(frameMatchData[1], 10) / songFrames;
-            const progress = Math.min(Math.floor(rawProgress * 100) / 100, 1.0);
+            const progress = Math.min(rawProgress, 1.0);
 
             updateVideoDownloadProgress(downloadQueue, tempFilename, progress);
           }
