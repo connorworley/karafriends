@@ -1,3 +1,6 @@
+const { spawnSync } = require("child_process");
+
+const sevenBin = require("7zip-bin");
 const packager = require("electron-packager");
 const { glob } = require("glob");
 
@@ -6,9 +9,9 @@ const { glob } = require("glob");
     "",
     "/package.json",
     "/build",
-    ...(await glob("build/prod/**")).map((path) => `/${path}`),
+    ...(await glob("build/prod/**", { posix: true })).map((path) => `/${path}`),
   ]);
-  const outputs = await packager({
+  const output = await packager({
     dir: ".",
     extraResource: ["extraResources"],
     ignore: (path) => !buildFiles.has(path),
@@ -24,5 +27,7 @@ const { glob } = require("glob");
       icon: "appIcons/icon.ico",
     }),
   });
-  console.log(`Built ${outputs}.`);
+  console.log(`Built ${output}. Zipping...`);
+  spawnSync(sevenBin.path7za, ["a", "-r", `${output}.zip`, output]);
+  console.log(`Built ${output}.zip.`);
 })();
