@@ -146,7 +146,8 @@
       "icon": "icon.png"
     },
     "mac": {
-      "icon": "icon.png"
+      "icon": "icon.png",
+      "entitlements": "entitlements.mac.plist"
     }
   },
   "lint-staged": {
