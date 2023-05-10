@@ -4,6 +4,7 @@ import { Link, useParams } from "react-router-dom";
 
 import Button from "../components/Button";
 import JoysoundQueueButtons from "../components/JoysoundQueueButtons";
+import JoysoundYoutubeButtons from "../components/JoysoundYoutubeButtons";
 import { withLoader } from "../components/Loader";
 import SearchFormWrapper from "../components/SearchFormWrapper";
 import YouTubeInfo from "../components/YouTubeInfo";
@@ -87,16 +88,11 @@ const JoysoundSongPage = () => {
             {youtubeVideoId !== "" && (
               <YouTubeInfo videoId={youtubeVideoId} isSimple={true} />
             )}
-            <Button type="submit">
-              Attach YouTube Video (Currently Attached ID:{" "}
-              {youtubeVideoId === "" ? "None" : youtubeVideoId})
-            </Button>
+            <JoysoundYoutubeButtons
+              youtubeVideoId={youtubeVideoId}
+              detatchButtonOnClick={detatchButtonOnClick}
+            />
           </form>
-          {youtubeVideoId !== "" && (
-            <Button onClick={detatchButtonOnClick}>
-              Detatch YouTube Video
-            </Button>
-          )}
         </SearchFormWrapper>
       </div>
     </div>

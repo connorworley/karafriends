@@ -56,8 +56,8 @@ const NiconicoInfo = ({ videoId }: Props) => {
             videoInfo={videoData.nicoVideoInfo}
           />
           <div className={styles.note}>
-            ※ Note that Niconico videos tend to take longer to add to the queue.
-            Wait for a few minutes before trying again if it doesn't appear.
+            ※ Note that Niconico videos tend to take longer to download. Please
+            wait warmly until they are ready.
           </div>
           <NiconicoQueueButton
             videoId={videoId}

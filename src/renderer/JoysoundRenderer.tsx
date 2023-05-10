@@ -553,8 +553,6 @@ function drawRomajiTextToCanvas(
 ): void {
   const sortedRomaji = lyricsBlock.romaji.sort((a, b) => a.xPos - b.xPos);
 
-  console.log(lyricsBlock.romaji);
-
   for (const romajiBlock of sortedRomaji) {
     textCtx.font = `${ROMAJI_FONT_SIZE + ROMAJI_FONT_STROKE}px ${getFontFace(
       0
@@ -567,8 +565,6 @@ function drawRomajiTextToCanvas(
       romajiBlock.phrase,
       romajiBlock.sourceWidth
     );
-
-    console.log(romajiBlock.phrase, xPos, xOff, romajiBlock.sourceWidth);
 
     drawTextToCanvas(
       textCtx,

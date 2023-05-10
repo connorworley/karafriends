@@ -208,10 +208,11 @@ function Player(props: { mics: InputDevice[] }) {
                 setShouldShowJoysound(false);
                 setShouldShowAdhocLyrics(popSong.hasAdhocLyrics);
 
-                videoRef.current.src = `karafriends://${popSong.songId}.mp4`;
+                videoRef.current.src = `karafriends://yt-${popSong.songId}.mp4`;
+
                 if (trackRef?.current && popSong?.hasCaptions) {
                   trackRef.current.default = true;
-                  trackRef.current.src = `karafriends://${popSong.songId}.vtt`;
+                  trackRef.current.src = `karafriends://yt-${popSong.songId}.vtt`;
                 }
 
                 console.log(
@@ -230,7 +231,7 @@ function Player(props: { mics: InputDevice[] }) {
                 setShouldShowJoysound(false);
                 setShouldShowAdhocLyrics(false);
 
-                videoRef.current.src = `karafriends://${popSong.songId}.mp4`;
+                videoRef.current.src = `karafriends://nico-${popSong.songId}.mp4`;
 
                 gainNode.current.gain.value = NON_DAM_GAIN;
 

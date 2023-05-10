@@ -1,12 +1,11 @@
-import formatDuration from "format-duration";
 import React, { useEffect, useState } from "react";
 import { fetchQuery, graphql, useMutation } from "react-relay";
 import { invariant } from "ts-invariant";
 
 import environment from "../../../common/graphqlEnvironment";
-import { JoysoundSongPageQuery$data } from "../../pages/__generated__/JoysoundSongPageQuery.graphql";
 import Button from "../Button";
 
+import { JoysoundSongPageQuery$data } from "../../pages/__generated__/JoysoundSongPageQuery.graphql";
 import { JoysoundQueueButtonGetVideoDownloadProgressQuery } from "./__generated__/JoysoundQueueButtonGetVideoDownloadProgressQuery.graphql";
 import { JoysoundQueueButtonMutation } from "./__generated__/JoysoundQueueButtonMutation.graphql";
 
@@ -93,7 +92,9 @@ const JoysoundQueueButton = ({
               setText("Finished Downloading");
             } else {
               setText(
-                `Downloading -- ${data.videoDownloadProgress.progress * 100}%`
+                `Downloading -- ${(
+                  data.videoDownloadProgress.progress * 100
+                ).toFixed(1)}%`
               );
             }
           },
