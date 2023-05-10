@@ -2,6 +2,7 @@
   "name": "karafriends",
   "version": "0.1.0",
   "private": true,
+  "main": "build/prod/main/main.js",
   "scripts": {
     "build-native-dev": "cross-env-shell \"cargo build --manifest-path native/Cargo.toml ${CARGO_ARGS:-}\"",
     "build-native-prod": "cross-env-shell \"cargo build --manifest-path native/Cargo.toml --release ${CARGO_ARGS:-}\"",
@@ -12,7 +13,7 @@
     "build-frontend-dev": "parcel build --dist-dir build/dev --public-url . --no-optimize --no-scope-hoist",
     "build-frontend-prod": "parcel build --dist-dir build/prod --public-url .",
     "build-dev": "concurrently \"yarn get-external-resources\" \"yarn build-native-dev\" \"yarn build-relay-dev\" && concurrently \"yarn build-electron-dev\" \"yarn build-frontend-dev\"",
-    "build-prod": "concurrently \"yarn get-external-resources\" \"yarn build-native-prod\" \"yarn build-relay-prod\" && concurrently \"yarn build-electron-prod\" \"yarn build-frontend-prod\" && electron-builder build --config.extraMetadata.main=./build/prod/main/main.js --publish never --dir",
+    "build-prod": "concurrently \"yarn get-external-resources\" \"yarn build-native-prod\" \"yarn build-relay-prod\" && concurrently \"yarn build-electron-prod\" \"yarn build-frontend-prod\" && node packager.js",
     "run-dev": "cross-env NODE_ENV=development yarn _run-dev",
     "_run-dev": "yarn build-dev && concurrently \"parcel serve --dist-dir build/dev --port 3000\" \"wait-on http://127.0.0.1:3000/renderer/ && node ./electron.js build/dev/main/main.js\"",
     "get-external-resources": "node scripts/getExternalResources.mjs",
@@ -110,8 +111,9 @@
     "concurrently": "8.0.1",
     "cross-env": "7.0.3",
     "electron": "24.2.0",
-    "electron-builder": "23.6.0",
     "electron-chromedriver": "24.0.0",
+    "electron-packager": "17.1.1",
+    "glob": "10.2.3",
     "husky": "8.0.3",
     "lint-staged": "13.2.2",
     "node-loader": "2.0.0",
@@ -131,24 +133,6 @@
     "webpack": "5.82.0",
     "webpack-cli": "5.1.0",
     "webpack-merge": "5.8.0"
-  },
-  "build": {
-    "appId": "party.karafriends",
-    "extraResources": [
-      "./extraResources/**"
-    ],
-    "files": [
-      "build/**/**",
-      "icon.png"
-    ],
-    "win": {
-      "target": "portable",
-      "icon": "icon.png"
-    },
-    "mac": {
-      "icon": "icon.png",
-      "entitlements": "entitlements.mac.plist"
-    }
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown",
