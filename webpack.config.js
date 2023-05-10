@@ -6,7 +6,6 @@ const { merge } = require("webpack-merge");
 const topLevelGraphql = require.resolve("graphql");
 
 const COMMON_CONFIG = {
-  devtool: "inline-cheap-module-source-map",
   resolve: {
     alias: {
       graphql$: topLevelGraphql,
@@ -30,6 +29,9 @@ const COMMON_CONFIG = {
         loader: "node-loader",
       },
     ],
+  },
+  optimization: {
+    usedExports: true,
   },
 };
 

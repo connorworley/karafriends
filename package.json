@@ -11,7 +11,7 @@
     "build-electron-dev": "webpack --mode development",
     "build-electron-prod": "webpack --mode production",
     "build-frontend-dev": "parcel build --dist-dir build/dev --public-url . --no-optimize --no-scope-hoist",
-    "build-frontend-prod": "parcel build --dist-dir build/prod --public-url .",
+    "build-frontend-prod": "parcel build --dist-dir build/prod --public-url . --no-source-maps",
     "build-dev": "concurrently \"yarn get-external-resources\" \"yarn build-native-dev\" \"yarn build-relay-dev\" && concurrently \"yarn build-electron-dev\" \"yarn build-frontend-dev\"",
     "build-prod": "concurrently \"yarn get-external-resources\" \"yarn build-native-prod\" \"yarn build-relay-prod\" && concurrently \"yarn build-electron-prod\" \"yarn build-frontend-prod\" && node packager.js",
     "run-dev": "cross-env NODE_ENV=development yarn _run-dev",
