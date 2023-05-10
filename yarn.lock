@@ -3676,7 +3676,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:20.1.2":
+"@types/node@npm:20.1.2, @types/node@npm:^20.1.0":
   version: 20.1.2
   resolution: "@types/node@npm:20.1.2"
   checksum: 9bb2cf0a846e60cc06c44a5622c1998d8373c8675b24d11c86845a29f32c60f5bca9627f2a2535640f902be3dbcc60f126a895abe8e10f12e1467ae3deaba56d
@@ -3694,13 +3694,6 @@ __metadata:
   version: 18.16.5
   resolution: "@types/node@npm:18.16.5"
   checksum: b6df96a76a7655cd944794197cf63f5269e5034041bc355f4f243cb3f185ad3e1948011b6f0ac66c22434e50bc53a20ec3a9d95ad284f0e3819813d309d1650b
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^20.1.0":
-  version: 20.1.2
-  resolution: "@types/node@npm:20.1.2"
-  checksum: 9bb2cf0a846e60cc06c44a5622c1998d8373c8675b24d11c86845a29f32c60f5bca9627f2a2535640f902be3dbcc60f126a895abe8e10f12e1467ae3deaba56d
   languageName: node
   linkType: hard
 
@@ -10711,7 +10704,7 @@ __metadata:
     tslint: 6.1.3
     tslint-config-prettier: 1.18.0
     typescript: 5.0.4
-    user-agents: 1.0.1373
+    user-agents: 1.0.1375
     utf-8-validate: 6.0.3
     wait-on: 7.0.1
     wanakana: 5.1.0
@@ -15627,13 +15620,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"user-agents@npm:1.0.1373":
-  version: 1.0.1373
-  resolution: "user-agents@npm:1.0.1373"
+"user-agents@npm:1.0.1375":
+  version: 1.0.1375
+  resolution: "user-agents@npm:1.0.1375"
   dependencies:
     dot-json: ^1.3.0
     lodash.clonedeep: ^4.5.0
-  checksum: 012a616916414feb1b5ed9be85c1093f11f7ae038c194e6c976dc8123b1c1f34d900062015a3437e664aa5fe3a86803551cb831eb5247e1689ed4de288f5579f
+  checksum: 75b9f2279e7b4430157fb507a90d080c14eedc15aae2c144bb84d27f0cd64eac460003b97a91921be39d7f8918607d6ffc9f28011a553dffe57e0cae8558f6ea
   languageName: node
   linkType: hard
 
