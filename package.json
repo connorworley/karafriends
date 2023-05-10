@@ -102,7 +102,7 @@
     "@types/react-router-dom": "5.3.3",
     "@types/relay-runtime": "14.1.10",
     "@types/webpack-env": "1.18.0",
-    "@wdio/cli": "8.10.0",
+    "@wdio/cli": "8.10.1",
     "@wdio/local-runner": "8.10.0",
     "@wdio/mocha-framework": "8.10.1",
     "@yarnpkg/pnpify": "4.0.0-rc.43",
