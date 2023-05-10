@@ -2,6 +2,7 @@
   "name": "karafriends",
   "version": "0.1.0",
   "private": true,
+  "main": "build/prod/main/main.js",
   "scripts": {
     "build-native-dev": "cross-env-shell \"cargo build --manifest-path native/Cargo.toml ${CARGO_ARGS:-}\"",
     "build-native-prod": "cross-env-shell \"cargo build --manifest-path native/Cargo.toml --release ${CARGO_ARGS:-}\"",
@@ -10,9 +11,9 @@
     "build-electron-dev": "webpack --mode development",
     "build-electron-prod": "webpack --mode production",
     "build-frontend-dev": "parcel build --dist-dir build/dev --public-url . --no-optimize --no-scope-hoist",
-    "build-frontend-prod": "parcel build --dist-dir build/prod --public-url .",
+    "build-frontend-prod": "parcel build --dist-dir build/prod --public-url . --no-source-maps",
     "build-dev": "concurrently \"yarn get-external-resources\" \"yarn build-native-dev\" \"yarn build-relay-dev\" && concurrently \"yarn build-electron-dev\" \"yarn build-frontend-dev\"",
-    "build-prod": "concurrently \"yarn get-external-resources\" \"yarn build-native-prod\" \"yarn build-relay-prod\" && concurrently \"yarn build-electron-prod\" \"yarn build-frontend-prod\" && electron-builder build --config.extraMetadata.main=./build/prod/main/main.js --publish never --dir",
+    "build-prod": "concurrently \"yarn get-external-resources\" \"yarn build-native-prod\" \"yarn build-relay-prod\" && concurrently \"yarn build-electron-prod\" \"yarn build-frontend-prod\" && node packager.js",
     "run-dev": "cross-env NODE_ENV=development yarn _run-dev",
     "_run-dev": "yarn build-dev && concurrently \"parcel serve --dist-dir build/dev --port 3000\" \"wait-on http://127.0.0.1:3000/renderer/ && node ./electron.js build/dev/main/main.js\"",
     "get-external-resources": "node scripts/getExternalResources.mjs",
@@ -21,8 +22,8 @@
   },
   "dependencies": {
     "@graphql-tools/schema": "9.0.19",
-    "@sentry/browser": "7.51.0",
-    "@sentry/node": "7.51.0",
+    "@sentry/browser": "7.51.2",
+    "@sentry/node": "7.51.2",
     "@types/react-fade-in": "2.0.2",
     "@types/react-swipeable": "5.2.0",
     "@types/user-agents": "1.0.2",
@@ -41,7 +42,7 @@
     "gl-vec2": "1.3.0",
     "graphql": "16.6.0",
     "graphql-subscriptions": "2.0.0",
-    "hls.js": "1.4.1",
+    "hls.js": "1.4.2",
     "keytar": "7.9.0",
     "lodash": "4.17.21",
     "materialize-css": "1.0.0",
@@ -66,7 +67,7 @@
     "subscriptions-transport-ws": "0.11.0",
     "supports-color": "9.3.1",
     "ts-invariant": "0.10.3",
-    "user-agents": "1.0.1373",
+    "user-agents": "1.0.1375",
     "utf-8-validate": "6.0.3",
     "wanakana": "5.1.0",
     "yaml": "2.2.2",
@@ -91,7 +92,7 @@
     "@types/keytar": "4.4.2",
     "@types/lodash": "4.14.194",
     "@types/materialize-css": "1.0.11",
-    "@types/node": "20.1.0",
+    "@types/node": "20.1.2",
     "@types/node-fetch": "2.6.3",
     "@types/promise-retry": "1.1.3",
     "@types/qrcode": "1.5.0",
@@ -101,17 +102,18 @@
     "@types/react-router-dom": "5.3.3",
     "@types/relay-runtime": "14.1.10",
     "@types/webpack-env": "1.18.0",
-    "@wdio/cli": "8.10.0",
-    "@wdio/local-runner": "8.10.0",
-    "@wdio/mocha-framework": "8.10.0",
+    "@wdio/cli": "8.10.1",
+    "@wdio/local-runner": "8.10.1",
+    "@wdio/mocha-framework": "8.10.1",
     "@yarnpkg/pnpify": "4.0.0-rc.43",
     "babel-loader": "9.1.2",
     "babel-plugin-relay": "15.0.0",
     "concurrently": "8.0.1",
     "cross-env": "7.0.3",
     "electron": "24.2.0",
-    "electron-builder": "23.6.0",
     "electron-chromedriver": "24.0.0",
+    "electron-packager": "17.1.1",
+    "glob": "10.2.3",
     "husky": "8.0.3",
     "lint-staged": "13.2.2",
     "node-loader": "2.0.0",
@@ -127,28 +129,10 @@
     "typescript": "5.0.4",
     "wait-on": "7.0.1",
     "wdio-chromedriver-service": "8.1.1",
-    "webdriverio": "8.10.0",
+    "webdriverio": "8.10.1",
     "webpack": "5.82.0",
-    "webpack-cli": "5.1.0",
+    "webpack-cli": "5.1.1",
     "webpack-merge": "5.8.0"
-  },
-  "build": {
-    "appId": "party.karafriends",
-    "extraResources": [
-      "./extraResources/**"
-    ],
-    "files": [
-      "build/**/**",
-      "icon.png"
-    ],
-    "win": {
-      "target": "portable",
-      "icon": "icon.png"
-    },
-    "mac": {
-      "icon": "icon.png",
-      "entitlements": "entitlements.mac.plist"
-    }
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown",
