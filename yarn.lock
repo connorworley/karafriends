@@ -3055,6 +3055,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@puppeteer/browsers@npm:1.0.1":
+  version: 1.0.1
+  resolution: "@puppeteer/browsers@npm:1.0.1"
+  dependencies:
+    debug: 4.3.4
+    extract-zip: 2.0.1
+    http-proxy-agent: 5.0.0
+    https-proxy-agent: 5.0.1
+    progress: 2.0.3
+    proxy-from-env: 1.1.0
+    tar-fs: 2.1.1
+    unbzip2-stream: 1.4.3
+    yargs: 17.7.1
+  peerDependencies:
+    typescript: ">= 4.7.4"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  bin:
+    browsers: lib/cjs/main-cli.js
+  checksum: 0dc83d75b0799b8bcc077a17bff3f01d24e4bc3b4449a9fa3f30247eca3b9deb3e7a2fe2f31efb32ed75ca23bd0137ad28b86412a0c1fbce9bcd1aa2ed7bfeb0
+  languageName: node
+  linkType: hard
+
 "@remix-run/router@npm:1.6.1":
   version: 1.6.1
   resolution: "@remix-run/router@npm:1.6.1"
@@ -3626,6 +3650,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:^20.1.0":
+  version: 20.1.2
+  resolution: "@types/node@npm:20.1.2"
+  checksum: 9bb2cf0a846e60cc06c44a5622c1998d8373c8675b24d11c86845a29f32c60f5bca9627f2a2535640f902be3dbcc60f126a895abe8e10f12e1467ae3deaba56d
+  languageName: node
+  linkType: hard
+
 "@types/normalize-package-data@npm:^2.4.0, @types/normalize-package-data@npm:^2.4.1":
   version: 2.4.1
   resolution: "@types/normalize-package-data@npm:2.4.1"
@@ -3971,6 +4002,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@wdio/config@npm:8.10.1":
+  version: 8.10.1
+  resolution: "@wdio/config@npm:8.10.1"
+  dependencies:
+    "@wdio/logger": 8.6.6
+    "@wdio/types": 8.10.1
+    "@wdio/utils": 8.10.1
+    decamelize: ^6.0.0
+    deepmerge-ts: ^5.0.0
+    glob: ^10.2.2
+    import-meta-resolve: ^3.0.0
+    read-pkg-up: ^9.1.0
+  checksum: 67ca55d65bae501878de2f25f65c687ecac3397f1951fb02c0b69a29901418b7c109debbb2501428b19ea729109404202d1ea4a7e15c8703de3d015e15d826dc
+  languageName: node
+  linkType: hard
+
 "@wdio/globals@npm:8.10.0, @wdio/globals@npm:^8.8.8":
   version: 8.10.0
   resolution: "@wdio/globals@npm:8.10.0"
@@ -4035,6 +4082,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@wdio/repl@npm:8.10.1":
+  version: 8.10.1
+  resolution: "@wdio/repl@npm:8.10.1"
+  dependencies:
+    "@types/node": ^20.1.0
+  checksum: 7c770769e3db82f743f2dc9f604da8200f6eb7dfe4a708ed0b30e9c9b5c9c627342455991917c884d76448e4cc31054b85f9f843ba09c166faa32de9934571b3
+  languageName: node
+  linkType: hard
+
 "@wdio/repl@npm:8.6.6":
   version: 8.6.6
   resolution: "@wdio/repl@npm:8.6.6"
@@ -4072,6 +4128,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@wdio/types@npm:8.10.1":
+  version: 8.10.1
+  resolution: "@wdio/types@npm:8.10.1"
+  dependencies:
+    "@types/node": ^20.1.0
+  checksum: c324aea065816c3246dfefa7f825ece25449c420bfa508f1776148aed93ebfc693649c6892e7b76c567982e37c6a133cfd9b61a0bb377d829aee952bf9e6d479
+  languageName: node
+  linkType: hard
+
 "@wdio/utils@npm:8.10.0":
   version: 8.10.0
   resolution: "@wdio/utils@npm:8.10.0"
@@ -4081,6 +4146,18 @@ __metadata:
     import-meta-resolve: ^3.0.0
     p-iteration: ^1.1.8
   checksum: 9d29382492e3009af7f1b60b6902234400f4412eaf6cc03e33d2bf8d382e293ec154f82b80206b306f8d3c2402cbb5bb075ffbb1ec8903ba36928d27026c9b34
+  languageName: node
+  linkType: hard
+
+"@wdio/utils@npm:8.10.1":
+  version: 8.10.1
+  resolution: "@wdio/utils@npm:8.10.1"
+  dependencies:
+    "@wdio/logger": 8.6.6
+    "@wdio/types": 8.10.1
+    import-meta-resolve: ^3.0.0
+    p-iteration: ^1.1.8
+  checksum: c8c3d41bd3fb125f5b2336c983f11f3a0af80f66740f43943810e24f2ca6f8c80a0186bc6a8ed3cc925759cd5a2bba61eda34cae6a04bb430928f281bd6827ac
   languageName: node
   linkType: hard
 
@@ -6773,6 +6850,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"devtools-protocol@npm:0.0.1120988":
+  version: 0.0.1120988
+  resolution: "devtools-protocol@npm:0.0.1120988"
+  checksum: 68eb7aa6a2fe20f8321168f9381849296b203355a5c052461b7ed95e8787b34458029dd64c8d4a8640d9fd329138a6d82f41237f5331ea4267c090dcbf6581f7
+  languageName: node
+  linkType: hard
+
 "devtools-protocol@npm:^0.0.1138159":
   version: 0.0.1138159
   resolution: "devtools-protocol@npm:0.0.1138159"
@@ -6799,6 +6883,28 @@ __metadata:
     uuid: ^9.0.0
     which: ^3.0.0
   checksum: 729d6f384c2138512dddc22c77507dbb0d8d28d6b65df32d91825fc5398226fc1e6474a0536a03b51acb317ba3c1f7aad350441f7da69ea7fc37fa846e2f68d9
+  languageName: node
+  linkType: hard
+
+"devtools@npm:8.10.1":
+  version: 8.10.1
+  resolution: "devtools@npm:8.10.1"
+  dependencies:
+    "@types/node": ^20.1.0
+    "@wdio/config": 8.10.1
+    "@wdio/logger": 8.6.6
+    "@wdio/protocols": 8.8.1
+    "@wdio/types": 8.10.1
+    "@wdio/utils": 8.10.1
+    chrome-launcher: ^0.15.0
+    edge-paths: ^3.0.5
+    import-meta-resolve: ^3.0.0
+    puppeteer-core: 20.1.1
+    query-selector-shadow-dom: ^1.0.0
+    ua-parser-js: ^1.0.1
+    uuid: ^9.0.0
+    which: ^3.0.0
+  checksum: 2b8d91df314d7991d3189924ed5fcf1dbc8dec3b072980d612e0066296e256f7f38fc0cb35f799dd615b3b87503b207188b92c81be35b3cf519735a98068a1ae
   languageName: node
   linkType: hard
 
@@ -8837,6 +8943,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"http-proxy-agent@npm:5.0.0, http-proxy-agent@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "http-proxy-agent@npm:5.0.0"
+  dependencies:
+    "@tootallnate/once": 2
+    agent-base: 6
+    debug: 4
+  checksum: e2ee1ff1656a131953839b2a19cd1f3a52d97c25ba87bd2559af6ae87114abf60971e498021f9b73f9fd78aea8876d1fb0d4656aac8a03c6caa9fc175f22b786
+  languageName: node
+  linkType: hard
+
 "http-proxy-agent@npm:^4.0.1":
   version: 4.0.1
   resolution: "http-proxy-agent@npm:4.0.1"
@@ -8845,17 +8962,6 @@ __metadata:
     agent-base: 6
     debug: 4
   checksum: c6a5da5a1929416b6bbdf77b1aca13888013fe7eb9d59fc292e25d18e041bb154a8dfada58e223fc7b76b9b2d155a87e92e608235201f77d34aa258707963a82
-  languageName: node
-  linkType: hard
-
-"http-proxy-agent@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "http-proxy-agent@npm:5.0.0"
-  dependencies:
-    "@tootallnate/once": 2
-    agent-base: 6
-    debug: 4
-  checksum: e2ee1ff1656a131953839b2a19cd1f3a52d97c25ba87bd2559af6ae87114abf60971e498021f9b73f9fd78aea8876d1fb0d4656aac8a03c6caa9fc175f22b786
   languageName: node
   linkType: hard
 
@@ -10556,7 +10662,7 @@ __metadata:
     wait-on: 7.0.1
     wanakana: 5.1.0
     wdio-chromedriver-service: 8.1.1
-    webdriverio: 8.10.0
+    webdriverio: 8.10.1
     webpack: 5.82.0
     webpack-cli: 5.1.0
     webpack-merge: 5.8.0
@@ -12950,6 +13056,30 @@ __metadata:
     typescript:
       optional: true
   checksum: 06126e478b8b653e83b98b51cec35dceef8ab576abd1369afd45360c5bac3711443e58ebe3b852d40801a118e4cb7ddf5d3154518b5a9294ee93f7a42d9f22d4
+  languageName: node
+  linkType: hard
+
+"puppeteer-core@npm:20.1.1":
+  version: 20.1.1
+  resolution: "puppeteer-core@npm:20.1.1"
+  dependencies:
+    "@puppeteer/browsers": 1.0.1
+    chromium-bidi: 0.4.7
+    cross-fetch: 3.1.5
+    debug: 4.3.4
+    devtools-protocol: 0.0.1120988
+    extract-zip: 2.0.1
+    https-proxy-agent: 5.0.1
+    proxy-from-env: 1.1.0
+    tar-fs: 2.1.1
+    unbzip2-stream: 1.4.3
+    ws: 8.13.0
+  peerDependencies:
+    typescript: ">= 4.7.4"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 60d1932c84b017694285568102360338c529e0cc7afe8a09e4ede3969db415ea6f3c115df009017876144a3a005a3e777a8d1b9e97baba25936f8fa44db55ebb
   languageName: node
   linkType: hard
 
@@ -15675,6 +15805,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"webdriver@npm:8.10.1":
+  version: 8.10.1
+  resolution: "webdriver@npm:8.10.1"
+  dependencies:
+    "@types/node": ^20.1.0
+    "@types/ws": ^8.5.3
+    "@wdio/config": 8.10.1
+    "@wdio/logger": 8.6.6
+    "@wdio/protocols": 8.8.1
+    "@wdio/types": 8.10.1
+    "@wdio/utils": 8.10.1
+    deepmerge-ts: ^5.0.0
+    got: ^12.1.0
+    ky: ^0.33.0
+    ws: ^8.8.0
+  checksum: b30d161cd9698d0c91cf061e9a1f1b7cb88ef76019ade20d45caa069833e3c9d4e4df95e8f611f83f600f8b5af900130ef6c72b5d3424bb4331d9a6030abadec
+  languageName: node
+  linkType: hard
+
 "webdriverio@npm:8.10.0, webdriverio@npm:^8.8.8":
   version: 8.10.0
   resolution: "webdriverio@npm:8.10.0"
@@ -15705,6 +15854,39 @@ __metadata:
     serialize-error: ^8.0.0
     webdriver: 8.10.0
   checksum: e910e27535255a062fe210d6e406766f04100e29859038fd5050a6a914b5ada5db9f7642555943f0716f411e9e1cf76e7dfc69e61598b22c16651059717cc107
+  languageName: node
+  linkType: hard
+
+"webdriverio@npm:8.10.1":
+  version: 8.10.1
+  resolution: "webdriverio@npm:8.10.1"
+  dependencies:
+    "@types/node": ^20.1.0
+    "@wdio/config": 8.10.1
+    "@wdio/logger": 8.6.6
+    "@wdio/protocols": 8.8.1
+    "@wdio/repl": 8.10.1
+    "@wdio/types": 8.10.1
+    "@wdio/utils": 8.10.1
+    archiver: ^5.0.0
+    aria-query: ^5.0.0
+    css-shorthand-properties: ^1.1.1
+    css-value: ^0.0.1
+    devtools: 8.10.1
+    devtools-protocol: ^0.0.1138159
+    grapheme-splitter: ^1.0.2
+    import-meta-resolve: ^3.0.0
+    is-plain-obj: ^4.1.0
+    lodash.clonedeep: ^4.5.0
+    lodash.zip: ^4.2.0
+    minimatch: ^9.0.0
+    puppeteer-core: 20.1.1
+    query-selector-shadow-dom: ^1.0.0
+    resq: ^1.9.1
+    rgb2hex: 0.2.5
+    serialize-error: ^8.0.0
+    webdriver: 8.10.1
+  checksum: a96e9e8395ebb20b64994595f3f1df2d9805432753d8d9725938cf46aa53869f1327d220bf9977286bd381f5798f3d1a370a87ca9dbcd877a7af6b265a78e093
   languageName: node
   linkType: hard
 
