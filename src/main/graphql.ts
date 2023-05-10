@@ -18,6 +18,7 @@ import {
   downloadJoysoundData,
   downloadNicoVideo,
   downloadYoutubeVideo,
+  getVideoDownloadProgress,
   TEMP_FOLDER,
 } from "./../common/videoDownloader";
 import { DkwebsysAPI, MinseiAPI, MinseiCredentials } from "./damApi";
@@ -243,12 +244,22 @@ type AdhocLyricsEntry = {
   readonly lyricIndex: number;
 };
 
+export interface DownloadQueueItem {
+  filename: string;
+  progress: number;
+}
+
+interface VideoDownloadProgress {
+  progress: number;
+}
+
 type NotARealDb = {
   currentSong: QueueItem | null;
   currentSongAdhocLyrics: AdhocLyricsEntry[];
   idToAdhocLyrics: Record<string, string[]>;
   playbackState: PlaybackState;
   songQueue: QueueItem[];
+  downloadQueue: DownloadQueueItem[];
 };
 
 enum SubscriptionEvent {
@@ -267,6 +278,7 @@ let db: NotARealDb = {
   idToAdhocLyrics: {},
   playbackState: PlaybackState.WAITING,
   songQueue: [],
+  downloadQueue: [],
 };
 
 const DB_PATH = path.resolve(TEMP_FOLDER, "queue.json");
@@ -280,6 +292,7 @@ function saveDb() {
       currentSong: null,
       currentSongAdhocLyrics: [],
       songQueue: [db.currentSong, ...db.songQueue],
+      downloadQueue: [],
     }),
     "utf-8"
   );
@@ -293,6 +306,7 @@ function loadDb(): NotARealDb {
       idToAdhocLyrics: {},
       playbackState: PlaybackState.WAITING,
       songQueue: [],
+      downloadQueue: [],
     };
   }
   return JSON.parse(fs.readFileSync(DB_PATH, "utf-8"));
@@ -783,6 +797,23 @@ const resolvers = {
       }
     },
     playbackState: () => db.playbackState,
+    videoDownloadProgress: (
+      _: any,
+      args: {
+        videoDownloadType: number;
+        songId: string;
+        suffix: string | null;
+      }
+    ): VideoDownloadProgress => {
+      const progress = getVideoDownloadProgress(
+        db.downloadQueue,
+        args.videoDownloadType,
+        args.songId,
+        args.suffix
+      );
+
+      return { progress };
+    },
   },
   Mutation: {
     sendEmote: (_: any, args: { emote: Emote }): boolean => {
@@ -807,7 +838,12 @@ const resolvers = {
         };
       }
 
-      downloadJoysoundData(dataSources.joysound, queueItem, pushSongToQueue);
+      downloadJoysoundData(
+        dataSources.joysound,
+        queueItem,
+        db.downloadQueue,
+        pushSongToQueue
+      );
 
       return {
         __typename: "QueueSongInfo",

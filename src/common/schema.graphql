@@ -25,6 +25,11 @@ type Query {
   queue: [QueueItem!]!
   songById(id: String!): Song!
   songsByName(name: String, first: Int, after: String): SongConnection!
+  videoDownloadProgress(
+    videoDownloadType: Int!
+    songId: String!
+    suffix: String
+  ): VideoDownloadProgress!
   youtubeVideoInfo(videoId: String): YoutubeVideoInfoResult!
 }
 
@@ -355,4 +360,8 @@ enum PlaybackState {
   RESTARTING
   SKIPPING
   WAITING
+}
+
+type VideoDownloadProgress {
+  progress: Float!
 }
