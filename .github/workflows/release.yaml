@@ -30,7 +30,7 @@ jobs:
           security list-keychain -d user -s $KEYCHAIN_PATH
       - run: yarn install --immutable
       - run: yarn build-prod
-      - run: 7z a -r karafriends-macos.zip dist/karafriends-darwin-x86_64
+      - run: 7z a -r karafriends-macos.zip dist/karafriends-darwin-x64
       - uses: softprops/action-gh-release@v1
         with:
           files: karafriends-macos.zip
@@ -43,7 +43,7 @@ jobs:
           node-version: 16
       - run: yarn install --immutable
       - run: yarn build-prod
-      - run: 7z.exe a -r karafriends-windows.zip dist/karafriends-win32-x86_64
+      - run: 7z.exe a -r karafriends-windows.zip dist/karafriends-win32-x64
       - uses: softprops/action-gh-release@v1
         with:
           files: karafriends-windows.zip
@@ -57,7 +57,7 @@ jobs:
       - run: sudo apt-get update && sudo apt-get install -y libasound2-dev
       - run: yarn install --immutable
       - run: yarn build-prod
-      - run: 7z a -r karafriends-linux.zip dist/karafriends-linux-x86_64
+      - run: 7z a -r karafriends-linux.zip dist/karafriends-linux-x64
       - uses: softprops/action-gh-release@v1
         with:
           files: karafriends-linux.zip
