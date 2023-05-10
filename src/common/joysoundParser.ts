@@ -148,68 +148,45 @@ function isKanaUnicodeChar(unicodeChar: string) {
 function getMainRomajiBlocks(chars: JoysoundLyricsChar[]) {
   const mainRomajiBlocks = [];
 
-  let i = 0;
-
   let currXPos = 0;
   let currPhrase = "";
   let currPhraseWidth = 0;
   let prevGlyph = null;
 
-  while (i < chars.length) {
-    const currGlyph = chars[i];
-
+  for (const currGlyph of chars) {
     const unicodeChar = decodeJoysoundText(currGlyph.charCode);
-
-    if (!isKanaUnicodeChar(unicodeChar) || unicodeChar === "・") {
-      if (currPhrase) {
-        mainRomajiBlocks.push({
-          phrase: toRomaji(currPhrase),
-          xPos: currXPos,
-          sourceWidth: currPhraseWidth,
-        });
-      }
-
-      currXPos += currPhraseWidth + currGlyph.width;
-      currPhrase = "";
-      currPhraseWidth = 0;
-      prevGlyph = currGlyph;
-      i += 1;
-
-      continue;
-    }
-
-    const prevUnicodeChar = prevGlyph
-      ? decodeJoysoundText(prevGlyph.charCode)
-      : "";
+    const prevUnicodeChar =
+      prevGlyph !== null ? decodeJoysoundText(prevGlyph.charCode) : null;
 
     if (
-      !prevGlyph ||
-      (isKatakanaUnicodeChar(unicodeChar) &&
-        isKatakanaUnicodeChar(prevUnicodeChar)) ||
-      prevUnicodeChar === "っ" ||
-      SUTEGANA.includes(unicodeChar)
+      prevUnicodeChar !== null &&
+      isKanaUnicodeChar(prevUnicodeChar) &&
+      prevUnicodeChar !== "っ" &&
+      !SUTEGANA.includes(unicodeChar) &&
+      !(
+        isKatakanaUnicodeChar(prevUnicodeChar) &&
+        isKatakanaUnicodeChar(unicodeChar)
+      )
     ) {
-      currPhrase += unicodeChar;
-      currPhraseWidth += currGlyph.width;
-      prevGlyph = currGlyph;
-      i += 1;
-
-      continue;
-    }
-
-    if (currPhrase) {
       mainRomajiBlocks.push({
         phrase: toRomaji(currPhrase),
         xPos: currXPos,
         sourceWidth: currPhraseWidth,
       });
+
+      currXPos += currPhraseWidth;
+      currPhrase = "";
+      currPhraseWidth = 0;
     }
 
-    currXPos += currPhraseWidth;
-    currPhrase = unicodeChar;
-    currPhraseWidth = currGlyph.width;
+    if (!isKanaUnicodeChar(unicodeChar) || unicodeChar === "・") {
+      currXPos += currGlyph.width;
+    } else {
+      currPhrase += unicodeChar;
+      currPhraseWidth += currGlyph.width;
+    }
+
     prevGlyph = currGlyph;
-    i += 1;
   }
 
   if (currPhrase) {
