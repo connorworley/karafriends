@@ -59,6 +59,13 @@ const JoysoundSongPage = () => {
     }
   };
 
+  const detatchButtonOnClick = () => {
+    if (!inputRef.current) return;
+
+    setYoutubeVideoId("");
+    history.replaceState({}, "", `#/joysoundSong/${song.id}`);
+  };
+
   return (
     <div>
       <h2>{song.name}</h2>
@@ -85,6 +92,11 @@ const JoysoundSongPage = () => {
               {youtubeVideoId === "" ? "None" : youtubeVideoId})
             </Button>
           </form>
+          {youtubeVideoId !== "" && (
+            <Button onClick={detatchButtonOnClick}>
+              Detatch YouTube Video
+            </Button>
+          )}
         </SearchFormWrapper>
       </div>
     </div>
