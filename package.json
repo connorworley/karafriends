@@ -42,7 +42,7 @@
     "gl-vec2": "1.3.0",
     "graphql": "16.6.0",
     "graphql-subscriptions": "2.0.0",
-    "hls.js": "1.4.1",
+    "hls.js": "1.4.2",
     "keytar": "7.9.0",
     "lodash": "4.17.21",
     "materialize-css": "1.0.0",
