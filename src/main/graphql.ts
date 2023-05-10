@@ -245,7 +245,9 @@ type AdhocLyricsEntry = {
 };
 
 export interface DownloadQueueItem {
-  filename: string;
+  downloadType: number;
+  songId: string;
+  suffix: string | null;
   progress: number;
 }
 
@@ -839,9 +841,9 @@ const resolvers = {
       }
 
       downloadJoysoundData(
+        db.downloadQueue,
         dataSources.joysound,
         queueItem,
-        db.downloadQueue,
         pushSongToQueue
       );
 
@@ -911,6 +913,7 @@ const resolvers = {
       }
 
       downloadYoutubeVideo(
+        db.downloadQueue,
         args.input.songId,
         args.input.captionCode,
         pushSongToQueue.bind(null, queueItem)
@@ -943,6 +946,7 @@ const resolvers = {
       }
 
       downloadNicoVideo(
+        db.downloadQueue,
         args.input.songId,
         pushSongToQueue.bind(null, queueItem)
       );

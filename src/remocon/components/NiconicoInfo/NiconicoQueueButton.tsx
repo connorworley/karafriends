@@ -1,10 +1,29 @@
-import formatDuration from "format-duration";
 import React, { useEffect, useState } from "react";
-import { graphql, useMutation } from "react-relay";
+import { fetchQuery, graphql, useMutation } from "react-relay";
+import { invariant } from "ts-invariant";
 
+import environment from "../../../common/graphqlEnvironment";
 import Button from "../Button";
+
 import { NiconicoInfoVideoInfoQuery$data } from "./__generated__/NiconicoInfoVideoInfoQuery.graphql";
+import { NiconicoQueueButtonGetVideoDownloadProgressQuery } from "./__generated__/NiconicoQueueButtonGetVideoDownloadProgressQuery.graphql";
 import { NiconicoQueueButtonMutation } from "./__generated__/NiconicoQueueButtonMutation.graphql";
+
+const niconicoQueueButtonGetVideoDownloadProgressQuery = graphql`
+  query NiconicoQueueButtonGetVideoDownloadProgressQuery(
+    $videoDownloadType: Int!
+    $songId: String!
+    $suffix: String
+  ) {
+    videoDownloadProgress(
+      videoDownloadType: $videoDownloadType
+      songId: $songId
+      suffix: $suffix
+    ) {
+      progress
+    }
+  }
+`;
 
 const niconicoQueueButtonMutation = graphql`
   mutation NiconicoQueueButtonMutation($input: QueueNicoSongInput!) {
@@ -36,9 +55,55 @@ const NiconicoQueueButton = ({ videoId, videoInfo }: Props) => {
   );
 
   useEffect(() => {
-    const timeout = setTimeout(() => setText(defaultText), 2500);
-    return () => clearTimeout(timeout);
-  });
+    invariant(window);
+
+    let intervalId: number | null = null;
+    let timeoutId: number | null = null;
+
+    if (text === "Finished Downloading") {
+      timeoutId = window.setTimeout(() => setText(defaultText), 2500);
+    } else if (text !== defaultText) {
+      intervalId = window.setInterval(() => {
+        fetchQuery<NiconicoQueueButtonGetVideoDownloadProgressQuery>(
+          environment,
+          niconicoQueueButtonGetVideoDownloadProgressQuery,
+          {
+            videoDownloadType: 2,
+            songId: videoId,
+            suffix: null,
+          }
+        ).subscribe({
+          next: (
+            data: NiconicoQueueButtonGetVideoDownloadProgressQuery["response"]
+          ) => {
+            if (
+              data.videoDownloadProgress.progress === 1.0 ||
+              (text !== "Downloading" &&
+                data.videoDownloadProgress.progress === -1.0)
+            ) {
+              setText("Finished Downloading");
+            } else {
+              setText(
+                `Downloading -- ${(
+                  data.videoDownloadProgress.progress * 100
+                ).toFixed(1)}%`
+              );
+            }
+          },
+        });
+      }, 1000);
+    }
+
+    return () => {
+      if (intervalId !== null) {
+        clearInterval(intervalId);
+      }
+
+      if (timeoutId !== null) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [text]);
 
   const onClick = () => {
     commit({
@@ -54,9 +119,7 @@ const NiconicoQueueButton = ({ videoId, videoInfo }: Props) => {
       onCompleted: ({ queueNicoSong }) => {
         switch (queueNicoSong.__typename) {
           case "QueueSongInfo":
-            setText(
-              `Estimated wait: T-${formatDuration(queueNicoSong.eta * 1000)}`
-            );
+            setText("Downloading");
             break;
           case "QueueSongError":
             setText(`Error: ${queueNicoSong.reason}`);

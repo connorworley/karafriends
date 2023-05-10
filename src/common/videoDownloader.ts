@@ -47,30 +47,90 @@ const resourcePaths: ResourcePaths =
     ? macosResourcePaths
     : linuxResourcePaths;
 
-function getVideoDownloadFilename(
+function deleteTempFiles(prefix: string): void {
+  for (const filename of fs.readdirSync(TEMP_FOLDER)) {
+    if (!filename) {
+      continue;
+    }
+
+    if (filename.includes(prefix)) {
+      fs.unlinkSync(filename);
+    }
+  }
+}
+
+function handleFFmpegDownloadLog(
+  log: string,
+  songFrames: number,
+  downloadQueue: DownloadQueueItem[],
   downloadType: number,
   songId: string,
-  suffix: string | null
-): string {
-  switch (downloadType) {
-    case 0:
-      return `${TEMP_FOLDER}/joysound-${songId}-${
-        suffix ? suffix : "default"
-      }.mp4.tmp`;
-    default:
-      return "";
+  suffix: string | null = null,
+): void {
+  const frameMatchData = log.match(/frame=\s*(\d+)\s*/);
+
+  if (frameMatchData) {
+    const rawProgress = parseInt(frameMatchData[1], 10) / songFrames;
+    const progress = Math.min(rawProgress, 1.0);
+
+    updateVideoDownloadProgress(
+      progress,
+      downloadQueue,
+      downloadType,
+      songId,
+      suffix,
+    );
   }
+};
+
+function handleYoutubeDownloadLog(
+  log: string,
+  downloadQueue: DownloadQueueItem[],
+  downloadType: number,
+  songId: string,
+  suffix: string | null = null,
+): void {
+  const matchData = log.match(/\[download\]\s*(\d+\.\d)%/);
+
+  if (matchData) {
+    const progress = Math.min(parseFloat(matchData[1]) / 100.0, 1.0);
+
+    updateVideoDownloadProgress(
+      progress,
+      downloadQueue,
+      downloadType,
+      songId,
+      suffix,
+    );
+  }
+}
+
+function isVideoCurrentlyDownloading(
+  filename: string,
+  downloadQueue: DownloadQueueItem[],
+  downloadType: number,
+  songId: string,
+  suffix: string | null = null,
+): boolean {
+  if (!fs.existsSync(filename)) {
+    return false;
+  }
+
+  const prevDownloadQueueItem = downloadQueue.find(
+    (item) => item.downloadType === downloadType && item.songId === songId && item.suffix === suffix
+  );
+
+  return Boolean(prevDownloadQueueItem);
 }
 
 export function getVideoDownloadProgress(
   downloadQueue: DownloadQueueItem[],
   downloadType: number,
   songId: string,
-  suffix: string | null
+  suffix: string | null = null
 ): number {
-  const filename = getVideoDownloadFilename(downloadType, songId, suffix);
   const downloadQueueItem = downloadQueue.find(
-    (item) => item.filename === filename
+    (item) => item.downloadType === downloadType && item.songId === songId && item.suffix === suffix
   );
 
   if (downloadQueueItem) {
@@ -81,12 +141,14 @@ export function getVideoDownloadProgress(
 }
 
 function updateVideoDownloadProgress(
+  progress: number,
   downloadQueue: DownloadQueueItem[],
-  filename: string,
-  progress: number
+  downloadType: number,
+  songId: string,
+  suffix: string | null = null,
 ): void {
   const downloadQueueItem = downloadQueue.find(
-    (item) => item.filename === filename
+    (item) => item.downloadType === downloadType && item.songId === songId && item.suffix === suffix
   );
 
   if (downloadQueueItem) {
@@ -96,9 +158,13 @@ function updateVideoDownloadProgress(
 
 function removeVideoDownloadFromQueue(
   downloadQueue: DownloadQueueItem[],
-  filename: string
+  downloadType: number,
+  songId: string,
+  suffix: string | null = null,
 ): void {
-  const index = downloadQueue.findIndex((item) => item.filename === filename);
+  const index = downloadQueue.findIndex(
+    (item) => item.downloadType === downloadType && item.songId === songId && item.suffix === suffix
+  );
 
   if (index >= 0) {
     downloadQueue.splice(index, 1);
@@ -161,9 +227,9 @@ export function downloadDamVideo(
 }
 
 export function downloadJoysoundData(
+  downloadQueue: DownloadQueueItem[],
   joysoundApi: JoysoundAPI,
   queueItem: JoysoundQueueItem,
-  downloadQueue: DownloadQueueItem[],
   pushSongToQueue: (queueItem: JoysoundQueueItem) => any
 ): void {
   if (!fs.existsSync(TEMP_FOLDER)) {
@@ -177,10 +243,13 @@ export function downloadJoysoundData(
     ? queueItem.youtubeVideoId
     : "default";
 
-  const telopFilename = `${TEMP_FOLDER}/joysound-${songId}.joy_02`;
-  const oggFilename = `${TEMP_FOLDER}/joysound-${songId}.ogg`;
-  const videoFilename = `${TEMP_FOLDER}/joysound-${songId}-${videoFilenameSuffix}.mp4`;
-  const ffmpegLogFilename = `${TEMP_FOLDER}/joysound-${songId}.log`;
+  const filenamePrefix = `joysound-${songId}`;
+  const writeBasePath = `${TEMP_FOLDER}/${filenamePrefix}`;
+
+  const telopFilename = `${writeBasePath}.joy_02`;
+  const oggFilename = `${writeBasePath}.ogg`;
+  const videoFilename = `${writeBasePath}-${videoFilenameSuffix}.mp4`;
+  const ffmpegLogFilename = `${writeBasePath}.log`;
 
   const tempFilename = `${videoFilename}.tmp`;
 
@@ -204,22 +273,16 @@ export function downloadJoysoundData(
 
       fs.unlinkSync(videoFilename);
     }
+  } 
+
+  if (isVideoCurrentlyDownloading(tempFilename, downloadQueue, 0, songId, queueItem.youtubeVideoId)) {
+    console.error(`${videoFilename} was already queued, not redownloading`);
+    
+    return;
   } else if (fs.existsSync(tempFilename)) {
-    const prevDownloadQueueItem = downloadQueue.find(
-      (item) => item.filename === tempFilename
-    );
+    console.error(`${tempFilename} exists but was not in the download queue.`);
 
-    if (prevDownloadQueueItem) {
-      console.error(`${videoFilename} was already queued, not redownloading`);
-
-      return;
-    } else {
-      console.error(
-        `${tempFilename} exists but was not in the download queue. Deleting.`
-      );
-
-      fs.unlinkSync(tempFilename);
-    }
+    deleteTempFiles(filenamePrefix);
   }
 
   fs.closeSync(fs.openSync(tempFilename, "w"));
@@ -230,7 +293,9 @@ export function downloadJoysoundData(
   let videoDataPromise;
 
   const downloadQueueItem: DownloadQueueItem = {
-    filename: tempFilename,
+    downloadType: 0,
+    songId,
+    suffix: queueItem.youtubeVideoId,
     progress: 0.0,
   };
 
@@ -268,14 +333,13 @@ export function downloadJoysoundData(
       ytdlp.stderr.pipe(ytdlpLogStream);
 
       ytdlp.stdout.on("data", (data) => {
-        const youtubeLog = data.toString();
-        const matchData = youtubeLog.match(/\[download\]\s*(\d+\.\d)%/);
-
-        if (matchData) {
-          const progress = Math.floor(parseFloat(matchData[1])) / 100.0;
-
-          updateVideoDownloadProgress(downloadQueue, tempFilename, progress);
-        }
+        handleYoutubeDownloadLog(
+          data.toString(),
+          downloadQueue,
+          0,
+          songId,
+          queueItem.youtubeVideoId,
+        )
       });
 
       ytdlp.on("exit", (code, signal) => {
@@ -283,7 +347,7 @@ export function downloadJoysoundData(
           fs.unlinkSync(tempFilename);
           fs.renameSync(tempFilename + ".mp4", tempFilename);
 
-          removeVideoDownloadFromQueue(downloadQueue, tempFilename);
+          removeVideoDownloadFromQueue(downloadQueue, 0, songId, queueItem.youtubeVideoId);
 
           resolve(code);
         } else {
@@ -340,19 +404,19 @@ export function downloadJoysoundData(
             songFrames = songDuration * 30;
           }
 
-          const frameMatchData = ffmpegLog.match(/frame=\s*(\d+)\s*/);
-
-          if (frameMatchData) {
-            const rawProgress = parseInt(frameMatchData[1], 10) / songFrames;
-            const progress = Math.min(rawProgress, 1.0);
-
-            updateVideoDownloadProgress(downloadQueue, tempFilename, progress);
-          }
+          handleFFmpegDownloadLog(
+            ffmpegLog,
+            songFrames,
+            downloadQueue,
+            0,
+            songId,
+            queueItem.youtubeVideoId,
+          );
         });
 
         ffmpeg.on("exit", (code, signal) => {
           if (code === 0) {
-            removeVideoDownloadFromQueue(downloadQueue, tempFilename);
+            removeVideoDownloadFromQueue(downloadQueue, 0, songId, queueItem.youtubeVideoId);
 
             resolve(code);
           } else {
@@ -415,9 +479,9 @@ export function downloadJoysoundData(
     ffmpeg.stderr.pipe(ffmpegLogStream);
 
     ffmpeg.on("exit", (code, signal) => {
+      fs.unlinkSync(tempFilename);
+      
       if (code === 0) {
-        fs.unlinkSync(tempFilename);
-
         finalQueueItem = {
           ...finalQueueItem,
           playtime: getSongDuration(telopBuffer.buffer),
@@ -439,6 +503,7 @@ export function downloadJoysoundData(
 }
 
 export function downloadYoutubeVideo(
+  downloadQueue: DownloadQueueItem[],
   videoId: string,
   captionCode: string | null,
   onComplete: () => any
@@ -454,10 +519,38 @@ export function downloadYoutubeVideo(
     fs.mkdirSync(TEMP_FOLDER);
   }
 
-  const writeBasePath = `${TEMP_FOLDER}/${videoId}`;
-  console.info(`Downloading YouTube video to ${writeBasePath}.mp4`);
+  const filenamePrefix = `yt-${videoId}`;
+  const writeBasePath = `${TEMP_FOLDER}/${filenamePrefix}`;
+  
+  const videoFilename = `${writeBasePath}.mp4`;
+  const vttFilename = `${writeBasePath}.vtt`;
+  const ytdlpLogFilename = `${writeBasePath}.log`;
+  
+  const tempFilename = `${videoFilename}.tmp`;
 
-  const ytdlpLogFilename = `${TEMP_FOLDER}/yt-${videoId}.log`;
+  if (isVideoCurrentlyDownloading(tempFilename, downloadQueue, 1, videoId)) {
+    console.error(`${videoFilename} was already queued, not redownloading`);
+    
+    return;
+  } else if (fs.existsSync(tempFilename)) {
+    console.error(`${tempFilename} exists but was not in the download queue.`);
+
+    deleteTempFiles(filenamePrefix);
+  }
+
+  fs.closeSync(fs.openSync(tempFilename, "w"));
+
+  const downloadQueueItem: DownloadQueueItem = {
+    downloadType: 1,
+    songId: videoId,
+    suffix: null,
+    progress: 0.0,
+  };
+
+  downloadQueue.push(downloadQueueItem);
+
+  console.info(`Downloading YouTube video to ${videoFilename}`);
+
   const ytdlpLogStream = fs.createWriteStream(ytdlpLogFilename);
 
   const captionArgs = captionCode
@@ -477,7 +570,7 @@ export function downloadYoutubeVideo(
       "--ffmpeg-location",
       resourcePaths.ffmpeg,
       "-o",
-      `${writeBasePath}.mp4`,
+      `${videoFilename}`,
       "--",
       videoId,
     ],
@@ -489,7 +582,15 @@ export function downloadYoutubeVideo(
   ytdlp.stdout.pipe(ytdlpLogStream);
   ytdlp.stderr.pipe(ytdlpLogStream);
 
+  ytdlp.stdout.on("data", (data) => {
+    handleYoutubeDownloadLog(data.toString(), downloadQueue, 1, videoId);
+  });
+
   ytdlp.on("exit", (code, signal) => {
+    removeVideoDownloadFromQueue(downloadQueue, 1, videoId);
+    
+    fs.unlinkSync(tempFilename);
+    
     if (code !== 0) {
       console.error(
         `Error downloading Youtube Video with ID ${videoId}: code=${code}, signal=${signal}, log=${ytdlpLogFilename}`
@@ -499,32 +600,58 @@ export function downloadYoutubeVideo(
 
     if (captionCode) {
       try {
-        fs.renameSync(
-          `${writeBasePath}.${captionCode}.vtt`,
-          `${writeBasePath}.vtt`
-        );
+        fs.renameSync(`${writeBasePath}.${captionCode}.vtt`, vttFilename);
       } catch (fsError) {
         console.error(
           `Error trying to rename caption file ${writeBasePath}.${captionCode}.vtt to ${writeBasePath}.vtt: ${fsError}`
         );
       }
     }
+
     onComplete();
   });
 }
 
 export function downloadNicoVideo(
+  downloadQueue: DownloadQueueItem[],
   videoId: string,
   onComplete: () => any
 ): void {
   if (!fs.existsSync(TEMP_FOLDER)) {
     fs.mkdirSync(TEMP_FOLDER);
   }
+  
+  const filenamePrefix = `nico-${videoId}`;
+  const writeBasePath = `${TEMP_FOLDER}/${filenamePrefix}`;
+  
+  const videoFilename = `${writeBasePath}.mp4`;
+  const ytdlpLogFilename = `${writeBasePath}.log`;
+  
+  const tempFilename = `${videoFilename}.tmp`;
 
-  const writeBasePath = `${TEMP_FOLDER}/${videoId}`;
-  console.info(`Downloading Niconico video to ${writeBasePath}.mp4`);
+  if (isVideoCurrentlyDownloading(tempFilename, downloadQueue, 2, videoId)) {
+    console.error(`${videoFilename} was already queued, not redownloading`);
+    
+    return;
+  } else if (fs.existsSync(tempFilename)) {
+    console.error(`${tempFilename} exists but was not in the download queue.`);
 
-  const ytdlpLogFilename = `${TEMP_FOLDER}/nico-${videoId}.log`;
+    deleteTempFiles(filenamePrefix);
+  }
+
+  fs.closeSync(fs.openSync(tempFilename, "w"));
+  
+  const downloadQueueItem: DownloadQueueItem = {
+    downloadType: 2,
+    songId: videoId,
+    suffix: null,
+    progress: 0.0,
+  };
+
+  downloadQueue.push(downloadQueueItem);
+  
+  console.info(`Downloading Niconico video to ${videoFilename}`);
+
   const ytdlpLogStream = fs.createWriteStream(ytdlpLogFilename);
 
   const ytdlp = spawn(
@@ -533,7 +660,7 @@ export function downloadNicoVideo(
       "-N",
       "4",
       "-o",
-      `${writeBasePath}.mp4`,
+      `${videoFilename}`,
       "--",
       `https://www.nicovideo.jp/watch/${videoId}`,
     ],
@@ -545,14 +672,21 @@ export function downloadNicoVideo(
   ytdlp.stdout.pipe(ytdlpLogStream);
   ytdlp.stderr.pipe(ytdlpLogStream);
 
+  ytdlp.stdout.on("data", (data) => {
+    handleYoutubeDownloadLog(data.toString(), downloadQueue, 2, videoId);
+  });
+
   ytdlp.on("exit", (code, signal) => {
-    if (code !== 0) {
+    removeVideoDownloadFromQueue(downloadQueue, 2, videoId);
+
+    fs.unlinkSync(tempFilename);
+    
+    if (code === 0) {
+      onComplete();
+    } else {
       console.error(
         `Error downloading Niconico Video with ID ${videoId}: code=${code}, signal=${signal}, log=${ytdlpLogFilename}`
       );
-      return;
     }
-
-    onComplete();
   });
 }

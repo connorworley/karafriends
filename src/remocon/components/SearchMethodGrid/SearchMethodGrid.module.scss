@@ -15,7 +15,8 @@ $search-method-colors: (
 }
 
 .gridItem {
-  flex: 1;
+  flex-basis: calc(100%);
+  flex-grow: 1;
 
   a {
     text-decoration: none;

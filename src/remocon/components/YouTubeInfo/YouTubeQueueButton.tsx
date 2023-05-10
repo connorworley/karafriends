@@ -1,11 +1,30 @@
-import formatDuration from "format-duration";
 import React, { useEffect, useState } from "react";
-import { graphql, useMutation } from "react-relay";
+import { fetchQuery, graphql, useMutation } from "react-relay";
+import { invariant } from "ts-invariant";
 
+import environment from "../../../common/graphqlEnvironment";
 import useNickname from "../../hooks/useNickname";
 import Button from "../Button";
+
 import { YouTubeInfoVideoInfoQuery$data } from "./__generated__/YouTubeInfoVideoInfoQuery.graphql";
+import { YouTubeQueueButtonGetVideoDownloadProgressQuery } from "./__generated__/YouTubeQueueButtonGetVideoDownloadProgressQuery.graphql";
 import { YouTubeQueueButtonMutation } from "./__generated__/YouTubeQueueButtonMutation.graphql";
+
+const youTubeQueueButtonGetVideoDownloadProgressQuery = graphql`
+  query YouTubeQueueButtonGetVideoDownloadProgressQuery(
+    $videoDownloadType: Int!
+    $songId: String!
+    $suffix: String
+  ) {
+    videoDownloadProgress(
+      videoDownloadType: $videoDownloadType
+      songId: $songId
+      suffix: $suffix
+    ) {
+      progress
+    }
+  }
+`;
 
 const youTubeQueueButtonMutation = graphql`
   mutation YouTubeQueueButtonMutation($input: QueueYoutubeSongInput!) {
@@ -45,9 +64,55 @@ const YouTubeQueueButton = ({
   );
 
   useEffect(() => {
-    const timeout = setTimeout(() => setText(defaultText), 2500);
-    return () => clearTimeout(timeout);
-  });
+    invariant(window);
+
+    let intervalId: number | null = null;
+    let timeoutId: number | null = null;
+
+    if (text === "Finished Downloading") {
+      timeoutId = window.setTimeout(() => setText(defaultText), 2500);
+    } else if (text !== defaultText) {
+      intervalId = window.setInterval(() => {
+        fetchQuery<YouTubeQueueButtonGetVideoDownloadProgressQuery>(
+          environment,
+          youTubeQueueButtonGetVideoDownloadProgressQuery,
+          {
+            videoDownloadType: 1,
+            songId: videoId,
+            suffix: null,
+          }
+        ).subscribe({
+          next: (
+            data: YouTubeQueueButtonGetVideoDownloadProgressQuery["response"]
+          ) => {
+            if (
+              data.videoDownloadProgress.progress === 1.0 ||
+              (text !== "Downloading" &&
+                data.videoDownloadProgress.progress === -1.0)
+            ) {
+              setText("Finished Downloading");
+            } else {
+              setText(
+                `Downloading -- ${(
+                  data.videoDownloadProgress.progress * 100
+                ).toFixed(1)}%`
+              );
+            }
+          },
+        });
+      }, 1000);
+    }
+
+    return () => {
+      if (intervalId !== null) {
+        clearInterval(intervalId);
+      }
+
+      if (timeoutId !== null) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [text]);
 
   const onClick = () => {
     commit({
@@ -66,9 +131,7 @@ const YouTubeQueueButton = ({
       onCompleted: ({ queueYoutubeSong }) => {
         switch (queueYoutubeSong.__typename) {
           case "QueueSongInfo":
-            setText(
-              `Estimated wait: T-${formatDuration(queueYoutubeSong.eta * 1000)}`
-            );
+            setText("Downloading");
             break;
           case "QueueSongError":
             setText(`Error: ${queueYoutubeSong.reason}`);
