@@ -47,7 +47,7 @@ const YouTubePage = () => {
           placeholder="YouTube video URL or ID"
           defaultValue={videoId}
         />
-        <Button type="submit">Preview video</Button>
+        <Button type="submit">Get Video Info</Button>
       </form>
       {videoId !== "" && <YouTubeInfo videoId={videoId} />}
     </SearchFormWrapper>

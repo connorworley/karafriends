@@ -61,6 +61,13 @@ const JoysoundYouTubeInfo = ({
       playerRef.current.loadVideoById(candidateVideoId);
       playerRef.current.stopVideo();
     }
+
+    if (
+      candidateVideoId &&
+      videoData.youtubeVideoInfo.__typename === "YoutubeVideoInfo"
+    ) {
+      setYoutubeVideoId(candidateVideoId);
+    }
   }, [candidateVideoId]);
 
   const attachOnClick = () => {
@@ -86,16 +93,16 @@ const JoysoundYouTubeInfo = ({
             videoSource="youtube"
             videoInfo={videoData.youtubeVideoInfo}
           />
-          <Button
-            disabled={videoId === candidateVideoId}
-            onClick={attachOnClick}
-          >
-            Attach Youtube Video
-          </Button>
-          <Button disabled={videoId === ""} onClick={detatchOnClick}>
-            Detatch Youtube Video (Currently Attached:{" "}
-            {videoId ? videoId : "None"})
-          </Button>
+          {videoId === "" && (
+            <Button onClick={attachOnClick}>
+              Attach Youtube Video (Currently Attached: None)
+            </Button>
+          )}
+          {videoId !== "" && (
+            <Button onClick={detatchOnClick}>
+              Detatch Youtube Video (Currently Attached: {videoId})
+            </Button>
+          )}
         </>
       )}
     </div>

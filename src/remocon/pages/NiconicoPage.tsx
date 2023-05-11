@@ -45,7 +45,7 @@ const NiconicoPage = () => {
           placeholder="Niconico video URL or ID"
           defaultValue={videoId}
         />
-        <Button type="submit">Get video info</Button>
+        <Button type="submit">Get Video Info</Button>
       </form>
       {videoId !== "" && <NiconicoInfo videoId={videoId} />}
     </SearchFormWrapper>
