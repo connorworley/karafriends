@@ -49,7 +49,7 @@ const YouTubePage = () => {
         />
         <Button type="submit">Preview video</Button>
       </form>
-      {videoId !== "" && <YouTubeInfo videoId={videoId} isSimple={false} />}
+      {videoId !== "" && <YouTubeInfo videoId={videoId} />}
     </SearchFormWrapper>
   );
 };

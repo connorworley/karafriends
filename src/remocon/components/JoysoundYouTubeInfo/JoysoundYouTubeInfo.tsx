@@ -1,18 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { graphql, useLazyLoadQuery } from "react-relay";
-import { Link } from "react-router-dom";
 import YouTubePlayer from "youtube-player";
 
 import Button from "../Button";
 import { withLoader } from "../Loader";
 import VideoMetadata from "../VideoMetadata";
-import styles from "./YouTubeInfo.module.scss";
-import YouTubeLyricsForm from "./YouTubeLyricsForm";
-import YouTubeQueueButton from "./YouTubeQueueButton";
-import { YouTubeInfoVideoInfoQuery } from "./__generated__/YouTubeInfoVideoInfoQuery.graphql";
+import styles from "./JoysoundYouTubeInfo.module.scss";
+import { JoysoundYouTubeInfoVideoInfoQuery } from "./__generated__/JoysoundYouTubeInfoVideoInfoQuery.graphql";
 
-const youTubeInfoVideoInfoQuery = graphql`
-  query YouTubeInfoVideoInfoQuery($videoId: String!) {
+const joysoundYouTubeInfoVideoInfoQuery = graphql`
+  query JoysoundYouTubeInfoVideoInfoQuery($videoId: String!) {
     youtubeVideoInfo(videoId: $videoId) {
       ... on YoutubeVideoInfo {
         __typename
@@ -38,29 +35,41 @@ const youTubeInfoVideoInfoQuery = graphql`
 
 interface Props {
   videoId: string;
+  candidateVideoId: string;
+  setYoutubeVideoId: (videoId: string) => void;
 }
 
-const YouTubeInfo = ({ videoId }: Props) => {
+const JoysoundYouTubeInfo = ({
+  videoId,
+  candidateVideoId,
+  setYoutubeVideoId,
+}: Props) => {
   const playerRef: React.MutableRefObject<ReturnType<
     typeof YouTubePlayer
   > | null> = useRef(null);
-  const [adhocSongLyrics, setAdhocSongLyrics] = useState<string | null>(null);
-  const [selectedCaption, setSelectedCaption] = useState<string | undefined>(
-    undefined
-  );
-  const videoData = useLazyLoadQuery<YouTubeInfoVideoInfoQuery>(
-    youTubeInfoVideoInfoQuery,
-    { videoId }
+  const videoData = useLazyLoadQuery<JoysoundYouTubeInfoVideoInfoQuery>(
+    joysoundYouTubeInfoVideoInfoQuery,
+    { videoId: candidateVideoId }
   );
 
   useEffect(() => {
     if (playerRef.current == null) {
-      playerRef.current = YouTubePlayer("youtube-player", { videoId });
+      playerRef.current = YouTubePlayer("youtube-player", {
+        videoId: candidateVideoId,
+      });
     } else {
-      playerRef.current.loadVideoById(videoId);
+      playerRef.current.loadVideoById(candidateVideoId);
       playerRef.current.stopVideo();
     }
-  }, [videoId]);
+  }, [candidateVideoId]);
+
+  const attachOnClick = () => {
+    setYoutubeVideoId(candidateVideoId);
+  };
+
+  const detatchOnClick = () => {
+    setYoutubeVideoId("");
+  };
 
   return (
     <div className={styles.container}>
@@ -77,24 +86,20 @@ const YouTubeInfo = ({ videoId }: Props) => {
             videoSource="youtube"
             videoInfo={videoData.youtubeVideoInfo}
           />
-          <YouTubeLyricsForm
-            videoInfo={videoData.youtubeVideoInfo}
-            onSelectCaption={(language) => setSelectedCaption(language)}
-            onAdhocLyricsChanged={(lyrics) => setAdhocSongLyrics(lyrics)}
-          />
-          <YouTubeQueueButton
-            videoId={videoId}
-            videoInfo={videoData.youtubeVideoInfo}
-            adhocSongLyrics={adhocSongLyrics}
-            selectedCaption={selectedCaption || null}
-          />
-          <Link to={`/adhocLyrics/${videoId}`}>
-            <Button>Guide adhoc lyrics</Button>
-          </Link>
+          <Button
+            disabled={videoId === candidateVideoId}
+            onClick={attachOnClick}
+          >
+            Attach Youtube Video
+          </Button>
+          <Button disabled={videoId === ""} onClick={detatchOnClick}>
+            Detatch Youtube Video (Currently Attached:{" "}
+            {videoId ? videoId : "None"})
+          </Button>
         </>
       )}
     </div>
   );
 };
 
-export default withLoader(YouTubeInfo);
+export default withLoader(JoysoundYouTubeInfo);

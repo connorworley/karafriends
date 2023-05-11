@@ -5,9 +5,9 @@ import { Link, useParams } from "react-router-dom";
 import Button from "../components/Button";
 import JoysoundQueueButtons from "../components/JoysoundQueueButtons";
 import JoysoundYoutubeButtons from "../components/JoysoundYoutubeButtons";
+import JoysoundYouTubeInfo from "../components/JoysoundYouTubeInfo";
 import { withLoader } from "../components/Loader";
 import SearchFormWrapper from "../components/SearchFormWrapper";
-import YouTubeInfo from "../components/YouTubeInfo";
 import { JoysoundSongPageQuery } from "./__generated__/JoysoundSongPageQuery.graphql";
 
 import { getVideoId as getYoutubeVideoId } from "./YouTubePage";
@@ -38,9 +38,12 @@ const JoysoundSongPage = () => {
   });
 
   const song = data.joysoundSongDetail;
-  const [youtubeVideoId, setYoutubeVideoId] = useState<string>(
+  
+  const [candidateYoutubeVideoId, setCandidateYoutubeVideoId] = useState<string>(
     params.youtubeVideoId || ""
   );
+
+  const [youtubeVideoId, setYoutubeVideoId] = useState<string>("");
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,7 +53,7 @@ const JoysoundSongPage = () => {
     const newYoutubeVideoId = getYoutubeVideoId(inputRef.current.value);
 
     if (newYoutubeVideoId !== null) {
-      setYoutubeVideoId(newYoutubeVideoId);
+      setCandidateYoutubeVideoId(newYoutubeVideoId);
 
       history.replaceState(
         {},
@@ -58,13 +61,6 @@ const JoysoundSongPage = () => {
         `#/joysoundSong/${song.id}/${newYoutubeVideoId}`
       );
     }
-  };
-
-  const detatchButtonOnClick = () => {
-    if (!inputRef.current) return;
-
-    setYoutubeVideoId("");
-    history.replaceState({}, "", `#/joysoundSong/${song.id}`);
   };
 
   return (
@@ -77,7 +73,9 @@ const JoysoundSongPage = () => {
       )}
       <JoysoundQueueButtons song={song} youtubeVideoId={youtubeVideoId} />
       <div>
-        <h2>Attach Custom Background Video</h2>
+        <h2>
+          Attach Background Video (Currently Attached: {youtubeVideoId ? youtubeVideoId : "None"})
+        </h2>
         <SearchFormWrapper>
           <form onSubmit={onSubmit}>
             <input
@@ -85,13 +83,14 @@ const JoysoundSongPage = () => {
               placeholder="Youtube video URL or ID"
               defaultValue={youtubeVideoId}
             />
-            {youtubeVideoId !== "" && (
-              <YouTubeInfo videoId={youtubeVideoId} isSimple={true} />
+            <Button type="submit">Preview Video</Button>
+            {candidateYoutubeVideoId !== "" && (
+              <JoysoundYouTubeInfo 
+                videoId={youtubeVideoId}
+                candidateVideoId={candidateYoutubeVideoId}
+                setYoutubeVideoId={setYoutubeVideoId}
+              />
             )}
-            <JoysoundYoutubeButtons
-              youtubeVideoId={youtubeVideoId}
-              detatchButtonOnClick={detatchButtonOnClick}
-            />
           </form>
         </SearchFormWrapper>
       </div>
