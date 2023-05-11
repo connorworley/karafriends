@@ -4107,17 +4107,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wdio/mocha-framework@npm:8.10.1":
-  version: 8.10.1
-  resolution: "@wdio/mocha-framework@npm:8.10.1"
+"@wdio/mocha-framework@npm:8.10.2":
+  version: 8.10.2
+  resolution: "@wdio/mocha-framework@npm:8.10.2"
   dependencies:
     "@types/mocha": ^10.0.0
     "@types/node": ^20.1.0
     "@wdio/logger": 8.6.6
-    "@wdio/types": 8.10.1
-    "@wdio/utils": 8.10.1
+    "@wdio/types": 8.10.2
+    "@wdio/utils": 8.10.2
     mocha: ^10.0.0
-  checksum: 14950b305aceefe3d5c311c414c2fecdcf13cfd74abc2a68633039c515fa8abf314ceaebd81b0996d7a464b73cc9ad4a0fbd64a3e4022a96eee7f006d4639673
+  checksum: 4fd9bd720cadbfbee2de36277f513dc0613f74d7c716f09bb553d2c1077e33fbedc40c90f36d18ce2c5b7aff10f0234f829726c5c2e8f8ed25ca1b907379d43c
   languageName: node
   linkType: hard
 
@@ -10670,7 +10670,7 @@ __metadata:
     "@types/youtube-player": 5.5.7
     "@wdio/cli": 8.10.2
     "@wdio/local-runner": 8.10.1
-    "@wdio/mocha-framework": 8.10.1
+    "@wdio/mocha-framework": 8.10.2
     "@yarnpkg/pnpify": 4.0.0-rc.43
     apollo-datasource-rest: 3.7.0
     apollo-server-express: 3.12.0
