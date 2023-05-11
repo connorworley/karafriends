@@ -4,7 +4,6 @@ import { Link, useParams } from "react-router-dom";
 
 import Button from "../components/Button";
 import JoysoundQueueButtons from "../components/JoysoundQueueButtons";
-import JoysoundYoutubeButtons from "../components/JoysoundYoutubeButtons";
 import JoysoundYouTubeInfo from "../components/JoysoundYouTubeInfo";
 import { withLoader } from "../components/Loader";
 import SearchFormWrapper from "../components/SearchFormWrapper";
@@ -38,10 +37,9 @@ const JoysoundSongPage = () => {
   });
 
   const song = data.joysoundSongDetail;
-  
-  const [candidateYoutubeVideoId, setCandidateYoutubeVideoId] = useState<string>(
-    params.youtubeVideoId || ""
-  );
+
+  const [candidateYoutubeVideoId, setCandidateYoutubeVideoId] =
+    useState<string>(params.youtubeVideoId || "");
 
   const [youtubeVideoId, setYoutubeVideoId] = useState<string>("");
 
@@ -74,7 +72,8 @@ const JoysoundSongPage = () => {
       <JoysoundQueueButtons song={song} youtubeVideoId={youtubeVideoId} />
       <div>
         <h2>
-          Attach Background Video (Currently Attached: {youtubeVideoId ? youtubeVideoId : "None"})
+          Attach Background Video (Currently Attached:{" "}
+          {youtubeVideoId ? youtubeVideoId : "None"})
         </h2>
         <SearchFormWrapper>
           <form onSubmit={onSubmit}>
@@ -83,9 +82,9 @@ const JoysoundSongPage = () => {
               placeholder="Youtube video URL or ID"
               defaultValue={youtubeVideoId}
             />
-            <Button type="submit">Preview Video</Button>
+            <Button type="submit">Get Video Info</Button>
             {candidateYoutubeVideoId !== "" && (
-              <JoysoundYouTubeInfo 
+              <JoysoundYouTubeInfo
                 videoId={youtubeVideoId}
                 candidateVideoId={candidateYoutubeVideoId}
                 setYoutubeVideoId={setYoutubeVideoId}
