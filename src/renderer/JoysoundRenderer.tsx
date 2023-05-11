@@ -620,6 +620,14 @@ function getScrollXPos(
 ): number {
   let xOff = 0;
 
+  // XXX: This is a hack to handle edge cases where romaji text is off frame.
+  if (
+    lyricsBlock.scrollEvents[0] &&
+    refreshTime < lyricsBlock.scrollEvents[0].time
+  ) {
+    return 0;
+  }
+
   for (let i = 0; i < lyricsBlock.scrollEvents.length; i++) {
     const currScrollEvent = lyricsBlock.scrollEvents[i];
 
@@ -733,7 +741,7 @@ function drawLyricsBlock(
     );
   }
 
-  if (scrollXPos > currX) {
+  if (scrollXPos >= currX) {
     drawLyricsTexture(
       gl,
       glBuffers,
