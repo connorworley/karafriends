@@ -47,7 +47,7 @@ interface Props {
   nickname: string;
   isRomaji: boolean;
   isDisabled: boolean;
-  setDisabled: () => any;
+  setDisabled: (isDisabled: boolean) => void;
 }
 
 const JoysoundQueueButton = ({
@@ -66,16 +66,17 @@ const JoysoundQueueButton = ({
   );
 
   useEffect(() => {
+    invariant(window);
+
     let intervalId: number | null = null;
+    let timeoutId: number | null = null;
 
-    if (
-      text !== defaultText &&
-      !text.includes("Error") &&
-      text !== "Waiting for server..." &&
-      text !== "Finished Downloading"
-    ) {
-      invariant(window);
-
+    if (text === "Finished Downloading" || text.includes("Error")) {
+      timeoutId = window.setTimeout(() => {
+        setText(defaultText);
+        setDisabled(false);
+      }, 2500);
+    } else if (text !== defaultText && text !== "Waiting for server...") {
       intervalId = window.setInterval(() => {
         fetchQuery<JoysoundQueueButtonGetVideoDownloadProgressQuery>(
           environment,
@@ -111,11 +112,15 @@ const JoysoundQueueButton = ({
       if (intervalId !== null) {
         clearInterval(intervalId);
       }
+
+      if (timeoutId !== null) {
+        clearTimeout(timeoutId);
+      }
     };
   }, [text]);
 
   const onClick = () => {
-    setDisabled();
+    setDisabled(true);
     setText("Waiting for server...");
 
     commit({
