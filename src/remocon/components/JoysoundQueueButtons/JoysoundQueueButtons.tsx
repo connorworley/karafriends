@@ -22,7 +22,7 @@ const JoysoundQueueButtons = ({ song, youtubeVideoId }: Props) => {
         nickname={nickname}
         isRomaji={false}
         isDisabled={isDisabled}
-        setDisabled={() => setIsDisabled(true)}
+        setDisabled={setIsDisabled}
       />
 
       <JoysoundQueueButton
@@ -31,7 +31,7 @@ const JoysoundQueueButtons = ({ song, youtubeVideoId }: Props) => {
         nickname={nickname}
         isRomaji={true}
         isDisabled={isDisabled}
-        setDisabled={() => setIsDisabled(true)}
+        setDisabled={setIsDisabled}
       />
     </div>
   );
