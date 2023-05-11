@@ -68,7 +68,12 @@ const JoysoundQueueButton = ({
   useEffect(() => {
     let intervalId: number | null = null;
 
-    if (text !== defaultText && text !== "Finished Downloading") {
+    if (
+      text !== defaultText &&
+      !text.includes("Error") &&
+      text !== "Waiting for server..." &&
+      text !== "Finished Downloading"
+    ) {
       invariant(window);
 
       intervalId = window.setInterval(() => {
@@ -110,6 +115,9 @@ const JoysoundQueueButton = ({
   }, [text]);
 
   const onClick = () => {
+    setDisabled();
+    setText("Waiting for server...");
+
     commit({
       variables: {
         input: {
@@ -126,11 +134,9 @@ const JoysoundQueueButton = ({
         switch (queueJoysoundSong.__typename) {
           case "QueueSongInfo":
             setText("Downloading");
-            setDisabled();
             break;
           case "QueueSongError":
             setText(`Error: ${queueJoysoundSong.reason}`);
-            setDisabled();
             break;
         }
       },

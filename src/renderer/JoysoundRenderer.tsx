@@ -703,8 +703,9 @@ function drawLyricsBlock(
   refreshTime: number
 ) {
   const scrollXPos = Math.floor(getScrollXPos(lyricsBlock, refreshTime));
+
   const scrollArray = new Float32Array(
-    Array(6).fill((scrollXPos - TEXT_PADDING) * EXPAND_RATE + TEXTURE_OFF_X)
+    Array(6).fill(scrollXPos * EXPAND_RATE + TEXTURE_OFF_X)
   );
 
   const currX = lyricsBlock.xPos;
@@ -721,7 +722,7 @@ function drawLyricsBlock(
     (currY + rectHeight - TEXT_PADDING) * EXPAND_RATE + TEXTURE_OFF_Y
   );
 
-  if (scrollXPos <= currX + getLyricsBlockWidth(lyricsBlock)) {
+  if (scrollXPos <= currX + rectWidth) {
     drawLyricsTexture(
       gl,
       glBuffers,
@@ -773,7 +774,9 @@ export default function JoysoundRenderer(props: {
         (canvasElement.width -
           (canvasElement.height / SCREEN_HEIGHT) * SCREEN_WIDTH) /
         2;
+      TEXTURE_OFF_Y = 0;
     } else {
+      TEXTURE_OFF_X = 0;
       TEXTURE_OFF_Y =
         (canvasElement.height -
           (canvasElement.width / SCREEN_WIDTH) * SCREEN_HEIGHT) /

@@ -246,6 +246,7 @@ type AdhocLyricsEntry = {
 
 export interface DownloadQueueItem {
   downloadType: number;
+  nickname: string;
   songId: string;
   suffix: string | null;
   progress: number;
@@ -342,9 +343,14 @@ function hasMaxSongsInQueue(nickname: string): boolean {
     (x) => x.nickname === nickname
   ).length;
 
+  const songsDownloadingByUser: number = db.downloadQueue.filter(
+    (x) => x.nickname === nickname
+  ).length;
+
   return (
     karafriendsConfig.paxSongQueueLimit > 0 &&
-    songsQueuedByUser >= karafriendsConfig.paxSongQueueLimit
+    songsQueuedByUser + songsDownloadingByUser >=
+      karafriendsConfig.paxSongQueueLimit
   );
 }
 
@@ -836,12 +842,13 @@ const resolvers = {
       if (hasMaxSongsInQueue(queueItem.nickname)) {
         return {
           __typename: "QueueSongError",
-          reason: `${queueItem.nickname} already has ${karafriendsConfig.paxSongQueueLimit} song(s) in the queue`,
+          reason: `${queueItem.nickname} already has ${karafriendsConfig.paxSongQueueLimit} song(s) in the queue or downloading`,
         };
       }
 
       downloadJoysoundData(
         db.downloadQueue,
+        queueItem.nickname,
         dataSources.joysound,
         queueItem,
         pushSongToQueue
@@ -866,7 +873,7 @@ const resolvers = {
       if (hasMaxSongsInQueue(queueItem.nickname)) {
         return {
           __typename: "QueueSongError",
-          reason: `${queueItem.nickname} already has ${karafriendsConfig.paxSongQueueLimit} song(s) in the queue`,
+          reason: `${queueItem.nickname} already has ${karafriendsConfig.paxSongQueueLimit} song(s) in the queue or downloading`,
         };
       }
 
@@ -902,7 +909,7 @@ const resolvers = {
       if (hasMaxSongsInQueue(queueItem.nickname)) {
         return {
           __typename: "QueueSongError",
-          reason: `${queueItem.nickname} already has ${karafriendsConfig.paxSongQueueLimit} song(s) in the queue`,
+          reason: `${queueItem.nickname} already has ${karafriendsConfig.paxSongQueueLimit} song(s) in the queue or downloading`,
         };
       }
 
@@ -914,6 +921,7 @@ const resolvers = {
 
       downloadYoutubeVideo(
         db.downloadQueue,
+        queueItem.nickname,
         args.input.songId,
         args.input.captionCode,
         pushSongToQueue.bind(null, queueItem)
@@ -941,12 +949,13 @@ const resolvers = {
       if (hasMaxSongsInQueue(queueItem.nickname)) {
         return {
           __typename: "QueueSongError",
-          reason: `${queueItem.nickname} already has ${karafriendsConfig.paxSongQueueLimit} song(s) in the queue`,
+          reason: `${queueItem.nickname} already has ${karafriendsConfig.paxSongQueueLimit} song(s) in the queue or downloading`,
         };
       }
 
       downloadNicoVideo(
         db.downloadQueue,
+        queueItem.nickname,
         args.input.songId,
         pushSongToQueue.bind(null, queueItem)
       );

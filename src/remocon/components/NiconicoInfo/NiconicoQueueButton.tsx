@@ -60,9 +60,9 @@ const NiconicoQueueButton = ({ videoId, videoInfo }: Props) => {
     let intervalId: number | null = null;
     let timeoutId: number | null = null;
 
-    if (text === "Finished Downloading") {
+    if (text === "Finished Downloading" || text.includes("Error")) {
       timeoutId = window.setTimeout(() => setText(defaultText), 2500);
-    } else if (text !== defaultText) {
+    } else if (text !== defaultText && text !== "Waiting for server...") {
       intervalId = window.setInterval(() => {
         fetchQuery<NiconicoQueueButtonGetVideoDownloadProgressQuery>(
           environment,
@@ -106,6 +106,8 @@ const NiconicoQueueButton = ({ videoId, videoInfo }: Props) => {
   }, [text]);
 
   const onClick = () => {
+    setText("Waiting for server...");
+
     commit({
       variables: {
         input: {
