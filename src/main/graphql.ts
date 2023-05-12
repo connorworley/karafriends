@@ -302,17 +302,16 @@ function saveDb() {
 }
 
 function loadDb(): NotARealDb {
-  if (!fs.existsSync(DB_PATH)) {
-    return {
-      currentSong: null,
-      currentSongAdhocLyrics: [],
-      idToAdhocLyrics: {},
-      playbackState: PlaybackState.WAITING,
-      songQueue: [],
-      downloadQueue: [],
-    };
-  }
-  return JSON.parse(fs.readFileSync(DB_PATH, "utf-8"));
+  return {
+    currentSong: null,
+    currentSongAdhocLyrics: [],
+    idToAdhocLyrics: {},
+    playbackState: PlaybackState.WAITING,
+    songQueue: [],
+    downloadQueue: [],
+    ...(fs.existsSync(DB_PATH) &&
+      JSON.parse(fs.readFileSync(DB_PATH, "utf-8"))),
+  };
 }
 
 const pubsub = new PubSub();
