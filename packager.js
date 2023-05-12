@@ -20,7 +20,7 @@ const { glob } = require("glob");
     ...(process.platform === "darwin" && {
       icon: "appIcons/icon.icns",
       osxSign: {
-        identity: "Apple Distribution: Connor Alberts (WZ6JC3T383)",
+        identity: "Apple Distribution: Connor Worley (WZ6JC3T383)",
       },
     }),
     ...(process.platform === "win32" && {
