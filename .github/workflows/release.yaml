@@ -34,8 +34,7 @@ jobs:
       - run: yarn install --immutable
       - run: yarn build-prod
       - run: |
-          NOTARIZATION_KEY_PATH=$RUNNER_TEMP/notarization_key.p8
-          yarn package-prod
+          NOTARIZATION_KEY_PATH=$RUNNER_TEMP/notarization_key.p8 yarn package-prod
       - uses: softprops/action-gh-release@v1
         with:
           files: dist/karafriends-darwin-x64.zip
