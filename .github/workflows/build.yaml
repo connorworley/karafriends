@@ -37,6 +37,8 @@ jobs:
           key: ${{ runner.os }}-resources
       - run: yarn install --immutable
       - run: yarn build-dev
+        env:
+          CARGO_ARGS: --features asio
   build-linux:
     runs-on: ubuntu-latest
     steps:

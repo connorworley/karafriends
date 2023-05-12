@@ -47,6 +47,8 @@ jobs:
           node-version: 16
       - run: yarn install --immutable
       - run: yarn build-prod
+        env:
+          CARGO_ARGS: --features asio
       - run: yarn package-prod
       - uses: softprops/action-gh-release@v1
         with:
