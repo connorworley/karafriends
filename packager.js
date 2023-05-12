@@ -18,9 +18,16 @@ const { glob } = require("glob");
     out: "dist",
     overwrite: true,
     ...(process.platform === "darwin" && {
+      appBundleId: "party.karafriends",
       icon: "appIcons/icon.icns",
+      osxNotarize: {
+        tool: "notarytool",
+        appleApiKey: process.env.NOTARIZATION_KEY_PATH,
+        appleApiKeyId: "Z4H7RZ6QUT",
+        appleApiIssuer: "69a6de70-1249-47e3-e053-5b8c7c11a4d1",
+      },
       osxSign: {
-        identity: "Apple Distribution: Connor Worley (WZ6JC3T383)",
+        identity: "Developer ID Application: Connor Worley (WZ6JC3T383)",
       },
     }),
     ...(process.platform === "win32" && {
