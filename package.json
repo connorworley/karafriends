@@ -103,7 +103,7 @@
     "@types/relay-runtime": "14.1.10",
     "@types/webpack-env": "1.18.0",
     "@wdio/cli": "8.10.2",
-    "@wdio/local-runner": "8.10.1",
+    "@wdio/local-runner": "8.10.2",
     "@wdio/mocha-framework": "8.10.2",
     "@yarnpkg/pnpify": "4.0.0-rc.43",
     "babel-loader": "9.1.2",
