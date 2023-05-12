@@ -224,7 +224,9 @@ export function downloadDamVideo(
 
   invariant(ffmpeg.stdout);
   invariant(ffmpeg.stderr);
+  ffmpeg.stdout.pipe(process.stdout);
   ffmpeg.stdout.pipe(ffmpegLogStream);
+  ffmpeg.stderr.pipe(process.stderr);
   ffmpeg.stderr.pipe(ffmpegLogStream);
 
   ffmpeg.on("exit", (code, signal) => {
@@ -351,7 +353,9 @@ export function downloadJoysoundData(
 
       invariant(ytdlp.stdout);
       invariant(ytdlp.stderr);
+      ytdlp.stdout.pipe(process.stdout);
       ytdlp.stdout.pipe(ytdlpLogStream);
+      ytdlp.stderr.pipe(process.stderr);
       ytdlp.stderr.pipe(ytdlpLogStream);
 
       ytdlp.stdout.on("data", (data) => {
@@ -411,7 +415,9 @@ export function downloadJoysoundData(
 
         invariant(ffmpeg.stdout);
         invariant(ffmpeg.stderr);
+        ffmpeg.stdout.pipe(process.stdout);
         ffmpeg.stdout.pipe(ffmpegLogStream);
+        ffmpeg.stderr.pipe(process.stderr);
         ffmpeg.stderr.pipe(ffmpegLogStream);
 
         ffmpeg.stderr.on("data", (ffmpegData) => {
@@ -507,7 +513,9 @@ export function downloadJoysoundData(
 
     invariant(ffmpeg.stdout);
     invariant(ffmpeg.stderr);
+    ffmpeg.stdout.pipe(process.stdout);
     ffmpeg.stdout.pipe(ffmpegLogStream);
+    ffmpeg.stderr.pipe(process.stderr);
     ffmpeg.stderr.pipe(ffmpegLogStream);
 
     ffmpeg.on("exit", (code, signal) => {
@@ -613,7 +621,9 @@ export function downloadYoutubeVideo(
 
   invariant(ytdlp.stdout);
   invariant(ytdlp.stderr);
+  ytdlp.stdout.pipe(process.stdout);
   ytdlp.stdout.pipe(ytdlpLogStream);
+  ytdlp.stderr.pipe(process.stderr);
   ytdlp.stderr.pipe(ytdlpLogStream);
 
   ytdlp.stdout.on("data", (data) => {
@@ -705,7 +715,9 @@ export function downloadNicoVideo(
 
   invariant(ytdlp.stdout);
   invariant(ytdlp.stderr);
+  ytdlp.stdout.pipe(process.stdout);
   ytdlp.stdout.pipe(ytdlpLogStream);
+  ytdlp.stderr.pipe(process.stderr);
   ytdlp.stderr.pipe(ytdlpLogStream);
 
   ytdlp.stdout.on("data", (data) => {
