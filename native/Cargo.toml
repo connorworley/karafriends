@@ -13,16 +13,13 @@ crate-type = ["cdylib"]
 asio-sys = { version = "0.2.1", optional = true }
 cpal = "0.15.2"
 lazy_static = "1.4.0"
-neon = { version = "0.10.1", default-features = false, features = ["napi-4"] }
+neon = { version = "1.0.0-alpha.4", default-features = false, features = ["napi-8"] }
 realfft = "3.2.0"
 ringbuf = "0.3.3"
 rubato = "0.12.0"
 
 [target.'cfg(windows)'.dependencies]
 win32console = "0.1.5"
-
-[build-dependencies]
-neon-build = "0.10.1"
 
 [features]
 asio = ["asio-sys", "cpal/asio"]

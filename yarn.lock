@@ -5747,6 +5747,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cargo-cp-artifact@npm:0.1.8":
+  version: 0.1.8
+  resolution: "cargo-cp-artifact@npm:0.1.8"
+  bin:
+    cargo-cp-artifact: bin/cargo-cp-artifact.js
+  checksum: 06e774dbf032c79ef9d84d08dc6dc1e8842008b784098faa53f9e320acb930ac3898296e4af1d33cb11557bed9b8324c118d20ad6492ea7291cf92da641b6cb1
+  languageName: node
+  linkType: hard
+
 "cash-dom@npm:*":
   version: 8.1.5
   resolution: "cash-dom@npm:8.1.5"
@@ -10610,6 +10619,7 @@ __metadata:
     babel-loader: 9.1.2
     babel-plugin-relay: 15.0.0
     bufferutil: 4.0.7
+    cargo-cp-artifact: 0.1.8
     classnames: 2.3.2
     color-convert: 2.0.1
     concurrently: 8.0.1
