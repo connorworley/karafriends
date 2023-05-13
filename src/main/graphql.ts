@@ -288,6 +288,9 @@ const DB_PATH = path.resolve(TEMP_FOLDER, "queue.json");
 
 // TODO: write a db interface and call these from within mutating methods instead of at their call sites
 function saveDb() {
+  if (!fs.existsSync(TEMP_FOLDER)) {
+    fs.mkdirSync(TEMP_FOLDER);
+  }
   fs.writeFileSync(
     DB_PATH,
     JSON.stringify({
