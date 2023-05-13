@@ -54,7 +54,12 @@ type Subscription {
   emote: Emote!
   playbackStateChanged: PlaybackState!
   queueAdded: QueueItem!
-  queueChanged: [QueueItem!]!
+  queueChanged: SubscriptionQueueChanged!
+}
+
+type SubscriptionQueueChanged {
+  currentSong: QueueItem
+  newQueue: [QueueItem!]!
 }
 
 type AdhocLyricsEntry {

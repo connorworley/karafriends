@@ -13,6 +13,13 @@ type ElementType<T extends ReadonlyArray<unknown>> = T extends ReadonlyArray<
 
 const queueQuery = graphql`
   query useQueueQueueQuery {
+    currentSong {
+      ... on QueueItemInterface {
+        __typename
+        playtime
+      }
+    }
+
     queue {
       ... on QueueItemInterface {
         __typename
@@ -30,38 +37,51 @@ const queueQuery = graphql`
 const queueSubscription = graphql`
   subscription useQueueQueueSubscription {
     queueChanged {
-      ... on QueueItemInterface {
-        __typename
-        songId
-        name
-        artistName
-        playtime
-        timestamp
-        nickname
+      currentSong {
+        ... on QueueItemInterface {
+          __typename
+          playtime
+        }
+      }
+
+      newQueue {
+        ... on QueueItemInterface {
+          __typename
+          songId
+          name
+          artistName
+          playtime
+          timestamp
+          nickname
+        }
       }
     }
   }
 `;
 
-type StateType = useQueueQueueQuery["response"]["queue"];
+type CurrentSongStateType = useQueueQueueQuery["response"]["currentSong"];
+type QueueStateType = useQueueQueueQuery["response"]["queue"];
 
-function withETAs(queue: StateType) {
-  const result = queue.reduce<[[ElementType<StateType>, number][], number]>(
+function withETAs(currentSong: CurrentSongStateType, queue: QueueStateType) {
+  const currentSongPlaytime = currentSong?.playtime || 0;
+
+  const result = queue.reduce<
+    [[ElementType<QueueStateType>, number][], number]
+  >(
     ([results, totalETA], cur) => {
       const playtime = cur.playtime || 0;
-      return [
-        results.concat([[cur, totalETA + playtime]]),
-        totalETA + playtime,
-      ];
+
+      return [results.concat([[cur, totalETA]]), totalETA + playtime];
     },
-    [[], 0]
+    [[], currentSongPlaytime]
   );
+
   return result[0];
 }
 
 export default function useQueue() {
   const [queueState, setQueueState] = useState<
-    [ElementType<StateType>, number][]
+    [ElementType<QueueStateType>, number][]
   >([]);
 
   useEffect(() => {
@@ -70,8 +90,8 @@ export default function useQueue() {
       queueQuery,
       {}
     ).subscribe({
-      next: ({ queue }: useQueueQueueQuery["response"]) =>
-        setQueueState(withETAs(queue)),
+      next: ({ currentSong, queue }: useQueueQueueQuery["response"]) =>
+        setQueueState(withETAs(currentSong, queue)),
     });
 
     const subscription = requestSubscription<useQueueQueueSubscription>(
@@ -80,7 +100,14 @@ export default function useQueue() {
         subscription: queueSubscription,
         variables: {},
         onNext: (response) => {
-          if (response) setQueueState(withETAs(response.queueChanged));
+          if (response) {
+            setQueueState(
+              withETAs(
+                response.queueChanged.currentSong,
+                response.queueChanged.newQueue
+              )
+            );
+          }
         },
       }
     );
