@@ -12,6 +12,7 @@ const { glob } = require("glob");
     ...(await glob("build/prod/**", { posix: true })).map((path) => `/${path}`),
   ]);
   const output = await packager({
+    arch: process.env.PACKAGER_ARCH,
     dir: ".",
     extraResource: ["extraResources"],
     ignore: (path) => !buildFiles.has(path),

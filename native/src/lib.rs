@@ -415,16 +415,13 @@ fn input_device__stop(mut cx: FunctionContext) -> JsResult<JsUndefined> {
     Ok(cx.undefined())
 }
 
-register_module!(mut m, {
-    std::panic::set_hook(Box::new(|panic_info| {
-        std::eprintln!("{:#?}", panic_info);
-    }));
-
-    m.export_function("allocConsole", alloc_console)?;
-    m.export_function("inputDevices", input_devices)?;
-    m.export_function("inputDevice_new", input_device__new)?;
-    m.export_function("inputDevice_getPitch", input_device__get_pitch)?;
-    m.export_function("inputDevice_stop", input_device__stop)?;
+#[neon::main]
+fn main(mut cx: ModuleContext) -> NeonResult<()> {
+    cx.export_function("allocConsole", alloc_console)?;
+    cx.export_function("inputDevices", input_devices)?;
+    cx.export_function("inputDevice_new", input_device__new)?;
+    cx.export_function("inputDevice_getPitch", input_device__get_pitch)?;
+    cx.export_function("inputDevice_stop", input_device__stop)?;
 
     Ok(())
-});
+}

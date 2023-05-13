@@ -4,8 +4,8 @@
   "private": true,
   "main": "build/prod/main/main.js",
   "scripts": {
-    "build-native-dev": "cross-env-shell \"cargo build --manifest-path native/Cargo.toml ${CARGO_ARGS:-}\"",
-    "build-native-prod": "cross-env-shell \"cargo build --manifest-path native/Cargo.toml --release ${CARGO_ARGS:-}\"",
+    "build-native-dev": "cargo-cp-artifact --npm cdylib native/index.node -- cross-env-shell \"cargo build --message-format json-render-diagnostics --manifest-path native/Cargo.toml ${CARGO_ARGS:-}\"",
+    "build-native-prod": "cargo-cp-artifact --npm cdylib native/index.node -- cross-env-shell \"cargo build --message-format json-render-diagnostics --manifest-path native/Cargo.toml --release ${CARGO_ARGS:-}\"",
     "build-relay-dev": "relay-compiler",
     "build-relay-prod": "relay-compiler",
     "build-electron-dev": "webpack --mode development",
@@ -109,6 +109,7 @@
     "@yarnpkg/pnpify": "4.0.0-rc.43",
     "babel-loader": "9.1.2",
     "babel-plugin-relay": "15.0.0",
+    "cargo-cp-artifact": "0.1.8",
     "concurrently": "8.0.1",
     "cross-env": "7.0.3",
     "electron": "24.3.0",
