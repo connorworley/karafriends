@@ -24,12 +24,6 @@ import {
 import isDev from "electron-is-dev";
 import express from "express";
 
-import {
-  Credentials,
-  deleteCredentials,
-  getCredentials,
-  setCredentials,
-} from "../common/auth";
 import karafriendsConfig from "../common/config";
 import { TEMP_FOLDER } from "./../common/videoDownloader";
 import { MinseiAPI, MinseiCredentials } from "./damApi";
@@ -58,25 +52,25 @@ protocol.registerSchemesAsPrivileged([
   },
 ]);
 
-async function attemptLogin(minseiLoginCreds: Credentials) {
+async function attemptLogin() {
+  const damUsername = karafriendsConfig.damUsername;
+  const damPassword = karafriendsConfig.damPassword;
   const joysoundEmail = encodeURIComponent(karafriendsConfig.joysoundEmail);
   const joysoundPassword = encodeURIComponent(
     karafriendsConfig.joysoundPassword
   );
 
   return Promise.all([
-    MinseiAPI.login(minseiLoginCreds.account, minseiLoginCreds.password),
+    MinseiAPI.login(damUsername, damPassword),
     JoysoundAPI.login(joysoundEmail, joysoundPassword),
   ])
     .then((values) => ({
-      minseiUserCode: minseiLoginCreds.account,
+      minseiUserCode: damUsername,
       minseiAuthToken: values[0].data.authToken,
       joysoundCreds: values[1],
     }))
     .catch((e) =>
-      deleteCredentials().then(() =>
-        Promise.reject(`credentials were invalid (${e})\n\n${e.stack}`)
-      )
+      Promise.reject(`credentials were invalid (${e})\n\n${e.stack}`)
     )
     .then((creds) => {
       const minseiCreds: MinseiCredentials = {
@@ -146,9 +140,8 @@ function createWindow() {
     callback({ path: path.normalize(`${TEMP_FOLDER}/${url}`) });
   });
 
-  getCredentials()
-    .then(attemptLogin)
-    .catch((e) => console.debug(`Error logging in: ${e}`))
+  attemptLogin()
+    .catch((e) => dialog.showErrorBox("Error logging in", e.toString()))
     .then(() => {
       if (rendererWindow)
         rendererWindow.loadURL(
@@ -158,16 +151,6 @@ function createWindow() {
         );
     });
   rendererWindow.on("closed", () => (rendererWindow = null));
-
-  ipcMain.on("attemptLogin", (event: IpcMainEvent, creds: Credentials) =>
-    attemptLogin(creds)
-      .then(() =>
-        setCredentials(creds).then(() => {
-          if (rendererWindow) rendererWindow.reload();
-        })
-      )
-      .catch((e) => dialog.showErrorBox("Error logging in", e.toString()))
-  );
 
   ipcMain.on("config", (event: IpcMainEvent) => {
     console.log("Sending config over ipc");

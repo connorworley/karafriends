@@ -3,13 +3,11 @@ import "materialize-css/dist/css/materialize.css"; // tslint:disable-line:no-sub
 import React, { useEffect, useMemo, useState } from "react";
 import { graphql, useSubscription } from "react-relay";
 
-import Loader from "../common/components/Loader";
 import { HOSTNAME } from "../common/constants";
 import "./App.css";
 import { InputDevice } from "./audioSystem";
 import Effects from "./Effects";
 import HostnameSetting from "./HostnameSetting";
-import Login from "./Login";
 import MicrophoneSetting from "./MicrophoneSetting";
 import Player from "./Player";
 import QRCode from "./QRCode";
@@ -19,12 +17,6 @@ import { AppQueueAddedSubscription } from "./__generated__/AppQueueAddedSubscrip
 interface SavedMic {
   name: string;
   channel: number;
-}
-
-enum AppState {
-  Loading,
-  NotLoggedIn,
-  LoggedIn,
 }
 
 const songAddedSubscription = graphql`
@@ -39,7 +31,6 @@ const songAddedSubscription = graphql`
 `;
 
 function App() {
-  const [appState, setAppState] = useState(AppState.Loading);
   const [mics, _setMics] = useState<InputDevice[]>([]);
   const [hostname, setHostname] = useState(HOSTNAME);
 
@@ -53,12 +44,6 @@ function App() {
   };
 
   useEffect(() => {
-    window.karafriends
-      .isLoggedIn()
-      .then((loggedIn) =>
-        setAppState(loggedIn ? AppState.LoggedIn : AppState.NotLoggedIn)
-      );
-
     const savedMicInfo = JSON.parse(localStorage.getItem("mics") || "[]");
     const inputDevices = window.karafriends.nativeAudio.inputDevices();
     const channelCounts: { [key: string]: number } = inputDevices.reduce(
@@ -105,53 +90,37 @@ function App() {
     setMics([]);
   };
 
-  switch (appState) {
-    case AppState.Loading:
-    default:
-      return (
-        <div className="container">
-          <Loader />
+  return (
+    <div className="appMainContainer black row">
+      <div className="appPlayer col s11 valign-wrapper">
+        <Player mics={mics} />
+        <Effects />
+      </div>
+      <div className="appSidebar col s1 grey lighten-3">
+        <QRCode hostname={hostname} />
+        <nav className="center-align">Settings</nav>
+        <div className="section center-align">
+          <HostnameSetting onChange={setHostname} />
+          {mics.map((mic, i) => (
+            <MicrophoneSetting
+              key={mic.deviceId}
+              onChange={onChangeMic.bind(null, i)}
+              mic={mic}
+            />
+          ))}
+          <MicrophoneSetting
+            onChange={onChangeMic.bind(null, mics.length)}
+            mic={null}
+          />
+          <button className="btn" onClick={clearMics}>
+            Clear mics
+          </button>
         </div>
-      );
-    case AppState.NotLoggedIn:
-      return (
-        <div className="container valign-wrapper" style={{ height: "100%" }}>
-          <Login />
-        </div>
-      );
-    case AppState.LoggedIn:
-      return (
-        <div className="appMainContainer black row">
-          <div className="appPlayer col s11 valign-wrapper">
-            <Player mics={mics} />
-            <Effects />
-          </div>
-          <div className="appSidebar col s1 grey lighten-3">
-            <QRCode hostname={hostname} />
-            <nav className="center-align">Settings</nav>
-            <div className="section center-align">
-              <HostnameSetting onChange={setHostname} />
-              {mics.map((mic, i) => (
-                <MicrophoneSetting
-                  key={mic.deviceId}
-                  onChange={onChangeMic.bind(null, i)}
-                  mic={mic}
-                />
-              ))}
-              <MicrophoneSetting
-                onChange={onChangeMic.bind(null, mics.length)}
-                mic={null}
-              />
-              <button className="btn" onClick={clearMics}>
-                Clear mics
-              </button>
-            </div>
-            <nav className="center-align">Queue</nav>
-            <Queue />
-          </div>
-        </div>
-      );
-  }
+        <nav className="center-align">Queue</nav>
+        <Queue />
+      </div>
+    </div>
+  );
 }
 
 export default App;
