@@ -12,6 +12,10 @@ export interface KarafriendsConfig {
   paxSongQueueLimit: number;
   // Which port to listen on for the remocon server
   remoconPort: number;
+  // DAM username for DAM creds
+  damUsername: string;
+  // DAM password for DAM creds
+  damPassword: string;
   // Joysound email for joysound creds
   joysoundEmail: string;
   // Joysound password for joysound creds
@@ -23,6 +27,8 @@ const DEFAULT_CONFIG: KarafriendsConfig = {
   predownloadDAM: false,
   paxSongQueueLimit: 1,
   remoconPort: 8080,
+  damUsername: "YOUR_USERNAME_HERE",
+  damPassword: "YOUR_PASSWORD_HERE",
   joysoundEmail: "YOUR_EMAIL_HERE",
   joysoundPassword: "YOUR_PASSWORD_HERE",
 };

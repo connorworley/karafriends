@@ -1,7 +1,6 @@
 import { contextBridge, ipcRenderer } from "electron"; // tslint:disable-line:no-implicit-dependencies
 import { memoize } from "lodash";
 
-import { Credentials, hasCredentials } from "../common/auth";
 import { KarafriendsConfig } from "../common/config";
 import ipAddresses from "../common/ipAddresses";
 
@@ -13,8 +12,6 @@ const inputDevices: { [deviceId: number]: any } = {};
 let karafriendsConfig: KarafriendsConfig | null = null;
 
 contextBridge.exposeInMainWorld("karafriends", {
-  isLoggedIn: hasCredentials,
-  attemptLogin: (creds: Credentials) => ipcRenderer.send("attemptLogin", creds),
   ipAddresses,
   karafriendsConfig: () => {
     if (karafriendsConfig === null) {
