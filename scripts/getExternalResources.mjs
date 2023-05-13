@@ -39,7 +39,9 @@ const winTasks = {
   doChecks: () => [
     fs.existsSync(`${extraResourcesDir}/ytdlp/yt-dlp.exe`),
     fs.existsSync(`${extraResourcesDir}/ffmpeg/win/ffmpeg.exe`),
-    fs.existsSync(`${buildResourcesDir}/asio/asio.h`),
+    fs.existsSync(
+      `${buildResourcesDir}/asio/asiosdk_2.3.3_2019-06-14/common/asio.h`
+    ),
   ],
   prepareDirs: async (tmpDir) =>
     Promise.all([
@@ -93,7 +95,7 @@ const winTasks = {
     );
     execFile(
       pathTo7zip,
-      ["e", `${tmpDir}/asio/asio.zip`, "-y", `-o${buildResourcesDir}/asio`],
+      ["x", `${tmpDir}/asio/asio.zip`, "-y", `-o${buildResourcesDir}/asio`],
       (error, stdout, stderr) => {
         if (error) {
           console.error(error);
