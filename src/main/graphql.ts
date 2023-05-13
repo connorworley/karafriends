@@ -226,6 +226,11 @@ interface HistoryItem {
   readonly playDate: string;
 }
 
+interface SubscriptionQueueChanged {
+  readonly currentSong: QueueItem | null;
+  readonly newQueue: QueueItem[];
+}
+
 enum PlaybackState {
   PAUSED = "PAUSED",
   PLAYING = "PLAYING",
@@ -364,7 +369,10 @@ function pushSongToQueue(queueItem: QueueItem): QueueSongResult {
   db.songQueue.push(queueItem);
 
   pubsub.publish(SubscriptionEvent.QueueChanged, {
-    queueChanged: db.songQueue,
+    queueChanged: {
+      currentSong: db.currentSong,
+      newQueue: db.songQueue,
+    },
   });
 
   pubsub.publish(SubscriptionEvent.QueueAdded, {
@@ -993,10 +1001,8 @@ const resolvers = {
       return true;
     },
     popSong: (_: any, args: {}): QueueItem | null => {
-      pubsub.publish(SubscriptionEvent.QueueChanged, {
-        queueChanged: db.songQueue,
-      });
       const newSong = db.songQueue.shift() || null;
+
       db.currentSongAdhocLyrics = [];
       pubsub.publish(SubscriptionEvent.CurrentSongAdhocLyricsChanged, {
         currentSongAdhocLyricsChanged: db.currentSongAdhocLyrics,
@@ -1005,6 +1011,14 @@ const resolvers = {
       pubsub.publish(SubscriptionEvent.CurrentSongChanged, {
         currentSongChanged: db.currentSong,
       });
+
+      pubsub.publish(SubscriptionEvent.QueueChanged, {
+        queueChanged: {
+          currentSong: db.currentSong,
+          newQueue: db.songQueue,
+        },
+      });
+
       saveDb();
       return newSong;
     },
@@ -1018,7 +1032,10 @@ const resolvers = {
       );
       db.songQueue.splice(songIdx, 1);
       pubsub.publish(SubscriptionEvent.QueueChanged, {
-        queueChanged: db.songQueue,
+        queueChanged: {
+          currentSong: db.currentSong,
+          newQueue: db.songQueue,
+        },
       });
       saveDb();
       return true;
