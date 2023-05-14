@@ -3880,6 +3880,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/uuid@npm:^9":
+  version: 9.0.1
+  resolution: "@types/uuid@npm:9.0.1"
+  checksum: c472b8a77cbeded4bc529220b8611afa39bd64677f507838f8083d8aac8033b1f88cb9ddaa2f8589e0dcd2317291d0f6e1379f82d5ceebd6f74f3b4825288e00
+  languageName: node
+  linkType: hard
+
 "@types/webpack-env@npm:1.18.0":
   version: 1.18.0
   resolution: "@types/webpack-env@npm:1.18.0"
@@ -10562,6 +10569,7 @@ __metadata:
     "@types/react-swipeable": 5.2.0
     "@types/relay-runtime": 14.1.10
     "@types/user-agents": 1.0.2
+    "@types/uuid": ^9
     "@types/webpack-env": 1.18.0
     "@types/wicg-mediasession": 1.1.4
     "@types/youtube-player": 5.5.7
@@ -10630,6 +10638,7 @@ __metadata:
     typescript: 5.0.4
     user-agents: 1.0.1377
     utf-8-validate: 6.0.3
+    uuid: 9.0.0
     wait-on: 7.0.1
     wanakana: 5.1.0
     wdio-chromedriver-service: 8.1.1
@@ -15450,21 +15459,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"uuid@npm:9.0.0, uuid@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "uuid@npm:9.0.0"
+  bin:
+    uuid: dist/bin/uuid
+  checksum: 8dd2c83c43ddc7e1c71e36b60aea40030a6505139af6bee0f382ebcd1a56f6cd3028f7f06ffb07f8cf6ced320b76aea275284b224b002b289f89fe89c389b028
+  languageName: node
+  linkType: hard
+
 "uuid@npm:^8.3.0":
   version: 8.3.2
   resolution: "uuid@npm:8.3.2"
   bin:
     uuid: dist/bin/uuid
   checksum: 5575a8a75c13120e2f10e6ddc801b2c7ed7d8f3c8ac22c7ed0c7b2ba6383ec0abda88c905085d630e251719e0777045ae3236f04c812184b7c765f63a70e58df
-  languageName: node
-  linkType: hard
-
-"uuid@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "uuid@npm:9.0.0"
-  bin:
-    uuid: dist/bin/uuid
-  checksum: 8dd2c83c43ddc7e1c71e36b60aea40030a6505139af6bee0f382ebcd1a56f6cd3028f7f06ffb07f8cf6ced320b76aea275284b224b002b289f89fe89c389b028
   languageName: node
   linkType: hard
 

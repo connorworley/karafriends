@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { fetchQuery, graphql, requestSubscription } from "react-relay";
 
 import environment from "../../../common/graphqlEnvironment";
-import useNickname from "../../hooks/useNickname";
+import useUserIdentity from "../../hooks/useUserIdentity";
 import SongQueueItem from "../SongQueue/SongQueueItem";
 import styles from "./ControlBar.module.scss";
 import {
@@ -24,7 +24,10 @@ const nowPlayingQuery = graphql`
         artistName
         playtime
         timestamp
-        nickname
+        userIdentity {
+          deviceId
+          nickname
+        }
       }
     }
   }
@@ -40,14 +43,17 @@ const nowPlayingSubscription = graphql`
         artistName
         playtime
         timestamp
-        nickname
+        userIdentity {
+          deviceId
+          nickname
+        }
       }
     }
   }
 `;
 
 const NowPlaying = () => {
-  const nickname = useNickname();
+  const { nickname } = useUserIdentity();
   const [currentSong, setCurrentSong] =
     useState<NowPlayingSubscription$data["currentSongChanged"]>(null);
 

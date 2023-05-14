@@ -1,6 +1,7 @@
 import React from "react";
 import { graphql, useLazyLoadQuery } from "react-relay";
 
+import useUserIdentity from "../../hooks/useUserIdentity";
 import Button from "../Button";
 import { withLoader } from "../Loader";
 import VideoMetadata from "../VideoMetadata";
@@ -33,6 +34,8 @@ interface Props {
 }
 
 const NiconicoInfo = ({ videoId }: Props) => {
+  const userIdentity = useUserIdentity();
+
   const videoData = useLazyLoadQuery<NiconicoInfoVideoInfoQuery>(
     niconicoInfoVideoInfoQuery,
     { videoId }
@@ -62,6 +65,7 @@ const NiconicoInfo = ({ videoId }: Props) => {
           <NiconicoQueueButton
             videoId={videoId}
             videoInfo={videoData.nicoVideoInfo}
+            userIdentity={userIdentity}
           />
         </>
       )}

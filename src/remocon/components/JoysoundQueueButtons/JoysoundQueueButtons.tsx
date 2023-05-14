@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import useNickname from "../../hooks/useNickname";
+import useUserIdentity from "../../hooks/useUserIdentity";
 import { JoysoundSongPageQuery$data } from "../../pages/__generated__/JoysoundSongPageQuery.graphql";
 import JoysoundQueueButton from "./JoysoundQueueButton";
 import styles from "./JoysoundQueueButtons.module.scss";
@@ -11,7 +11,7 @@ interface Props {
 }
 
 const JoysoundQueueButtons = ({ song, youtubeVideoId }: Props) => {
-  const nickname = useNickname();
+  const userIdentity = useUserIdentity();
   const [isDisabled, setIsDisabled] = useState(false);
 
   return (
@@ -19,7 +19,7 @@ const JoysoundQueueButtons = ({ song, youtubeVideoId }: Props) => {
       <JoysoundQueueButton
         song={song}
         youtubeVideoId={youtubeVideoId}
-        nickname={nickname}
+        userIdentity={userIdentity}
         isRomaji={false}
         isDisabled={isDisabled}
         setDisabled={setIsDisabled}
@@ -28,7 +28,7 @@ const JoysoundQueueButtons = ({ song, youtubeVideoId }: Props) => {
       <JoysoundQueueButton
         song={song}
         youtubeVideoId={youtubeVideoId}
-        nickname={nickname}
+        userIdentity={userIdentity}
         isRomaji={true}
         isDisabled={isDisabled}
         setDisabled={setIsDisabled}

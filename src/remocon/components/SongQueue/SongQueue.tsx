@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 
-import { cyrb53 } from "../../../common/hash";
 import useQueue from "../../../common/hooks/useQueue";
-import useNickname from "../../hooks/useNickname";
+import useUserIdentity from "../../hooks/useUserIdentity";
 import SongQueueItem from "./SongQueueItem";
 
 const SongQueue = () => {
   const queue = useQueue();
-  const nickname = useNickname();
+  const { nickname } = useUserIdentity();
 
   return (
     <div>

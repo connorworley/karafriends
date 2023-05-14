@@ -129,13 +129,18 @@ interface NicoVideoInfoError {
 
 type NicoVideoInfoResult = NicoVideoInfo | NicoVideoInfoError;
 
+export interface UserIdentity {
+  readonly deviceId: string;
+  readonly nickname: string;
+}
+
 interface QueueItemInterface {
   readonly songId: string;
   readonly name: string;
   readonly artistName: string;
   readonly playtime?: number | null;
   readonly timestamp: string;
-  readonly nickname: string;
+  readonly userIdentity: UserIdentity;
 }
 
 export interface JoysoundQueueItem extends QueueItemInterface {
@@ -179,7 +184,7 @@ interface QueueSongError {
 type QueueSongResult = QueueSongInfo | QueueSongError;
 
 type Emote = {
-  readonly nickname: string;
+  readonly userIdentity: UserIdentity;
   readonly emote: string;
 };
 
@@ -189,7 +194,7 @@ type QueueDamSongInput = {
   readonly artistName: string;
   readonly playtime?: number | null;
   readonly streamingUrlIdx: string;
-  readonly nickname: string;
+  readonly userIdentity: UserIdentity;
 };
 
 type QueueJoysoundSongInput = {
@@ -197,7 +202,7 @@ type QueueJoysoundSongInput = {
   readonly name: string;
   readonly artistName: string;
   readonly playtime?: number | null;
-  readonly nickname: string;
+  readonly userIdentity: UserIdentity;
   readonly isRomaji: boolean;
   readonly youtubeVideoId: string | null;
 };
@@ -207,7 +212,7 @@ type QueueYoutubeSongInput = {
   readonly name: string;
   readonly artistName: string;
   readonly playtime?: number | null;
-  readonly nickname: string;
+  readonly userIdentity: UserIdentity;
   readonly adhocSongLyrics: string;
   readonly captionCode: string | null;
   readonly gainValue: number;
@@ -218,7 +223,7 @@ type QueueNicoSongInput = {
   readonly name: string;
   readonly artistName: string;
   readonly playtime?: number | null;
-  readonly nickname: string;
+  readonly userIdentity: UserIdentity;
 };
 
 interface SongHistoryItem {
@@ -251,7 +256,7 @@ type AdhocLyricsEntry = {
 
 export interface DownloadQueueItem {
   downloadType: number;
-  nickname: string;
+  userIdentity: UserIdentity;
   songId: string;
   suffix: string | null;
   progress: number;
@@ -347,14 +352,14 @@ interface WatchData {
   };
 }
 
-function hasMaxSongsInQueue(nickname: string): boolean {
+function hasMaxSongsInQueue(userIdentity: UserIdentity): boolean {
   // Not very efficient, but surely the queue won't ever get so big that this would be considered expensive
   const songsQueuedByUser: number = db.songQueue.filter(
-    (x) => x.nickname === nickname
+    (x) => x.userIdentity.deviceId === userIdentity.deviceId
   ).length;
 
   const songsDownloadingByUser: number = db.downloadQueue.filter(
-    (x) => x.nickname === nickname
+    (x) => x.userIdentity.deviceId === userIdentity.deviceId
   ).length;
 
   return (
@@ -841,16 +846,16 @@ const resolvers = {
         ...args.input,
       };
 
-      if (hasMaxSongsInQueue(queueItem.nickname)) {
+      if (hasMaxSongsInQueue(queueItem.userIdentity)) {
         return {
           __typename: "QueueSongError",
-          reason: `${queueItem.nickname} already has ${karafriendsConfig.paxSongQueueLimit} song(s) in the queue or downloading`,
+          reason: `${queueItem.userIdentity.nickname} already has ${karafriendsConfig.paxSongQueueLimit} song(s) in the queue or downloading`,
         };
       }
 
       downloadJoysoundData(
         db.downloadQueue,
-        queueItem.nickname,
+        queueItem.userIdentity,
         dataSources.joysound,
         queueItem,
         pushSongToQueue
@@ -872,10 +877,10 @@ const resolvers = {
         __typename: "DamQueueItem",
       };
 
-      if (hasMaxSongsInQueue(queueItem.nickname)) {
+      if (hasMaxSongsInQueue(queueItem.userIdentity)) {
         return {
           __typename: "QueueSongError",
-          reason: `${queueItem.nickname} already has ${karafriendsConfig.paxSongQueueLimit} song(s) in the queue or downloading`,
+          reason: `${queueItem.userIdentity.nickname} already has ${karafriendsConfig.paxSongQueueLimit} song(s) in the queue or downloading`,
         };
       }
 
@@ -908,10 +913,10 @@ const resolvers = {
         __typename: "YoutubeQueueItem",
       };
 
-      if (hasMaxSongsInQueue(queueItem.nickname)) {
+      if (hasMaxSongsInQueue(queueItem.userIdentity)) {
         return {
           __typename: "QueueSongError",
-          reason: `${queueItem.nickname} already has ${karafriendsConfig.paxSongQueueLimit} song(s) in the queue or downloading`,
+          reason: `${queueItem.userIdentity.nickname} already has ${karafriendsConfig.paxSongQueueLimit} song(s) in the queue or downloading`,
         };
       }
 
@@ -923,7 +928,7 @@ const resolvers = {
 
       downloadYoutubeVideo(
         db.downloadQueue,
-        queueItem.nickname,
+        queueItem.userIdentity,
         args.input.songId,
         args.input.captionCode,
         pushSongToQueue.bind(null, queueItem)
@@ -948,16 +953,16 @@ const resolvers = {
         __typename: "NicoQueueItem",
       };
 
-      if (hasMaxSongsInQueue(queueItem.nickname)) {
+      if (hasMaxSongsInQueue(queueItem.userIdentity)) {
         return {
           __typename: "QueueSongError",
-          reason: `${queueItem.nickname} already has ${karafriendsConfig.paxSongQueueLimit} song(s) in the queue or downloading`,
+          reason: `${queueItem.userIdentity.nickname} already has ${karafriendsConfig.paxSongQueueLimit} song(s) in the queue or downloading`,
         };
       }
 
       downloadNicoVideo(
         db.downloadQueue,
-        queueItem.nickname,
+        queueItem.userIdentity,
         args.input.songId,
         pushSongToQueue.bind(null, queueItem)
       );

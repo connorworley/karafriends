@@ -3,7 +3,7 @@ import { HashRouter, Route, Routes } from "react-router-dom";
 
 import ControlBar from "./components/ControlBar";
 import NavBar from "./components/NavBar";
-import useNickname from "./hooks/useNickname";
+import useUserIdentity from "./hooks/useUserIdentity";
 import AdhocLyricsPage from "./pages/AdhocLyricsPage";
 import ArtistPage from "./pages/ArtistPage";
 import ArtistSearchPage from "./pages/ArtistSearchPage";
@@ -19,9 +19,11 @@ import SongSearchPage from "./pages/SongSearchPage";
 import YouTubePage from "./pages/YouTubePage";
 
 import styles from "./App.module.scss";
+import useQueueNotifications from "./hooks/useQueueNotifications";
 
 const App = () => {
-  useNickname(true);
+  const { deviceId } = useUserIdentity(true);
+  useQueueNotifications(deviceId);
 
   return (
     <HashRouter>

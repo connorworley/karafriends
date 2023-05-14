@@ -3,7 +3,7 @@ import React, { useRef, useState } from "react";
 import { MdEdit } from "react-icons/md";
 import { graphql, useMutation } from "react-relay";
 
-import useNickname from "../../hooks/useNickname";
+import useUserIdentity from "../../hooks/useUserIdentity";
 import styles from "./EmoteButtons.module.scss";
 import { EmoteButtonsMutation } from "./__generated__/EmoteButtonsMutation.graphql";
 
@@ -20,13 +20,13 @@ const EmoteButtons = () => {
   const [emotes, setEmotes] = useState<string[]>(
     JSON.parse(localStorage.getItem("emotes") || JSON.stringify(DEFAULT_EMOTES))
   );
-  const nickname = useNickname();
+  const userIdentity = useUserIdentity();
   const [commit] = useMutation<EmoteButtonsMutation>(emoteButtonsMutation);
 
   const sendEmote = (emote: string) => {
     commit({
       variables: {
-        emote: { nickname, emote },
+        emote: { userIdentity, emote },
       },
     });
   };

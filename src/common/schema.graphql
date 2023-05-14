@@ -163,8 +163,18 @@ type Emote {
   emote: String!
 }
 
-input EmoteInput {
+type UserIdentity {
   nickname: String!
+  deviceId: String!
+}
+
+input UserIdentityInput {
+  nickname: String!
+  deviceId: String!
+}
+
+input EmoteInput {
+  userIdentity: UserIdentityInput!
   emote: String!
 }
 
@@ -174,7 +184,7 @@ input QueueDamSongInput {
   artistName: String!
   playtime: Int
   streamingUrlIdx: Int!
-  nickname: String!
+  userIdentity: UserIdentityInput!
 }
 
 input QueueJoysoundSongInput {
@@ -182,7 +192,7 @@ input QueueJoysoundSongInput {
   name: String!
   artistName: String!
   playtime: Int
-  nickname: String!
+  userIdentity: UserIdentityInput!
   isRomaji: Boolean!
   youtubeVideoId: String
 }
@@ -192,7 +202,7 @@ input QueueYoutubeSongInput {
   name: String!
   artistName: String!
   playtime: Int
-  nickname: String!
+  userIdentity: UserIdentityInput!
   adhocSongLyrics: String
   captionCode: String
   gainValue: Float!
@@ -203,7 +213,7 @@ input QueueNicoSongInput {
   name: String!
   artistName: String!
   playtime: Int
-  nickname: String!
+  userIdentity: UserIdentityInput!
 }
 
 type SongConnection {
@@ -248,7 +258,7 @@ interface QueueItemInterface {
   artistName: String!
   playtime: Int
   timestamp: String!
-  nickname: String!
+  userIdentity: UserIdentity!
 }
 
 type DamQueueItem implements QueueItemInterface {
@@ -259,7 +269,7 @@ type DamQueueItem implements QueueItemInterface {
   scoringData: [Int!]!
   playtime: Int
   timestamp: String!
-  nickname: String!
+  userIdentity: UserIdentity!
   streamingUrlIdx: Int!
 }
 
@@ -269,7 +279,7 @@ type JoysoundQueueItem implements QueueItemInterface {
   artistName: String!
   playtime: Int
   timestamp: String!
-  nickname: String!
+  userIdentity: UserIdentity!
   isRomaji: Boolean!
   youtubeVideoId: String
 }
@@ -280,7 +290,7 @@ type YoutubeQueueItem implements QueueItemInterface {
   artistName: String!
   playtime: Int
   timestamp: String!
-  nickname: String!
+  userIdentity: UserIdentity!
   hasAdhocLyrics: Boolean!
   hasCaptions: Boolean!
   gainValue: Float!
@@ -292,7 +302,7 @@ type NicoQueueItem implements QueueItemInterface {
   artistName: String!
   playtime: Int
   timestamp: String!
-  nickname: String!
+  userIdentity: UserIdentity!
 }
 
 union QueueItem =
