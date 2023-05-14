@@ -34,7 +34,9 @@ const SongHistoryItem = ({ song }: Props) => {
       <ListItem>
         <div>
           <strong>{song.name}</strong>
-          <span className={styles.date}>Queued by: {song.nickname}</span>
+          <span className={styles.date}>
+            Queued by: {song.userIdentity.nickname}
+          </span>
         </div>
 
         <div>

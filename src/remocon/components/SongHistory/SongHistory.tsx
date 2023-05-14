@@ -34,7 +34,9 @@ const historyPaginationQuery = graphql`
               name
               artistName
               timestamp
-              nickname
+              userIdentity {
+                nickname
+              }
             }
 
             ... on JoysoundQueueItem {
@@ -43,7 +45,9 @@ const historyPaginationQuery = graphql`
               name
               artistName
               timestamp
-              nickname
+              userIdentity {
+                nickname
+              }
             }
 
             ... on YoutubeQueueItem {
@@ -52,7 +56,9 @@ const historyPaginationQuery = graphql`
               name
               artistName
               timestamp
-              nickname
+              userIdentity {
+                nickname
+              }
             }
 
             ... on NicoQueueItem {
@@ -61,7 +67,9 @@ const historyPaginationQuery = graphql`
               name
               artistName
               timestamp
-              nickname
+              userIdentity {
+                nickname
+              }
             }
           }
         }
