@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { fetchQuery, graphql, useMutation } from "react-relay";
+import { Subscription } from "relay-runtime";
 import { invariant } from "ts-invariant";
 
 import environment from "../../../common/graphqlEnvironment";
@@ -73,6 +74,7 @@ const JoysoundQueueButton = ({
 
     let intervalId: number | null = null;
     let timeoutId: number | null = null;
+    let subscription: Subscription | null = null;
 
     if (text === "Finished Downloading" || text.includes("Error")) {
       timeoutId = window.setTimeout(() => {
@@ -81,33 +83,34 @@ const JoysoundQueueButton = ({
       }, 2500);
     } else if (text !== defaultText && text !== "Waiting for server...") {
       intervalId = window.setInterval(() => {
-        fetchQuery<JoysoundQueueButtonGetVideoDownloadProgressQuery>(
-          environment,
-          joysoundQueueButtonGetVideoDownloadProgressQuery,
-          {
-            videoDownloadType: 0,
-            songId: song.id,
-            suffix: youtubeVideoId,
-          }
-        ).subscribe({
-          next: (
-            data: JoysoundQueueButtonGetVideoDownloadProgressQuery["response"]
-          ) => {
-            if (
-              data.videoDownloadProgress.progress === 1.0 ||
-              (text !== "Downloading" &&
-                data.videoDownloadProgress.progress === -1.0)
-            ) {
-              setText("Finished Downloading");
-            } else {
-              setText(
-                `Downloading -- ${(
-                  data.videoDownloadProgress.progress * 100
-                ).toFixed(1)}%`
-              );
+        subscription =
+          fetchQuery<JoysoundQueueButtonGetVideoDownloadProgressQuery>(
+            environment,
+            joysoundQueueButtonGetVideoDownloadProgressQuery,
+            {
+              videoDownloadType: 0,
+              songId: song.id,
+              suffix: youtubeVideoId,
             }
-          },
-        });
+          ).subscribe({
+            next: (
+              data: JoysoundQueueButtonGetVideoDownloadProgressQuery["response"]
+            ) => {
+              if (
+                data.videoDownloadProgress.progress === 1.0 ||
+                (text !== "Downloading" &&
+                  data.videoDownloadProgress.progress === -1.0)
+              ) {
+                setText("Finished Downloading");
+              } else {
+                setText(
+                  `Downloading -- ${(
+                    data.videoDownloadProgress.progress * 100
+                  ).toFixed(1)}%`
+                );
+              }
+            },
+          });
       }, 1000);
     }
 
@@ -118,6 +121,10 @@ const JoysoundQueueButton = ({
 
       if (timeoutId !== null) {
         clearTimeout(timeoutId);
+      }
+
+      if (subscription !== null) {
+        subscription.unsubscribe();
       }
     };
   }, [text]);

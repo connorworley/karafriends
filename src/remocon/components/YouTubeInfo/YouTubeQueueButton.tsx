@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { fetchQuery, graphql, useMutation } from "react-relay";
+import { Subscription } from "relay-runtime";
 import { invariant } from "ts-invariant";
 
 import environment from "../../../common/graphqlEnvironment";
@@ -72,38 +73,40 @@ const YouTubeQueueButton = ({
 
     let intervalId: number | null = null;
     let timeoutId: number | null = null;
+    let subscription: Subscription | null = null;
 
     if (text === "Finished Downloading" || text.includes("Error")) {
       timeoutId = window.setTimeout(() => setText(defaultText), 2500);
     } else if (text !== defaultText && text !== "Waiting for server...") {
       intervalId = window.setInterval(() => {
-        fetchQuery<YouTubeQueueButtonGetVideoDownloadProgressQuery>(
-          environment,
-          youTubeQueueButtonGetVideoDownloadProgressQuery,
-          {
-            videoDownloadType: 1,
-            songId: videoId,
-            suffix: null,
-          }
-        ).subscribe({
-          next: (
-            data: YouTubeQueueButtonGetVideoDownloadProgressQuery["response"]
-          ) => {
-            if (
-              data.videoDownloadProgress.progress === 1.0 ||
-              (text !== "Downloading" &&
-                data.videoDownloadProgress.progress === -1.0)
-            ) {
-              setText("Finished Downloading");
-            } else {
-              setText(
-                `Downloading -- ${(
-                  data.videoDownloadProgress.progress * 100
-                ).toFixed(1)}%`
-              );
+        subscription =
+          fetchQuery<YouTubeQueueButtonGetVideoDownloadProgressQuery>(
+            environment,
+            youTubeQueueButtonGetVideoDownloadProgressQuery,
+            {
+              videoDownloadType: 1,
+              songId: videoId,
+              suffix: null,
             }
-          },
-        });
+          ).subscribe({
+            next: (
+              data: YouTubeQueueButtonGetVideoDownloadProgressQuery["response"]
+            ) => {
+              if (
+                data.videoDownloadProgress.progress === 1.0 ||
+                (text !== "Downloading" &&
+                  data.videoDownloadProgress.progress === -1.0)
+              ) {
+                setText("Finished Downloading");
+              } else {
+                setText(
+                  `Downloading -- ${(
+                    data.videoDownloadProgress.progress * 100
+                  ).toFixed(1)}%`
+                );
+              }
+            },
+          });
       }, 1000);
     }
 
@@ -114,6 +117,10 @@ const YouTubeQueueButton = ({
 
       if (timeoutId !== null) {
         clearTimeout(timeoutId);
+      }
+
+      if (subscription) {
+        subscription.unsubscribe();
       }
     };
   }, [text]);
