@@ -1,3 +1,5 @@
+import { invariant } from "ts-invariant";
+
 import {
   Environment,
   Network,
@@ -7,7 +9,7 @@ import {
   Store,
   Variables,
 } from "relay-runtime";
-import { SubscriptionClient } from "subscriptions-transport-ws";
+import { createClient } from "graphql-ws";
 
 function fetchQuery(request: RequestParameters, variables: Variables) {
   return fetch(
@@ -31,29 +33,34 @@ function fetchQuery(request: RequestParameters, variables: Variables) {
   });
 }
 
-const subscriptionClient = new SubscriptionClient(
-  window.karafriends !== undefined
-    ? `ws://localhost:${
-        window.karafriends.karafriendsConfig().remoconPort
-      }/subscriptions`
-    : `${window.location.protocol === "https:" ? "wss" : "ws"}://${
-        window.location.hostname
-      }:${window.location.port}/subscriptions`,
-  {
-    reconnect: true,
+function getSubscriptionUrl(): string {
+  if (window.karafriends !== undefined) {
+    return `ws://localhost:${
+      window.karafriends.karafriendsConfig().remoconPort
+    }/graphql`;
   }
-);
 
-function subscribe(request: RequestParameters, variables: Variables) {
-  const subscribeObservable = subscriptionClient.request({
-    query: request.text || undefined,
-    operationName: request.name,
-    variables,
-  });
-  // Important: Convert subscriptions-transport-ws observable type to Relay's
-  // @ts-ignore: the relay type stubs are pitifully broken
-  return Observable.from(subscribeObservable);
+  const wsProtocol = window.location.protocol === "https:" ? "wss" : "ws";
+
+  return `${wsProtocol}://${window.location.hostname}:${window.location.port}/graphql`;
 }
+
+const subscriptionClient = createClient({ url: getSubscriptionUrl() });
+
+const subscribe = (operation: RequestParameters, variables: Variables) => {
+  return Observable.create((sink) => {
+    invariant(operation.text);
+
+    return subscriptionClient.subscribe(
+      {
+        operationName: operation.name,
+        query: operation.text,
+        variables,
+      },
+      sink
+    );
+  });
+};
 
 const environment = new Environment({
   // @ts-ignore: the relay type stubs are pitifully broken

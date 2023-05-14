@@ -9,7 +9,6 @@ import inspector from "inspector";
 
 inspector.open();
 
-import { createServer } from "http";
 import path from "path";
 
 import {
@@ -27,7 +26,7 @@ import express from "express";
 import karafriendsConfig from "../common/config";
 import { TEMP_FOLDER } from "./../common/videoDownloader";
 import { MinseiAPI, MinseiCredentials } from "./damApi";
-import { applyGraphQLMiddleware, subscriptionServer } from "./graphql";
+import { applyGraphQLMiddleware } from "./graphql";
 import { JoysoundAPI } from "./joysoundApi";
 import setupMdns from "./mdns";
 import remoconMiddleware from "./remoconMiddleware";
@@ -82,9 +81,6 @@ async function attemptLogin() {
       expressApp.use(remoconMiddleware());
 
       applyGraphQLMiddleware(expressApp, minseiCreds, creds.joysoundCreds);
-
-      const server = createServer(expressApp);
-      server.listen(karafriendsConfig.remoconPort, subscriptionServer(server));
     });
 }
 
