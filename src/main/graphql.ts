@@ -226,9 +226,9 @@ type QueueNicoSongInput = {
   readonly userIdentity: UserIdentity;
 };
 
-interface HistoryItem {
-  readonly song: SongParent;
-  readonly playDate: string;
+interface SongHistoryItem {
+  readonly song: QueueItem;
+  readonly timestamp: number;
 }
 
 interface SubscriptionQueueChanged {
@@ -273,6 +273,7 @@ type NotARealDb = {
   playbackState: PlaybackState;
   songQueue: QueueItem[];
   downloadQueue: DownloadQueueItem[];
+  songHistory: SongHistoryItem[];
 };
 
 enum SubscriptionEvent {
@@ -292,6 +293,7 @@ let db: NotARealDb = {
   playbackState: PlaybackState.WAITING,
   songQueue: [],
   downloadQueue: [],
+  songHistory: [],
 };
 
 const DB_PATH = path.resolve(TEMP_FOLDER, "queue.json");
@@ -322,6 +324,7 @@ function loadDb(): NotARealDb {
     playbackState: PlaybackState.WAITING,
     songQueue: [],
     downloadQueue: [],
+    songHistory: [],
     ...(fs.existsSync(DB_PATH) &&
       JSON.parse(fs.readFileSync(DB_PATH, "utf-8"))),
   };
@@ -718,38 +721,27 @@ const resolvers = {
       if (!db.songQueue.length) return [];
       return db.songQueue;
     },
-    history: (
+    songHistory: (
       _: any,
-      args: { first: number | null; after: string | null },
-      { dataSources }: IDataSources
-    ): Promise<Connection<HistoryItem, string>> => {
+      args: { first: number | null; after: string | null }
+    ): Connection<SongHistoryItem, string> => {
       const firstInt = args.first || 0;
       const afterInt = args.after ? parseInt(args.after, 10) : 0;
 
-      return dataSources.minsei
-        .getPlayHistory(firstInt, afterInt)
-        .then((result) => ({
-          edges: result.list.map((song, i) => ({
-            node: {
-              song: {
-                id: song.requestNo,
-                name: song.contentsName,
-                nameYomi: song.contentsYomi,
-                artistName: song.artistName,
-                artistNameYomi: "",
-              },
-              playDate: song.playDate,
-            },
+      return {
+        edges: db.songHistory
+          .slice(afterInt, firstInt)
+          .map((songHistoryItem, i) => ({
+            node: songHistoryItem,
             cursor: (firstInt + i).toString(),
           })),
-          pageInfo: {
-            hasPreviousPage: false, // We can always do this because we don't support backward pagination
-            hasNextPage:
-              firstInt + afterInt < parseInt(result.data.dataCount, 10),
-            startCursor: "0",
-            endCursor: (firstInt + afterInt).toString(),
-          },
-        }));
+        pageInfo: {
+          hasPreviousPage: false,
+          hasNextPage: firstInt + afterInt < db.songHistory.length,
+          startCursor: "0",
+          endCursor: (firstInt + afterInt).toString(),
+        },
+      };
     },
     youtubeVideoInfo: (
       _: any,
@@ -1012,6 +1004,7 @@ const resolvers = {
       pubsub.publish(SubscriptionEvent.CurrentSongAdhocLyricsChanged, {
         currentSongAdhocLyricsChanged: db.currentSongAdhocLyrics,
       });
+
       db.currentSong = newSong;
       pubsub.publish(SubscriptionEvent.CurrentSongChanged, {
         currentSongChanged: db.currentSong,
@@ -1023,6 +1016,13 @@ const resolvers = {
           newQueue: db.songQueue,
         },
       });
+
+      if (db.currentSong) {
+        db.songHistory.unshift({
+          song: db.currentSong,
+          timestamp: Math.floor(Date.now() / 1000),
+        });
+      }
 
       saveDb();
       return newSong;

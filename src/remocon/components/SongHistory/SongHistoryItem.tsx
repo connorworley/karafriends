@@ -1,28 +1,46 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { invariant } from "ts-invariant";
 
 import { ListItem } from "../List";
-import WeebText from "../WeebText";
 import styles from "./SongHistory.module.scss";
-import { SongHistory_history$data } from "./__generated__/SongHistory_history.graphql";
+import { SongHistory_songHistory$data } from "./__generated__/SongHistory_songHistory.graphql";
 
-type Props = SongHistory_history$data["history"]["edges"][0]["node"];
+type Props = SongHistory_songHistory$data["songHistory"]["edges"][0]["node"];
 
-const SongHistoryItem = ({ song, playDate }: Props) => {
-  const [year, month, day, hour, minute, second] = playDate
-    .match(/(....)(..)(..)(..)(..)(..)/)!
-    .slice(1);
-  const date = new Date(
-    `${year}-${month}-${day}T${hour}:${minute}:${second}.000+09:00`
-  );
+function getSongLink(queueItemType: string, songId: string): string {
+  switch (queueItemType) {
+    case "DamQueueItem":
+      return `/song/${songId}`;
+    case "JoysoundQueueItem":
+      return `/joysoundSong/${songId}`;
+    case "YoutubeQueueItem":
+      return `/search/youtube/${songId}`;
+    case "NicoQueueItem":
+      return `/search/niconico/${songId}`;
+  }
+
+  return `/song/${songId}`;
+}
+
+const SongHistoryItem = ({ song }: Props) => {
+  invariant(song.__typename !== "%other");
+
+  const songLink = getSongLink(song.__typename, song.songId);
+  const date = new Date(parseInt(song.timestamp, 10));
+
   return (
-    <Link to={`/song/${song.id}`}>
+    <Link to={songLink}>
       <ListItem>
         <div>
-          <WeebText bold text={song.name} yomi={song.nameYomi} />
+          <strong>{song.name}</strong>
+          <span className={styles.date}>
+            Queued by: {song.userIdentity.nickname}
+          </span>
         </div>
+
         <div>
-          <WeebText text={song.artistName} yomi={song.artistNameYomi} />
+          {song.artistName}
           <span className={styles.date}>{date.toLocaleString()}</span>
         </div>
       </ListItem>
