@@ -229,7 +229,6 @@ type QueueNicoSongInput = {
 
 interface SongHistoryItem {
   readonly song: QueueItem;
-  readonly timestamp: number;
 }
 
 interface SubscriptionQueueChanged {
@@ -1019,10 +1018,16 @@ const resolvers = {
       });
 
       if (db.currentSong) {
-        db.songHistory.unshift({
-          song: db.currentSong,
-          timestamp: Math.floor(Date.now() / 1000),
-        });
+        const prevSong: QueueItem | null = db.songHistory[0]?.song || null;
+
+        if (
+          !prevSong ||
+          db.currentSong.__typename !== prevSong.__typename ||
+          db.currentSong.songId !== prevSong.songId ||
+          db.currentSong.timestamp !== prevSong.timestamp
+        ) {
+          db.songHistory.unshift({ song: db.currentSong });
+        }
       }
 
       saveDb();
