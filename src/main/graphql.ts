@@ -1,6 +1,7 @@
 import fs from "fs";
-import { Server } from "http";
+import { createServer, Server } from "http";
 import path from "path";
+import { WebSocketServer } from "ws";
 
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { ApolloServer } from "apollo-server-express";
@@ -8,8 +9,8 @@ import isDev from "electron-is-dev";
 import { Application } from "express";
 import { execute, subscribe } from "graphql";
 import { PubSub } from "graphql-subscriptions";
+import { useServer } from "graphql-ws/lib/use/ws"; // tslint:disable-line:no-submodule-imports
 import { Nicovideo } from "niconico";
-import { SubscriptionServer } from "subscriptions-transport-ws";
 
 import karafriendsConfig from "../common/config";
 import rawSchema from "../common/schema.graphql";
@@ -1092,6 +1093,15 @@ export function applyGraphQLMiddleware(
   minseiCreds: MinseiCredentials,
   joysoundCreds: JoysoundCreds
 ) {
+  const httpServer = createServer(app);
+
+  const wsServer = new WebSocketServer({
+    server: httpServer,
+    path: "/graphql",
+  });
+
+  const serverCleanup = useServer({ schema }, wsServer);
+
   db = loadDb();
 
   const server = new ApolloServer({
@@ -1102,7 +1112,19 @@ export function applyGraphQLMiddleware(
       youtube: new YoutubeAPI(),
     }),
     schema,
+    plugins: [
+      {
+        async serverWillStart() {
+          return {
+            async drainServer() {
+              await serverCleanup.dispose();
+            },
+          };
+        },
+      },
+    ],
   });
+
   if (isDev) {
     app.use("/graphql", (req, res, next) => {
       res.append("Access-Control-Allow-Origin", "*");
@@ -1114,21 +1136,13 @@ export function applyGraphQLMiddleware(
       next();
     });
   }
-  server.start().then(() => server.applyMiddleware({ app }));
-}
 
-export function subscriptionServer(server: Server) {
-  return () => {
-    return new SubscriptionServer(
-      {
-        execute,
-        subscribe,
-        schema,
-      },
-      {
-        server,
-        path: "/subscriptions",
-      }
-    );
-  };
+  server.start().then(() => {
+    server.applyMiddleware({ app });
+    httpServer.listen(karafriendsConfig.remoconPort, () => {
+      console.log(
+        `Server is now running on http://localhost:${karafriendsConfig.remoconPort}`
+      );
+    });
+  });
 }
