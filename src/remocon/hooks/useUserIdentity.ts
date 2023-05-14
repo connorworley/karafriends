@@ -1,9 +1,15 @@
 import { useEffect, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
-const useNickname = (shouldPrompt?: boolean) => {
+const useUserIdentity = (shouldPrompt?: boolean) => {
+  const [deviceId, setDeviceId] = useState<string>("Unknown");
   const [nickname, setNickname] = useState<string>("Unknown");
 
   useEffect(() => {
+    if (!localStorage.getItem("deviceId")) {
+      localStorage.setItem("deviceId", uuidv4());
+    }
+
     if (shouldPrompt) {
       while ((localStorage.getItem("nickname") || "").length === 0) {
         localStorage.setItem(
@@ -12,10 +18,12 @@ const useNickname = (shouldPrompt?: boolean) => {
         );
       }
     }
+
+    setDeviceId(localStorage.getItem("deviceId") || "Unknown");
     setNickname(localStorage.getItem("nickname") || "Unknown");
   }, []);
 
-  return nickname;
+  return { nickname, deviceId };
 };
 
-export default useNickname;
+export default useUserIdentity;

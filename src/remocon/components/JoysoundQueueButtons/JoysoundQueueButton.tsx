@@ -7,7 +7,10 @@ import Button from "../Button";
 
 import { JoysoundSongPageQuery$data } from "../../pages/__generated__/JoysoundSongPageQuery.graphql";
 import { JoysoundQueueButtonGetVideoDownloadProgressQuery } from "./__generated__/JoysoundQueueButtonGetVideoDownloadProgressQuery.graphql";
-import { JoysoundQueueButtonMutation } from "./__generated__/JoysoundQueueButtonMutation.graphql";
+import {
+  JoysoundQueueButtonMutation,
+  JoysoundQueueButtonMutation$variables,
+} from "./__generated__/JoysoundQueueButtonMutation.graphql";
 
 const joysoundQueueButtonGetVideoDownloadProgressQuery = graphql`
   query JoysoundQueueButtonGetVideoDownloadProgressQuery(
@@ -44,7 +47,7 @@ const joysoundQueueButtonMutation = graphql`
 interface Props {
   song: JoysoundSongPageQuery$data["joysoundSongDetail"];
   youtubeVideoId: string | null;
-  nickname: string;
+  userIdentity: JoysoundQueueButtonMutation$variables["input"]["userIdentity"];
   isRomaji: boolean;
   isDisabled: boolean;
   setDisabled: (isDisabled: boolean) => void;
@@ -53,7 +56,7 @@ interface Props {
 const JoysoundQueueButton = ({
   song,
   youtubeVideoId,
-  nickname,
+  userIdentity,
   isRomaji,
   isDisabled,
   setDisabled,
@@ -130,7 +133,7 @@ const JoysoundQueueButton = ({
           name: song.name,
           playtime: null,
           artistName: song.artistName,
-          nickname,
+          userIdentity,
           isRomaji,
           youtubeVideoId,
         },

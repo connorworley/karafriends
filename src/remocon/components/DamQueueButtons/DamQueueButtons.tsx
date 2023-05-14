@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import useNickname from "../../hooks/useNickname";
+import useUserIdentity from "../../hooks/useUserIdentity";
 import {
   SongPageQuery$data,
   VocalType,
@@ -13,7 +13,7 @@ interface Props {
 }
 
 const DamQueueButtons = ({ song }: Props) => {
-  const nickname = useNickname();
+  const userIdentity = useUserIdentity();
 
   return (
     <div className={styles.container}>
@@ -22,7 +22,7 @@ const DamQueueButtons = ({ song }: Props) => {
           key={vocalType}
           song={song}
           streamingUrlIndex={i}
-          nickname={nickname}
+          userIdentity={userIdentity}
         />
       ))}
     </div>

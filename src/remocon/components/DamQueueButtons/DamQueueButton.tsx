@@ -4,7 +4,10 @@ import { graphql, useMutation } from "react-relay";
 
 import { SongPageQuery$data } from "../../pages/__generated__/SongPageQuery.graphql";
 import Button from "../Button";
-import { DamQueueButtonMutation } from "./__generated__/DamQueueButtonMutation.graphql";
+import {
+  DamQueueButtonMutation,
+  DamQueueButtonMutation$variables,
+} from "./__generated__/DamQueueButtonMutation.graphql";
 
 const damQueueButtonMutation = graphql`
   mutation DamQueueButtonMutation($input: QueueDamSongInput!) {
@@ -40,10 +43,10 @@ function getDefaultText(vocalType: string) {
 interface Props {
   song: SongPageQuery$data["songById"];
   streamingUrlIndex: number;
-  nickname: string;
+  userIdentity: DamQueueButtonMutation$variables["input"]["userIdentity"];
 }
 
-const DamQueueButton = ({ song, streamingUrlIndex, nickname }: Props) => {
+const DamQueueButton = ({ song, streamingUrlIndex, userIdentity }: Props) => {
   const defaultText = getDefaultText(song.vocalTypes[streamingUrlIndex]);
   const [text, setText] = useState(defaultText);
   const [commit] = useMutation<DamQueueButtonMutation>(damQueueButtonMutation);
@@ -62,7 +65,7 @@ const DamQueueButton = ({ song, streamingUrlIndex, nickname }: Props) => {
           artistName: song.artistName,
           playtime: song.playtime,
           streamingUrlIdx: streamingUrlIndex,
-          nickname,
+          userIdentity,
         },
       },
       onCompleted: ({ queueDamSong }) => {

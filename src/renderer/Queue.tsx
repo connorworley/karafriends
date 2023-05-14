@@ -10,7 +10,9 @@ export default function Queue() {
   return (
     <div className="collection queueQueue">
       {queue.map(([item, eta], i) => {
-        const nicknameHash = cyrb53(item.nickname || "");
+        const nickname =
+          (item.userIdentity && item.userIdentity.nickname) || "";
+        const nicknameHash = cyrb53(nickname);
         const nicknameColor = `hsl(${nicknameHash % 180}, 100%, 50%)`;
         const nicknameBgColor = `hsl(${(nicknameHash % 180) + 180}, 100%, 50%)`;
         return (
@@ -29,7 +31,7 @@ export default function Queue() {
                       color: nicknameColor,
                     }}
                   >
-                    {item.nickname}
+                    {nickname}
                   </span>{" "}
                   {item.name} - {item.artistName}{" "}
                   <span
@@ -38,7 +40,7 @@ export default function Queue() {
                       color: nicknameColor,
                     }}
                   >
-                    {item.nickname}
+                    {nickname}
                   </span>{" "}
                   {item.name} - {item.artistName}{" "}
                   <span
@@ -47,7 +49,7 @@ export default function Queue() {
                       color: nicknameColor,
                     }}
                   >
-                    {item.nickname}
+                    {nickname}
                   </span>{" "}
                   {item.name} - {item.artistName}{" "}
                   <span
@@ -56,7 +58,7 @@ export default function Queue() {
                       color: nicknameColor,
                     }}
                   >
-                    {item.nickname}
+                    {nickname}
                   </span>{" "}
                 </span>
               </span>

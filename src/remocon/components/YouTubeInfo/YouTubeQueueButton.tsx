@@ -3,12 +3,15 @@ import { fetchQuery, graphql, useMutation } from "react-relay";
 import { invariant } from "ts-invariant";
 
 import environment from "../../../common/graphqlEnvironment";
-import useNickname from "../../hooks/useNickname";
+import useUserIdentity from "../../hooks/useUserIdentity";
 import Button from "../Button";
 
 import { YouTubeInfoVideoInfoQuery$data } from "./__generated__/YouTubeInfoVideoInfoQuery.graphql";
 import { YouTubeQueueButtonGetVideoDownloadProgressQuery } from "./__generated__/YouTubeQueueButtonGetVideoDownloadProgressQuery.graphql";
-import { YouTubeQueueButtonMutation } from "./__generated__/YouTubeQueueButtonMutation.graphql";
+import {
+  YouTubeQueueButtonMutation,
+  YouTubeQueueButtonMutation$variables,
+} from "./__generated__/YouTubeQueueButtonMutation.graphql";
 
 const youTubeQueueButtonGetVideoDownloadProgressQuery = graphql`
   query YouTubeQueueButtonGetVideoDownloadProgressQuery(
@@ -46,6 +49,7 @@ interface Props {
   videoInfo: YouTubeInfoVideoInfoQuery$data["youtubeVideoInfo"];
   adhocSongLyrics: string | null;
   selectedCaption: string | null;
+  userIdentity: YouTubeQueueButtonMutation$variables["input"]["userIdentity"];
 }
 
 const YouTubeQueueButton = ({
@@ -53,10 +57,10 @@ const YouTubeQueueButton = ({
   videoInfo,
   adhocSongLyrics,
   selectedCaption,
+  userIdentity,
 }: Props) => {
   if (videoInfo.__typename !== "YoutubeVideoInfo") return null;
 
-  const nickname = useNickname();
   const defaultText = "Queue video";
   const [text, setText] = useState(defaultText);
   const [commit] = useMutation<YouTubeQueueButtonMutation>(
@@ -124,7 +128,7 @@ const YouTubeQueueButton = ({
           name: videoInfo.title,
           artistName: videoInfo.author,
           playtime: videoInfo.lengthSeconds,
-          nickname,
+          userIdentity,
           adhocSongLyrics,
           captionCode: selectedCaption || null,
           gainValue: videoInfo.gainValue,

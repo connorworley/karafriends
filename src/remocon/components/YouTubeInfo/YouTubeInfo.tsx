@@ -3,6 +3,7 @@ import { graphql, useLazyLoadQuery } from "react-relay";
 import { Link } from "react-router-dom";
 import YouTubePlayer from "youtube-player";
 
+import useUserIdentity from "../../hooks/useUserIdentity";
 import Button from "../Button";
 import { withLoader } from "../Loader";
 import VideoMetadata from "../VideoMetadata";
@@ -41,6 +42,8 @@ interface Props {
 }
 
 const YouTubeInfo = ({ videoId }: Props) => {
+  const userIdentity = useUserIdentity();
+
   const playerRef: React.MutableRefObject<ReturnType<
     typeof YouTubePlayer
   > | null> = useRef(null);
@@ -87,6 +90,7 @@ const YouTubeInfo = ({ videoId }: Props) => {
             videoInfo={videoData.youtubeVideoInfo}
             adhocSongLyrics={adhocSongLyrics}
             selectedCaption={selectedCaption || null}
+            userIdentity={userIdentity}
           />
           <Link to={`/adhocLyrics/${videoId}`}>
             <Button>Guide adhoc lyrics</Button>
