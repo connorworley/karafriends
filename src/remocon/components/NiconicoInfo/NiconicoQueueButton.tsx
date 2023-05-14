@@ -7,7 +7,10 @@ import Button from "../Button";
 
 import { NiconicoInfoVideoInfoQuery$data } from "./__generated__/NiconicoInfoVideoInfoQuery.graphql";
 import { NiconicoQueueButtonGetVideoDownloadProgressQuery } from "./__generated__/NiconicoQueueButtonGetVideoDownloadProgressQuery.graphql";
-import { NiconicoQueueButtonMutation } from "./__generated__/NiconicoQueueButtonMutation.graphql";
+import {
+  NiconicoQueueButtonMutation,
+  NiconicoQueueButtonMutation$variables,
+} from "./__generated__/NiconicoQueueButtonMutation.graphql";
 
 const niconicoQueueButtonGetVideoDownloadProgressQuery = graphql`
   query NiconicoQueueButtonGetVideoDownloadProgressQuery(
@@ -43,9 +46,10 @@ const niconicoQueueButtonMutation = graphql`
 interface Props {
   videoId: string;
   videoInfo: NiconicoInfoVideoInfoQuery$data["nicoVideoInfo"];
+  userIdentity: NiconicoQueueButtonMutation$variables["input"]["userIdentity"];
 }
 
-const NiconicoQueueButton = ({ videoId, videoInfo }: Props) => {
+const NiconicoQueueButton = ({ videoId, videoInfo, userIdentity }: Props) => {
   if (videoInfo.__typename !== "NicoVideoInfo") return null;
 
   const defaultText = "Queue video";
@@ -115,7 +119,7 @@ const NiconicoQueueButton = ({ videoId, videoInfo }: Props) => {
           name: videoInfo.title,
           artistName: videoInfo.author,
           playtime: videoInfo.lengthSeconds,
-          nickname: localStorage.getItem("nickname") || "unknown",
+          userIdentity,
         },
       },
       onCompleted: ({ queueNicoSong }) => {

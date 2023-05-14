@@ -37,7 +37,8 @@ const SongQueueItem = ({ item, eta, myNickname, isCurrent }: Props) => {
   const [commit, isInFlight] = useMutation(removeSongMutation);
 
   const itemType = item.__typename;
-  const nickname = item.nickname || "Unknown";
+  const nickname =
+    (item.userIdentity && item.userIdentity.nickname) || "Unknown";
   const nicknameHash = cyrb53(nickname);
   const nicknameBgColor = `hsl(${(nicknameHash % 180) + 180}, 50%, 50%)`;
 

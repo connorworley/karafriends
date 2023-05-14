@@ -5,7 +5,11 @@ import process from "process";
 
 import invariant from "ts-invariant";
 
-import { DownloadQueueItem, JoysoundQueueItem } from "../main/graphql";
+import {
+  DownloadQueueItem,
+  JoysoundQueueItem,
+  UserIdentity,
+} from "../main/graphql";
 import { JoysoundAPI } from "../main/joysoundApi";
 
 import { getSongDuration } from "./joysoundParser";
@@ -242,7 +246,7 @@ export function downloadDamVideo(
 
 export function downloadJoysoundData(
   downloadQueue: DownloadQueueItem[],
-  nickname: string,
+  userIdentity: UserIdentity,
   joysoundApi: JoysoundAPI,
   queueItem: JoysoundQueueItem,
   pushSongToQueue: (queueItem: JoysoundQueueItem) => any
@@ -317,7 +321,7 @@ export function downloadJoysoundData(
 
   const downloadQueueItem: DownloadQueueItem = {
     downloadType: 0,
-    nickname,
+    userIdentity,
     songId,
     suffix: queueItem.youtubeVideoId,
     progress: 0.0,
@@ -544,7 +548,7 @@ export function downloadJoysoundData(
 
 export function downloadYoutubeVideo(
   downloadQueue: DownloadQueueItem[],
-  nickname: string,
+  userIdentity: UserIdentity,
   videoId: string,
   captionCode: string | null,
   onComplete: () => any
@@ -583,7 +587,7 @@ export function downloadYoutubeVideo(
 
   const downloadQueueItem: DownloadQueueItem = {
     downloadType: 1,
-    nickname,
+    userIdentity,
     songId: videoId,
     suffix: null,
     progress: 0.0,
@@ -658,7 +662,7 @@ export function downloadYoutubeVideo(
 
 export function downloadNicoVideo(
   downloadQueue: DownloadQueueItem[],
-  nickname: string,
+  userIdentity: UserIdentity,
   videoId: string,
   onComplete: () => any
 ): void {
@@ -688,7 +692,7 @@ export function downloadNicoVideo(
 
   const downloadQueueItem: DownloadQueueItem = {
     downloadType: 2,
-    nickname,
+    userIdentity,
     songId: videoId,
     suffix: null,
     progress: 0.0,
