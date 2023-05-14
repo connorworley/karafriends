@@ -1,5 +1,6 @@
 import React from "react";
 import { graphql, useLazyLoadQuery, usePaginationFragment } from "react-relay";
+import { invariant } from "ts-invariant";
 
 import Button from "../Button";
 import { List } from "../List";
@@ -7,33 +8,62 @@ import { default as Loader, withLoader } from "../Loader";
 import SongHistoryItem from "./SongHistoryItem";
 import { SongHistoryPaginationQuery } from "./__generated__/SongHistoryPaginationQuery.graphql";
 import { SongHistoryViewQuery } from "./__generated__/SongHistoryViewQuery.graphql";
-import { SongHistory_history$key } from "./__generated__/SongHistory_history.graphql";
+import { SongHistory_songHistory$key } from "./__generated__/SongHistory_songHistory.graphql";
 
 const historyViewQuery = graphql`
   query SongHistoryViewQuery {
-    ...SongHistory_history
+    ...SongHistory_songHistory
   }
 `;
 
 const historyPaginationQuery = graphql`
-  fragment SongHistory_history on Query
+  fragment SongHistory_songHistory on Query
   @argumentDefinitions(
     count: { type: "Int", defaultValue: 30 }
     cursor: { type: "String" }
   )
   @refetchable(queryName: "SongHistoryPaginationQuery") {
-    history(first: $count, after: $cursor)
-      @connection(key: "SongHistoryPagination_history") {
+    songHistory(first: $count, after: $cursor)
+      @connection(key: "SongHistoryPagination_songHistory") {
       edges {
         node {
           song {
-            id
-            name
-            nameYomi
-            artistName
-            artistNameYomi
+            ... on DamQueueItem {
+              __typename
+              songId
+              name
+              artistName
+              timestamp
+              nickname
+            }
+
+            ... on JoysoundQueueItem {
+              __typename
+              songId
+              name
+              artistName
+              timestamp
+              nickname
+            }
+
+            ... on YoutubeQueueItem {
+              __typename
+              songId
+              name
+              artistName
+              timestamp
+              nickname
+            }
+
+            ... on NicoQueueItem {
+              __typename
+              songId
+              name
+              artistName
+              timestamp
+              nickname
+            }
           }
-          playDate
         }
       }
     }
@@ -43,25 +73,31 @@ const historyPaginationQuery = graphql`
 const History = () => {
   const queryData = useLazyLoadQuery<SongHistoryViewQuery>(
     historyViewQuery,
-    {}
+    {},
+    { fetchPolicy: "store-and-network" }
   );
+
   const { data, hasNext, loadNext, isLoadingNext } = usePaginationFragment<
     SongHistoryPaginationQuery,
-    SongHistory_history$key
+    SongHistory_songHistory$key
   >(historyPaginationQuery, queryData);
 
   return (
     <>
-      {data.history.edges.length === 0 ? (
+      {data.songHistory.edges.length === 0 ? (
         <span>No history</span>
       ) : (
         <List>
-          {data.history.edges.map(({ node }) => (
-            <SongHistoryItem
-              key={`${node.song.id}_${node.playDate}`}
-              {...node}
-            />
-          ))}
+          {data.songHistory.edges.map(({ node }) => {
+            invariant(node.song.__typename !== "%other");
+
+            return (
+              <SongHistoryItem
+                key={`${node.song.name}_${node.song.timestamp}`}
+                {...node}
+              />
+            );
+          })}
         </List>
       )}
       {isLoadingNext ? (

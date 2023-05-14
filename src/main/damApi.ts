@@ -50,29 +50,6 @@ interface MinseiStreamingUrls extends MinseiResponse {
   }[];
 }
 
-interface MinseiPlayHistory extends MinseiResponse {
-  data: {
-    dataCount: string;
-    hasNext: string;
-    hasPreview: string;
-    overFlg: string;
-    pageCount: string;
-    value: string;
-  };
-  list: {
-    artistCd: string;
-    artistName: string;
-    contentsId: string;
-    contentsName: string;
-    contentsYomi: string;
-    deviceName: string;
-    playDate: string;
-    requestNo: string;
-    thumbnailUrl: string;
-    url: string;
-  }[];
-}
-
 export class MinseiAPI extends RESTDataSource {
   creds: MinseiCredentials;
 
@@ -157,32 +134,6 @@ export class MinseiAPI extends RESTDataSource {
         })
         .catch(retry)
     );
-  }
-
-  getPlayHistory(first: number, after: number) {
-    const firstPage = Math.floor(after / 30) + 1;
-    const pageCount = Math.ceil(first / 30);
-
-    return Promise.all(
-      [...Array(pageCount).keys()].map((pageOffset) =>
-        this.post<MinseiPlayHistory>("/music/playLog/GetMusicPlayHistory.api", {
-          pageNo: (firstPage + pageOffset).toString(),
-          dispNumber: "30",
-          compUseFlag: "1",
-          ...this.creds,
-        }).then(MinseiAPI.checkError)
-      )
-    )
-      .then((results) =>
-        results.reduce((acc, cur) => {
-          acc.list = acc.list.concat(cur.list);
-          return acc;
-        })
-      )
-      .then((result) => ({
-        data: result.data,
-        list: result.list.slice(after % 30, first),
-      }));
   }
 }
 

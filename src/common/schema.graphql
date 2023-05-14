@@ -3,7 +3,6 @@ type Query {
   artistById(id: String, first: Int, after: String): Artist!
   artistsByName(name: String, first: Int, after: String): ArtistConnection!
   currentSong: QueueItem
-  history(first: Int, after: String): HistoryConnection!
   joysoundArtistsByKeyword(
     keyword: String
     first: Int
@@ -25,6 +24,7 @@ type Query {
   queue: [QueueItem!]!
   songById(id: String!): Song!
   songsByName(name: String, first: Int, after: String): SongConnection!
+  songHistory(first: Int, after: String): SongHistoryConnection!
   videoDownloadProgress(
     videoDownloadType: Int!
     songId: String!
@@ -67,22 +67,22 @@ type AdhocLyricsEntry {
   lyricIndex: Int!
 }
 
-type HistoryItem {
-  song: Song!
-  playDate: String!
+type SongHistoryItem {
+  song: QueueItem!
+  timestamp: Int!
 }
 
-type HistoryConnection {
-  edges: [HistoryEdge!]!
-  pageInfo: HistoryPageInfo!
+type SongHistoryConnection {
+  edges: [SongHistoryEdge!]!
+  pageInfo: SongHistoryPageInfo!
 }
 
-type HistoryEdge {
-  node: HistoryItem!
+type SongHistoryEdge {
+  node: SongHistoryItem!
   cursor: String!
 }
 
-type HistoryPageInfo {
+type SongHistoryPageInfo {
   hasPreviousPage: Boolean!
   hasNextPage: Boolean!
   startCursor: String!
