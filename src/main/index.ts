@@ -94,6 +94,7 @@ function createWindow() {
     urls: [
       "https://*.ipcasting.jp/*",
       `http://localhost:${karafriendsConfig.remoconPort}/*`,
+      "https://sentry.io/*",
     ],
   };
 
