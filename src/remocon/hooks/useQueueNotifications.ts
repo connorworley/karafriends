@@ -15,12 +15,20 @@ export default function useQueueNotifications(myDeviceId: string) {
         item.userIdentity.deviceId === myDeviceId &&
         eta <= 10 * 60
       ) {
-        new Notification("karafriends", {
-          // tslint:disable-line:no-unused-expression
-          body: `Your song ${
-            item.name
-          } is coming up soon! Estimated wait: T-${formatDuration(eta * 1000)}`,
-        });
+        navigator.serviceWorker
+          .register(
+            new URL("../notificationServiceWorker.ts", import.meta.url),
+            { scope: "/" }
+          )
+          .then((registration) =>
+            registration.showNotification("karafriends", {
+              body: `Your song ${
+                item.name
+              } is coming up soon! Estimated wait: T-${formatDuration(
+                eta * 1000
+              )}`,
+            })
+          );
         return;
       }
     }

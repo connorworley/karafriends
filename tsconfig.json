@@ -5,7 +5,7 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "module": "es6",
+    "module": "es2020",
     "moduleResolution": "node",
     "jsx": "react"
   }
