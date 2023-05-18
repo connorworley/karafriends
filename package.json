@@ -114,7 +114,7 @@
     "cargo-cp-artifact": "0.1.8",
     "concurrently": "8.0.1",
     "cross-env": "7.0.3",
-    "electron": "24.3.0",
+    "electron": "24.3.1",
     "electron-chromedriver": "24.0.0",
     "electron-packager": "17.1.1",
     "glob": "10.2.4",
