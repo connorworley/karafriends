@@ -8,7 +8,6 @@ import { EffectsEmoteSubscription } from "./__generated__/EffectsEmoteSubscripti
 const effectsEmoteSubscription = graphql`
   subscription EffectsEmoteSubscription {
     emote {
-      nickname
       emote
     }
   }
