@@ -158,7 +158,7 @@ type JoysoundSong {
 }
 
 type Emote {
-  nickname: String!
+  userIdentity: UserIdentity!
   emote: String!
 }
 
