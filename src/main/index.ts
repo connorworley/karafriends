@@ -30,7 +30,8 @@ import { MinseiAPI } from "./damApi";
 import { applyGraphQLMiddleware } from "./graphql";
 import { JoysoundAPI } from "./joysoundApi";
 import setupMdns from "./mdns";
-import remoconMiddleware from "./remoconMiddleware";
+import remoconReverseProxy from "./middleware/remoconReverseProxy";
+import remoconServiceWorkerAllowed from "./middleware/remoconServiceWorkerAllowed";
 
 const nativeAudio = require("../../native"); // tslint:disable-line:no-var-requires
 
@@ -122,7 +123,9 @@ function createWindow() {
   });
 
   const expressApp = express();
-  expressApp.use(remoconMiddleware());
+
+  expressApp.use(remoconReverseProxy());
+  expressApp.use(remoconServiceWorkerAllowed());
 
   applyGraphQLMiddleware(
     expressApp,

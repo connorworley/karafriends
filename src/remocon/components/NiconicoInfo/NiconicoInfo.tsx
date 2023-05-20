@@ -5,7 +5,7 @@ import useUserIdentity from "../../hooks/useUserIdentity";
 import Button from "../Button";
 import { withLoader } from "../Loader";
 import VideoMetadata from "../VideoMetadata";
-import styles from "./NiconicoInfo.module.scss";
+import * as styles from "./NiconicoInfo.module.scss";
 import NiconicoQueueButton from "./NiconicoQueueButton";
 import { NiconicoInfoVideoInfoQuery } from "./__generated__/NiconicoInfoVideoInfoQuery.graphql";
 

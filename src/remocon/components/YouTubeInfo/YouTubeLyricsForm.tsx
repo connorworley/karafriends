@@ -1,6 +1,6 @@
 import React from "react";
 
-import styles from "./YouTubeInfo.module.scss";
+import * as styles from "./YouTubeInfo.module.scss";
 import { YouTubeInfoVideoInfoQuery$data } from "./__generated__/YouTubeInfoVideoInfoQuery.graphql";
 
 interface Props {

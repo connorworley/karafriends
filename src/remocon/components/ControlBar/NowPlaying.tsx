@@ -4,7 +4,7 @@ import { fetchQuery, graphql, requestSubscription } from "react-relay";
 import environment from "../../../common/graphqlEnvironment";
 import useUserIdentity from "../../hooks/useUserIdentity";
 import SongQueueItem from "../SongQueue/SongQueueItem";
-import styles from "./ControlBar.module.scss";
+import * as styles from "./ControlBar.module.scss";
 import {
   NowPlayingQuery,
   NowPlayingQuery$data,

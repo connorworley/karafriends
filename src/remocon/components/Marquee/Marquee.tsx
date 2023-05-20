@@ -1,6 +1,6 @@
 import React from "react";
 
-import styles from "./Marquee.module.scss";
+import * as styles from "./Marquee.module.scss";
 
 interface Props {
   children: React.ReactNode;

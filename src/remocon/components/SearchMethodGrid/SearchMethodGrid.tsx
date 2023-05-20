@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import styles from "./SearchMethodGrid.module.scss";
+import * as styles from "./SearchMethodGrid.module.scss";
 import SearchMethodGridItem from "./SearchMethodGridItem";
 
 const SearchMethodGrid = () => (

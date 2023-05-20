@@ -4,7 +4,7 @@ import isDev from "electron-is-dev";
 import express, { Request, Response } from "express";
 import fetch from "node-fetch";
 
-function remoconMiddleware() {
+function remoconReverseProxy() {
   if (isDev) {
     // On dev, we should proxy non-graphql requests to the remocon dev server
     return (req: Request, res: Response, next: () => void) => {
@@ -37,4 +37,4 @@ function remoconMiddleware() {
   }
 }
 
-export default remoconMiddleware;
+export default remoconReverseProxy;

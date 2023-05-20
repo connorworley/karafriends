@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 import { ListItem } from "../List";
-import styles from "./JoysoundArtistSearchResults.module.scss";
+import * as styles from "./JoysoundArtistSearchResults.module.scss";
 import { JoysoundArtistSearchResults_joysoundArtistsByKeyword$data } from "./__generated__/JoysoundArtistSearchResults_joysoundArtistsByKeyword.graphql";
 
 type Props =

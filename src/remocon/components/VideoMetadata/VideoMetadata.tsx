@@ -2,7 +2,7 @@ import React from "react";
 // tslint:disable-next-line:no-submodule-imports
 import { BsClockFill, BsEyeFill } from "react-icons/bs";
 
-import styles from "./VideoMetadata.module.scss";
+import * as styles from "./VideoMetadata.module.scss";
 
 interface Props {
   videoSource: "youtube" | "niconico";

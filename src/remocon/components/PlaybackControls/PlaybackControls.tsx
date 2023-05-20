@@ -4,7 +4,7 @@ import React from "react";
 import { MdPause, MdPlayArrow, MdReplay, MdSkipNext } from "react-icons/md";
 
 import usePlaybackState from "../../../common/hooks/usePlaybackState";
-import styles from "./PlaybackControls.module.scss";
+import * as styles from "./PlaybackControls.module.scss";
 
 const PlaybackControls = () => {
   const { playbackState, setPlaybackState } = usePlaybackState();

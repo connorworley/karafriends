@@ -4,7 +4,7 @@ import { FaHistory, FaHome } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import icon from "../../images/icon.png";
 
-import styles from "./NavBar.module.scss";
+import * as styles from "./NavBar.module.scss";
 
 const NavBar = () => {
   return (
