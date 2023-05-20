@@ -124,14 +124,16 @@ function createWindow() {
 
   const expressApp = express();
 
-  expressApp.use(remoconReverseProxy());
-  expressApp.use(remoconServiceWorkerAllowed());
-
   applyGraphQLMiddleware(
     expressApp,
     memoize(minseiCredentialsProvider),
     memoize(joysoundCredentialsProvider)
   );
+
+  expressApp.use(remoconServiceWorkerAllowed());
+
+  // This middleware terminates the request/response cycle and should be applied last
+  expressApp.use(remoconReverseProxy());
 
   if (rendererWindow)
     rendererWindow.loadURL(
