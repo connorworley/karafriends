@@ -18,7 +18,7 @@
     "_run-dev": "yarn build-dev && concurrently \"parcel serve --dist-dir build/dev --port 3000\" \"wait-on http://127.0.0.1:3000/renderer/ && node ./electron.js build/dev/main/main.js\"",
     "package-prod": "node packager.js",
     "get-external-resources": "node scripts/getExternalResources.mjs",
-    "test:wdio": "concurrently --success last --kill-others \"parcel serve --dist-dir build/dev --port 3000\" \"wait-on http://127.0.0.1:3000/renderer/ && pnpify wdio run wdio.conf.js\"",
+    "test:wdio": "concurrently --kill-others \"parcel serve --dist-dir build/dev --port 3000\" \"wait-on http://127.0.0.1:3000/renderer/ && pnpify wdio run wdio-electron.conf.js && pnpify wdio run wdio-chrome.conf.js\"",
     "postinstall": "husky install"
   },
   "dependencies": {
@@ -112,6 +112,7 @@
     "babel-loader": "9.1.2",
     "babel-plugin-relay": "15.0.0",
     "cargo-cp-artifact": "0.1.8",
+    "chromedriver": "113.0.0",
     "concurrently": "8.0.1",
     "cross-env": "7.0.3",
     "electron": "24.3.1",

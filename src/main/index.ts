@@ -25,7 +25,7 @@ import express from "express";
 
 import karafriendsConfig from "../common/config";
 import { TEMP_FOLDER } from "./../common/videoDownloader";
-import { MinseiAPI, MinseiCredentials } from "./damApi";
+import { MinseiAPI } from "./damApi";
 import { applyGraphQLMiddleware } from "./graphql";
 import { JoysoundAPI } from "./joysoundApi";
 import setupMdns from "./mdns";
@@ -51,37 +51,21 @@ protocol.registerSchemesAsPrivileged([
   },
 ]);
 
-async function attemptLogin() {
-  const damUsername = karafriendsConfig.damUsername;
-  const damPassword = karafriendsConfig.damPassword;
+async function minseiCredentialsProvider() {
+  const { damUsername, damPassword } = karafriendsConfig;
+  const minseiLoginResult = await MinseiAPI.login(damUsername, damPassword);
+  return {
+    userCode: damUsername,
+    authToken: minseiLoginResult.data.authToken,
+  };
+}
+
+async function joysoundCredentialsProvider() {
   const joysoundEmail = encodeURIComponent(karafriendsConfig.joysoundEmail);
   const joysoundPassword = encodeURIComponent(
     karafriendsConfig.joysoundPassword
   );
-
-  return Promise.all([
-    MinseiAPI.login(damUsername, damPassword),
-    JoysoundAPI.login(joysoundEmail, joysoundPassword),
-  ])
-    .then((values) => ({
-      minseiUserCode: damUsername,
-      minseiAuthToken: values[0].data.authToken,
-      joysoundCreds: values[1],
-    }))
-    .catch((e) =>
-      Promise.reject(`credentials were invalid (${e})\n\n${e.stack}`)
-    )
-    .then((creds) => {
-      const minseiCreds: MinseiCredentials = {
-        userCode: creds.minseiUserCode,
-        authToken: creds.minseiAuthToken,
-      };
-
-      const expressApp = express();
-      expressApp.use(remoconMiddleware());
-
-      applyGraphQLMiddleware(expressApp, minseiCreds, creds.joysoundCreds);
-    });
+  return JoysoundAPI.login(joysoundEmail, joysoundPassword);
 }
 
 let rendererWindow: BrowserWindow | null;
@@ -136,17 +120,21 @@ function createWindow() {
     callback({ path: path.normalize(`${TEMP_FOLDER}/${url}`) });
   });
 
-  attemptLogin()
-    .catch((e) => dialog.showErrorBox("Error logging in", e.toString()))
-    .then(() => {
-      if (rendererWindow)
-        rendererWindow.loadURL(
-          isDev
-            ? "http://localhost:3000/renderer/"
-            : `file://${path.join(__dirname, "..", "renderer", "index.html")}`
-        );
-    });
-  rendererWindow.on("closed", () => (rendererWindow = null));
+  const expressApp = express();
+  expressApp.use(remoconMiddleware());
+
+  applyGraphQLMiddleware(
+    expressApp,
+    minseiCredentialsProvider,
+    joysoundCredentialsProvider
+  );
+
+  if (rendererWindow)
+    rendererWindow.loadURL(
+      isDev
+        ? "http://localhost:3000/renderer/"
+        : `file://${path.join(__dirname, "..", "renderer", "index.html")}`
+    );
 
   ipcMain.on("config", (event: IpcMainEvent) => {
     console.log("Sending config over ipc");
