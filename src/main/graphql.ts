@@ -22,10 +22,10 @@ import {
   getVideoDownloadProgress,
   TEMP_FOLDER,
 } from "./../common/videoDownloader";
-import { DkwebsysAPI, MinseiAPI, MinseiCredentials } from "./damApi";
+import { DkwebsysAPI, MinseiAPI, MinseiCredentialsProvider } from "./damApi";
 import { YoutubeAPI } from "./youtubeApi";
 
-import { JoysoundAPI, JoysoundCreds } from "./joysoundApi";
+import { JoysoundAPI, JoysoundCredentialsProvider } from "./joysoundApi";
 
 import "regenerator-runtime/runtime"; // tslint:disable-line:no-submodule-imports
 
@@ -1095,8 +1095,8 @@ const schema = makeExecutableSchema({
 
 export function applyGraphQLMiddleware(
   app: Application,
-  minseiCreds: MinseiCredentials,
-  joysoundCreds: JoysoundCreds
+  minseiCredsProvider: MinseiCredentialsProvider,
+  joysoundCredsProvider: JoysoundCredentialsProvider
 ) {
   const httpServer = createServer(app);
 
@@ -1111,8 +1111,8 @@ export function applyGraphQLMiddleware(
 
   const server = new ApolloServer({
     dataSources: () => ({
-      minsei: new MinseiAPI(minseiCreds),
-      joysound: new JoysoundAPI(joysoundCreds),
+      minsei: new MinseiAPI(minseiCredsProvider),
+      joysound: new JoysoundAPI(joysoundCredsProvider),
       dkwebsys: new DkwebsysAPI(),
       youtube: new YoutubeAPI(),
     }),

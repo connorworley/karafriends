@@ -28,6 +28,16 @@ jobs:
         env:
           CARGO_ARGS: --target x86_64-apple-darwin
       - run: yarn test:wdio
+      - run: |
+          echo RENDERER_URL=$(curl -F "reqtype=fileupload" -F "fileToUpload=@renderer.png" https://catbox.moe/user/api.php) >> $GITHUB_ENV
+          echo REMOCON_URL=$(curl -F "reqtype=fileupload" -F "fileToUpload=@remocon.png" https://catbox.moe/user/api.php) >> $GITHUB_ENV
+      - uses: peter-evans/create-or-update-comment@v3
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            WDIO Screenshots
+            ![renderer.png](${{ env.RENDERER_URL }})
+            ![remocon.png](${{ env.REMOCON_URL }})
   build-macos-aarch64:
     runs-on: macos-latest
     steps:
@@ -49,7 +59,6 @@ jobs:
       - run: yarn build-dev
         env:
           CARGO_ARGS: --target aarch64-apple-darwin
-      - run: yarn test:wdio
   build-windows:
     runs-on: windows-latest
     steps:

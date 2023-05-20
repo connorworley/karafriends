@@ -20,10 +20,10 @@ const BASE_MINSEI_REQUEST = {
   contractId: "1",
 };
 
-export interface MinseiCredentials {
+export type MinseiCredentialsProvider = () => Promise<{
   userCode: string;
   authToken: string;
-}
+}>;
 
 interface MinseiResponse {
   message: string;
@@ -51,12 +51,12 @@ interface MinseiStreamingUrls extends MinseiResponse {
 }
 
 export class MinseiAPI extends RESTDataSource {
-  creds: MinseiCredentials;
+  credsProvider: MinseiCredentialsProvider;
 
-  constructor(creds: MinseiCredentials) {
+  constructor(credsProvider: MinseiCredentialsProvider) {
     super();
     this.baseURL = "https://csgw.clubdam.com/cwa/win/minsei";
-    this.creds = creds;
+    this.credsProvider = credsProvider;
   }
 
   post<T>(url: string, data: object): Promise<T> {
@@ -108,10 +108,13 @@ export class MinseiAPI extends RESTDataSource {
   getMusicStreamingUrls(requestNo: string) {
     // This endpoint seems to be flaky
     return promiseRetry((retry) =>
-      this.post<MinseiStreamingUrls>(
-        "/music/playLog/GetMusicStreamingURL.api",
-        { requestNo, ...this.creds }
-      )
+      this.credsProvider()
+        .then((creds) =>
+          this.post<MinseiStreamingUrls>(
+            "/music/playLog/GetMusicStreamingURL.api",
+            { requestNo, ...creds }
+          )
+        )
         .then(MinseiAPI.checkError)
         .catch(retry)
     );
@@ -120,10 +123,13 @@ export class MinseiAPI extends RESTDataSource {
   getScoringData(requestNo: string) {
     // This endpoint seems to be flaky
     return promiseRetry((retry) =>
-      this.post<object | ArrayBuffer>("/scoring/GetScoringReferenceData.api", {
-        requestNo,
-        ...this.creds,
-      })
+      this.credsProvider()
+        .then((creds) =>
+          this.post<object | ArrayBuffer>(
+            "/scoring/GetScoringReferenceData.api",
+            { requestNo, ...creds }
+          )
+        )
         .then((body) => {
           if (!(body instanceof ArrayBuffer)) {
             return Promise.reject(
