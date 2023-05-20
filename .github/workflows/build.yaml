@@ -31,6 +31,7 @@ jobs:
       - run: |
           echo RENDERER_URL=$(curl -F "reqtype=fileupload" -F "fileToUpload=@renderer.png" https://catbox.moe/user/api.php) >> $GITHUB_ENV
           echo REMOCON_URL=$(curl -F "reqtype=fileupload" -F "fileToUpload=@remocon.png" https://catbox.moe/user/api.php) >> $GITHUB_ENV
+        if: github.event_name == "pull_request"
       - uses: peter-evans/create-or-update-comment@v3
         with:
           issue-number: ${{ github.event.pull_request.number }}
@@ -38,6 +39,7 @@ jobs:
             WDIO Screenshots
             ![renderer.png](${{ env.RENDERER_URL }})
             ![remocon.png](${{ env.REMOCON_URL }})
+        if: github.event_name == "pull_request"
   build-macos-aarch64:
     runs-on: macos-latest
     steps:
