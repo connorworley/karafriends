@@ -22,6 +22,7 @@ import {
 } from "electron"; // tslint:disable-line:no-implicit-dependencies
 import isDev from "electron-is-dev";
 import express from "express";
+import { memoize } from "lodash";
 
 import karafriendsConfig from "../common/config";
 import { TEMP_FOLDER } from "./../common/videoDownloader";
@@ -125,8 +126,8 @@ function createWindow() {
 
   applyGraphQLMiddleware(
     expressApp,
-    minseiCredentialsProvider,
-    joysoundCredentialsProvider
+    memoize(minseiCredentialsProvider),
+    memoize(joysoundCredentialsProvider)
   );
 
   if (rendererWindow)
