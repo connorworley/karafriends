@@ -214,7 +214,7 @@ export function downloadDamVideo(
     [
       "-y",
       "-i",
-      "\"${m3u8Url}\"",
+      m3u8Url,
       "-c",
       "copy",
       "-movflags",
