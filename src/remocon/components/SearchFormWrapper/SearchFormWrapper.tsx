@@ -1,6 +1,6 @@
 import React from "react";
 
-import styles from "./SearchFormWrapper.module.scss";
+import * as styles from "./SearchFormWrapper.module.scss";
 
 interface Props {
   children: React.ReactNode;

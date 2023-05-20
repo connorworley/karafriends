@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import { ListItem } from "../List";
 import WeebText from "../WeebText";
-import styles from "./ArtistSearchResults.module.scss";
+import * as styles from "./ArtistSearchResults.module.scss";
 import { ArtistSearchResults_artistsByName$data } from "./__generated__/ArtistSearchResults_artistsByName.graphql";
 
 type Props =

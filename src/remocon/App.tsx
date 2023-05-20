@@ -18,7 +18,7 @@ import SongPage from "./pages/SongPage";
 import SongSearchPage from "./pages/SongSearchPage";
 import YouTubePage from "./pages/YouTubePage";
 
-import styles from "./App.module.scss";
+import * as styles from "./App.module.scss";
 import useQueueNotifications from "./hooks/useQueueNotifications";
 
 const App = () => {

@@ -6,7 +6,7 @@ import {
   VocalType,
 } from "../../pages/__generated__/SongPageQuery.graphql";
 import DamQueueButton from "./DamQueueButton";
-import styles from "./DamQueueButtons.module.scss";
+import * as styles from "./DamQueueButtons.module.scss";
 
 interface Props {
   song: SongPageQuery$data["songById"];

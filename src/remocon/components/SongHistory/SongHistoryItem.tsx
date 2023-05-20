@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { invariant } from "ts-invariant";
 
 import { ListItem } from "../List";
-import styles from "./SongHistory.module.scss";
+import * as styles from "./SongHistory.module.scss";
 import { SongHistory_songHistory$data } from "./__generated__/SongHistory_songHistory.graphql";
 
 type Props = SongHistory_songHistory$data["songHistory"]["edges"][0]["node"];

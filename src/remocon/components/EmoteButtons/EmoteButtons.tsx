@@ -4,7 +4,7 @@ import { MdEdit } from "react-icons/md";
 import { graphql, useMutation } from "react-relay";
 
 import useUserIdentity from "../../hooks/useUserIdentity";
-import styles from "./EmoteButtons.module.scss";
+import * as styles from "./EmoteButtons.module.scss";
 import { EmoteButtonsMutation } from "./__generated__/EmoteButtonsMutation.graphql";
 
 const emoteButtonsMutation = graphql`

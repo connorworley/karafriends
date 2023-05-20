@@ -1,7 +1,7 @@
 import React from "react";
 import { isRomaji, toRomaji } from "wanakana";
 
-import styles from "./WeebText.module.scss";
+import * as styles from "./WeebText.module.scss";
 
 interface Props {
   bold?: boolean;

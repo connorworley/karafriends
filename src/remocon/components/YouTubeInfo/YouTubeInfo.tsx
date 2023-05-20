@@ -7,7 +7,7 @@ import useUserIdentity from "../../hooks/useUserIdentity";
 import Button from "../Button";
 import { withLoader } from "../Loader";
 import VideoMetadata from "../VideoMetadata";
-import styles from "./YouTubeInfo.module.scss";
+import * as styles from "./YouTubeInfo.module.scss";
 import YouTubeLyricsForm from "./YouTubeLyricsForm";
 import YouTubeQueueButton from "./YouTubeQueueButton";
 import { YouTubeInfoVideoInfoQuery } from "./__generated__/YouTubeInfoVideoInfoQuery.graphql";

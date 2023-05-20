@@ -3,7 +3,7 @@ import { graphql, useLazyLoadQuery, useMutation } from "react-relay";
 import invariant from "ts-invariant";
 
 import { withLoader } from "../Loader";
-import styles from "./AdhocLyricsControls.module.scss";
+import * as styles from "./AdhocLyricsControls.module.scss";
 import LyricsController from "./LyricsController";
 import LyricsPicker from "./LyricsPicker";
 import { AdhocLyricsControlsLyricsQuery } from "./__generated__/AdhocLyricsControlsLyricsQuery.graphql";

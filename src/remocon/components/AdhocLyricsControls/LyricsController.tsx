@@ -5,7 +5,7 @@ import { CgTapSingle } from "react-icons/cg";
 import { GiSideswipe } from "react-icons/gi";
 import { useSwipeable } from "react-swipeable";
 
-import styles from "./AdhocLyricsControls.module.scss";
+import * as styles from "./AdhocLyricsControls.module.scss";
 
 interface Props {
   onSendLine: () => void;

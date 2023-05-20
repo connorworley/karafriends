@@ -10,7 +10,7 @@ import { MdMusicVideo } from "react-icons/md";
 import { SiNiconico } from "react-icons/si";
 import { Link } from "react-router-dom";
 
-import styles from "./SearchMethodGrid.module.scss";
+import * as styles from "./SearchMethodGrid.module.scss";
 
 const backgroundIcons = {
   song: <MdMusicVideo />,

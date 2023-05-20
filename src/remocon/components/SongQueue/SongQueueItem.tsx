@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { cyrb53 } from "../../../common/hash";
 import { useQueueQueueQuery$data } from "../../../common/hooks/__generated__/useQueueQueueQuery.graphql";
 import Marquee from "../Marquee";
-import styles from "./SongQueue.module.scss";
+import * as styles from "./SongQueue.module.scss";
 import { SongQueueItemRemoveSongMutation } from "./__generated__/SongQueueItemRemoveSongMutation.graphql";
 
 const removeSongMutation = graphql`

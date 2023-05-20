@@ -7,7 +7,7 @@ import { FaAngleDown, FaAngleUp, FaSmile } from "react-icons/fa";
 import EmoteButtons from "../EmoteButtons";
 import PlaybackControls from "../PlaybackControls";
 import SongQueue from "../SongQueue";
-import styles from "./ControlBar.module.scss";
+import * as styles from "./ControlBar.module.scss";
 import NowPlaying from "./NowPlaying";
 
 const ControlBar = () => {

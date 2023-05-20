@@ -5,7 +5,7 @@ import YouTubePlayer from "youtube-player";
 import Button from "../Button";
 import { withLoader } from "../Loader";
 import VideoMetadata from "../VideoMetadata";
-import styles from "./JoysoundYouTubeInfo.module.scss";
+import * as styles from "./JoysoundYouTubeInfo.module.scss";
 import { JoysoundYouTubeInfoVideoInfoQuery } from "./__generated__/JoysoundYouTubeInfoVideoInfoQuery.graphql";
 
 const joysoundYouTubeInfoVideoInfoQuery = graphql`

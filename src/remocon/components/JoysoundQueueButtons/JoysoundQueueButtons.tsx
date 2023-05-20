@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import useUserIdentity from "../../hooks/useUserIdentity";
 import { JoysoundSongPageQuery$data } from "../../pages/__generated__/JoysoundSongPageQuery.graphql";
 import JoysoundQueueButton from "./JoysoundQueueButton";
-import styles from "./JoysoundQueueButtons.module.scss";
+import * as styles from "./JoysoundQueueButtons.module.scss";
 
 interface Props {
   song: JoysoundSongPageQuery$data["joysoundSongDetail"];
