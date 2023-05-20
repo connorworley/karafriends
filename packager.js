@@ -29,6 +29,15 @@ const { glob } = require("glob");
       },
       osxSign: {
         identity: "Developer ID Application: Connor Worley (WZ6JC3T383)",
+        // yt-dlp needs to load python dylibs we don't have control over
+        optionsForFile: (path) =>
+          path.endsWith("/yt-dlp_macos")
+            ? {
+                entitlements: [
+                  "com.apple.security.cs.disable-library-validation",
+                ],
+              }
+            : {},
       },
     }),
     ...(process.platform === "win32" && {
