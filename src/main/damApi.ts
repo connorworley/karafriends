@@ -1,12 +1,7 @@
 /* tslint:disable:max-classes-per-file */
 
-import {
-  RequestOptions,
-  Response,
-  RESTDataSource,
-} from "apollo-datasource-rest";
+import { Response, RESTDataSource } from "apollo-datasource-rest";
 import DataLoader from "dataloader";
-import { request } from "express";
 import fetch from "node-fetch";
 import promiseRetry from "promise-retry";
 

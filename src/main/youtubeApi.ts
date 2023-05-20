@@ -1,13 +1,6 @@
 /* tslint:disable:max-classes-per-file */
 
-import {
-  RequestOptions,
-  Response,
-  RESTDataSource,
-} from "apollo-datasource-rest";
-import DataLoader from "dataloader";
-import { request } from "express";
-import fetch from "node-fetch";
+import { RESTDataSource } from "apollo-datasource-rest";
 import UserAgent from "user-agents";
 
 // "Public" Innertube API Key

@@ -1,5 +1,5 @@
 import fs from "fs";
-import { createServer, Server } from "http";
+import { createServer } from "http";
 import path from "path";
 import { WebSocketServer } from "ws";
 
@@ -7,7 +7,6 @@ import { makeExecutableSchema } from "@graphql-tools/schema";
 import { ApolloServer } from "apollo-server-express";
 import isDev from "electron-is-dev";
 import { Application } from "express";
-import { execute, subscribe } from "graphql";
 import { PubSub } from "graphql-subscriptions";
 import { useServer } from "graphql-ws/lib/use/ws"; // tslint:disable-line:no-submodule-imports
 import { Nicovideo } from "niconico";

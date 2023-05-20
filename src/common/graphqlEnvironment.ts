@@ -1,5 +1,6 @@
 import { invariant } from "ts-invariant";
 
+import { createClient } from "graphql-ws";
 import {
   Environment,
   Network,
@@ -9,7 +10,6 @@ import {
   Store,
   Variables,
 } from "relay-runtime";
-import { createClient } from "graphql-ws";
 
 function fetchQuery(request: RequestParameters, variables: Variables) {
   return fetch(
