@@ -1,11 +1,10 @@
 import React from "react";
-import { Link } from "react-router-dom";
 
 import * as styles from "./SearchMethodGrid.module.scss";
 import SearchMethodGridItem from "./SearchMethodGridItem";
 
 const SearchMethodGrid = () => (
-  <div className={styles.container}>
+  <div>
     <h2>Find a song</h2>
     <div className={styles.grid}>
       <SearchMethodGridItem method="joysoundSong" text="Title (Joysound)" />
