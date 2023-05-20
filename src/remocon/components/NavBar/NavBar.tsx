@@ -2,6 +2,7 @@ import React from "react";
 // tslint:disable-next-line:no-submodule-imports
 import { FaHistory, FaHome } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import icon from "../../images/icon.png";
 
 import styles from "./NavBar.module.scss";
 
@@ -11,7 +12,7 @@ const NavBar = () => {
       <Link to="/">
         <FaHome />
       </Link>
-      <img height={40} src="/icon.png" alt="空" />
+      <img height={40} src={icon} alt="空" />
       <Link to="/history">
         <FaHistory />
       </Link>
