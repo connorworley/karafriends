@@ -93,8 +93,7 @@ function createWindow() {
   const ignoreCORSFilter = {
     urls: [
       "https://*.ipcasting.jp/*",
-      `http://localhost:${karafriendsConfig.remoconPort}/*`,
-      "https://sentry.io/*",
+      `http://localhost:${karafriendsConfig.remoconPort}/*`, // TODO: Set CORS headers on the Express side and remove this
     ],
   };
 
