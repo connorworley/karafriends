@@ -4,6 +4,7 @@ function iOsSimDeviceUdidByDeviceTypeId(deviceTypeId) {
   const simInfo = JSON.parse(
     execFileSync("xcrun", ["simctl", "list", "devices", "--json"])
   );
+  console.log(simInfo);
   return Object.values(simInfo.devices)[0].filter(
     (device) => device.deviceTypeIdentifier === deviceTypeId
   )[0];
