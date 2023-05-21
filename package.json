@@ -18,7 +18,7 @@
     "_run-dev": "yarn build-dev && concurrently \"parcel serve --dist-dir build/dev --port 3000\" \"wait-on http://127.0.0.1:3000/renderer/ && node ./electron.js build/dev/main/main.js\"",
     "package-prod": "node packager.js",
     "get-external-resources": "node scripts/getExternalResources.mjs",
-    "test:wdio": "concurrently --kill-others \"parcel serve --dist-dir build/dev --port 3000\" \"wait-on http://127.0.0.1:3000/renderer/ && pnpify wdio run wdio-electron.conf.js && pnpify wdio run wdio-chrome.conf.js\"",
+    "test:wdio": "concurrently --kill-others \"parcel serve --dist-dir build/dev --port 3000\" \"wait-on http://127.0.0.1:3000/renderer/ && pnpify wdio run renderer.wdio.conf.js && pnpify wdio run remocon.wdio.conf.js\"",
     "postinstall": "husky install"
   },
   "dependencies": {
@@ -134,6 +134,7 @@
     "typescript": "5.0.4",
     "wait-on": "7.0.1",
     "wdio-chromedriver-service": "8.1.1",
+    "wdio-safaridriver-service": "2.1.0",
     "webdriverio": "8.10.2",
     "webpack": "5.83.1",
     "webpack-cli": "5.1.1",

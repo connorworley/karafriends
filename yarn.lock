@@ -3904,10 +3904,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/split2@npm:^3.2.1":
+  version: 3.2.1
+  resolution: "@types/split2@npm:3.2.1"
+  dependencies:
+    "@types/node": "*"
+  checksum: 3c625ad8bdf937650f8533af85b4de22b21dc474e0867bb36dcf91da8bef0af80e18821736581c22e2d402b8c14548e00d0b5dc885a62feae72a5eec04b36d05
+  languageName: node
+  linkType: hard
+
 "@types/stack-utils@npm:^2.0.0":
   version: 2.0.1
   resolution: "@types/stack-utils@npm:2.0.1"
   checksum: 205fdbe3326b7046d7eaf5e494d8084f2659086a266f3f9cf00bccc549c8e36e407f88168ad4383c8b07099957ad669f75f2532ed4bc70be2b037330f7bae019
+  languageName: node
+  linkType: hard
+
+"@types/tcp-port-used@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@types/tcp-port-used@npm:1.0.1"
+  checksum: 5b9df0fed67d214d14dd74c29c6d8f3d4d74533ec73d5150ccea92fea80ffe0f25424fa38dcefec58dee600d1038461f527397fe69ffef11542326385570759a
   languageName: node
   linkType: hard
 
@@ -10719,6 +10735,7 @@ __metadata:
     wait-on: 7.0.1
     wanakana: 5.1.0
     wdio-chromedriver-service: 8.1.1
+    wdio-safaridriver-service: 2.1.0
     webdriverio: 8.10.2
     webpack: 5.83.1
     webpack-cli: 5.1.1
@@ -13899,6 +13916,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"safaridriver@npm:^0.0.4":
+  version: 0.0.4
+  resolution: "safaridriver@npm:0.0.4"
+  checksum: 1ea3d7213316b4124e460618ffd1c1b0e84b2b809f78da35ea42bb15e20ec0104a0ede49d96c4014b5da77f6e2b904896247d019f70ed82c10d15bf784469c8c
+  languageName: node
+  linkType: hard
+
 "safe-buffer@npm:5.2.1, safe-buffer@npm:^5.0.1, safe-buffer@npm:^5.1.0, safe-buffer@npm:~5.2.0":
   version: 5.2.1
   resolution: "safe-buffer@npm:5.2.1"
@@ -15677,6 +15701,29 @@ __metadata:
     webdriverio:
       optional: false
   checksum: e9e797bf1c3366e2dd5cf6b2c362c1fc1a22a8d97c23afff31a670f42dd99a33cb73228011cef7e799613e70ecd30529472a1e00f42dcc28f8a0e88c0ce299e0
+  languageName: node
+  linkType: hard
+
+"wdio-safaridriver-service@npm:2.1.0":
+  version: 2.1.0
+  resolution: "wdio-safaridriver-service@npm:2.1.0"
+  dependencies:
+    "@types/split2": ^3.2.1
+    "@types/tcp-port-used": ^1.0.1
+    "@wdio/logger": ^8.1.0
+    fs-extra: ^11.1.0
+    safaridriver: ^0.0.4
+    split2: ^4.1.0
+    tcp-port-used: ^1.0.2
+  peerDependencies:
+    "@wdio/types": ^7.0.0 || ^8.0.0-alpha.219
+    webdriverio: ^7.0.0 || ^8.0.0-alpha.219
+  peerDependenciesMeta:
+    "@wdio/types":
+      optional: true
+    webdriverio:
+      optional: false
+  checksum: de54c72728ee5322d9d932c77e8167c08e72f47724e27e874c3dd915e82a3ff06d5b9a305f39899ad7319e2ecbd12c6421aae6ff1d119824db9ad516794402bd
   languageName: node
   linkType: hard
 

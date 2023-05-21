@@ -19,5 +19,5 @@ exports.config = {
   services: [
     ["chromedriver", { chromedriverCustomPath: electronChromedriver }],
   ],
-  specs: ["tests/wdio/electron/**"],
+  specs: ["tests/wdio/renderer/**"],
 };
