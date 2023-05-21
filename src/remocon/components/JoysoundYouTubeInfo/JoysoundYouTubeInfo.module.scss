@@ -1,11 +1,4 @@
-.container {
-  margin: 8px 0;
-  display: flex;
-  flex-direction: column;
-
-  iframe,
-  button {
-    width: 100%;
-    margin-bottom: 8px;
-  }
+.container iframe {
+  width: 100%;
+  margin-bottom: 8px;
 }

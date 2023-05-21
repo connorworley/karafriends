@@ -38,12 +38,14 @@ const JoysoundSongPage = () => {
 
   const song = data.joysoundSongDetail;
 
-  const [candidateYoutubeVideoId, setCandidateYoutubeVideoId] =
-    useState<string>(params.youtubeVideoId || "");
+  const [youtubeVideoId, setYoutubeVideoId] = useState<string>(
+    params.youtubeVideoId || ""
+  );
+  const [validatedYoutubeId, setValidatedYoutubeVideoId] = useState<string>("");
+  const [waitForVideoIdInput, setWaitForVideoIdInput] =
+    useState<boolean>(false);
 
-  const [youtubeVideoId, setYoutubeVideoId] = useState<string>("");
-
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmitYoutubeForm = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!inputRef.current) return;
@@ -51,7 +53,8 @@ const JoysoundSongPage = () => {
     const newYoutubeVideoId = getYoutubeVideoId(inputRef.current.value);
 
     if (newYoutubeVideoId !== null) {
-      setCandidateYoutubeVideoId(newYoutubeVideoId);
+      setYoutubeVideoId(newYoutubeVideoId);
+      setWaitForVideoIdInput(false);
 
       history.replaceState(
         {},
@@ -59,6 +62,11 @@ const JoysoundSongPage = () => {
         `#/joysoundSong/${song.id}/${newYoutubeVideoId}`
       );
     }
+  };
+
+  const detachVideo = () => {
+    setYoutubeVideoId("");
+    setValidatedYoutubeVideoId("");
   };
 
   return (
@@ -69,30 +77,45 @@ const JoysoundSongPage = () => {
       {!!song.lyricsPreview && (
         <blockquote>{song.lyricsPreview} ...</blockquote>
       )}
-      <JoysoundQueueButtons song={song} youtubeVideoId={youtubeVideoId} />
-      <div>
-        <h2>
-          Attach Background Video (Currently Attached:{" "}
-          {youtubeVideoId ? youtubeVideoId : "None"})
-        </h2>
+      {validatedYoutubeId ? (
+        <Button full onClick={() => detachVideo()}>
+          Detach YouTube video
+        </Button>
+      ) : (
+        <Button
+          full
+          onClick={() => setWaitForVideoIdInput(!waitForVideoIdInput)}
+        >
+          {waitForVideoIdInput ? "Cancel" : "Set background video from YouTube"}
+        </Button>
+      )}
+      {waitForVideoIdInput ? (
         <SearchFormWrapper>
-          <form onSubmit={onSubmit}>
+          <form onSubmit={onSubmitYoutubeForm}>
             <input
               ref={inputRef}
               placeholder="Youtube video URL or ID"
               defaultValue={youtubeVideoId}
             />
-            <Button type="submit">Get Video Info</Button>
-            {candidateYoutubeVideoId !== "" && (
-              <JoysoundYouTubeInfo
-                videoId={youtubeVideoId}
-                candidateVideoId={candidateYoutubeVideoId}
-                setYoutubeVideoId={setYoutubeVideoId}
-              />
-            )}
+            <Button full type="submit">
+              Set video
+            </Button>
           </form>
         </SearchFormWrapper>
-      </div>
+      ) : (
+        <>
+          <JoysoundQueueButtons
+            song={song}
+            youtubeVideoId={validatedYoutubeId}
+          />
+          {youtubeVideoId !== "" && (
+            <JoysoundYouTubeInfo
+              videoId={youtubeVideoId}
+              setYoutubeVideoId={setValidatedYoutubeVideoId}
+            />
+          )}
+        </>
+      )}
     </div>
   );
 };
