@@ -13,11 +13,13 @@ async function registerServiceWorker() {
 async function showNotification(
   ...args: ConstructorParameters<typeof Notification>
 ) {
-  if ("servierWorker" in navigator) {
+  if ("serviceWorker" in navigator) {
     const registration = await registerServiceWorker();
     return registration.showNotification(...args);
-  } else {
+  } else if (typeof Notification !== undefined) {
     new Notification(...args); // tslint:disable-line:no-unused-expression
+  } else {
+    console.warn("this notif is fukt");
   }
 }
 
