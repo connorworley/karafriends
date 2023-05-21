@@ -4,7 +4,9 @@ const KARAFRIENDS_SIM_DEVICE_NAME = "_karafriends_sim_device";
 
 function findOrCreateAppleSimDeviceUdid(runtime, deviceType) {
   const simInfo = JSON.parse(
-    execFileSync("xcrun", ["simctl", "list", "devices", "--json"])
+    execFileSync("xcrun", ["simctl", "list", "devices", "--json"], {
+      encoding: "utf-8",
+    })
   );
   if (simInfo.devices[runtime]) {
     const device = simInfo.devices[runtime].find(
@@ -15,13 +17,11 @@ function findOrCreateAppleSimDeviceUdid(runtime, deviceType) {
     if (device) return device.udid;
   }
 
-  return execFileSync("xcrun", [
-    "simctl",
-    "create",
-    KARAFRIENDS_SIM_DEVICE_NAME,
-    deviceType,
-    runtime,
-  ]);
+  return execFileSync(
+    "xcrun",
+    ["simctl", "create", KARAFRIENDS_SIM_DEVICE_NAME, deviceType, runtime],
+    { encoding: "utf-8" }
+  );
 }
 
 exports.config = {
