@@ -40,7 +40,7 @@ exports.config = {
         platformName: "iOS",
         "safari:deviceType": "iPhone",
         "safari:deviceUDID": findOrCreateAppleSimDeviceUdid(
-          "com.apple.CoreSimulator.SimRuntime.iOS-16-4",
+          "com.apple.CoreSimulator.SimRuntime.iOS-16-2",
           "com.apple.CoreSimulator.SimDeviceType.iPhone-12"
         ),
         "safari:useSimulator": true,
