@@ -62,7 +62,7 @@ const JoysoundQueueButton = ({
   isDisabled,
   setDisabled,
 }: Props) => {
-  const defaultText = "Queue video" + (isRomaji ? " (Romaji)" : "");
+  const defaultText = `Queue song${isRomaji ? " (Romaji)" : ""}`;
 
   const [text, setText] = useState(defaultText);
   const [commit] = useMutation<JoysoundQueueButtonMutation>(
