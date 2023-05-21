@@ -21,7 +21,7 @@ function findOrCreateAppleSimDeviceUdid(runtime, deviceType) {
     "xcrun",
     ["simctl", "create", KARAFRIENDS_SIM_DEVICE_NAME, deviceType, runtime],
     { encoding: "utf-8" }
-  );
+  ).trim();
 }
 
 exports.config = {
