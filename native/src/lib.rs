@@ -15,7 +15,7 @@ use rubato::Resampler;
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync>>;
 
 #[cfg(feature = "asio")]
-type InputSample = i16;
+type InputSample = i32;
 #[cfg(not(feature = "asio"))]
 type InputSample = f32;
 
