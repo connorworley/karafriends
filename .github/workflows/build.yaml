@@ -49,7 +49,7 @@ jobs:
             ![remocon-Safari.png](${{ env.REMOCON_SAFARI_URL }})
         if: github.event_name == 'pull_request'
   build-macos-aarch64:
-    runs-on: macos-latest
+    runs-on: [self-hosted, macOS, x64]
     steps:
       - uses: actions/checkout@v3
       - uses: actions-rs/toolchain@v1
