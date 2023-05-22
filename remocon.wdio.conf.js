@@ -3,6 +3,7 @@ const { execFileSync } = require("child_process");
 const KARAFRIENDS_SIM_DEVICE_NAME = "_karafriends_sim_device";
 
 function bootAppleSimDevice(udid) {
+  console.info(`Booting sim device ${udid}...`);
   execFileSync("xcrun", ["simctl", "bootstatus", udid, "-b"], {
     stdio: "inherit",
   });
@@ -39,18 +40,18 @@ exports.config = {
   capabilities: [
     {
       browserName: "chrome",
-      // "goog:chromeOptions": {
-      //   mobileEmulation: {
-      //     // Pixel 6-esque settings
-      //     deviceMetrics: {
-      //       width: 412,
-      //       height: 915,
-      //       pixelRatio: 2.625,
-      //     },
-      //     userAgent:
-      //       "Mozilla/5.0 (Linux; Android 13; Pixel 6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36",
-      //   },
-      // },
+      "goog:chromeOptions": {
+        mobileEmulation: {
+          // Pixel 6-esque settings
+          deviceMetrics: {
+            width: 412,
+            height: 915,
+            pixelRatio: 2.625,
+          },
+          userAgent:
+            "Mozilla/5.0 (Linux; Android 13; Pixel 6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36",
+        },
+      },
     },
     ...(process.platform === "darwin" && [
       {
