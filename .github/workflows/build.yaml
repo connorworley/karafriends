@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: 16
       - run: npm install -g yarn
-      - run: curl -O https://github.com/mozilla/sccache/releases/download/v0.4.2/sccache-v0.4.2-x86_64-apple-darwin.tar.gz && tar -xzvf sccache-v0.4.2-x86_64-apple-darwin.tar.gz
+      - run: curl -O -J https://github.com/mozilla/sccache/releases/download/v0.4.2/sccache-v0.4.2-x86_64-apple-darwin.tar.gz && tar -xzvf sccache-v0.4.2-x86_64-apple-darwin.tar.gz
       - uses: MasterworksIO/action-local-cache@1.0.0
         with:
           path: |
@@ -59,7 +59,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - run: curl -O https://github.com/mozilla/sccache/releases/download/v0.4.2/sccache-v0.4.2-x86_64-apple-darwin.tar.gz && tar -xzvf sccache-v0.4.2-x86_64-apple-darwin.tar.gz
+      - run: curl -O -J https://github.com/mozilla/sccache/releases/download/v0.4.2/sccache-v0.4.2-x86_64-apple-darwin.tar.gz && tar -xzvf sccache-v0.4.2-x86_64-apple-darwin.tar.gz
       - name: Configure sccache
         uses: actions/github-script@v6
         with:
@@ -85,7 +85,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - run: curl -O https://github.com/mozilla/sccache/releases/download/v0.4.2/sccache-v0.4.2-x86_64-pc-windows-msvc.tar.gz && tar -xzvf sccache-v0.4.2-x86_64-pc-windows-msvc.tar.gz
+      - run: curl -O -J https://github.com/mozilla/sccache/releases/download/v0.4.2/sccache-v0.4.2-x86_64-pc-windows-msvc.tar.gz && tar -xzvf sccache-v0.4.2-x86_64-pc-windows-msvc.tar.gz
       - name: Configure sccache
         uses: actions/github-script@v6
         with:
@@ -111,7 +111,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - run: curl -O https://github.com/mozilla/sccache/releases/download/v0.4.2/sccache-v0.4.2-x86_64-unknown-linux-musl.tar.gz && tar -xzvf sccache-v0.4.2-x86_64-unknown-linux-musl.tar.gz
+      - run: curl -O -J https://github.com/mozilla/sccache/releases/download/v0.4.2/sccache-v0.4.2-x86_64-unknown-linux-musl.tar.gz && tar -xzvf sccache-v0.4.2-x86_64-unknown-linux-musl.tar.gz
       - name: Configure sccache
         uses: actions/github-script@v6
         with:
