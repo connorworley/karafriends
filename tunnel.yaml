@@ -1,0 +1,6 @@
+ingress:
+  - hostname: offkai.karafriends.party
+    service: http://localhost:8080
+  - hostname: offkai.karafriends.party
+    service: ws://localhost:8080
+  - service: http_status:404

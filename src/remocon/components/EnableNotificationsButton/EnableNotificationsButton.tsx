@@ -3,7 +3,7 @@ import Button from "../Button/Button";
 import * as styles from "./EnableNotificationsButton.module.scss";
 
 const EnableNotificationsButton = () => {
-  if (typeof Notification === undefined) {
+  if (!("Notification" in window)) {
     return <></>;
   }
 

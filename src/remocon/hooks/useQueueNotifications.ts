@@ -16,7 +16,7 @@ async function showNotification(
   if ("serviceWorker" in navigator) {
     const registration = await registerServiceWorker();
     return registration.showNotification(...args);
-  } else if (typeof Notification !== undefined) {
+  } else if ("Notification" in window) {
     new Notification(...args); // tslint:disable-line:no-unused-expression
   } else {
     console.warn("this notif is fukt");
