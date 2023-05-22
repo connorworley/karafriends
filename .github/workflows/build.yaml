@@ -19,6 +19,12 @@ jobs:
           node-version: 16
       - run: npm install -g yarn
       - run: wget https://github.com/mozilla/sccache/releases/download/v0.4.2/sccache-v0.4.2-x86_64-apple-darwin.tar.gz && tar -xzf sccache-v0.4.2-x86_64-apple-darwin.tar.gz
+      - name: Configure sccache
+        uses: actions/github-script@v6
+        with:
+          script: |
+            core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
+            core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
       - uses: actions/cache@v3
         with:
           path: |
@@ -61,6 +67,12 @@ jobs:
         with:
           node-version: 16
       - run: wget https://github.com/mozilla/sccache/releases/download/v0.4.2/sccache-v0.4.2-x86_64-apple-darwin.tar.gz && tar -xzf sccache-v0.4.2-x86_64-apple-darwin.tar.gz
+      - name: Configure sccache
+        uses: actions/github-script@v6
+        with:
+          script: |
+            core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
+            core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
       - uses: actions/cache@v3
         with:
           path: |
@@ -81,6 +93,12 @@ jobs:
         with:
           node-version: 16
       - run: wget https://github.com/mozilla/sccache/releases/download/v0.4.2/sccache-v0.4.2-x86_64-pc-windows-msvc.tar.gz && tar -xzf sccache-v0.4.2-x86_64-pc-windows-msvc.tar.gz
+      - name: Configure sccache
+        uses: actions/github-script@v6
+        with:
+          script: |
+            core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
+            core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
       - uses: actions/cache@v3
         with:
           path: |
@@ -101,6 +119,12 @@ jobs:
         with:
           node-version: 16
       - run: wget https://github.com/mozilla/sccache/releases/download/v0.4.2/sccache-v0.4.2-x86_64-unknown-linux-musl.tar.gz && tar -xzf sccache-v0.4.2-x86_64-unknown-linux-musl.tar.gz
+      - name: Configure sccache
+        uses: actions/github-script@v6
+        with:
+          script: |
+            core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
+            core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
       - uses: actions/cache@v3
         with:
           path: |
@@ -111,5 +135,5 @@ jobs:
       - run: yarn install --immutable
       - run: yarn build-dev
         env:
-          RUSTC_WRAPPER: ./sccache-v0.4.2-x86_64-unknown-linux-musl/sccache-dist
+          RUSTC_WRAPPER: ./sccache-v0.4.2-x86_64-unknown-linux-musl/sccache
           SCCACHE_GHA_ENABLED: on
