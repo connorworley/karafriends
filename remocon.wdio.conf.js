@@ -22,7 +22,7 @@ function findOrCreateAppleSimDevice(runtime, deviceType) {
         device.name === KARAFRIENDS_SIM_DEVICE_NAME
     );
     if (device) {
-      if (device.state !== "Booted") bootAppleSimDevice(device.udid);
+      bootAppleSimDevice(device.udid);
       return device.udid;
     }
   }
