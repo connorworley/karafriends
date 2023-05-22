@@ -112,6 +112,7 @@ const macosTasks = {
   doChecks: () => [
     fs.existsSync(`${extraResourcesDir}/ytdlp/yt-dlp_macos`),
     fs.existsSync(`${extraResourcesDir}/ffmpeg/macos/ffmpeg`),
+    fs.existsSync(buildResourcesDir),
   ],
   prepareDirs: async (tmpDir) =>
     Promise.all([
@@ -122,6 +123,7 @@ const macosTasks = {
         { recursive: true },
         () => null
       ),
+      fs.mkdir(buildResourcesDir, () => null),
     ]),
   getAssets: async (tmpDir) =>
     Promise.all([
@@ -169,6 +171,7 @@ const linuxTasks = {
   doChecks: () => [
     fs.existsSync(`${extraResourcesDir}/ytdlp/yt-dlp`),
     fs.existsSync(`${extraResourcesDir}/ffmpeg/linux/ffmpeg`),
+    fs.existsSync(buildResourcesDir),
   ],
   prepareDirs: async (tmpDir) =>
     Promise.all([
@@ -179,6 +182,7 @@ const linuxTasks = {
         { recursive: true },
         () => null
       ),
+      fs.mkdir(buildResourcesDir, () => null),
     ]),
   getAssets: async (tmpDir) =>
     Promise.all([
