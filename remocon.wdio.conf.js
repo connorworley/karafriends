@@ -41,8 +41,8 @@ exports.config = {
         mobileEmulation: {
           // Pixel 6-esque settings
           deviceMetrics: {
-            width: 1080,
-            height: 2400,
+            width: 412,
+            height: 915,
             pixelRatio: 2.625,
           },
           userAgent:
