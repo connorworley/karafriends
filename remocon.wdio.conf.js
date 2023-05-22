@@ -26,7 +26,7 @@ exports.config = {
       },
     ]),
   ],
-  connectionRetryTimeout: 60 * 1000,
+  connectionRetryTimeout: 5 * 60 * 1000,
   framework: "mocha",
   mochaOpts: {
     timeout: 60 * 1000,
