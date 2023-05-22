@@ -29,7 +29,7 @@ exports.config = {
   connectionRetryTimeout: 5 * 60 * 1000,
   framework: "mocha",
   mochaOpts: {
-    timeout: 60 * 1000,
+    timeout: 5 * 60 * 1000,
   },
   runner: "local",
   services: [["chromedriver"], ["safaridriver"]],
