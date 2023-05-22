@@ -28,6 +28,7 @@ jobs:
       - run: yarn build-dev
         env:
           CARGO_ARGS: --target x86_64-apple-darwin
+          CARGO_INCREMENTAL: false
           RUSTC_WRAPPER: ./sccache-v0.4.2-x86_64-apple-darwin/sccache
       - run: yarn test:wdio
       - run: |
@@ -74,6 +75,7 @@ jobs:
       - run: yarn build-dev
         env:
           CARGO_ARGS: --target aarch64-apple-darwin
+          CARGO_INCREMENTAL: false
           RUSTC_WRAPPER: ./sccache-v0.4.2-x86_64-apple-darwin/sccache
   build-windows:
     runs-on: windows-latest
@@ -99,6 +101,7 @@ jobs:
       - run: yarn build-dev
         env:
           CARGO_ARGS: --features asio
+          CARGO_INCREMENTAL: false
           RUSTC_WRAPPER: ./sccache-v0.4.2-x86_64-pc-windows-msvc/sccache.exe
           SCCACHE_GHA_ENABLED: on
   build-linux:
@@ -125,5 +128,6 @@ jobs:
       - run: yarn install --immutable
       - run: yarn build-dev
         env:
+          CARGO_INCREMENTAL: false
           RUSTC_WRAPPER: ./sccache-v0.4.2-x86_64-unknown-linux-musl/sccache
           SCCACHE_GHA_ENABLED: on
