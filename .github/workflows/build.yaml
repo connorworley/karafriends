@@ -41,7 +41,7 @@ jobs:
             # WDIO Screenshots
             ## Renderer (Electron)
             ![renderer.png](${{ env.RENDERER_URL }})
-            ## Remocon (Chrome / Pixel 5)
+            ## Remocon (Chrome / Pixel 6)
             ![remocon-chrome.png](${{ env.REMOCON_CHROME_URL }})
             ## Remocon (Safari iPhone 14)
             ![remocon-Safari.png](${{ env.REMOCON_SAFARI_URL }})
