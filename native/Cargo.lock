@@ -302,14 +302,23 @@ dependencies = [
 name = "karafriends"
 version = "0.1.0"
 dependencies = [
+ "karafriends-lib",
+ "neon",
+ "win32console",
+]
+
+[[package]]
+name = "karafriends-lib"
+version = "0.1.0"
+dependencies = [
  "asio-sys",
  "cpal",
  "lazy_static",
  "neon",
+ "num-traits",
  "realfft",
  "ringbuf",
  "rubato",
- "win32console",
 ]
 
 [[package]]
