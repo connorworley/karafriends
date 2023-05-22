@@ -6,7 +6,7 @@ function bootAppleSimDevice(udid) {
   execFileSync("xcrun", ["simctl", "boot", udid]);
 }
 
-function findOrCreateAppleSimDeviceUdid(runtime, deviceType) {
+function findOrCreateAppleSimDevice(runtime, deviceType) {
   const simInfo = JSON.parse(
     execFileSync("xcrun", ["simctl", "list", "devices", "--json"], {
       encoding: "utf-8",
@@ -39,7 +39,7 @@ exports.config = {
       browserName: "chrome",
       "goog:chromeOptions": {
         mobileEmulation: {
-          deviceName: "Pixel 5",
+          deviceName: "Pixel 4",
         },
       },
     },
@@ -48,7 +48,7 @@ exports.config = {
         browserName: "Safari",
         platformName: "iOS",
         "safari:deviceType": "iPhone",
-        "safari:deviceUDID": findOrCreateAppleSimDeviceUdid(
+        "safari:deviceUDID": findOrCreateAppleSimDevice(
           "com.apple.CoreSimulator.SimRuntime.iOS-16-2",
           "com.apple.CoreSimulator.SimDeviceType.iPhone-12"
         ),
@@ -57,6 +57,9 @@ exports.config = {
     ]),
   ],
   framework: "mocha",
+  mochaOpts: {
+    timeout: 60000,
+  },
   runner: "local",
   services: [["chromedriver"], ["safaridriver"]],
   specs: ["tests/wdio/remocon/**"],
