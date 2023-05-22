@@ -15,7 +15,7 @@ use rubato::Resampler;
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync>>;
 
 #[cfg(feature = "asio")]
-type InputSample = i16;
+type InputSample = i32;
 #[cfg(not(feature = "asio"))]
 type InputSample = f32;
 
@@ -243,9 +243,10 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
         let input_sample_rate = input_config.sample_rate.0;
 
         println!(
-            "Created input device {} with config {:#?}",
+            "Created input device {} with config {:#?}, sample format {:#?}",
             input_device.name().unwrap(),
-            input_config
+            input_config,
+            best_supported_input_config.sample_format(),
         );
 
         let output_host = cpal::default_host();
@@ -269,9 +270,10 @@ fn input_device__new(mut cx: FunctionContext) -> JsResult<JsBox<RefCell<InputDev
         let output_sample_rate = output_config.sample_rate.0;
 
         println!(
-            "Created output device {} with config {:#?}",
+            "Created output device {} with config {:#?}, sample format {:#?}",
             output_device.name().unwrap(),
-            output_config
+            output_config,
+            best_supported_output_config.sample_format(),
         );
 
         let pitch_sample_count = (input_sample_rate / 40) as usize;

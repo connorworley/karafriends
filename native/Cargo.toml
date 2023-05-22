@@ -10,8 +10,8 @@ name = "karafriends"
 crate-type = ["cdylib"]
 
 [dependencies]
-asio-sys = { version = "0.2.1", optional = true }
-cpal = "0.15.2"
+asio-sys = { git = "https://github.com/RustAudio/cpal", rev = "d4ba28df733fbb5e5a4d78f7a8fd789206a44cbe", optional = true }
+cpal = { git = "https://github.com/RustAudio/cpal", rev = "d4ba28df733fbb5e5a4d78f7a8fd789206a44cbe" }
 lazy_static = "1.4.0"
 neon = { version = "1.0.0-alpha.4", default-features = false, features = ["napi-8"] }
 realfft = "3.2.0"
