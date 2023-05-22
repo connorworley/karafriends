@@ -39,7 +39,14 @@ exports.config = {
       browserName: "chrome",
       "goog:chromeOptions": {
         mobileEmulation: {
-          deviceName: "Pixel 4",
+          // Pixel 6-esque settings
+          deviceMetrics: {
+            width: 1080,
+            height: 2400,
+            pixelRatio: 2.625,
+          },
+          userAgent:
+            "Mozilla/5.0 (Linux; Android 13; Pixel 6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36",
         },
       },
     },
