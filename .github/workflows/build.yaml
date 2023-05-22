@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: 16
       - run: npm install -g yarn
-      - run: curl -sSL https://github.com/mozilla/sccache/releases/download/v0.4.2/sccache-v0.4.2-x86_64-apple-darwin.tar.gz | tar -xzv
+      - uses: mozilla-actions/sccache-action@v0.0.3
       - uses: MasterworksIO/action-local-cache@1.0.0
         with:
           path: |
@@ -29,7 +29,7 @@ jobs:
         env:
           CARGO_ARGS: --target x86_64-apple-darwin
           CARGO_INCREMENTAL: false
-          RUSTC_WRAPPER: ./sccache-v0.4.2-x86_64-apple-darwin/sccache
+          RUSTC_WRAPPER: sccache
       - run: yarn test:wdio
       - run: |
           echo RENDERER_URL=$(curl -F "reqtype=fileupload" -F "fileToUpload=@renderer.png" https://catbox.moe/user/api.php) >> $GITHUB_ENV
@@ -59,7 +59,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - run: curl -sSL https://github.com/mozilla/sccache/releases/download/v0.4.2/sccache-v0.4.2-x86_64-apple-darwin.tar.gz | tar -xzv
+      - uses: mozilla-actions/sccache-action@v0.0.3
       - name: Configure sccache
         uses: actions/github-script@v6
         with:
@@ -76,7 +76,7 @@ jobs:
         env:
           CARGO_ARGS: --target aarch64-apple-darwin
           CARGO_INCREMENTAL: false
-          RUSTC_WRAPPER: ./sccache-v0.4.2-x86_64-apple-darwin/sccache
+          RUSTC_WRAPPER: sccache
   build-windows:
     runs-on: windows-latest
     steps:
@@ -84,7 +84,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - run: curl -sSL -o sccache.tar.gz https://github.com/mozilla/sccache/releases/download/v0.4.2/sccache-v0.4.2-x86_64-pc-windows-msvc.tar.gz && tar -xzvf sccache.tar.gz
+      - uses: mozilla-actions/sccache-action@v0.0.3
       - name: Configure sccache
         uses: actions/github-script@v6
         with:
@@ -102,8 +102,8 @@ jobs:
         env:
           CARGO_ARGS: --features asio
           CARGO_INCREMENTAL: false
-          RUSTC_WRAPPER: ./sccache-v0.4.2-x86_64-pc-windows-msvc/sccache.exe
-          SCCACHE_GHA_ENABLED: on
+          RUSTC_WRAPPER: sccache.exe
+          SCCACHE_GHA_ENABLED: true
   build-linux:
     runs-on: ubuntu-latest
     steps:
@@ -111,7 +111,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - run: curl -sSL https://github.com/mozilla/sccache/releases/download/v0.4.2/sccache-v0.4.2-x86_64-unknown-linux-musl.tar.gz | tar -xzv
+      - uses: mozilla-actions/sccache-action@v0.0.3
       - name: Configure sccache
         uses: actions/github-script@v6
         with:
@@ -129,5 +129,5 @@ jobs:
       - run: yarn build-dev
         env:
           CARGO_INCREMENTAL: false
-          RUSTC_WRAPPER: ./sccache-v0.4.2-x86_64-unknown-linux-musl/sccache
-          SCCACHE_GHA_ENABLED: on
+          RUSTC_WRAPPER: sccache
+          SCCACHE_GHA_ENABLED: true
