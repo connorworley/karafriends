@@ -7,7 +7,7 @@ on:
       - master
 jobs:
   build-macos-x86_64:
-    runs-on: macos-latest
+    runs-on: [self-hosted, macOS, x64]
     steps:
       - uses: actions/checkout@v3
       - uses: actions-rs/toolchain@v1
@@ -17,7 +17,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - run: sudo safaridriver --enable
+      - run: npm install -g yarn
       - uses: actions/cache@v3
         with:
           path: |

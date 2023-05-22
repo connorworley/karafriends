@@ -14,7 +14,11 @@ exports.config = {
       },
     },
   ],
+  connectionRetryTimeout: 5 * 60 * 1000,
   framework: "mocha",
+  mochaOpts: {
+    timeout: 5 * 60 * 1000,
+  },
   runner: "local",
   services: [
     ["chromedriver", { chromedriverCustomPath: electronChromedriver }],
