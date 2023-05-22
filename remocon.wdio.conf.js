@@ -3,7 +3,9 @@ const { execFileSync } = require("child_process");
 const KARAFRIENDS_SIM_DEVICE_NAME = "_karafriends_sim_device";
 
 function bootAppleSimDevice(udid) {
-  execFileSync("xcrun", ["simctl", "bootstatus", udid, "-b"]);
+  execFileSync("xcrun", ["simctl", "bootstatus", udid, "-b"], {
+    stdio: "inherit",
+  });
 }
 
 function findOrCreateAppleSimDevice(runtime, deviceType) {
