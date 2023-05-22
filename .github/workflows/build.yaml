@@ -18,7 +18,6 @@ jobs:
         with:
           node-version: 16
       - run: npm install -g yarn
-      - run: brew install curl
       - run: curl -O https://github.com/mozilla/sccache/releases/download/v0.4.2/sccache-v0.4.2-x86_64-apple-darwin.tar.gz && tar -xzf sccache-v0.4.2-x86_64-apple-darwin.tar.gz
       - uses: MasterworksIO/action-local-cache@1.0.0
         with:
