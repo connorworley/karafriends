@@ -123,7 +123,7 @@ const macosTasks = {
         { recursive: true },
         () => null
       ),
-      fs.mkdir(buildResourcesDir),
+      fs.mkdir(buildResourcesDir, () => null),
     ]),
   getAssets: async (tmpDir) =>
     Promise.all([
@@ -182,7 +182,7 @@ const linuxTasks = {
         { recursive: true },
         () => null
       ),
-      fs.mkdir(buildResourcesDir),
+      fs.mkdir(buildResourcesDir, () => null),
     ]),
   getAssets: async (tmpDir) =>
     Promise.all([
