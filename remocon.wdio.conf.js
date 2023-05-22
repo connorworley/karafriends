@@ -1,40 +1,5 @@
 const { execFileSync } = require("child_process");
 
-const KARAFRIENDS_SIM_DEVICE_NAME = "_karafriends_sim_device";
-
-function bootAppleSimDevice(udid) {
-  execFileSync("xcrun", ["simctl", "bootstatus", udid, "-b"], {
-    stdio: "inherit",
-  });
-}
-
-function findOrCreateAppleSimDevice(runtime, deviceType) {
-  const simInfo = JSON.parse(
-    execFileSync("xcrun", ["simctl", "list", "devices", "--json"], {
-      encoding: "utf-8",
-    })
-  );
-  if (simInfo.devices[runtime]) {
-    const device = simInfo.devices[runtime].find(
-      (device) =>
-        device.deviceTypeIdentifier === deviceType &&
-        device.name === KARAFRIENDS_SIM_DEVICE_NAME
-    );
-    if (device) {
-      bootAppleSimDevice(device.udid);
-      return device.udid;
-    }
-  }
-
-  const udid = execFileSync(
-    "xcrun",
-    ["simctl", "create", KARAFRIENDS_SIM_DEVICE_NAME, deviceType, runtime],
-    { encoding: "utf-8" }
-  ).trim();
-  bootAppleSimDevice(udid);
-  return udid;
-}
-
 exports.config = {
   capabilities: [
     {
@@ -57,27 +22,42 @@ exports.config = {
         browserName: "Safari",
         platformName: "iOS",
         "safari:deviceType": "iPhone",
-        "safari:deviceUDID": findOrCreateAppleSimDevice(
-          "com.apple.CoreSimulator.SimRuntime.iOS-16-2",
-          "com.apple.CoreSimulator.SimDeviceType.iPhone-12"
-        ),
         "safari:useSimulator": true,
       },
     ]),
   ],
+  connectionRetryTimeout: 60 * 1000,
   framework: "mocha",
   mochaOpts: {
     timeout: 60 * 1000,
   },
   runner: "local",
-  services: [
-    [
-      "chromedriver",
-      {
-        pollTimeout: 60 * 1000,
-      },
-    ],
-    ["safaridriver"],
-  ],
+  services: [["chromedriver"], ["safaridriver"]],
   specs: ["tests/wdio/remocon/**"],
+  beforeSession: (_config, caps, _specs) => {
+    if (caps["safari:useSimulator"] === true) {
+      const udid = execFileSync(
+        "xcrun",
+        [
+          "simctl",
+          "create",
+          "karafriendsIntegrationDevice",
+          "com.apple.CoreSimulator.SimDeviceType.iPhone-12",
+          "com.apple.CoreSimulator.SimRuntime.iOS-16-4",
+        ],
+        { encoding: "utf-8" }
+      ).trim();
+      execFileSync("xcrun", ["simctl", "bootstatus", udid, "-b"], {
+        stdio: "inherit",
+      });
+      caps["safari:deviceUDID"] = udid;
+    }
+  },
+  afterSession: (_config, caps, _specs) => {
+    if (caps["safari:useSimulator"] === true) {
+      execFileSync("xcrun", ["simctl", "delete", caps["safari:deviceUDID"]], {
+        stdio: "inherit",
+      });
+    }
+  },
 };
