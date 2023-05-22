@@ -2,6 +2,10 @@ const { execFileSync } = require("child_process");
 
 const KARAFRIENDS_SIM_DEVICE_NAME = "_karafriends_sim_device";
 
+function bootAppleSimDevice(udid) {
+  execFileSync("xcrun", ["simctl", "boot", udid]);
+}
+
 function findOrCreateAppleSimDeviceUdid(runtime, deviceType) {
   const simInfo = JSON.parse(
     execFileSync("xcrun", ["simctl", "list", "devices", "--json"], {
@@ -14,14 +18,19 @@ function findOrCreateAppleSimDeviceUdid(runtime, deviceType) {
         device.deviceTypeIdentifier === deviceType &&
         device.name === KARAFRIENDS_SIM_DEVICE_NAME
     );
-    if (device) return device.udid;
+    if (device) {
+      if (device.state !== "Booted") bootAppleSimDevice(device.udid);
+      return device.udid;
+    }
   }
 
-  return execFileSync(
+  const udid = execFileSync(
     "xcrun",
     ["simctl", "create", KARAFRIENDS_SIM_DEVICE_NAME, deviceType, runtime],
     { encoding: "utf-8" }
   ).trim();
+  bootAppleSimDevice(udid);
+  return udid;
 }
 
 exports.config = {
