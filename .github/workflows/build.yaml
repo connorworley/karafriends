@@ -65,7 +65,7 @@ jobs:
           script: |
             core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
             core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
-      - uses: actions/cache@v3
+      - uses: MasterworksIO/action-local-cache@1.0.0
         with:
           path: |
             extraResources
@@ -75,7 +75,6 @@ jobs:
         env:
           CARGO_ARGS: --target aarch64-apple-darwin
           RUSTC_WRAPPER: ./sccache-v0.4.2-x86_64-apple-darwin/sccache
-          SCCACHE_GHA_ENABLED: on
   build-windows:
     runs-on: windows-latest
     steps:
