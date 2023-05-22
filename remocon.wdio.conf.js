@@ -68,9 +68,17 @@ exports.config = {
   ],
   framework: "mocha",
   mochaOpts: {
-    timeout: 60000,
+    timeout: 60 * 1000,
   },
   runner: "local",
-  services: [["chromedriver"], ["safaridriver"]],
+  services: [
+    [
+      "chromedriver",
+      {
+        pollTimeout: 60 * 1000,
+      },
+    ],
+    ["safaridriver"],
+  ],
   specs: ["tests/wdio/remocon/**"],
 };
