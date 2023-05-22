@@ -18,14 +18,9 @@ jobs:
         with:
           node-version: 16
       - run: npm install -g yarn
-      - run: wget https://github.com/mozilla/sccache/releases/download/v0.4.2/sccache-v0.4.2-x86_64-apple-darwin.tar.gz && tar -xzf sccache-v0.4.2-x86_64-apple-darwin.tar.gz
-      - name: Configure sccache
-        uses: actions/github-script@v6
-        with:
-          script: |
-            core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
-            core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
-      - uses: actions/cache@v3
+      - run: brew install curl
+      - run: curl -O https://github.com/mozilla/sccache/releases/download/v0.4.2/sccache-v0.4.2-x86_64-apple-darwin.tar.gz && tar -xzf sccache-v0.4.2-x86_64-apple-darwin.tar.gz
+      - uses: MasterworksIO/action-local-cache@1.0.0
         with:
           path: |
             buildResources
@@ -36,7 +31,6 @@ jobs:
         env:
           CARGO_ARGS: --target x86_64-apple-darwin
           RUSTC_WRAPPER: ./sccache-v0.4.2-x86_64-apple-darwin/sccache
-          SCCACHE_GHA_ENABLED: on
       - run: yarn test:wdio
       - run: |
           echo RENDERER_URL=$(curl -F "reqtype=fileupload" -F "fileToUpload=@renderer.png" https://catbox.moe/user/api.php) >> $GITHUB_ENV
@@ -66,7 +60,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - run: wget https://github.com/mozilla/sccache/releases/download/v0.4.2/sccache-v0.4.2-x86_64-apple-darwin.tar.gz && tar -xzf sccache-v0.4.2-x86_64-apple-darwin.tar.gz
+      - run: curl -O https://github.com/mozilla/sccache/releases/download/v0.4.2/sccache-v0.4.2-x86_64-apple-darwin.tar.gz && tar -xzf sccache-v0.4.2-x86_64-apple-darwin.tar.gz
       - name: Configure sccache
         uses: actions/github-script@v6
         with:
@@ -92,7 +86,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - run: wget https://github.com/mozilla/sccache/releases/download/v0.4.2/sccache-v0.4.2-x86_64-pc-windows-msvc.tar.gz && tar -xzf sccache-v0.4.2-x86_64-pc-windows-msvc.tar.gz
+      - run: curl -O https://github.com/mozilla/sccache/releases/download/v0.4.2/sccache-v0.4.2-x86_64-pc-windows-msvc.tar.gz && tar -xzf sccache-v0.4.2-x86_64-pc-windows-msvc.tar.gz
       - name: Configure sccache
         uses: actions/github-script@v6
         with:
@@ -118,7 +112,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - run: wget https://github.com/mozilla/sccache/releases/download/v0.4.2/sccache-v0.4.2-x86_64-unknown-linux-musl.tar.gz && tar -xzf sccache-v0.4.2-x86_64-unknown-linux-musl.tar.gz
+      - run: curl -O https://github.com/mozilla/sccache/releases/download/v0.4.2/sccache-v0.4.2-x86_64-unknown-linux-musl.tar.gz && tar -xzf sccache-v0.4.2-x86_64-unknown-linux-musl.tar.gz
       - name: Configure sccache
         uses: actions/github-script@v6
         with:
