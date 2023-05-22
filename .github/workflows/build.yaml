@@ -18,6 +18,7 @@ jobs:
         with:
           node-version: 16
       - run: npm install -g yarn
+      - run: wget https://github.com/mozilla/sccache/releases/download/v0.4.2/sccache-v0.4.2-x86_64-apple-darwin.tar.gz && tar -xzf sccache-v0.4.2-x86_64-apple-darwin.tar.gz
       - uses: actions/cache@v3
         with:
           path: |
@@ -28,6 +29,8 @@ jobs:
       - run: yarn build-dev
         env:
           CARGO_ARGS: --target x86_64-apple-darwin
+          RUSTC_WRAPPER: ./sccache-v0.4.2-x86_64-apple-darwin/sccache
+          SCCACHE_GHA_ENABLED: on
       - run: yarn test:wdio
       - run: |
           echo RENDERER_URL=$(curl -F "reqtype=fileupload" -F "fileToUpload=@renderer.png" https://catbox.moe/user/api.php) >> $GITHUB_ENV
@@ -57,6 +60,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
+      - run: wget https://github.com/mozilla/sccache/releases/download/v0.4.2/sccache-v0.4.2-x86_64-apple-darwin.tar.gz && tar -xzf sccache-v0.4.2-x86_64-apple-darwin.tar.gz
       - uses: actions/cache@v3
         with:
           path: |
@@ -67,6 +71,8 @@ jobs:
       - run: yarn build-dev
         env:
           CARGO_ARGS: --target aarch64-apple-darwin
+          RUSTC_WRAPPER: ./sccache-v0.4.2-x86_64-apple-darwin/sccache
+          SCCACHE_GHA_ENABLED: on
   build-windows:
     runs-on: windows-latest
     steps:
@@ -74,6 +80,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
+      - run: wget https://github.com/mozilla/sccache/releases/download/v0.4.2/sccache-v0.4.2-x86_64-pc-windows-msvc.tar.gz && tar -xzf sccache-v0.4.2-x86_64-pc-windows-msvc.tar.gz
       - uses: actions/cache@v3
         with:
           path: |
@@ -84,6 +91,8 @@ jobs:
       - run: yarn build-dev
         env:
           CARGO_ARGS: --features asio
+          RUSTC_WRAPPER: ./sccache-v0.4.2-x86_64-pc-windows-msvc/sccache.exe
+          SCCACHE_GHA_ENABLED: on
   build-linux:
     runs-on: ubuntu-latest
     steps:
@@ -91,6 +100,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
+      - run: wget https://github.com/mozilla/sccache/releases/download/v0.4.2/sccache-v0.4.2-x86_64-unknown-linux-musl.tar.gz && tar -xzf sccache-v0.4.2-x86_64-unknown-linux-musl.tar.gz
       - uses: actions/cache@v3
         with:
           path: |
@@ -100,3 +110,6 @@ jobs:
       - run: sudo apt-get update && sudo apt-get install -y libasound2-dev
       - run: yarn install --immutable
       - run: yarn build-dev
+        env:
+          RUSTC_WRAPPER: ./sccache-v0.4.2-x86_64-unknown-linux-musl/sccache-dist
+          SCCACHE_GHA_ENABLED: on
