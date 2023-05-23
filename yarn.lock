@@ -4164,21 +4164,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wdio/globals@npm:8.10.2":
-  version: 8.10.2
-  resolution: "@wdio/globals@npm:8.10.2"
-  dependencies:
-    expect-webdriverio: ^4.0.1
-    webdriverio: 8.10.2
-  dependenciesMeta:
-    expect-webdriverio:
-      optional: true
-    webdriverio:
-      optional: true
-  checksum: f90b1f32cf26fa429f51153266d94e3ce6d2f73ff12eaaf46556c48f19ab1ffd391ce5f6813fc3aae838e992404fd1bb5c77f85c69b3efb281306e016d921573
-  languageName: node
-  linkType: hard
-
 "@wdio/globals@npm:8.10.5":
   version: 8.10.5
   resolution: "@wdio/globals@npm:8.10.5"
@@ -4209,19 +4194,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wdio/local-runner@npm:8.10.2":
-  version: 8.10.2
-  resolution: "@wdio/local-runner@npm:8.10.2"
+"@wdio/local-runner@npm:8.10.5":
+  version: 8.10.5
+  resolution: "@wdio/local-runner@npm:8.10.5"
   dependencies:
     "@types/node": ^20.1.0
     "@wdio/logger": 8.6.6
     "@wdio/repl": 8.10.1
-    "@wdio/runner": 8.10.2
-    "@wdio/types": 8.10.2
+    "@wdio/runner": 8.10.5
+    "@wdio/types": 8.10.4
     async-exit-hook: ^2.0.1
     split2: ^4.1.0
     stream-buffers: ^3.0.2
-  checksum: 98e15ce41d05c945b6861c4c2566b7aa6cc976e135cf62cfdda26e0e380f17fd12a9ae7f6735e47a3c91e43058611b15831ca220a267c9a4cab76caedd55a2b6
+  checksum: 88d1b36613942dc24a6c126969b2f3426df7c1e0dc08db04449b379efde3bff06636f2a94b4aa1b6351caf50bc8f7ed6fa600e4113ffa512c6c9fe73dd3f784e
   languageName: node
   linkType: hard
 
@@ -4283,22 +4268,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wdio/runner@npm:8.10.2":
-  version: 8.10.2
-  resolution: "@wdio/runner@npm:8.10.2"
+"@wdio/runner@npm:8.10.5":
+  version: 8.10.5
+  resolution: "@wdio/runner@npm:8.10.5"
   dependencies:
     "@types/node": ^20.1.0
-    "@wdio/config": 8.10.2
-    "@wdio/globals": 8.10.2
+    "@wdio/config": 8.10.4
+    "@wdio/globals": 8.10.5
     "@wdio/logger": 8.6.6
-    "@wdio/types": 8.10.2
-    "@wdio/utils": 8.10.2
+    "@wdio/types": 8.10.4
+    "@wdio/utils": 8.10.4
     deepmerge-ts: ^5.0.0
     expect-webdriverio: ^4.0.1
     gaze: ^1.1.2
-    webdriver: 8.10.2
-    webdriverio: 8.10.2
-  checksum: 66db6b4d3c8f698b2343fa7a687b7e043fca8de14395cb3d9ec857d92070f4e85cdddd188c68da40cb05cd70d2d600c292ca795cade155a16f931534e90aa4e3
+    webdriver: 8.10.4
+    webdriverio: 8.10.5
+  checksum: 28db3d93eb46867485cd6e5406b05161474bc2183d000b204b1ebb005633570b452a9a948f31996545442cd4b60320c16edec6ce40d8496a83c098bdd4a0838d
   languageName: node
   linkType: hard
 
@@ -10831,7 +10816,7 @@ __metadata:
     "@types/ws": ^8
     "@types/youtube-player": 5.5.7
     "@wdio/cli": 8.10.5
-    "@wdio/local-runner": 8.10.2
+    "@wdio/local-runner": 8.10.5
     "@wdio/mocha-framework": 8.10.2
     "@yarnpkg/pnpify": 4.0.0-rc.44
     apollo-datasource-rest: 3.7.0
