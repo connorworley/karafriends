@@ -411,12 +411,13 @@ impl InputDevice {
                 {
                     eprintln!("{}", e);
                 };
-                for sample in &resampler_output[0] {
-                    for _ in 0..output_channels {
-                        if output_tx.push(*sample).is_err() {
-                            eprintln!("output fell behind (with sample rate conversion)!");
-                        }
-                    }
+                let samples_written = output_tx.push_iter(
+                    &mut resampler_output[0]
+                        .iter_mut()
+                        .flat_map(|sample| std::iter::repeat(*sample).take(output_channels)),
+                );
+                if samples_written < resampler_output[0].len() {
+                    eprintln!("output fell behind (with sample rate conversion)!");
                 }
             } else {
                 for sample in output_samples {
@@ -434,16 +435,13 @@ impl InputDevice {
         mut output_rx: ringbuf::HeapConsumer<f32>,
     ) -> Result<impl FnMut(&mut [Sample], &cpal::OutputCallbackInfo) + Send + 'static> {
         Ok(move |samples: &mut [Sample], _: &_| {
-            let mut float_samples = vec![0.0; samples.len()];
-            let samples_read = output_rx.pop_slice(&mut float_samples);
-            samples
-                .iter_mut()
-                .zip(float_samples)
-                .take(samples_read)
-                .for_each(|(sample, float_sample)| *sample = Sample::from_sample(float_sample));
-            if samples_read < samples.len() {
+            if output_rx.len() < samples.len() {
                 eprintln!("input fell behind");
             }
+            samples
+                .iter_mut()
+                .zip(output_rx.pop_iter())
+                .for_each(|(sample, float_sample)| *sample = Sample::from_sample(float_sample));
         })
     }
 }
