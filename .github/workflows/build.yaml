@@ -59,6 +59,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
+      - run: npm install -g yarn
       - uses: mozilla-actions/sccache-action@v0.0.3
       - name: Configure sccache
         uses: actions/github-script@v6

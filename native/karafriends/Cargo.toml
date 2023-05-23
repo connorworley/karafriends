@@ -1,0 +1,19 @@
+[package]
+name = "karafriends"
+version = "0.1.0"
+authors = ["Connor Worley <connorbworley@gmail.com>"]
+edition = "2018"
+exclude = ["index.node"]
+
+[lib]
+name = "karafriends"
+crate-type = ["cdylib"]
+
+[dependencies]
+karafriends-lib = { version = "0.1.0", path = "../karafriends-lib" }
+neon = { version = "1.0.0-alpha.4", default-features = false, features = ["napi-8"] }
+
+[target.'cfg(windows)'.dependencies]
+win32console = "0.1.5"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
