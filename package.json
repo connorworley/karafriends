@@ -72,7 +72,7 @@
     "uuid": "9.0.0",
     "wanakana": "5.1.0",
     "ws": "8.13.0",
-    "yaml": "2.2.2",
+    "yaml": "2.3.0",
     "youtube-player": "5.6.0"
   },
   "devDependencies": {
