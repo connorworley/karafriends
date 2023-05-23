@@ -366,6 +366,10 @@ impl InputDevice {
                 .map_err(|_| "Failed to push to echo buffer")?;
         }
 
+        let resampler_chunk_size = match input_config.buffer_size {
+            cpal::BufferSize::Fixed(count) => count as usize,
+            cpal::BufferSize::Default => (input_sample_rate / output_sample_rate) as usize,
+        };
         let mut resampler = rubato::SincFixedIn::<f32>::new(
             output_sample_rate as f64 / input_sample_rate as f64,
             1.0,
@@ -376,10 +380,7 @@ impl InputDevice {
                 oversampling_factor: 256,
                 window: rubato::WindowFunction::BlackmanHarris2,
             },
-            match input_config.buffer_size {
-                cpal::BufferSize::Fixed(count) => count as usize,
-                cpal::BufferSize::Default => (input_sample_rate / output_sample_rate) as usize,
-            },
+            resampler_chunk_size,
             1,
         )?;
         let mut resampler_output = resampler.output_buffer_allocate();
@@ -406,11 +407,23 @@ impl InputDevice {
             echo_tx.push_slice(output_samples.as_slice());
 
             if input_sample_rate != output_sample_rate {
-                if let Err(e) =
-                    resampler.process_into_buffer(&[&output_samples], &mut resampler_output, None)
-                {
-                    eprintln!("{}", e);
-                };
+                output_samples
+                    .chunks(resampler_chunk_size)
+                    .for_each(|chunk| {
+                        if let Err(e) =
+                            resampler.process_into_buffer(&[&chunk], &mut resampler_output, None)
+                        {
+                            eprintln!("{}", e);
+                        };
+                        let samples_written =
+                            output_tx.push_iter(&mut resampler_output[0].iter_mut().flat_map(
+                                |sample| std::iter::repeat(*sample).take(output_channels),
+                            ));
+                        if samples_written < resampler_output[0].len() {
+                            eprintln!("output fell behind (with sample rate conversion)!");
+                        }
+                    });
+            } else {
                 let samples_written = output_tx.push_iter(
                     &mut resampler_output[0]
                         .iter_mut()
@@ -418,14 +431,6 @@ impl InputDevice {
                 );
                 if samples_written < resampler_output[0].len() {
                     eprintln!("output fell behind (with sample rate conversion)!");
-                }
-            } else {
-                for sample in output_samples {
-                    for _ in 0..output_channels {
-                        if output_tx.push(sample).is_err() {
-                            eprintln!("output fell behind!");
-                        }
-                    }
                 }
             }
         })
@@ -504,13 +509,10 @@ fn supported_config_to_config(
         channels: config_range.channels(),
         sample_rate: config_range.max_sample_rate(),
         buffer_size: match config_range.buffer_size() {
-            // WASAPI seems to lie about buffer size (how is 0 even possible?)
-            // In reality, we seem to get sample_rate / 100
-            cpal::SupportedBufferSize::Range { min: 0, max: _ } => {
-                cpal::BufferSize::Fixed(config_range.max_sample_rate().0 / 100)
-            }
+            // WASAPI lies about buffer size ranges and doesn't repect fixed size requests
+            #[cfg(not(windows))]
             cpal::SupportedBufferSize::Range { min, max: _ } => cpal::BufferSize::Fixed(*min),
-            cpal::SupportedBufferSize::Unknown => cpal::BufferSize::Default,
+            _ => cpal::BufferSize::Default,
         },
     }
 }
