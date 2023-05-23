@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - master
+permissions:
+  pull-requests: write
 jobs:
   build-macos-x86_64:
     runs-on: [self-hosted, macOS, x64]
