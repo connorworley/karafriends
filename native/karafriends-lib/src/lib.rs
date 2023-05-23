@@ -431,7 +431,7 @@ impl InputDevice {
         })
     }
 
-    fn output_data_callback<'a, Sample: cpal::Sample + cpal::FromSample<f32> + Send + 'a>(
+    fn output_data_callback<Sample: cpal::Sample + cpal::FromSample<f32> + Send>(
         mut output_rx: ringbuf::HeapConsumer<f32>,
     ) -> Result<impl FnMut(&mut [Sample], &cpal::OutputCallbackInfo) + Send + 'static> {
         Ok(move |samples: &mut [Sample], _: &_| {
