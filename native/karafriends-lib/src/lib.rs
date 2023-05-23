@@ -130,15 +130,67 @@ impl InputDevice {
         let error_callback = |e| panic!("{}", e);
 
         let input_stream = match best_supported_input_config.sample_format() {
+            cpal::SampleFormat::U8 => input_device.build_input_stream(
+                &input_config,
+                Self::input_data_callback::<i8>(
+                    &input_config,
+                    &output_config,
+                    channel_selection,
+                    pitch_tx,
+                    output_tx,
+                    |sample| (sample as f32 / u8::MAX as f32 - 0.5) * 2.0,
+                )?,
+                error_callback,
+                None,
+            ),
+            cpal::SampleFormat::U16 => input_device.build_input_stream(
+                &input_config,
+                Self::input_data_callback::<u16>(
+                    &input_config,
+                    &output_config,
+                    channel_selection,
+                    pitch_tx,
+                    output_tx,
+                    |sample| (sample as f32 / u16::MAX as f32 - 0.5) * 2.0,
+                )?,
+                error_callback,
+                None,
+            ),
+            cpal::SampleFormat::U32 => input_device.build_input_stream(
+                &input_config,
+                Self::input_data_callback::<u32>(
+                    &input_config,
+                    &output_config,
+                    channel_selection,
+                    pitch_tx,
+                    output_tx,
+                    |sample| (sample as f32 / u32::MAX as f32 - 0.5) * 2.0,
+                )?,
+                error_callback,
+                None,
+            ),
+            cpal::SampleFormat::U64 => input_device.build_input_stream(
+                &input_config,
+                Self::input_data_callback::<u64>(
+                    &input_config,
+                    &output_config,
+                    channel_selection,
+                    pitch_tx,
+                    output_tx,
+                    |sample| (sample as f32 / u64::MAX as f32 - 0.5) * 2.0,
+                )?,
+                error_callback,
+                None,
+            ),
             cpal::SampleFormat::I8 => input_device.build_input_stream(
                 &input_config,
                 Self::input_data_callback::<i8>(
                     &input_config,
                     &output_config,
                     channel_selection,
-                    i8::MAX,
                     pitch_tx,
                     output_tx,
+                    |sample| sample as f32 / i8::MAX as f32,
                 )?,
                 error_callback,
                 None,
@@ -149,9 +201,9 @@ impl InputDevice {
                     &input_config,
                     &output_config,
                     channel_selection,
-                    i16::MAX,
                     pitch_tx,
                     output_tx,
+                    |sample| sample as f32 / i16::MAX as f32,
                 )?,
                 error_callback,
                 None,
@@ -162,9 +214,22 @@ impl InputDevice {
                     &input_config,
                     &output_config,
                     channel_selection,
-                    i32::MAX,
                     pitch_tx,
                     output_tx,
+                    |sample| sample as f32 / i32::MAX as f32,
+                )?,
+                error_callback,
+                None,
+            ),
+            cpal::SampleFormat::I64 => input_device.build_input_stream(
+                &input_config,
+                Self::input_data_callback::<i64>(
+                    &input_config,
+                    &output_config,
+                    channel_selection,
+                    pitch_tx,
+                    output_tx,
+                    |sample| sample as f32 / i64::MAX as f32,
                 )?,
                 error_callback,
                 None,
@@ -175,22 +240,22 @@ impl InputDevice {
                     &input_config,
                     &output_config,
                     channel_selection,
-                    1.0,
                     pitch_tx,
                     output_tx,
+                    std::convert::identity,
                 )?,
                 error_callback,
                 None,
             ),
             cpal::SampleFormat::F64 => input_device.build_input_stream(
                 &input_config,
-                Self::input_data_callback::<f32>(
+                Self::input_data_callback::<f64>(
                     &input_config,
                     &output_config,
                     channel_selection,
-                    1.0,
                     pitch_tx,
                     output_tx,
+                    |sample| sample as f32,
                 )?,
                 error_callback,
                 None,
@@ -199,33 +264,79 @@ impl InputDevice {
         }?;
 
         let output_stream = match best_supported_output_config.sample_format() {
+            cpal::SampleFormat::U8 => output_device.build_output_stream(
+                &output_config,
+                Self::output_data_callback::<u8>(output_rx, |float_sample| {
+                    ((float_sample / 2.0 + 0.5) * u8::MAX as f32) as u8
+                })?,
+                error_callback,
+                None,
+            ),
+            cpal::SampleFormat::U16 => output_device.build_output_stream(
+                &output_config,
+                Self::output_data_callback::<u16>(output_rx, |float_sample| {
+                    ((float_sample / 2.0 + 0.5) * u16::MAX as f32) as u16
+                })?,
+                error_callback,
+                None,
+            ),
+            cpal::SampleFormat::U32 => output_device.build_output_stream(
+                &output_config,
+                Self::output_data_callback::<u32>(output_rx, |float_sample| {
+                    ((float_sample / 2.0 + 0.5) * u32::MAX as f32) as u32
+                })?,
+                error_callback,
+                None,
+            ),
+            cpal::SampleFormat::U64 => output_device.build_output_stream(
+                &output_config,
+                Self::output_data_callback::<u64>(output_rx, |float_sample| {
+                    ((float_sample / 2.0 + 0.5) * u64::MAX as f32) as u64
+                })?,
+                error_callback,
+                None,
+            ),
             cpal::SampleFormat::I8 => output_device.build_output_stream(
                 &output_config,
-                Self::output_data_callback::<i8>(output_rx, i8::MAX)?,
+                Self::output_data_callback::<i8>(output_rx, |float_sample| {
+                    (float_sample * i8::MAX as f32) as i8
+                })?,
                 error_callback,
                 None,
             ),
             cpal::SampleFormat::I16 => output_device.build_output_stream(
                 &output_config,
-                Self::output_data_callback::<i16>(output_rx, i16::MAX)?,
+                Self::output_data_callback::<i16>(output_rx, |float_sample| {
+                    (float_sample * i16::MAX as f32) as i16
+                })?,
                 error_callback,
                 None,
             ),
             cpal::SampleFormat::I32 => output_device.build_output_stream(
                 &output_config,
-                Self::output_data_callback::<i32>(output_rx, i32::MAX)?,
+                Self::output_data_callback::<i32>(output_rx, |float_sample| {
+                    (float_sample * i32::MAX as f32) as i32
+                })?,
+                error_callback,
+                None,
+            ),
+            cpal::SampleFormat::I64 => output_device.build_output_stream(
+                &output_config,
+                Self::output_data_callback::<i64>(output_rx, |float_sample| {
+                    (float_sample * i64::MAX as f32) as i64
+                })?,
                 error_callback,
                 None,
             ),
             cpal::SampleFormat::F32 => output_device.build_output_stream(
                 &output_config,
-                Self::output_data_callback::<f32>(output_rx, 1.0)?,
+                Self::output_data_callback::<f32>(output_rx, std::convert::identity)?,
                 error_callback,
                 None,
             ),
             cpal::SampleFormat::F64 => output_device.build_output_stream(
                 &output_config,
-                Self::output_data_callback::<f32>(output_rx, 1.0)?,
+                Self::output_data_callback::<f64>(output_rx, |float_sample| float_sample as f64)?,
                 error_callback,
                 None,
             ),
@@ -256,14 +367,14 @@ impl InputDevice {
         Ok(())
     }
 
-    fn input_data_callback<Sample: num_traits::AsPrimitive<f32> + Send>(
+    fn input_data_callback<Sample: Copy>(
         input_config: &cpal::StreamConfig,
         output_config: &cpal::StreamConfig,
         channel_selection: usize,
-        sample_max_value: Sample,
         mut pitch_tx: ringbuf::HeapProducer<f32>,
         mut output_tx: ringbuf::HeapProducer<f32>,
-    ) -> Result<Box<dyn FnMut(&[Sample], &cpal::InputCallbackInfo) + Send + 'static>> {
+        convert_from_sample: impl Fn(Sample) -> f32 + Send + 'static,
+    ) -> Result<impl FnMut(&[Sample], &cpal::InputCallbackInfo) + Send + 'static> {
         let input_channels = input_config.channels as usize;
         let output_channels = output_config.channels as usize;
         let input_sample_rate = input_config.sample_rate.0;
@@ -297,12 +408,10 @@ impl InputDevice {
         )?;
         let mut resampler_output = resampler.output_buffer_allocate();
 
-        Ok(Box::new(move |samples: &[Sample], _| {
+        Ok(move |samples: &[Sample], _: &_| {
             let mono_samples: Vec<_> = samples
                 .chunks(input_channels)
-                .map(|channel_samples| {
-                    channel_samples[channel_selection].as_() / sample_max_value.as_()
-                })
+                .map(|channel_samples| convert_from_sample(channel_samples[channel_selection]))
                 .collect();
 
             pitch_tx.push_slice(&mono_samples);
@@ -338,28 +447,24 @@ impl InputDevice {
                     }
                 }
             }
-        }))
+        })
     }
 
-    fn output_data_callback<
-        Sample: num_traits::AsPrimitive<f32> + num_traits::FromPrimitive + Send,
-    >(
+    fn output_data_callback<Sample>(
         mut output_rx: ringbuf::HeapConsumer<f32>,
-        sample_max_value: Sample,
-    ) -> Result<Box<dyn FnMut(&mut [Sample], &cpal::OutputCallbackInfo) + Send + 'static>> {
-        Ok(Box::new(move |samples: &mut [Sample], _| {
+        convert_to_sample: impl Fn(f32) -> Sample + Send + 'static,
+    ) -> Result<impl FnMut(&mut [Sample], &cpal::OutputCallbackInfo) + Send + 'static> {
+        Ok(move |samples: &mut [Sample], _: &_| {
             let mut float_samples = Vec::with_capacity(samples.len());
             let samples_read = output_rx.pop_slice(&mut float_samples);
             samples
                 .iter_mut()
                 .zip(float_samples)
-                .for_each(|(sample, float_sample)| {
-                    *sample = Sample::from_f32(float_sample * sample_max_value.as_()).unwrap()
-                });
+                .for_each(|(sample, float_sample)| *sample = convert_to_sample(float_sample));
             if samples_read < samples.len() {
                 eprintln!("input fell behind");
             }
-        }))
+        })
     }
 }
 fn compare_configs(
