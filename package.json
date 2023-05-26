@@ -44,7 +44,7 @@
     "graphql": "16.6.0",
     "graphql-subscriptions": "2.0.0",
     "graphql-ws": "5.13.1",
-    "hls.js": "1.4.3",
+    "hls.js": "1.4.4",
     "lodash": "4.17.21",
     "materialize-css": "1.0.0",
     "multicast-dns": "7.2.5",
