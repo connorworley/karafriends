@@ -8,9 +8,10 @@ import invariant from "ts-invariant";
 import {
   DownloadQueueItem,
   JoysoundQueueItem,
+  QueueSongResult,
   UserIdentity,
 } from "../main/graphql";
-import { JoysoundAPI } from "../main/joysoundApi";
+import { JoysoundAPI, JoysoundSongRawData } from "../main/joysoundApi";
 
 import { getSongDuration } from "./joysoundParser";
 
@@ -27,6 +28,14 @@ interface ResourcePaths {
   ffmpeg: string;
   // Path to the ytdlp executable
   ytdlp: string;
+}
+
+interface JoysoundVideoData {
+  songId: string;
+  songDuration: number;
+  songPlaytime: number;
+  videoPlaytime: number;
+  oggBuffer: Buffer;
 }
 
 const linuxResourcePaths: ResourcePaths = {
@@ -66,10 +75,7 @@ function deleteTempFiles(prefix: string): void {
 function handleFFmpegDownloadLog(
   log: string,
   songFrames: number,
-  downloadQueue: DownloadQueueItem[],
-  downloadType: number,
-  songId: string,
-  suffix: string | null = null
+  downloadQueueItem: DownloadQueueItem,
 ): void {
   const frameMatchData = log.match(/frame=\s*(\d+)\s*/);
 
@@ -77,35 +83,20 @@ function handleFFmpegDownloadLog(
     const rawProgress = parseInt(frameMatchData[1], 10) / songFrames;
     const progress = Math.min(rawProgress, 1.0);
 
-    updateVideoDownloadProgress(
-      progress,
-      downloadQueue,
-      downloadType,
-      songId,
-      suffix
-    );
+    downloadQueueItem.progress = Math.max(downloadQueueItem.progress, progress);
   }
 }
 
 function handleYoutubeDownloadLog(
   log: string,
-  downloadQueue: DownloadQueueItem[],
-  downloadType: number,
-  songId: string,
-  suffix: string | null = null
+  downloadQueueItem: DownloadQueueItem,
 ): void {
   const matchData = log.match(/\[download\]\s*(\d+\.\d)%/);
 
   if (matchData) {
     const progress = Math.min(parseFloat(matchData[1]) / 100.0, 1.0);
 
-    updateVideoDownloadProgress(
-      progress,
-      downloadQueue,
-      downloadType,
-      songId,
-      suffix
-    );
+    downloadQueueItem.progress = Math.max(downloadQueueItem.progress, progress);
   }
 }
 
@@ -150,41 +141,52 @@ export function getVideoDownloadProgress(
   return -1.0;
 }
 
-function updateVideoDownloadProgress(
-  progress: number,
-  downloadQueue: DownloadQueueItem[],
-  downloadType: number,
-  songId: string,
-  suffix: string | null = null
-): void {
-  const downloadQueueItem = downloadQueue.find(
-    (item) =>
-      item.downloadType === downloadType &&
-      item.songId === songId &&
-      item.suffix === suffix
-  );
-
-  if (downloadQueueItem) {
-    downloadQueueItem.progress = Math.max(downloadQueueItem.progress, progress);
-  }
-}
-
 function removeVideoDownloadFromQueue(
   downloadQueue: DownloadQueueItem[],
-  downloadType: number,
-  songId: string,
-  suffix: string | null = null
+  downloadQueueItem: DownloadQueueItem,
 ): void {
-  const index = downloadQueue.findIndex(
-    (item) =>
-      item.downloadType === downloadType &&
-      item.songId === songId &&
-      item.suffix === suffix
-  );
+  downloadQueue.splice(downloadQueue.indexOf(downloadQueueItem), 1);
+}
 
-  if (index >= 0) {
-    downloadQueue.splice(index, 1);
+function getJoysoundOggPlaytime(oggBuffer: Buffer): number {
+  const FIELD_TAG = new Uint8Array([0x70, 0x6C, 0x61, 0x79, 0x74, 0x69, 0x6D, 0x65, 0x3D]);
+
+  let fieldOffset = 0;
+  let fieldLength = 0;
+
+  for (let i = 0; i < oggBuffer.length; i++) {
+    const oggSlice = oggBuffer.subarray(i, i + FIELD_TAG.length);
+    
+    let isFieldTag = true;
+
+    for (let j = 0; j < oggSlice.length; j++) {
+      if (oggSlice[j] !== FIELD_TAG[j]) {
+        isFieldTag = false;
+        break;
+      }
+    }
+
+    if (!isFieldTag) {
+      continue;
+    }
+
+    fieldOffset = i + FIELD_TAG.length;
+
+    const fieldLengthView = new DataView(oggBuffer.buffer, i - 4, 4);
+    fieldLength = fieldLengthView.getUint32(0, true) - FIELD_TAG.length;
+    
+    break; 
   }
+
+  const playtimeBuffer = oggBuffer.subarray(fieldOffset, fieldOffset + fieldLength);
+  
+  let playtimeString = "";
+
+  for (const char of playtimeBuffer) {
+    playtimeString += String.fromCharCode(char);
+  }
+
+  return parseInt(playtimeString, 10);
 }
 
 export function downloadDamVideo(
@@ -244,19 +246,462 @@ export function downloadDamVideo(
   });
 }
 
+function makeJoysoundFFmpegCall(
+  songId: string,
+  ffmpegArgs: string[],
+  ffmpegLogFilename: string,
+  onStderrData: null | ((data: Buffer) => any),
+  onExit: null | ((code: number, signal: number) => any),
+  stdinBuffer: Buffer | string | null,
+): void {
+  console.log(ffmpegArgs);
+
+  const ffmpegLogStream = fs.createWriteStream(ffmpegLogFilename, { flags: 'a' });
+  
+  const ffmpeg = spawn(
+    resourcePaths.ffmpeg,
+    ffmpegArgs,
+    { stdio: ["pipe", "pipe", "pipe"], }
+  );
+
+  invariant(ffmpeg.stdin);
+  invariant(ffmpeg.stdout);
+  invariant(ffmpeg.stderr);
+
+  ffmpeg.stdout.pipe(process.stdout);
+  ffmpeg.stdout.pipe(ffmpegLogStream);
+  ffmpeg.stderr.pipe(process.stderr);
+  ffmpeg.stderr.pipe(ffmpegLogStream);
+
+  if (onStderrData) {
+    ffmpeg.stderr.on("data", onStderrData)
+  }
+
+  if (onExit) {
+    ffmpeg.on("exit", onExit);
+  }
+
+  if (stdinBuffer) {
+    ffmpeg.stdin.write(stdinBuffer);
+    ffmpeg.stdin.end();
+  }
+}
+
+
+function downloadJoysoundVideoPromise(
+  songId: string,
+  videoUrl: string,
+  downloadQueue: DownloadQueueItem[],
+  downloadQueueItem: DownloadQueueItem,
+  tempFilename: string,
+  ffmpegLogFilename: string,
+): Promise<number> {
+  return new Promise((resolve, reject) => {
+    let songFrames = 0;
+    
+    const ffmpegArgs = [
+      "-i", videoUrl,
+      "-c", "copy",
+      "-movflags", "faststart",
+      "-f", "mp4",
+      "-y",
+      tempFilename,
+    ];
+
+    const onStderrData = (ffmpegData: Buffer) => {
+      const ffmpegLog = ffmpegData.toString();
+
+      const durationMatchData = ffmpegLog.match(
+        /Duration:\s*(\d+):(\d+):(\d+)/
+      );
+
+      if (durationMatchData) {
+        let songDuration = 0;
+
+        songDuration += parseInt(durationMatchData[1], 10) * 3600;
+        songDuration += parseInt(durationMatchData[2], 10) * 60;
+        songDuration += parseInt(durationMatchData[3], 10);
+
+        songFrames = songDuration * 30;
+      }
+
+      handleFFmpegDownloadLog(
+        ffmpegLog,
+        songFrames,
+        downloadQueueItem,
+      );
+    }
+
+    const onExit = (code: number, signal: number) => {
+      if (code === 0) {
+        removeVideoDownloadFromQueue(downloadQueue, downloadQueueItem);
+
+        resolve(code);
+      } else {
+        console.error(
+          `Error downloading Joysound video with ID ${songId}: url=${videoUrl}, code=${code}, signal=${signal}, log=${ffmpegLogFilename}`
+        );
+
+        reject(code);
+      }
+    }
+
+    makeJoysoundFFmpegCall(
+      songId,
+      ffmpegArgs,
+      ffmpegLogFilename,
+      onStderrData,
+      onExit,
+      null,
+    );
+  });
+};
+
+function downloadJoysoundYoutubeVideoPromise(
+  songId: string,
+  youtubeVideoId: string,
+  downloadQueue: DownloadQueueItem[],
+  downloadQueueItem: DownloadQueueItem,
+  tempFilename: string,
+): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const ytdlpLogFilename = `${TEMP_FOLDER}/yt-${youtubeVideoId}.log`;
+    const ytdlpLogStream = fs.createWriteStream(ytdlpLogFilename);
+
+    const ytdlp = spawn(
+      resourcePaths.ytdlp,
+      [
+        "-S",
+        "res:720,ext:mp4",
+        "-f",
+        "bv",
+        "--recode",
+        "mp4",
+        "-N",
+        "4",
+        "--ffmpeg-location",
+        resourcePaths.ffmpeg,
+        "-o",
+        tempFilename + ".mp4",
+        "--",
+        youtubeVideoId!,
+      ],
+      { stdio: ["ignore", "pipe", "pipe"] }
+    );
+
+    invariant(ytdlp.stdout);
+    invariant(ytdlp.stderr);
+
+    ytdlp.stdout.pipe(process.stdout);
+    ytdlp.stdout.pipe(ytdlpLogStream);
+    ytdlp.stderr.pipe(process.stderr);
+    ytdlp.stderr.pipe(ytdlpLogStream);
+
+    ytdlp.stdout.on("data", (data) => {
+      handleYoutubeDownloadLog(data.toString(), downloadQueueItem);
+    });
+
+    ytdlp.on("exit", (code, signal) => {
+      if (code === 0) {
+        fs.unlinkSync(tempFilename);
+        fs.renameSync(tempFilename + ".mp4", tempFilename);
+
+        removeVideoDownloadFromQueue(downloadQueue, downloadQueueItem);
+
+        resolve(code);
+      } else {
+        console.error(
+          `Error downloading Youtube Video with ID ${youtubeVideoId}: code=${code}, signal=${signal}, log=${ytdlpLogFilename}`
+        );
+        reject(code);
+      }
+    });
+  });
+}
+
+function composeJoysoundVideoPromise(
+  songId: string,
+  telopBuffer: Buffer,
+  oggBuffer: Buffer,
+  tempFilename: string,
+  videoFilename: string,
+  ffmpegLogFilename: string,
+): Promise<JoysoundVideoData> {
+  return new Promise((resolve, reject) => {
+    let videoPlaytime = 0;
+    
+    const ffmpegArgs = [
+      "-stream_loop", "-1",
+      "-i", tempFilename,
+      "-i", "-",
+      "-c", "copy",
+      "-shortest",
+      "-movflags", "faststart",
+      "-f", "mp4",
+      videoFilename,
+    ];
+
+    const onStderrData = (ffmpegData: Buffer) => {
+      const ffmpegLog = ffmpegData.toString();
+  
+      const durationMatchData = ffmpegLog.match(
+        /Duration:\s*(\d+):(\d+):(\d+)\.(\d+)/
+      );
+
+      // XXX: We assume that the video duration always comes first
+      if (durationMatchData && videoPlaytime === 0) {
+        videoPlaytime += parseInt(durationMatchData[1], 10) * 3600;
+        videoPlaytime += parseInt(durationMatchData[2], 10) * 60;
+        videoPlaytime += parseInt(durationMatchData[3], 10);
+        videoPlaytime = videoPlaytime * 1000 + parseInt(durationMatchData[4], 10) * 10;
+      }
+    }
+
+    const onExit = (code: number, signal: number) => {
+      fs.unlinkSync(tempFilename);
+
+      if (code === 0) {
+        const metadata: JoysoundVideoData = {
+          songDuration: getSongDuration(telopBuffer.buffer) * 1000,
+          songPlaytime: getJoysoundOggPlaytime(oggBuffer),
+          songId,
+          oggBuffer,
+          videoPlaytime,
+        };
+
+        resolve(metadata);
+      } else {
+        console.error(
+          `Error downloading Joysound video with ID ${songId}: code=${code}, signal=${signal}, log=${ffmpegLogFilename}`
+        );
+
+        reject(code);
+      } 
+    }
+
+    makeJoysoundFFmpegCall(
+      songId,
+      ffmpegArgs,
+      ffmpegLogFilename,
+      onStderrData,
+      onExit,
+      oggBuffer,
+    );
+  });
+}
+
+function padJoysoundVideoPromise(
+  data: JoysoundVideoData,
+  videoFilename: string,
+  ffmpegLogFilename: string,
+  queueItem: JoysoundQueueItem,
+  pushSongToQueue: (queueItem: JoysoundQueueItem) => QueueSongResult,
+): Promise<number> {
+  const videoBaseFilename = videoFilename.substr(0, videoFilename.length - 4);
+  
+  const videoNoSoundFilename = videoBaseFilename + "-no-sound.mp4";
+  const videoPadFrameFilename = videoBaseFilename + "-pad-1f.mp4";
+  const videoPadFilename = videoBaseFilename + "-pad.mp4";  
+  const videoConcatFilename = videoBaseFilename + "-concat.mp4";
+  const videoTempFilename = videoBaseFilename + "-temp.mp4";
+  const videoOutFilename = videoBaseFilename + "-out.mp4";
+  const videoListFilename = videoBaseFilename + "-list.txt";
+
+  return new Promise<number>((resolve, reject) => {
+    const ffmpegArgs = [
+      "-i", videoFilename,
+      "-c", "copy",
+      "-an", 
+      "-y",
+      videoNoSoundFilename,
+    ];
+
+    const onExit = (code: number, signal: number) => {
+      if (code === 0) {
+        resolve(code);
+      } else {
+        console.error(
+          `Error downloading Joysound video with ID ${data.songId}: code=${code}, signal=${signal}, log=${ffmpegLogFilename}`
+        );
+        
+        reject(code);
+      } 
+    }
+    
+    makeJoysoundFFmpegCall(
+      data.songId,
+      ffmpegArgs,
+      ffmpegLogFilename,
+      null,
+      onExit,
+      null,
+    );
+  }).then(() => {
+    return new Promise<number>((resolve, reject) => {
+      const ffmpegArgs = [
+        "-i", videoNoSoundFilename,
+        "-frames:v", "1",
+        "-c:v", "copy",
+        "-an",
+        "-y",
+        videoPadFrameFilename,
+      ];
+
+      const onExit = (code: number, signal: number) => {
+        if (code === 0) {
+          resolve(code);
+        } else {
+          console.error(
+            `Error downloading Joysound video with ID ${data.songId}: code=${code}, signal=${signal}, log=${ffmpegLogFilename}`
+          );
+          
+          reject(code);
+        } 
+      }
+      
+      makeJoysoundFFmpegCall(
+        data.songId,
+        ffmpegArgs,
+        ffmpegLogFilename,
+        null,
+        onExit,
+        null,
+      );
+    });
+  }).then(() => {
+    return new Promise<number>((resolve, reject) => {
+      const offset = Math.max(data.songPlaytime - Math.min(data.songDuration, data.videoPlaytime), 0);
+
+      const ffmpegArgs = [
+        "-stream_loop", "-1",
+        "-i", videoPadFrameFilename,
+        "-c", "copy",
+        "-t", `${offset}ms`,
+        "-y",
+        videoPadFilename,
+      ];
+      
+      const onExit = (code: number, signal: number) => {
+        if (code === 0) {
+          resolve(code);
+        } else {
+          console.error(
+            `Error downloading Joysound video with ID ${data.songId}: code=${code}, signal=${signal}, log=${ffmpegLogFilename}`
+          );
+          
+          reject(code);
+        } 
+      }
+
+      makeJoysoundFFmpegCall(
+        data.songId,
+        ffmpegArgs,
+        ffmpegLogFilename,
+        null,
+        onExit,
+        null,
+      );
+    });
+  }).then(() => {
+    return new Promise<number>((resolve, reject) => {
+      let listFile = '';
+
+      listFile += `file '${videoPadFilename.replace(/\\/g, "/")}'`;
+      listFile += "\n";
+      listFile += `file '${videoNoSoundFilename.replace(/\\/g, "/")}'`;
+
+      fs.writeFileSync(videoListFilename, listFile);
+
+      const ffmpegArgs = [
+        "-f", "concat",
+        "-safe", "0",
+        "-i", videoListFilename,
+        "-c", "copy",
+        "-y",
+        videoConcatFilename,
+      ];
+      
+      const onExit = (code: number, signal: number) => {
+        if (code === 0) {
+          resolve(code);
+        } else {
+          console.error(
+            `Error downloading Joysound video with ID ${data.songId}: code=${code}, signal=${signal}, log=${ffmpegLogFilename}`
+          );
+          
+          reject(code);
+        } 
+      }
+
+      makeJoysoundFFmpegCall(
+        data.songId,
+        ffmpegArgs,
+        ffmpegLogFilename,
+        null,
+        onExit,
+        null,
+      );
+    });
+  }).then(() => {
+    return new Promise<number>((resolve, reject) => {
+      const ffmpegArgs = [
+        "-i", videoFilename,
+        "-i", videoConcatFilename,
+        "-map", "0:a",
+        "-map", "1:v",
+        "-c", "copy",
+        "-shortest",
+        "-y",
+        videoOutFilename,
+      ];
+
+      const onExit = (code: number, signal: number) => {
+        if (code === 0) {
+          fs.renameSync(videoFilename, videoTempFilename);
+          fs.renameSync(videoOutFilename, videoFilename);
+
+          fs.unlinkSync(videoNoSoundFilename);
+          fs.unlinkSync(videoPadFrameFilename);
+          fs.unlinkSync(videoPadFilename);
+          fs.unlinkSync(videoTempFilename);
+          fs.unlinkSync(videoConcatFilename);
+          
+          pushSongToQueue(queueItem);
+
+          resolve(code);
+        } else {
+          console.error(
+            `Error downloading Joysound video with ID ${data.songId}: code=${code}, signal=${signal}, log=${ffmpegLogFilename}`
+          );
+          
+          reject(code);
+        } 
+      }
+
+      makeJoysoundFFmpegCall(
+        data.songId,
+        ffmpegArgs,
+        ffmpegLogFilename,
+        null,
+        onExit,
+        null,
+      );
+    }); 
+  });
+}
+
 export function downloadJoysoundData(
   downloadQueue: DownloadQueueItem[],
   userIdentity: UserIdentity,
   joysoundApi: JoysoundAPI,
   queueItem: JoysoundQueueItem,
-  pushSongToQueue: (queueItem: JoysoundQueueItem) => any
+  pushSongToQueue: (queueItem: JoysoundQueueItem) => QueueSongResult,
 ): void {
   if (!fs.existsSync(TEMP_FOLDER)) {
     fs.mkdirSync(TEMP_FOLDER);
   }
 
   const songId = queueItem.songId;
-  let finalQueueItem: JoysoundQueueItem = queueItem;
 
   const videoFilenameSuffix = queueItem.youtubeVideoId
     ? queueItem.youtubeVideoId
@@ -266,7 +711,6 @@ export function downloadJoysoundData(
   const writeBasePath = `${TEMP_FOLDER}/${filenamePrefix}`;
 
   const telopFilename = `${writeBasePath}.joy_02`;
-  const oggFilename = `${writeBasePath}.ogg`;
   const videoFilename = `${writeBasePath}-${videoFilenameSuffix}.mp4`;
   const ffmpegLogFilename = `${writeBasePath}.log`;
 
@@ -278,12 +722,12 @@ export function downloadJoysoundData(
     if (fs.existsSync(telopFilename)) {
       const telopBuffer = fs.readFileSync(telopFilename);
 
-      finalQueueItem = {
-        ...finalQueueItem,
+      queueItem = {
+        ...queueItem,
         playtime: getSongDuration(telopBuffer.buffer),
       };
 
-      pushSongToQueue(finalQueueItem);
+      pushSongToQueue(queueItem);
       return;
     } else {
       console.error(
@@ -314,11 +758,6 @@ export function downloadJoysoundData(
 
   fs.closeSync(fs.openSync(tempFilename, "w"));
 
-  const ffmpegLogStream = fs.createWriteStream(ffmpegLogFilename);
-
-  const songDataPromise = joysoundApi.getSongRawData(songId);
-  let videoDataPromise;
-
   const downloadQueueItem: DownloadQueueItem = {
     downloadType: 0,
     userIdentity,
@@ -329,147 +768,29 @@ export function downloadJoysoundData(
 
   downloadQueue.push(downloadQueueItem);
 
+  const songDataPromise = joysoundApi.getSongRawData(songId);
+  let videoDataPromise;
+
   if (queueItem.youtubeVideoId) {
-    videoDataPromise = new Promise((resolve, reject) => {
-      const ytdlpLogFilename = `${TEMP_FOLDER}/yt-${queueItem.youtubeVideoId}.log`;
-      const ytdlpLogStream = fs.createWriteStream(ytdlpLogFilename);
-
-      const ytdlp = spawn(
-        resourcePaths.ytdlp,
-        [
-          "-S",
-          "res:720,ext:mp4",
-          "-f",
-          "bv",
-          "--recode",
-          "mp4",
-          "-N",
-          "4",
-          "--ffmpeg-location",
-          resourcePaths.ffmpeg,
-          "-o",
-          tempFilename + ".mp4",
-          "--",
-          queueItem.youtubeVideoId!,
-        ],
-        { stdio: ["ignore", "pipe", "pipe"] }
-      );
-
-      invariant(ytdlp.stdout);
-      invariant(ytdlp.stderr);
-      ytdlp.stdout.pipe(process.stdout);
-      ytdlp.stdout.pipe(ytdlpLogStream);
-      ytdlp.stderr.pipe(process.stderr);
-      ytdlp.stderr.pipe(ytdlpLogStream);
-
-      ytdlp.stdout.on("data", (data) => {
-        handleYoutubeDownloadLog(
-          data.toString(),
-          downloadQueue,
-          0,
-          songId,
-          queueItem.youtubeVideoId
-        );
-      });
-
-      ytdlp.on("exit", (code, signal) => {
-        if (code === 0) {
-          fs.unlinkSync(tempFilename);
-          fs.renameSync(tempFilename + ".mp4", tempFilename);
-
-          removeVideoDownloadFromQueue(
-            downloadQueue,
-            0,
-            songId,
-            queueItem.youtubeVideoId
-          );
-
-          resolve(code);
-        } else {
-          console.error(
-            `Error downloading Youtube Video with ID ${queueItem.youtubeVideoId}: code=${code}, signal=${signal}, log=${ytdlpLogFilename}`
-          );
-          reject(code);
-        }
-      });
-    });
+    videoDataPromise = downloadJoysoundYoutubeVideoPromise(
+      songId,
+      queueItem.youtubeVideoId,
+      downloadQueue,
+      downloadQueueItem,
+      tempFilename,
+    );
   } else {
     videoDataPromise = joysoundApi.getMovieUrls(songId).then((data) => {
-      const url = data.movie.mov1;
+      const videoUrl = data.movie.mov1;
 
-      return new Promise((resolve, reject) => {
-        let songFrames = 0;
-
-        const ffmpeg = spawn(
-          resourcePaths.ffmpeg,
-          [
-            "-y",
-            "-i",
-            url,
-            "-c",
-            "copy",
-            "-movflags",
-            "faststart",
-            "-f",
-            "mp4",
-            tempFilename,
-          ],
-          { stdio: ["ignore", "pipe", "pipe"] }
-        );
-
-        invariant(ffmpeg.stdout);
-        invariant(ffmpeg.stderr);
-        ffmpeg.stdout.pipe(process.stdout);
-        ffmpeg.stdout.pipe(ffmpegLogStream);
-        ffmpeg.stderr.pipe(process.stderr);
-        ffmpeg.stderr.pipe(ffmpegLogStream);
-
-        ffmpeg.stderr.on("data", (ffmpegData) => {
-          const ffmpegLog = ffmpegData.toString();
-
-          const durationMatchData = ffmpegLog.match(
-            /Duration:\s*(\d+):(\d+):(\d+)/
-          );
-
-          if (durationMatchData) {
-            let songDuration = 0;
-
-            songDuration += parseInt(durationMatchData[1], 10) * 3600;
-            songDuration += parseInt(durationMatchData[2], 10) * 60;
-            songDuration += parseInt(durationMatchData[3], 10);
-
-            songFrames = songDuration * 30;
-          }
-
-          handleFFmpegDownloadLog(
-            ffmpegLog,
-            songFrames,
-            downloadQueue,
-            0,
-            songId,
-            queueItem.youtubeVideoId
-          );
-        });
-
-        ffmpeg.on("exit", (code, signal) => {
-          if (code === 0) {
-            removeVideoDownloadFromQueue(
-              downloadQueue,
-              0,
-              songId,
-              queueItem.youtubeVideoId
-            );
-
-            resolve(code);
-          } else {
-            console.error(
-              `Error downloading Joysound video with ID ${songId}: url=${url}, code=${code}, signal=${signal}, log=${ffmpegLogFilename}`
-            );
-
-            reject(code);
-          }
-        });
-      });
+      return downloadJoysoundVideoPromise(
+        songId,
+        videoUrl,
+        downloadQueue,
+        downloadQueueItem,
+        tempFilename,
+        ffmpegLogFilename,
+      );
     });
   }
 
@@ -485,6 +806,7 @@ export function downloadJoysoundData(
       telopBase64.slice(30) + telopBase64.slice(0, 30),
       "base64"
     );
+
     const oggBuffer = Buffer.from(
       oggBase64.slice(30) + oggBase64.slice(0, 30),
       "base64"
@@ -494,55 +816,31 @@ export function downloadJoysoundData(
       fs.writeFileSync(telopFilename, telopBuffer);
     }
 
-    const ffmpeg = spawn(
-      resourcePaths.ffmpeg,
-      [
-        "-stream_loop",
-        "-1",
-        "-i",
-        tempFilename,
-        "-i",
-        "-",
-        "-c",
-        "copy",
-        "-shortest",
-        "-movflags",
-        "faststart",
-        "-f",
-        "mp4",
-        videoFilename,
-      ],
-      { stdio: ["pipe", "pipe", "pipe"] }
+    return composeJoysoundVideoPromise(
+      songId,
+      telopBuffer,
+      oggBuffer,
+      tempFilename,
+      videoFilename,
+      ffmpegLogFilename,
     );
+  }).then((data) => {
+    queueItem = {
+      ...queueItem,
+      playtime: Math.floor(data.songPlaytime / 1000),
+    };
 
-    invariant(ffmpeg.stdout);
-    invariant(ffmpeg.stderr);
-    ffmpeg.stdout.pipe(process.stdout);
-    ffmpeg.stdout.pipe(ffmpegLogStream);
-    ffmpeg.stderr.pipe(process.stderr);
-    ffmpeg.stderr.pipe(ffmpegLogStream);
-
-    ffmpeg.on("exit", (code, signal) => {
-      fs.unlinkSync(tempFilename);
-
-      if (code === 0) {
-        finalQueueItem = {
-          ...finalQueueItem,
-          playtime: getSongDuration(telopBuffer.buffer),
-        };
-
-        pushSongToQueue(finalQueueItem);
-      } else {
-        console.error(
-          `Error downloading Joysound video with ID ${songId}: code=${code}, signal=${signal}, log=${ffmpegLogFilename}`
-        );
-      }
-    });
-
-    invariant(ffmpeg.stdin);
-
-    ffmpeg.stdin.write(oggBuffer);
-    ffmpeg.stdin.end();
+    if (queueItem.youtubeVideoId && Math.abs(data.songDuration - data.videoPlaytime) < 10000) {
+      return padJoysoundVideoPromise(
+        data,
+        videoFilename,
+        ffmpegLogFilename,
+        queueItem,
+        pushSongToQueue,
+      );
+    } else {
+      pushSongToQueue(queueItem);
+    }
   });
 }
 
@@ -625,17 +923,18 @@ export function downloadYoutubeVideo(
 
   invariant(ytdlp.stdout);
   invariant(ytdlp.stderr);
+
   ytdlp.stdout.pipe(process.stdout);
   ytdlp.stdout.pipe(ytdlpLogStream);
   ytdlp.stderr.pipe(process.stderr);
   ytdlp.stderr.pipe(ytdlpLogStream);
 
   ytdlp.stdout.on("data", (data) => {
-    handleYoutubeDownloadLog(data.toString(), downloadQueue, 1, videoId);
+    handleYoutubeDownloadLog(data.toString(), downloadQueueItem);
   });
 
   ytdlp.on("exit", (code, signal) => {
-    removeVideoDownloadFromQueue(downloadQueue, 1, videoId);
+    removeVideoDownloadFromQueue(downloadQueue, downloadQueueItem);
 
     fs.unlinkSync(tempFilename);
 
@@ -719,17 +1018,18 @@ export function downloadNicoVideo(
 
   invariant(ytdlp.stdout);
   invariant(ytdlp.stderr);
+  
   ytdlp.stdout.pipe(process.stdout);
   ytdlp.stdout.pipe(ytdlpLogStream);
   ytdlp.stderr.pipe(process.stderr);
   ytdlp.stderr.pipe(ytdlpLogStream);
 
   ytdlp.stdout.on("data", (data) => {
-    handleYoutubeDownloadLog(data.toString(), downloadQueue, 2, videoId);
+    handleYoutubeDownloadLog(data.toString(), downloadQueueItem);
   });
 
   ytdlp.on("exit", (code, signal) => {
-    removeVideoDownloadFromQueue(downloadQueue, 2, videoId);
+    removeVideoDownloadFromQueue(downloadQueue, downloadQueueItem);
 
     fs.unlinkSync(tempFilename);
 
