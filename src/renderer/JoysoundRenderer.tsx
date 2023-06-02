@@ -66,10 +66,6 @@ const fsSource = `#version 300 es
 // XXX: Move these to some setting somewhere?
 // XXX: RUBY_FONT_SIZE and RUBY_FONT_STROKE live in src/common/constants.ts for *reasons*
 
-// XXX: This needs to be calculated correctly
-let TEXTURE_OFF_X = 0;
-let TEXTURE_OFF_Y = 0;
-
 const TITLE_FONT_SIZE = 48;
 const TITLE_FONT_STROKE = 4;
 
@@ -79,7 +75,7 @@ const ARTIST_FONT_STROKE = 4;
 const METADATA_FONT_SIZE = 24;
 const METADATA_FONT_STROKE = 3;
 
-const MAIN_FONT_SIZE = 40;
+const MAIN_FONT_SIZE = 44;
 const MAIN_FONT_STROKE = 4;
 
 const ROMAJI_FONT_SIZE = 18;
@@ -90,6 +86,9 @@ const SCREEN_HEIGHT = 480;
 const TEXT_PADDING = 8;
 
 let EXPAND_RATE = 1.0;
+let EXPAND_RATE_X = 1.0;
+let EXPAND_RATE_Y = 1.0;
+
 const TIMING_OFFSET = -200;
 
 const JP_FONT_FACE = "notoSerifJP";
@@ -221,7 +220,7 @@ function setupTextCanvas(
   fillColor: number[],
   strokeColor: number[]
 ): void {
-  textCtx.canvas.width = getLyricsBlockWidth(lyricsBlock) * EXPAND_RATE;
+  textCtx.canvas.width = getLyricsBlockWidth(lyricsBlock) * EXPAND_RATE_X;
   textCtx.canvas.height = getLyricsBlockHeight(lyricsBlock) * EXPAND_RATE;
   textCtx.clearRect(0, 0, textCtx.canvas.width, textCtx.canvas.height);
 
@@ -232,7 +231,7 @@ function setupTextCanvas(
 }
 
 function setupTitleCanvas(textCtx: CanvasRenderingContext2D): void {
-  textCtx.canvas.width = (SCREEN_WIDTH + TEXT_PADDING * 2) * EXPAND_RATE;
+  textCtx.canvas.width = (SCREEN_WIDTH + TEXT_PADDING * 2) * EXPAND_RATE_X;
   textCtx.canvas.height = (SCREEN_HEIGHT + TEXT_PADDING * 2) * EXPAND_RATE;
   textCtx.clearRect(0, 0, textCtx.canvas.width, textCtx.canvas.height);
 
@@ -254,7 +253,10 @@ function createTitleRows(
   for (const nextChar of title) {
     const nextTitleWidth = textCtx.measureText(currTitleText + nextChar).width;
 
-    if (nextTitleWidth >= SCREEN_WIDTH) {
+    if (
+      nextTitleWidth >=
+      SCREEN_WIDTH * (EXPAND_RATE_X / EXPAND_RATE) - TEXT_PADDING * 2
+    ) {
       titleRows.push({ text: currTitleText, width: currTitleWidth });
 
       currTitleText = nextChar;
@@ -278,7 +280,10 @@ function drawTitleRowsToCanvas(
   yPos: number
 ) {
   for (const titleRow of titleRows) {
-    const xPos = Math.max(0, (SCREEN_WIDTH - titleRow.width) / 2);
+    const xPos = Math.max(
+      0,
+      ((SCREEN_WIDTH - titleRow.width) * (EXPAND_RATE_X / EXPAND_RATE)) / 2
+    );
 
     drawTextToCanvas(textCtx, fontSize, fontStroke, xPos, yPos, titleRow.text);
 
@@ -482,13 +487,13 @@ function drawTextToCanvas(
 
   textCtx.strokeText(
     text,
-    (xPos + fontStroke + TEXT_PADDING) * EXPAND_RATE,
+    (xPos + fontStroke + TEXT_PADDING) * EXPAND_RATE_X,
     (yPos + fontStroke + TEXT_PADDING) * EXPAND_RATE
   );
 
   textCtx.fillText(
     text,
-    (xPos + fontStroke + TEXT_PADDING) * EXPAND_RATE,
+    (xPos + fontStroke + TEXT_PADDING) * EXPAND_RATE_X,
     (yPos + fontStroke + TEXT_PADDING) * EXPAND_RATE
   );
 }
@@ -660,12 +665,12 @@ function drawTitle(
   glBuffers: JoysoundDisplayBuffers,
   titleTexture: WebGLTexture
 ): void {
-  const scrollArray = new Float32Array(Array(6).fill(TEXTURE_OFF_X));
+  const scrollArray = new Float32Array(Array(6).fill(0));
   const positions = quadToTriangles(
-    TEXTURE_OFF_X - TEXT_PADDING,
-    TEXTURE_OFF_Y - TEXT_PADDING,
-    (SCREEN_WIDTH + TEXT_PADDING) * EXPAND_RATE + TEXTURE_OFF_X,
-    (SCREEN_HEIGHT + TEXT_PADDING) * EXPAND_RATE + TEXTURE_OFF_Y
+    TEXT_PADDING,
+    TEXT_PADDING,
+    (SCREEN_WIDTH + TEXT_PADDING) * EXPAND_RATE_X,
+    (SCREEN_HEIGHT + TEXT_PADDING) * EXPAND_RATE_Y
   );
 
   drawLyricsTexture(gl, glBuffers, titleTexture, positions, scrollArray, false);
@@ -713,7 +718,7 @@ function drawLyricsBlock(
   const scrollXPos = Math.floor(getScrollXPos(lyricsBlock, refreshTime));
 
   const scrollArray = new Float32Array(
-    Array(6).fill(scrollXPos * EXPAND_RATE + TEXTURE_OFF_X)
+    Array(6).fill(scrollXPos * EXPAND_RATE_X)
   );
 
   const currX = lyricsBlock.xPos;
@@ -724,10 +729,10 @@ function drawLyricsBlock(
   const rectHeight = getLyricsBlockHeight(lyricsBlock);
 
   const positions = quadToTriangles(
-    (currX - TEXT_PADDING) * EXPAND_RATE + TEXTURE_OFF_X,
-    (currY - TEXT_PADDING) * EXPAND_RATE + TEXTURE_OFF_Y,
-    (currX + rectWidth - TEXT_PADDING) * EXPAND_RATE + TEXTURE_OFF_X,
-    (currY + rectHeight - TEXT_PADDING) * EXPAND_RATE + TEXTURE_OFF_Y
+    (currX - TEXT_PADDING) * EXPAND_RATE_X,
+    (currY - TEXT_PADDING) * EXPAND_RATE_Y,
+    (currX + rectWidth - TEXT_PADDING) * EXPAND_RATE_X,
+    (currY + rectHeight - TEXT_PADDING) * EXPAND_RATE_Y
   );
 
   if (scrollXPos <= currX + rectWidth) {
@@ -774,22 +779,8 @@ export default function JoysoundRenderer(props: {
       canvasElement.height / SCREEN_HEIGHT
     );
 
-    if (
-      canvasElement.width / SCREEN_WIDTH >=
-      canvasElement.height / SCREEN_HEIGHT
-    ) {
-      TEXTURE_OFF_X =
-        (canvasElement.width -
-          (canvasElement.height / SCREEN_HEIGHT) * SCREEN_WIDTH) /
-        2;
-      TEXTURE_OFF_Y = 0;
-    } else {
-      TEXTURE_OFF_X = 0;
-      TEXTURE_OFF_Y =
-        (canvasElement.height -
-          (canvasElement.width / SCREEN_WIDTH) * SCREEN_HEIGHT) /
-        2;
-    }
+    EXPAND_RATE_X = canvasElement.width / SCREEN_WIDTH;
+    EXPAND_RATE_Y = canvasElement.height / SCREEN_HEIGHT;
 
     const gl = canvasElement.getContext("webgl2", {
       antialias: false,
@@ -869,7 +860,7 @@ export default function JoysoundRenderer(props: {
         props.videoRef.current.currentTime * 1000 + TIMING_OFFSET;
       invariant(refreshTime);
 
-      gl.clearColor(0.0, 0.0, 0.0, 0.1);
+      gl.clearColor(0.0, 0.0, 0.0, 0.2);
       gl.clear(gl.COLOR_BUFFER_BIT);
 
       gl.enable(gl.BLEND);
