@@ -181,7 +181,7 @@ interface QueueSongError {
   readonly reason: string;
 }
 
-type QueueSongResult = QueueSongInfo | QueueSongError;
+export type QueueSongResult = QueueSongInfo | QueueSongError;
 
 type Emote = {
   readonly userIdentity: UserIdentity;
