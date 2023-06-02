@@ -62,7 +62,7 @@
     "react-mobile-picker-scroll": "0.2.14",
     "react-relay": "15.0.0",
     "react-router-dom": "6.11.2",
-    "react-swipeable": "7.0.0",
+    "react-swipeable": "7.0.1",
     "regenerator-runtime": "0.13.11",
     "relay-runtime": "15.0.0",
     "supports-color": "9.3.1",
