@@ -1,9 +1,17 @@
-import React, { useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { invariant } from "ts-invariant";
+
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+
+import useNowPlaying from "../hooks/useNowPlaying";
+import useUserIdentity from "../hooks/useUserIdentity";
 
 import Button from "../components/Button";
+import { withLoader } from "../components/Loader";
 import SearchFormWrapper from "../components/SearchFormWrapper";
 import YouTubeInfo from "../components/YouTubeInfo";
+
+import { useNowPlayingQuery$data } from "../hooks/__generated__/useNowPlayingQuery.graphql";
 
 export function getVideoId(videoQuery: string): string | null {
   try {
@@ -19,13 +27,38 @@ export function getVideoId(videoQuery: string): string | null {
   return videoQuery;
 }
 
+export function isYouTubeVideoWithLyricsPlaying(
+  currentSong: useNowPlayingQuery$data["currentSong"] | null | undefined,
+  videoId: string,
+  nickname: string,
+  deviceId: string
+): boolean {
+  if (!currentSong || currentSong.__typename !== "YoutubeQueueItem") {
+    return false;
+  }
+
+  invariant(currentSong.hasAdhocLyrics);
+
+  return (
+    currentSong.songId === videoId &&
+    currentSong.userIdentity?.nickname === nickname &&
+    currentSong.userIdentity?.deviceId === deviceId &&
+    currentSong.hasAdhocLyrics
+  );
+}
+
 type YouTubeParams = {
   videoId: string;
 };
 
 const YouTubePage = () => {
+  const navigate = useNavigate();
+  const { nickname, deviceId } = useUserIdentity();
+  const currentSong = useNowPlaying();
+
   const params = useParams<YouTubeParams>();
   const inputRef = useRef<HTMLInputElement>(null);
+
   const [videoId, setVideoId] = useState<string>(params.videoId || "");
 
   const onSubmit = (e: React.FormEvent) => {
@@ -37,6 +70,17 @@ const YouTubePage = () => {
       history.replaceState({}, "", `#/search/youtube/${newVideoId}`);
     }
   };
+
+  if (
+    isYouTubeVideoWithLyricsPlaying(
+      currentSong,
+      videoId || params.videoId || "",
+      nickname,
+      deviceId
+    )
+  ) {
+    navigate(`/adhocLyrics/${videoId || params.videoId || ""}`);
+  }
 
   return (
     <SearchFormWrapper>
@@ -54,4 +98,4 @@ const YouTubePage = () => {
   );
 };
 
-export default YouTubePage;
+export default withLoader(YouTubePage);

@@ -51,6 +51,7 @@ const YouTubeInfo = ({ videoId }: Props) => {
   const [selectedCaption, setSelectedCaption] = useState<string | undefined>(
     undefined
   );
+
   const videoData = useLazyLoadQuery<YouTubeInfoVideoInfoQuery>(
     youTubeInfoVideoInfoQuery,
     { videoId }
@@ -92,9 +93,6 @@ const YouTubeInfo = ({ videoId }: Props) => {
             selectedCaption={selectedCaption || null}
             userIdentity={userIdentity}
           />
-          <Link to={`/adhocLyrics/${videoId}`}>
-            <Button>Guide adhoc lyrics</Button>
-          </Link>
         </>
       )}
     </div>

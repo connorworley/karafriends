@@ -1,6 +1,11 @@
 import React, { useRef, useState } from "react";
 import { graphql, useLazyLoadQuery, useMutation } from "react-relay";
+import { useNavigate } from "react-router-dom";
 import invariant from "ts-invariant";
+
+import useNowPlaying from "../../hooks/useNowPlaying";
+import useUserIdentity from "../../hooks/useUserIdentity";
+import { isYouTubeVideoWithLyricsPlaying } from "../../pages/YouTubePage";
 
 import { withLoader } from "../Loader";
 import * as styles from "./AdhocLyricsControls.module.scss";
@@ -36,6 +41,10 @@ type Props = {
 };
 
 function AdhocLyricsControls({ id }: Props) {
+  const navigate = useNavigate();
+  const { nickname, deviceId } = useUserIdentity();
+  const currentSong = useNowPlaying();
+
   const [selectedIndex, _setSelectedIndex] = useState<number>(0);
   const indexRef = useRef(selectedIndex);
   const setSelectedIndex = (index: number) => {
@@ -54,7 +63,13 @@ function AdhocLyricsControls({ id }: Props) {
     adhocLyricsControlsPopLyricsMutation
   );
 
-  if (!adhocLyrics?.length) {
+  if (
+    !adhocLyrics?.length ||
+    (currentSong !== undefined &&
+      !isYouTubeVideoWithLyricsPlaying(currentSong, id, nickname, deviceId))
+  ) {
+    navigate("/");
+
     return (
       <div className={styles.noLyrics}>
         Cannot find lyrics for the song with ID: {id}
