@@ -1000,6 +1000,15 @@ const resolvers = {
       const newSong = db.songQueue.shift() || null;
 
       db.currentSongAdhocLyrics = [];
+
+      if (
+        db.currentSong &&
+        db.currentSong.__typename === "YoutubeQueueItem" &&
+        db.currentSong.hasAdhocLyrics
+      ) {
+        delete db.idToAdhocLyrics[db.currentSong.songId];
+      }
+
       pubsub.publish(SubscriptionEvent.CurrentSongAdhocLyricsChanged, {
         currentSongAdhocLyricsChanged: db.currentSongAdhocLyrics,
       });

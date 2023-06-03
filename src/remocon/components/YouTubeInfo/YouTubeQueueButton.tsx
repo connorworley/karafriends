@@ -4,7 +4,6 @@ import { Subscription } from "relay-runtime";
 import { invariant } from "ts-invariant";
 
 import environment from "../../../common/graphqlEnvironment";
-import useUserIdentity from "../../hooks/useUserIdentity";
 import Button from "../Button";
 
 import { YouTubeInfoVideoInfoQuery$data } from "./__generated__/YouTubeInfoVideoInfoQuery.graphql";

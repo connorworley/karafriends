@@ -7,12 +7,12 @@
 }
 
 .entry-container {
-  font-size: 3vw; /* this must match the canvas width check in AdhocLyrics.tsx */
+  font-size: 4vw; /* this must match the canvas width check in AdhocLyrics.tsx */
   position: absolute;
-  left: 50%;
+  left: 0%;
   top: 100%;
   transition: margin-top 0.25s ease-out;
-  font-weight: bolder;
+  font-weight: 900;
   color: white;
   -webkit-text-stroke-color: black;
   -webkit-text-stroke-width: 0.1vw;

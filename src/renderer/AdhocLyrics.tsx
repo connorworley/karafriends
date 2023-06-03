@@ -22,7 +22,6 @@ type LyricEntry = {
   lyric: string;
   lyricIndex: number;
   displayIndex: number;
-  marginLeft: number;
   marginTop: number;
   isNewLyricLine: boolean;
 };
@@ -47,19 +46,18 @@ function AdhocLyrics() {
       );
       const newLyricEntry: LyricEntry[] =
         response.currentSongAdhocLyricsChanged.map((lyricEntry, index) => {
-          const { width, height } = getTextWidthHeight(
+          const height = getTextHeight(
             lyricEntry.lyric,
             // This must match the width specified in AdhocLyrics.css
-            "3vw sans-serif"
+            "4vw sans-serif"
           );
+
           return {
             lyric: lyricEntry.lyric,
             lyricIndex: lyricEntry.lyricIndex,
             displayIndex: index,
-            // marginLeft for horizontal centering offset
-            marginLeft: (width * -1) / 2,
             // marginTop for positioning each line
-            marginTop: -1 * (newLyricsLineCount - index) * height * 1.1,
+            marginTop: -1 * (newLyricsLineCount - index) * height * 3.4,
             isNewLyricLine: freshLyricIndices.includes(lyricEntry.lyricIndex),
           };
         });
@@ -67,22 +65,18 @@ function AdhocLyrics() {
     });
   }
 
-  function getTextWidthHeight(
-    text: string,
-    font: string
-  ): { width: number; height: number } {
+  function getTextHeight(text: string, font: string): number {
     const canvas = canvasRef.current;
     invariant(canvas);
+
     const context = canvas.getContext("2d");
     invariant(context);
+
     context.font = font;
     const metrics = context.measureText(text);
-    return {
-      width: metrics.width,
-      height:
-        // @ts-ignore fontBoundingBoxAscent etc. isn't supported by a lot of browsers so it's not typed, but it does work in chromium (i.e. electron)
-        metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent,
-    };
+
+    // @ts-ignore fontBoundingBoxAscent etc. isn't supported by a lot of browsers so it's not typed, but it does work in chromium (i.e. electron)
+    return metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
   }
 
   useEffect(() => {
@@ -101,14 +95,18 @@ function AdhocLyrics() {
   return (
     <>
       <div className="lyrics-container">
-        <canvas ref={canvasRef} />
+        <canvas style={{ width: "100%" }} ref={canvasRef} />
         {lyricLines.map((lyricEntry) => {
           const wrapLyricElement = (wrappedElement: JSX.Element) => (
             <div
               className="entry-container"
+              key={lyricEntry.lyricIndex}
               style={{
-                marginLeft: lyricEntry.marginLeft,
-                marginTop: lyricEntry.marginTop,
+                width: "calc(100% - 128px)",
+                textAlign: "center",
+                lineHeight: "1.25em",
+                marginLeft: "32px",
+                marginTop: lyricEntry.marginTop + 64,
               }}
             >
               {wrappedElement}
