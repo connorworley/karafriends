@@ -36,6 +36,23 @@ export default function usePlaybackState() {
   const [commit] = useMutation<usePlaybackStateMutation>(playbackStateMutation);
 
   useEffect(() => {
+    function handleVisibilityChange() {
+      if (document.hidden) {
+        return;
+      }
+
+      fetchQuery<usePlaybackStateQuery>(
+        environment,
+        playbackStateQuery,
+        {}
+      ).subscribe({
+        next: (response: usePlaybackStateQuery["response"]) =>
+          setLocalPlaybackState(response.playbackState),
+      });
+    }
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
     const initialQuery = fetchQuery<usePlaybackStateQuery>(
       environment,
       playbackStateQuery,
@@ -57,6 +74,8 @@ export default function usePlaybackState() {
     );
 
     return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+
       initialQuery.unsubscribe();
       subscription.dispose();
     };

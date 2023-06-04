@@ -31,12 +31,12 @@ const YouTubeLyricsForm = ({
           </option>
         ))}
       </select>
-      <h4>Adhoc</h4>
+      <h4>Adhoc Lyrics</h4>
       <textarea
         onChange={(e) => onAdhocLyricsChanged(e.target.value.trim() || null)}
         placeholder={
           "Paste lyrics here.\n" +
-          "Empty lines will be filtered out.\n" +
+          "Navigate back to this screen when your song is playing by tapping your song on the control bar.\n" +
           "Lyrics can be added line by line onto the screen while the song is playing."
         }
       />
