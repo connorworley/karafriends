@@ -84,6 +84,23 @@ export default function useNowPlaying() {
   >(undefined);
 
   useEffect(() => {
+    function handleVisibilityChange() {
+      if (document.hidden) {
+        return;
+      }
+
+      fetchQuery<useNowPlayingQuery>(
+        environment,
+        nowPlayingQuery,
+        {}
+      ).subscribe({
+        next: (response: useNowPlayingQuery$data) =>
+          setCurrentSong(response.currentSong),
+      });
+    }
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
     const initialQuery = fetchQuery<useNowPlayingQuery>(
       environment,
       nowPlayingQuery,
@@ -104,6 +121,7 @@ export default function useNowPlaying() {
     );
 
     return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
       initialQuery.unsubscribe();
       subscription.dispose();
     };

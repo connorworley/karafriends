@@ -91,6 +91,19 @@ export default function useQueue() {
   >([]);
 
   useEffect(() => {
+    function handleVisibilityChange() {
+      if (document.hidden) {
+        return;
+      }
+
+      fetchQuery<useQueueQueueQuery>(environment, queueQuery, {}).subscribe({
+        next: ({ currentSong, queue }: useQueueQueueQuery["response"]) =>
+          setQueueState(withETAs(currentSong, queue)),
+      });
+    }
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
     const initialQuery = fetchQuery<useQueueQueueQuery>(
       environment,
       queueQuery,
@@ -119,6 +132,8 @@ export default function useQueue() {
     );
 
     return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+
       initialQuery.unsubscribe();
       subscription.dispose();
     };
