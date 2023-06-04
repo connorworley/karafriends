@@ -25,7 +25,7 @@ jobs:
         with:
           path: |
             extraResources
-          key: ${{ runner.os }}-resources
+          key: ${{ runner.os }}-resources-${{ hashFiles('scripts/getExternalResources.mjs') }}
       - run: yarn install --immutable
       - run: yarn build-dev
         env:
@@ -73,7 +73,7 @@ jobs:
         with:
           path: |
             extraResources
-          key: ${{ runner.os }}-resources
+          key: ${{ runner.os }}-resources-${{ hashFiles('scripts/getExternalResources.mjs') }}
       - run: yarn install --immutable
       - run: yarn build-dev
         env:
@@ -99,7 +99,7 @@ jobs:
           path: |
             buildResources
             extraResources
-          key: ${{ runner.os }}-resources
+          key: ${{ runner.os }}-resources-${{ hashFiles('scripts/getExternalResources.mjs') }}
       - run: yarn install --immutable
       - run: yarn build-dev
         env:
@@ -126,7 +126,7 @@ jobs:
           path: |
             buildResources
             extraResources
-          key: ${{ runner.os }}-resources
+          key: ${{ runner.os }}-resources-${{ hashFiles('scripts/getExternalResources.mjs') }}
       - run: sudo apt-get update && sudo apt-get install -y libasound2-dev
       - run: yarn install --immutable
       - run: yarn build-dev
