@@ -100,7 +100,7 @@ function AdhocLyrics() {
           const wrapLyricElement = (wrappedElement: JSX.Element) => (
             <div
               className="entry-container"
-              key={lyricEntry.lyricIndex}
+              key={lyricEntry.displayIndex}
               style={{
                 width: "calc(100% - 128px)",
                 textAlign: "center",

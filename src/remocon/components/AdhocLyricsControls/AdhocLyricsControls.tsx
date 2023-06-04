@@ -42,7 +42,7 @@ type Props = {
 
 function AdhocLyricsControls({ id }: Props) {
   const navigate = useNavigate();
-  const { nickname, deviceId } = useUserIdentity();
+  const { nickname } = useUserIdentity();
   const currentSong = useNowPlaying();
 
   const [selectedIndex, _setSelectedIndex] = useState<number>(0);
@@ -66,7 +66,7 @@ function AdhocLyricsControls({ id }: Props) {
   if (
     !adhocLyrics?.length ||
     (currentSong !== undefined &&
-      !isYouTubeVideoWithLyricsPlaying(currentSong, id, nickname, deviceId))
+      !isYouTubeVideoWithLyricsPlaying(currentSong, id, nickname))
   ) {
     navigate("/");
 

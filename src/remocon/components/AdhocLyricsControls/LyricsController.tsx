@@ -30,10 +30,10 @@ const LyricsController = ({ onSendLine, onRemoveLine }: Props) => {
   return (
     <div className={styles.controller} {...touchHandlers}>
       <div>
-        Tap <CgTapSingle /> or press "z" to send selected line
+        <strong>Tap HERE</strong> <CgTapSingle /> to send selected line.
       </div>
       <div>
-        Swipe <GiSideswipe /> or press "x" to remove oldest line
+        <strong>SwipeE HERE</strong> <GiSideswipe /> to remove oldest line.
       </div>
     </div>
   );

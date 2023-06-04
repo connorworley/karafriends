@@ -30,8 +30,7 @@ export function getVideoId(videoQuery: string): string | null {
 export function isYouTubeVideoWithLyricsPlaying(
   currentSong: useNowPlayingQuery$data["currentSong"] | null | undefined,
   videoId: string,
-  nickname: string,
-  deviceId: string
+  nickname: string
 ): boolean {
   if (!currentSong || currentSong.__typename !== "YoutubeQueueItem") {
     return false;
@@ -42,7 +41,6 @@ export function isYouTubeVideoWithLyricsPlaying(
   return (
     currentSong.songId === videoId &&
     currentSong.userIdentity?.nickname === nickname &&
-    currentSong.userIdentity?.deviceId === deviceId &&
     currentSong.hasAdhocLyrics
   );
 }
@@ -53,7 +51,7 @@ type YouTubeParams = {
 
 const YouTubePage = () => {
   const navigate = useNavigate();
-  const { nickname, deviceId } = useUserIdentity();
+  const { nickname } = useUserIdentity();
   const currentSong = useNowPlaying();
 
   const params = useParams<YouTubeParams>();
@@ -75,8 +73,7 @@ const YouTubePage = () => {
     isYouTubeVideoWithLyricsPlaying(
       currentSong,
       videoId || params.videoId || "",
-      nickname,
-      deviceId
+      nickname
     )
   ) {
     navigate(`/adhocLyrics/${videoId || params.videoId || ""}`);

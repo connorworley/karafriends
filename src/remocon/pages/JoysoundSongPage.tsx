@@ -67,6 +67,8 @@ const JoysoundSongPage = () => {
   const detachVideo = () => {
     setYoutubeVideoId("");
     setValidatedYoutubeVideoId("");
+
+    history.replaceState({}, "", `#/joysoundSong/${song.id}`);
   };
 
   return (
@@ -77,7 +79,7 @@ const JoysoundSongPage = () => {
       {!!song.lyricsPreview && (
         <blockquote>{song.lyricsPreview} ...</blockquote>
       )}
-      {validatedYoutubeId ? (
+      {youtubeVideoId ? (
         <Button full onClick={() => detachVideo()}>
           Detach YouTube video
         </Button>
@@ -106,7 +108,8 @@ const JoysoundSongPage = () => {
         <>
           <JoysoundQueueButtons
             song={song}
-            youtubeVideoId={validatedYoutubeId}
+            youtubeVideoId={youtubeVideoId}
+            validatedYoutubeId={validatedYoutubeId}
           />
           {youtubeVideoId !== "" && (
             <JoysoundYouTubeInfo
