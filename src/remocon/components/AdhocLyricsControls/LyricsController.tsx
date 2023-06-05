@@ -3,37 +3,18 @@ import React, { useEffect } from "react";
 import { CgTapSingle } from "react-icons/cg";
 // tslint:disable-next-line:no-submodule-imports
 import { GiSideswipe } from "react-icons/gi";
-import { useSwipeable } from "react-swipeable";
 
 import * as styles from "./AdhocLyricsControls.module.scss";
 
 interface Props {
   onSendLine: () => void;
-  onRemoveLine: () => void;
 }
 
-const LyricsController = ({ onSendLine, onRemoveLine }: Props) => {
-  useEffect(() => {
-    const keyHandler = ({ key }: KeyboardEvent) => {
-      if (key === "z") onSendLine();
-      if (key === "x") onRemoveLine();
-    };
-    window.addEventListener("keydown", keyHandler);
-    return () => window.removeEventListener("keydown", keyHandler);
-  }, []);
-
-  const touchHandlers = useSwipeable({
-    onTap: onSendLine,
-    onSwiped: onRemoveLine,
-  });
-
+const LyricsController = ({ onSendLine }: Props) => {
   return (
-    <div className={styles.controller} {...touchHandlers}>
+    <div className={styles.controller} onClick={onSendLine}>
       <div>
-        Tap <CgTapSingle /> or press "z" to send selected line
-      </div>
-      <div>
-        Swipe <GiSideswipe /> or press "x" to remove oldest line
+        <strong>TAP HERE</strong> <CgTapSingle /> to send lyrics.
       </div>
     </div>
   );
