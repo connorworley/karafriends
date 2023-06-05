@@ -37,7 +37,6 @@ type Mutation {
   # Maybe we can merge these queue endpoints once Input Unions become real
   # https://github.com/graphql/graphql-spec/issues/488
   sendEmote(emote: EmoteInput!): Boolean!
-  popAdhocLyrics: Boolean!
   popSong: QueueItem
   pushAdhocLyrics(input: PushAdhocLyricsInput): Boolean!
   queueDamSong(input: QueueDamSongInput): QueueSongResult!
