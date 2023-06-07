@@ -3,7 +3,7 @@
 import invariant from "ts-invariant";
 
 import Kuroshiro from "kuroshiro";
-import KuromojiAnalyzer from "kuroshiro-analyzer-kuromoji";
+import KuromojiAnalyzer, { AnalyzerResult } from "kuroshiro-analyzer-kuromoji";
 
 import { RUBY_FONT_SIZE, RUBY_FONT_STROKE } from "../common/constants";
 
@@ -151,9 +151,41 @@ function isKanaUnicodeChar(unicodeChar: string) {
   return charCode >= 0x3040 && charCode <= 0x30ff;
 }
 
-function getMainRomajiBlocks(
-  chars: JoysoundLyricsChar[]
-): JoysoundLyricsRomaji[] {
+function getCleanedUpPhrase(
+  phrase: string,
+  parsedLyrics: AnalyzerResult[],
+  prevParsedLyricsIndex: number | null,
+  prevParsedLyricsCharIndex: number | null,
+) {
+  if (
+    phrase === "は" &&
+    prevParsedLyricsIndex !== null && 
+    prevParsedLyricsCharIndex !== null && 
+    parsedLyrics[prevParsedLyricsIndex].surface_form === "は"
+  ) {
+    return parsedLyrics[prevParsedLyricsIndex].pronunciation;
+  }
+
+  return phrase;
+}
+
+function getRawLyrics(chars: JoysoundLyricsChar[]): string {
+  let lyrics = "";
+
+  for (const char of chars) {
+    const unicodeChar = decodeJoysoundText(char.charCode, char.font);
+
+    lyrics += unicodeChar;
+  }
+
+  return lyrics;
+}
+
+async function getMainRomajiBlocks(
+  chars: JoysoundLyricsChar[],
+  rawLyrics: string,
+  kuroshiro: KuroshiroSingleton,
+): Promise<JoysoundLyricsRomaji[]> {
   const mainRomajiBlocks = [];
 
   let currXPos = 0;
@@ -161,11 +193,20 @@ function getMainRomajiBlocks(
   let currPhraseWidth = 0;
   let prevGlyph = null;
 
+  console.log(rawLyrics);
+
+  const parsedLyrics = await kuroshiro.analyzer.parse(rawLyrics);
+  let parsedLyricsIndex = 0;
+  let parsedLyricsCharIndex = 0;
+  
+  let prevParsedLyricsIndex = null;
+  let prevParsedLyricsCharIndex = null;
+
   for (const currGlyph of chars) {
     const unicodeChar = decodeJoysoundText(currGlyph.charCode);
     const prevUnicodeChar =
       prevGlyph !== null ? decodeJoysoundText(prevGlyph.charCode) : null;
-
+    
     if (
       prevUnicodeChar !== null &&
       isKanaUnicodeChar(prevUnicodeChar) &&
@@ -176,6 +217,13 @@ function getMainRomajiBlocks(
         isKatakanaUnicodeChar(unicodeChar)
       )
     ) {
+      currPhrase = getCleanedUpPhrase(
+        currPhrase,
+        parsedLyrics,
+        prevParsedLyricsIndex,
+        prevParsedLyricsCharIndex,
+      );
+
       mainRomajiBlocks.push({
         phrase: Kuroshiro.Util.kanaToRomaji(currPhrase, "hepburn"),
         xPos: currXPos,
@@ -195,9 +243,25 @@ function getMainRomajiBlocks(
     }
 
     prevGlyph = currGlyph;
+    prevParsedLyricsIndex = parsedLyricsIndex;
+    prevParsedLyricsCharIndex = parsedLyricsCharIndex;
+
+    parsedLyricsCharIndex += 1;
+    
+    if (parsedLyrics[parsedLyricsIndex].surface_form.length === parsedLyricsCharIndex) {
+      parsedLyricsIndex += 1;
+      parsedLyricsCharIndex = 0;
+    }
   }
 
   if (currPhrase) {
+    currPhrase = getCleanedUpPhrase(
+      currPhrase,
+      parsedLyrics,
+      prevParsedLyricsIndex,
+      prevParsedLyricsCharIndex,
+    );
+
     mainRomajiBlocks.push({
       phrase: Kuroshiro.Util.kanaToRomaji(currPhrase, "hepburn"),
       xPos: currXPos,
@@ -235,20 +299,14 @@ function getFuriganaRomajiBlocks(
 async function getFillerRomajiBlocks(
   chars: JoysoundLyricsChar[],
   furigana: JoysoundLyricsFurigana[],
+  rawLyrics: string,
   kuroshiro: KuroshiroSingleton
 ): Promise<JoysoundLyricsRomaji[]> {
   const fillerRomajiBlocks = [];
 
-  let lyrics = "";
   let currXPos = 0;
 
-  for (const char of chars) {
-    const unicodeChar = decodeJoysoundText(char.charCode, char.font);
-
-    lyrics += unicodeChar;
-  }
-
-  const hiraganaLyrics = await kuroshiro.kuroshiro.convert(lyrics, {
+  const hiraganaLyrics = await kuroshiro.kuroshiro.convert(rawLyrics, {
     mode: "okurigana",
     to: "hiragana",
   });
@@ -419,10 +477,11 @@ async function parseLyricsBlock(
 
   await kuroshiro.analyzerInitPromise;
 
-  const mainRomaji = getMainRomajiBlocks(chars);
-  const furiganaRomaji = getFuriganaRomajiBlocks(furigana);
+  const rawLyrics = getRawLyrics(chars);
 
-  const fillerRomaji = await getFillerRomajiBlocks(chars, furigana, kuroshiro);
+  const mainRomaji = await getMainRomajiBlocks(chars, rawLyrics, kuroshiro);
+  const furiganaRomaji = getFuriganaRomajiBlocks(furigana);
+  const fillerRomaji = await getFillerRomajiBlocks(chars, furigana, rawLyrics, kuroshiro);
 
   deleteOverwrittenFuriganaRomaji(chars, furiganaRomaji);
 
