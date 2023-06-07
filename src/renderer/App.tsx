@@ -3,7 +3,7 @@ import KuromojiAnalyzer from "kuroshiro-analyzer-kuromoji";
 
 import M from "materialize-css";
 import "materialize-css/dist/css/materialize.css"; // tslint:disable-line:no-submodule-imports
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { graphql, useSubscription } from "react-relay";
 
 import { HOSTNAME } from "../common/constants";
@@ -47,15 +47,26 @@ function App() {
     _setMics(newMics);
   };
 
-  const kuroshiro = new Kuroshiro();
-  const kuromojiAnalyzer = new KuromojiAnalyzer({ dictPath: "/dict" });
-  const kuromojiPromise = kuroshiro.init(kuromojiAnalyzer);
+  const kuroshiro = useRef(new Kuroshiro());
+  const kuromojiAnalyzer = useRef(new KuromojiAnalyzer({ dictPath: "/dict" }));
+
+  let kuromojiPromise;
+
+  if (!kuroshiro.current._analyzer) {
+    kuromojiPromise = kuroshiro.current.init(kuromojiAnalyzer.current).then(() => {
+      console.log(kuroshiro.current.convert("どこから", { to: "romaji" }));
+    });
+  } else {
+    kuromojiPromise = null;
+  }
 
   const kuroshiroSingleton = {
     kuroshiro,
     analyzer: kuromojiAnalyzer,
     analyzerInitPromise: kuromojiPromise,
   };
+
+  console.log(kuroshiroSingleton);
 
   useEffect(() => {
     const savedMicInfo = JSON.parse(localStorage.getItem("mics") || "[]");

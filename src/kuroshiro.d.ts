@@ -20,6 +20,7 @@ declare interface KuroshiroUtil {
 declare class KuroshiroClass {
   constructor();
   init(_analyzer: any): Promise<void>;
+  _analyzer: any;
   convert(
     str: string,
     options?: {

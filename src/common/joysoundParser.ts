@@ -1,4 +1,5 @@
 /* tslint:disable:no-bitwise */
+import React from "react";
 
 import invariant from "ts-invariant";
 
@@ -8,9 +9,9 @@ import KuromojiAnalyzer, { AnalyzerResult } from "kuroshiro-analyzer-kuromoji";
 import { RUBY_FONT_SIZE, RUBY_FONT_STROKE } from "../common/constants";
 
 export interface KuroshiroSingleton {
-  kuroshiro: Kuroshiro;
-  analyzer: KuromojiAnalyzer;
-  analyzerInitPromise: Promise<void>;
+  kuroshiro: React.MutableRefObject<Kuroshiro>;
+  analyzer: React.MutableRefObject<KuromojiAnalyzer>;
+  analyzerInitPromise: Promise<void> | null;
 }
 
 export interface JoysoundPaletteColor {
@@ -155,12 +156,12 @@ function getCleanedUpPhrase(
   phrase: string,
   parsedLyrics: AnalyzerResult[],
   prevParsedLyricsIndex: number | null,
-  prevParsedLyricsCharIndex: number | null,
+  prevParsedLyricsCharIndex: number | null
 ) {
   if (
     phrase === "は" &&
-    prevParsedLyricsIndex !== null && 
-    prevParsedLyricsCharIndex !== null && 
+    prevParsedLyricsIndex !== null &&
+    prevParsedLyricsCharIndex !== null &&
     parsedLyrics[prevParsedLyricsIndex].surface_form === "は"
   ) {
     return parsedLyrics[prevParsedLyricsIndex].pronunciation;
@@ -184,7 +185,7 @@ function getRawLyrics(chars: JoysoundLyricsChar[]): string {
 async function getMainRomajiBlocks(
   chars: JoysoundLyricsChar[],
   rawLyrics: string,
-  kuroshiro: KuroshiroSingleton,
+  kuroshiro: KuroshiroSingleton
 ): Promise<JoysoundLyricsRomaji[]> {
   const mainRomajiBlocks = [];
 
@@ -193,12 +194,10 @@ async function getMainRomajiBlocks(
   let currPhraseWidth = 0;
   let prevGlyph = null;
 
-  console.log(rawLyrics);
-
-  const parsedLyrics = await kuroshiro.analyzer.parse(rawLyrics);
+  const parsedLyrics = await kuroshiro.analyzer.current.parse(rawLyrics);
   let parsedLyricsIndex = 0;
   let parsedLyricsCharIndex = 0;
-  
+
   let prevParsedLyricsIndex = null;
   let prevParsedLyricsCharIndex = null;
 
@@ -206,7 +205,7 @@ async function getMainRomajiBlocks(
     const unicodeChar = decodeJoysoundText(currGlyph.charCode);
     const prevUnicodeChar =
       prevGlyph !== null ? decodeJoysoundText(prevGlyph.charCode) : null;
-    
+
     if (
       prevUnicodeChar !== null &&
       isKanaUnicodeChar(prevUnicodeChar) &&
@@ -221,7 +220,7 @@ async function getMainRomajiBlocks(
         currPhrase,
         parsedLyrics,
         prevParsedLyricsIndex,
-        prevParsedLyricsCharIndex,
+        prevParsedLyricsCharIndex
       );
 
       mainRomajiBlocks.push({
@@ -247,8 +246,11 @@ async function getMainRomajiBlocks(
     prevParsedLyricsCharIndex = parsedLyricsCharIndex;
 
     parsedLyricsCharIndex += 1;
-    
-    if (parsedLyrics[parsedLyricsIndex].surface_form.length === parsedLyricsCharIndex) {
+
+    if (
+      parsedLyrics[parsedLyricsIndex].surface_form.length ===
+      parsedLyricsCharIndex
+    ) {
       parsedLyricsIndex += 1;
       parsedLyricsCharIndex = 0;
     }
@@ -259,7 +261,7 @@ async function getMainRomajiBlocks(
       currPhrase,
       parsedLyrics,
       prevParsedLyricsIndex,
-      prevParsedLyricsCharIndex,
+      prevParsedLyricsCharIndex
     );
 
     mainRomajiBlocks.push({
@@ -306,7 +308,7 @@ async function getFillerRomajiBlocks(
 
   let currXPos = 0;
 
-  const hiraganaLyrics = await kuroshiro.kuroshiro.convert(rawLyrics, {
+  const hiraganaLyrics = await kuroshiro.kuroshiro.current.convert(rawLyrics, {
     mode: "okurigana",
     to: "hiragana",
   });
@@ -475,13 +477,20 @@ async function parseLyricsBlock(
 
   mapCharsToFurigana(chars, furigana);
 
-  await kuroshiro.analyzerInitPromise;
+  if (kuroshiro.analyzerInitPromise) {
+    await kuroshiro.analyzerInitPromise;
+  }
 
   const rawLyrics = getRawLyrics(chars);
 
   const mainRomaji = await getMainRomajiBlocks(chars, rawLyrics, kuroshiro);
   const furiganaRomaji = getFuriganaRomajiBlocks(furigana);
-  const fillerRomaji = await getFillerRomajiBlocks(chars, furigana, rawLyrics, kuroshiro);
+  const fillerRomaji = await getFillerRomajiBlocks(
+    chars,
+    furigana,
+    rawLyrics,
+    kuroshiro
+  );
 
   deleteOverwrittenFuriganaRomaji(chars, furiganaRomaji);
 
