@@ -50,23 +50,15 @@ function App() {
   const kuroshiro = useRef(new Kuroshiro());
   const kuromojiAnalyzer = useRef(new KuromojiAnalyzer({ dictPath: "/dict" }));
 
-  let kuromojiPromise;
-
-  if (!kuroshiro.current._analyzer) {
-    kuromojiPromise = kuroshiro.current.init(kuromojiAnalyzer.current).then(() => {
-      console.log(kuroshiro.current.convert("どこから", { to: "romaji" }));
-    });
-  } else {
-    kuromojiPromise = null;
-  }
+  const kuromojiPromise = kuroshiro.current._analyzer
+    ? null
+    : kuroshiro.current.init(kuromojiAnalyzer.current);
 
   const kuroshiroSingleton = {
     kuroshiro,
     analyzer: kuromojiAnalyzer,
     analyzerInitPromise: kuromojiPromise,
   };
-
-  console.log(kuroshiroSingleton);
 
   useEffect(() => {
     const savedMicInfo = JSON.parse(localStorage.getItem("mics") || "[]");

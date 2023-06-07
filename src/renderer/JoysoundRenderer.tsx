@@ -80,7 +80,7 @@ const MAIN_FONT_SIZE = 44;
 const MAIN_FONT_STROKE = 4;
 
 const ROMAJI_FONT_SIZE = 20;
-const ROMAJI_FONT_STROKE = 3;
+const ROMAJI_FONT_STROKE = 2;
 
 const SCREEN_WIDTH = 720;
 const SCREEN_HEIGHT = 480;
@@ -663,11 +663,12 @@ function drawTitle(
   titleTexture: WebGLTexture
 ): void {
   const scrollArray = new Float32Array(Array(6).fill(0));
+
   const positions = quadToTriangles(
-    TEXT_PADDING,
-    TEXT_PADDING,
-    (SCREEN_WIDTH + TEXT_PADDING) * EXPAND_RATE_X,
-    (SCREEN_HEIGHT + TEXT_PADDING) * EXPAND_RATE_Y
+    0,
+    0,
+    (SCREEN_WIDTH + TEXT_PADDING) * EXPAND_RATE_X - TEXT_PADDING,
+    (SCREEN_HEIGHT + TEXT_PADDING) * EXPAND_RATE_Y - TEXT_PADDING
   );
 
   drawLyricsTexture(gl, glBuffers, titleTexture, positions, scrollArray, false);

@@ -7,6 +7,9 @@ import Kuroshiro from "kuroshiro";
 import KuromojiAnalyzer, { AnalyzerResult } from "kuroshiro-analyzer-kuromoji";
 
 import { RUBY_FONT_SIZE, RUBY_FONT_STROKE } from "../common/constants";
+import kanjiToReading from "./dictionary.json";
+
+type DictionaryKanji = keyof typeof kanjiToReading;
 
 export interface KuroshiroSingleton {
   kuroshiro: React.MutableRefObject<Kuroshiro>;
@@ -152,6 +155,10 @@ function isKanaUnicodeChar(unicodeChar: string) {
   return charCode >= 0x3040 && charCode <= 0x30ff;
 }
 
+function isKanjiUnicodeChar(unicodeChar: string) {
+  return Kuroshiro.Util.hasKanji(unicodeChar) || unicodeChar === "々";
+}
+
 function getCleanedUpPhrase(
   phrase: string,
   parsedLyrics: AnalyzerResult[],
@@ -162,6 +169,7 @@ function getCleanedUpPhrase(
     phrase === "は" &&
     prevParsedLyricsIndex !== null &&
     prevParsedLyricsCharIndex !== null &&
+    prevParsedLyricsIndex > 0 &&
     parsedLyrics[prevParsedLyricsIndex].surface_form === "は"
   ) {
     return parsedLyrics[prevParsedLyricsIndex].pronunciation;
@@ -298,15 +306,104 @@ function getFuriganaRomajiBlocks(
   return furiganaRomajiBlocks;
 }
 
+function kanjiPhraseToRomaji(
+  kanjiPhrase: string,
+  hiraganaPhrase: string
+): string {
+  if (kanjiToReading[kanjiPhrase as DictionaryKanji] !== undefined) {
+    return Kuroshiro.Util.kanaToRomaji(
+      kanjiToReading[kanjiPhrase as DictionaryKanji],
+      "hepburn"
+    );
+  }
+
+  return Kuroshiro.Util.kanaToRomaji(hiraganaPhrase, "hepburn");
+}
+
+async function getNonKanaRomajiBlocks(
+  chars: JoysoundLyricsChar[],
+  rawLyrics: string,
+  kuroshiro: KuroshiroSingleton
+): Promise<JoysoundLyricsRomaji[]> {
+  const fillerRomajiBlocks = [];
+
+  let hiraganaPhrase = "";
+
+  let currXPos = 0;
+  let currPhrase = "";
+  let currPhraseWidth = 0;
+
+  const parsedLyrics = await kuroshiro.analyzer.current.parse(rawLyrics);
+  let parsedLyricsIndex = 0;
+  let parsedLyricsCharIndex = 0;
+
+  let prevParsedLyricsIndex = null;
+  let prevParsedLyricsCharIndex = null;
+
+  for (const currGlyph of chars) {
+    const unicodeChar = decodeJoysoundText(currGlyph.charCode);
+
+    if (
+      isKanjiUnicodeChar(unicodeChar) &&
+      currGlyph.font === 0 &&
+      currGlyph.furiganaIndex < 0 &&
+      !Kuroshiro.Util.hasKana(parsedLyrics[parsedLyricsIndex].surface_form)
+    ) {
+      // XXX: This is a mega hack
+      currGlyph.furiganaIndex = 6969;
+      currPhrase += unicodeChar;
+      currPhraseWidth += currGlyph.width;
+      hiraganaPhrase += parsedLyrics[parsedLyricsIndex].pronunciation;
+    } else {
+      if (currPhrase.length > 0) {
+        fillerRomajiBlocks.push({
+          phrase: kanjiPhraseToRomaji(currPhrase, hiraganaPhrase),
+          xPos: currXPos,
+          sourceWidth: currPhraseWidth,
+        });
+
+        currXPos += currPhraseWidth;
+        currPhrase = "";
+        currPhraseWidth = 0;
+        hiraganaPhrase = "";
+      }
+      currXPos += currGlyph.width;
+    }
+
+    parsedLyricsCharIndex += 1;
+
+    if (
+      parsedLyrics[parsedLyricsIndex].surface_form.length ===
+      parsedLyricsCharIndex
+    ) {
+      parsedLyricsIndex += 1;
+      parsedLyricsCharIndex = 0;
+    }
+  }
+
+  if (currPhrase.length > 0) {
+    fillerRomajiBlocks.push({
+      phrase: kanjiPhraseToRomaji(currPhrase, hiraganaPhrase),
+      xPos: currXPos,
+      sourceWidth: currPhraseWidth,
+    });
+  }
+
+  return fillerRomajiBlocks;
+}
+
 async function getFillerRomajiBlocks(
   chars: JoysoundLyricsChar[],
-  furigana: JoysoundLyricsFurigana[],
   rawLyrics: string,
   kuroshiro: KuroshiroSingleton
 ): Promise<JoysoundLyricsRomaji[]> {
   const fillerRomajiBlocks = [];
 
   let currXPos = 0;
+
+  let hiraganaPhrase = "";
+  let kanjiPhrase = "";
+  let kanjiPhraseWidth = 0;
 
   const hiraganaLyrics = await kuroshiro.kuroshiro.current.convert(rawLyrics, {
     mode: "okurigana",
@@ -318,23 +415,36 @@ async function getFillerRomajiBlocks(
     const unicodeChar = decodeJoysoundText(char.charCode, char.font);
 
     if (
-      !Kuroshiro.Util.hasKanji(unicodeChar) ||
+      !isKanjiUnicodeChar(unicodeChar) ||
       char.font !== 0 ||
       char.furiganaIndex >= 0
     ) {
-      currXPos += char.width;
+      if (hiraganaPhrase.length > 0) {
+        fillerRomajiBlocks.push({
+          phrase: Kuroshiro.Util.kanaToRomaji(hiraganaPhrase, "hepburn"),
+          xPos: currXPos,
+          sourceWidth: kanjiPhraseWidth,
+        });
+      }
+
+      currXPos += kanjiPhraseWidth + char.width;
+
+      hiraganaPhrase = "";
+      kanjiPhrase = "";
+      kanjiPhraseWidth = 0;
+
       continue;
     }
 
-    let hiraganaPhrase = "";
-
-    let kanjiPhrase = "" + unicodeChar;
-    const kanjiPhraseXPos = currXPos;
-    let kanjiPhraseWidth = char.width;
+    kanjiPhrase += unicodeChar;
+    kanjiPhraseWidth += char.width;
 
     let charIndex = hiraganaLyrics.indexOf(unicodeChar) + 1;
 
-    while (hiraganaLyrics[charIndex] !== "(") {
+    while (
+      charIndex < hiraganaLyrics.length &&
+      hiraganaLyrics[charIndex] !== "("
+    ) {
       kanjiPhrase += hiraganaLyrics[charIndex];
 
       charIndex += 1;
@@ -346,18 +456,21 @@ async function getFillerRomajiBlocks(
 
     charIndex += 1;
 
-    while (hiraganaLyrics[charIndex] !== ")") {
+    while (
+      charIndex < hiraganaLyrics.length &&
+      hiraganaLyrics[charIndex] !== ")"
+    ) {
       hiraganaPhrase += hiraganaLyrics[charIndex];
       charIndex += 1;
     }
+  }
 
+  if (hiraganaPhrase.length > 0) {
     fillerRomajiBlocks.push({
       phrase: Kuroshiro.Util.kanaToRomaji(hiraganaPhrase, "hepburn"),
       xPos: currXPos,
       sourceWidth: kanjiPhraseWidth,
     });
-
-    currXPos += kanjiPhraseWidth;
   }
 
   return fillerRomajiBlocks;
@@ -370,7 +483,9 @@ function mapCharsToFurigana(
   let currXPos = 0;
 
   for (const char of chars) {
-    let bestIntersection = 0;
+    // XXX: To map a character to furigana we assume the furigana must
+    //      cover at least 8 pixels
+    let bestIntersection = 8;
     const unicodeChar = decodeJoysoundText(char.charCode, char.font);
 
     for (let i = 0; i < furiganaList.length; i++) {
@@ -485,16 +600,23 @@ async function parseLyricsBlock(
 
   const mainRomaji = await getMainRomajiBlocks(chars, rawLyrics, kuroshiro);
   const furiganaRomaji = getFuriganaRomajiBlocks(furigana);
-  const fillerRomaji = await getFillerRomajiBlocks(
+  // XXX: For kanji without furigana and no kana (i.e. 空), we trust
+  //      dictionary.json and fallback to kuroshiro
+  const nonKanaRomaji = await getNonKanaRomajiBlocks(
     chars,
-    furigana,
     rawLyrics,
     kuroshiro
   );
+  // XXX: For kanji without furigana and kana (i.e. 下げる), we trust
+  //      kuroshiro's okurigana format
+  const fillerRomaji = await getFillerRomajiBlocks(chars, rawLyrics, kuroshiro);
 
   deleteOverwrittenFuriganaRomaji(chars, furiganaRomaji);
 
-  const romaji = mainRomaji.concat(furiganaRomaji).concat(fillerRomaji);
+  const romaji = mainRomaji
+    .concat(furiganaRomaji)
+    .concat(nonKanaRomaji)
+    .concat(fillerRomaji);
 
   return {
     blockSize,
