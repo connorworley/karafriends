@@ -1,6 +1,7 @@
 import invariant from "ts-invariant";
 
 import Hls from "hls.js";
+
 import React, { useEffect, useRef, useState } from "react";
 import { commitMutation, fetchQuery, graphql } from "react-relay";
 import YoutubePlayer from "youtube-player";
@@ -8,7 +9,7 @@ import { PlayerPopSongMutation } from "./__generated__/PlayerPopSongMutation.gra
 
 import environment from "../common/graphqlEnvironment";
 import usePlaybackState from "../common/hooks/usePlaybackState";
-import parseJoysoundData, { JoysoundTelopData } from "../common/joysoundParser";
+import { KuroshiroSingleton } from "../common/joysoundParser";
 import AdhocLyrics from "./AdhocLyrics";
 import { InputDevice } from "./audioSystem";
 import JoysoundRenderer from "./JoysoundRenderer";
@@ -63,7 +64,7 @@ const POLL_INTERVAL_MS = 5 * 1000;
 const DAM_GAIN = 1.0;
 const NON_DAM_GAIN = 0.8;
 
-function Player(props: { mics: InputDevice[] }) {
+function Player(props: { mics: InputDevice[]; kuroshiro: KuroshiroSingleton }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const trackRef = useRef<HTMLTrackElement>(null);
   const [scoringData, setScoringData] = useState<readonly number[]>([]);
@@ -78,6 +79,7 @@ function Player(props: { mics: InputDevice[] }) {
   const { playbackState, setPlaybackState } = usePlaybackState();
   const pollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const gainNode = useRef<GainNode | null>(null);
+
   let hls: Hls | null = null;
 
   useEffect(() => {
@@ -282,6 +284,7 @@ function Player(props: { mics: InputDevice[] }) {
         <JoysoundRenderer
           telop={joysoundTelop}
           isRomaji={joysoundIsRomaji}
+          kuroshiro={props.kuroshiro}
           videoRef={videoRef}
         />
       ) : null}

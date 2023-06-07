@@ -7,6 +7,7 @@ import parseJoysoundData, {
   decodeJoysoundText,
   JoysoundLyricsBlock,
   JoysoundMetadata,
+  KuroshiroSingleton,
 } from "../common/joysoundParser";
 
 import { RUBY_FONT_SIZE, RUBY_FONT_STROKE } from "../common/constants";
@@ -507,10 +508,8 @@ function drawMainTextToCanvas(
   for (const glyphChar of lyricsBlock.chars) {
     const text = decodeJoysoundText(glyphChar.charCode, glyphChar.font);
 
-    textCtx.font = `${MAIN_FONT_SIZE + MAIN_FONT_STROKE}px ${getFontFace(
-      glyphChar.font
-    )}`;
-    textCtx.lineWidth = MAIN_FONT_STROKE;
+    textCtx.font = `${MAIN_FONT_SIZE}px ${getFontFace(glyphChar.font)}`;
+    textCtx.lineWidth = MAIN_FONT_STROKE * 2;
 
     const xPos = currX + getTextOffset(textCtx, text, glyphChar.width);
 
@@ -559,10 +558,8 @@ function drawRomajiTextToCanvas(
   const sortedRomaji = lyricsBlock.romaji.sort((a, b) => a.xPos - b.xPos);
 
   for (const romajiBlock of sortedRomaji) {
-    textCtx.font = `${ROMAJI_FONT_SIZE + ROMAJI_FONT_STROKE}px ${getFontFace(
-      0
-    )}`;
-    textCtx.lineWidth = ROMAJI_FONT_STROKE;
+    textCtx.font = `${ROMAJI_FONT_SIZE}px ${getFontFace(0)}`;
+    textCtx.lineWidth = ROMAJI_FONT_STROKE * 2;
 
     const xPos = romajiBlock.xPos;
     const xOff = getRomajiTextOffset(
@@ -761,6 +758,7 @@ function drawLyricsBlock(
 export default function JoysoundRenderer(props: {
   telop: ArrayBuffer;
   videoRef: React.RefObject<HTMLVideoElement>;
+  kuroshiro: KuroshiroSingleton;
   isRomaji: boolean;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -792,146 +790,149 @@ export default function JoysoundRenderer(props: {
   };
 
   useEffect(() => {
-    console.log("Joysound Renderer -- triggered re-render");
+    const refresh = async () => {
+      updateSize();
+      window.addEventListener("resize", updateSize);
 
-    updateSize();
-    window.addEventListener("resize", updateSize);
+      // Yeah we parse the data on each re-render, ffuck it
+      const joysoundData = await parseJoysoundData(
+        props.telop,
+        props.kuroshiro
+      );
 
-    // Yeah we parse the data on each re-render, ffuck it
-    const joysoundData = parseJoysoundData(props.telop);
+      const metadata = joysoundData.metadata;
+      const lyricsData = joysoundData.lyrics;
+      const timeline = joysoundData.timeline;
 
-    const metadata = joysoundData.metadata;
-    const lyricsData = joysoundData.lyrics;
-    const timeline = joysoundData.timeline;
-
-    invariant(canvasRef.current);
-    const gl = canvasRef.current.getContext("webgl2", {
-      antialias: false,
-      premultipliedAlpha: false,
-    });
-    invariant(gl);
-
-    const titleTexture = createTitleTexture(gl, metadata, props.isRomaji);
-    const lyricsBlockTextures = createLyricsBlockTextures(
-      gl,
-      lyricsData,
-      props.isRomaji
-    );
-
-    const vertexShader = createShader(gl, gl.VERTEX_SHADER, vsSource);
-    const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
-
-    const program = createProgram(gl, vertexShader, fragmentShader);
-
-    const positionAttributeLocation = gl.getAttribLocation(
-      program,
-      "a_position"
-    );
-    const texCoordLocation = gl.getAttribLocation(program, "a_texCoord");
-    const scrollLocation = gl.getAttribLocation(program, "a_scroll");
-    const scrollTypeLocation = gl.getAttribLocation(program, "a_scrollType");
-    const resolutionUniformLocation = gl.getUniformLocation(
-      program,
-      "u_resolution"
-    );
-
-    const positionBuffer = gl.createBuffer();
-    const texCoordBuffer = gl.createBuffer();
-    const scrollBuffer = gl.createBuffer();
-    const scrollTypeBuffer = gl.createBuffer();
-
-    invariant(positionBuffer);
-    invariant(texCoordBuffer);
-    invariant(scrollBuffer);
-    invariant(scrollTypeBuffer);
-
-    const glBuffers: JoysoundDisplayBuffers = {
-      position: positionBuffer,
-      texCoord: texCoordBuffer,
-      scroll: scrollBuffer,
-      scrollType: scrollTypeBuffer,
-    };
-
-    function draw(now: number) {
+      invariant(canvasRef.current);
+      const gl = canvasRef.current.getContext("webgl2", {
+        antialias: false,
+        premultipliedAlpha: false,
+      });
       invariant(gl);
-      invariant(props.videoRef.current);
 
-      const refreshTime =
-        props.videoRef.current.currentTime * 1000 + TIMING_OFFSET;
-      invariant(refreshTime);
-
-      gl.clearColor(0.0, 0.0, 0.0, 0.2);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-
-      gl.enable(gl.BLEND);
-      gl.blendFuncSeparate(
-        gl.SRC_ALPHA,
-        gl.ONE_MINUS_SRC_ALPHA,
-        gl.ONE,
-        gl.ONE_MINUS_SRC_ALPHA
+      const titleTexture = createTitleTexture(gl, metadata, props.isRomaji);
+      const lyricsBlockTextures = createLyricsBlockTextures(
+        gl,
+        lyricsData,
+        props.isRomaji
       );
 
-      gl.useProgram(program);
+      const vertexShader = createShader(gl, gl.VERTEX_SHADER, vsSource);
+      const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
 
-      gl.enableVertexAttribArray(positionAttributeLocation);
-      gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-      gl.vertexAttribPointer(
-        positionAttributeLocation,
-        2,
-        gl.FLOAT,
-        false,
-        0,
-        0
+      const program = createProgram(gl, vertexShader, fragmentShader);
+
+      const positionAttributeLocation = gl.getAttribLocation(
+        program,
+        "a_position"
+      );
+      const texCoordLocation = gl.getAttribLocation(program, "a_texCoord");
+      const scrollLocation = gl.getAttribLocation(program, "a_scroll");
+      const scrollTypeLocation = gl.getAttribLocation(program, "a_scrollType");
+      const resolutionUniformLocation = gl.getUniformLocation(
+        program,
+        "u_resolution"
       );
 
-      gl.enableVertexAttribArray(texCoordLocation);
-      gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
-      gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 0, 0);
+      const positionBuffer = gl.createBuffer();
+      const texCoordBuffer = gl.createBuffer();
+      const scrollBuffer = gl.createBuffer();
+      const scrollTypeBuffer = gl.createBuffer();
 
-      gl.enableVertexAttribArray(scrollLocation);
-      gl.bindBuffer(gl.ARRAY_BUFFER, scrollBuffer);
-      gl.vertexAttribPointer(scrollLocation, 1, gl.FLOAT, false, 0, 0);
+      invariant(positionBuffer);
+      invariant(texCoordBuffer);
+      invariant(scrollBuffer);
+      invariant(scrollTypeBuffer);
 
-      gl.enableVertexAttribArray(scrollTypeLocation);
-      gl.bindBuffer(gl.ARRAY_BUFFER, scrollTypeBuffer);
-      gl.vertexAttribPointer(scrollTypeLocation, 1, gl.FLOAT, false, 0, 0);
+      const glBuffers: JoysoundDisplayBuffers = {
+        position: positionBuffer,
+        texCoord: texCoordBuffer,
+        scroll: scrollBuffer,
+        scrollType: scrollTypeBuffer,
+      };
 
-      gl.uniform2f(
-        resolutionUniformLocation,
-        gl.canvas.width,
-        gl.canvas.height
-      );
+      function draw(now: number) {
+        invariant(gl);
+        invariant(props.videoRef.current);
 
-      if (refreshTime < metadata.fadeoutTime) {
-        drawTitle(gl, glBuffers, titleTexture);
-      }
+        const refreshTime =
+          props.videoRef.current.currentTime * 1000 + TIMING_OFFSET;
+        invariant(refreshTime);
 
-      for (let i = 0; i < lyricsData.length; i++) {
-        const lyricsBlock = lyricsData[i];
+        gl.clearColor(0.0, 0.0, 0.0, 0.2);
+        gl.clear(gl.COLOR_BUFFER_BIT);
 
-        if (
-          refreshTime >= lyricsBlock.fadeinTime &&
-          refreshTime < lyricsBlock.fadeoutTime
-        ) {
-          drawLyricsBlock(
-            gl,
-            glBuffers,
-            lyricsBlock,
-            lyricsBlockTextures,
-            i,
-            refreshTime
-          );
+        gl.enable(gl.BLEND);
+        gl.blendFuncSeparate(
+          gl.SRC_ALPHA,
+          gl.ONE_MINUS_SRC_ALPHA,
+          gl.ONE,
+          gl.ONE_MINUS_SRC_ALPHA
+        );
+
+        gl.useProgram(program);
+
+        gl.enableVertexAttribArray(positionAttributeLocation);
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+        gl.vertexAttribPointer(
+          positionAttributeLocation,
+          2,
+          gl.FLOAT,
+          false,
+          0,
+          0
+        );
+
+        gl.enableVertexAttribArray(texCoordLocation);
+        gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
+        gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 0, 0);
+
+        gl.enableVertexAttribArray(scrollLocation);
+        gl.bindBuffer(gl.ARRAY_BUFFER, scrollBuffer);
+        gl.vertexAttribPointer(scrollLocation, 1, gl.FLOAT, false, 0, 0);
+
+        gl.enableVertexAttribArray(scrollTypeLocation);
+        gl.bindBuffer(gl.ARRAY_BUFFER, scrollTypeBuffer);
+        gl.vertexAttribPointer(scrollTypeLocation, 1, gl.FLOAT, false, 0, 0);
+
+        gl.uniform2f(
+          resolutionUniformLocation,
+          gl.canvas.width,
+          gl.canvas.height
+        );
+
+        if (refreshTime < metadata.fadeoutTime) {
+          drawTitle(gl, glBuffers, titleTexture);
         }
+
+        for (let i = 0; i < lyricsData.length; i++) {
+          const lyricsBlock = lyricsData[i];
+
+          if (
+            refreshTime >= lyricsBlock.fadeinTime &&
+            refreshTime < lyricsBlock.fadeoutTime
+          ) {
+            drawLyricsBlock(
+              gl,
+              glBuffers,
+              lyricsBlock,
+              lyricsBlockTextures,
+              i,
+              refreshTime
+            );
+          }
+        }
+
+        animationFrameRequestRef.current = window.requestAnimationFrame(draw);
       }
 
       animationFrameRequestRef.current = window.requestAnimationFrame(draw);
-    }
+    };
 
-    animationFrameRequestRef.current = window.requestAnimationFrame(draw);
+    refresh().catch(console.error);
 
     return () => {
-      console.log("Joysound Renderer -- triggered post-render");
-
       window.removeEventListener("resize", updateSize);
       window.cancelAnimationFrame(animationFrameRequestRef.current);
     };
