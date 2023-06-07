@@ -38,12 +38,11 @@ function AdhocLyrics() {
       const newLyricIndices = response.currentSongAdhocLyricsChanged.map(
         (lyricEntry) => lyricEntry.lyricIndex
       );
+
       const currentLyricIndices = prevLyricLines.map(
         (lyricEntry) => lyricEntry.lyricIndex
       );
-      const freshLyricIndices = newLyricIndices.filter(
-        (lyricIndex) => !currentLyricIndices.includes(lyricIndex)
-      );
+
       const newLyricEntry: LyricEntry[] =
         response.currentSongAdhocLyricsChanged.map((lyricEntry, index) => {
           const height = getTextHeight(
@@ -58,7 +57,7 @@ function AdhocLyrics() {
             displayIndex: index,
             // marginTop for positioning each line
             marginTop: -1 * (newLyricsLineCount - index) * height * 3.4,
-            isNewLyricLine: freshLyricIndices.includes(lyricEntry.lyricIndex),
+            isNewLyricLine: index === newLyricsLineCount - 1,
           };
         });
       return newLyricEntry;
@@ -100,7 +99,7 @@ function AdhocLyrics() {
           const wrapLyricElement = (wrappedElement: JSX.Element) => (
             <div
               className="entry-container"
-              key={lyricEntry.lyricIndex}
+              key={lyricEntry.displayIndex}
               style={{
                 width: "calc(100% - 128px)",
                 textAlign: "center",

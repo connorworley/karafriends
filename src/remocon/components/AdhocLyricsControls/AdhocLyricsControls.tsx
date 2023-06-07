@@ -12,7 +12,6 @@ import * as styles from "./AdhocLyricsControls.module.scss";
 import LyricsController from "./LyricsController";
 import LyricsPicker from "./LyricsPicker";
 import { AdhocLyricsControlsLyricsQuery } from "./__generated__/AdhocLyricsControlsLyricsQuery.graphql";
-import { AdhocLyricsControlsPopLyricsMutation } from "./__generated__/AdhocLyricsControlsPopLyricsMutation.graphql";
 import { AdhocLyricsControlsPushLyricsMutation } from "./__generated__/AdhocLyricsControlsPushLyricsMutation.graphql";
 
 const adhocLyricsControlsLyricsQuery = graphql`
@@ -30,19 +29,13 @@ const adhocLyricsControlsPushLyricsMutation = graphql`
   }
 `;
 
-const adhocLyricsControlsPopLyricsMutation = graphql`
-  mutation AdhocLyricsControlsPopLyricsMutation {
-    popAdhocLyrics
-  }
-`;
-
 type Props = {
   id: string;
 };
 
 function AdhocLyricsControls({ id }: Props) {
   const navigate = useNavigate();
-  const { nickname, deviceId } = useUserIdentity();
+  const { nickname } = useUserIdentity();
   const currentSong = useNowPlaying();
 
   const [selectedIndex, _setSelectedIndex] = useState<number>(0);
@@ -59,14 +52,11 @@ function AdhocLyricsControls({ id }: Props) {
   const [pushLyrics] = useMutation<AdhocLyricsControlsPushLyricsMutation>(
     adhocLyricsControlsPushLyricsMutation
   );
-  const [popLyrics] = useMutation<AdhocLyricsControlsPopLyricsMutation>(
-    adhocLyricsControlsPopLyricsMutation
-  );
 
   if (
     !adhocLyrics?.length ||
     (currentSong !== undefined &&
-      !isYouTubeVideoWithLyricsPlaying(currentSong, id, nickname, deviceId))
+      !isYouTubeVideoWithLyricsPlaying(currentSong, id, nickname))
   ) {
     navigate("/");
 
@@ -88,10 +78,6 @@ function AdhocLyricsControls({ id }: Props) {
     setSelectedIndex(index + 1);
   };
 
-  const onRemoveLine = () => {
-    popLyrics({ variables: {} });
-  };
-
   return (
     <div className={styles.container}>
       <div className={styles.picker}>
@@ -101,7 +87,7 @@ function AdhocLyricsControls({ id }: Props) {
           onSelectLine={setSelectedIndex}
         />
       </div>
-      <LyricsController onSendLine={onSendLine} onRemoveLine={onRemoveLine} />
+      <LyricsController onSendLine={onSendLine} />
     </div>
   );
 }

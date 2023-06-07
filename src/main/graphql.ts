@@ -988,14 +988,6 @@ const resolvers = {
       saveDb();
       return true;
     },
-    popAdhocLyrics: (_: any, args: {}): boolean => {
-      db.currentSongAdhocLyrics.shift();
-      pubsub.publish(SubscriptionEvent.CurrentSongAdhocLyricsChanged, {
-        currentSongAdhocLyricsChanged: db.currentSongAdhocLyrics,
-      });
-      saveDb();
-      return true;
-    },
     popSong: (_: any, args: {}): QueueItem | null => {
       const newSong = db.songQueue.shift() || null;
 
