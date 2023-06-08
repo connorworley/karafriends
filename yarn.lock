@@ -2836,7 +2836,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@parcel/plugin@npm:^2.0.0-beta.1":
+"@parcel/plugin@npm:2.9.1, @parcel/plugin@npm:^2.0.0-beta.1":
   version: 2.9.1
   resolution: "@parcel/plugin@npm:2.9.1"
   dependencies:
@@ -3097,14 +3097,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@parcel/transformer-sass@npm:2.8.3":
-  version: 2.8.3
-  resolution: "@parcel/transformer-sass@npm:2.8.3"
+"@parcel/transformer-sass@npm:2.9.1":
+  version: 2.9.1
+  resolution: "@parcel/transformer-sass@npm:2.9.1"
   dependencies:
-    "@parcel/plugin": 2.8.3
+    "@parcel/plugin": 2.9.1
     "@parcel/source-map": ^2.1.1
     sass: ^1.38.0
-  checksum: 9cb32b3906afce4f8ed1f53c4a4c5f016867d101654778c6646db4097fa602a3b0eeeab0ee713c386e79604c61ebd02a495afea4827833109a5c74d752c8f8ac
+  checksum: df224ffb3e6e21f6c5482985df5b6b6644914621097ef6b7a48cf55af01bc3a22d0015a4b01e6b725b3d4aaa006ad675061497bc7d468f6daf13ca87eed88fdb
   languageName: node
   linkType: hard
 
@@ -10976,7 +10976,7 @@ __metadata:
     "@parcel/config-default": 2.8.3
     "@parcel/core": 2.8.3
     "@parcel/transformer-glsl": 2.8.3
-    "@parcel/transformer-sass": 2.8.3
+    "@parcel/transformer-sass": 2.9.1
     "@sentry/browser": 7.53.1
     "@sentry/node": 7.53.0
     "@types/babel__core": 7
