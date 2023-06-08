@@ -7505,15 +7505,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-chromedriver@npm:24.0.0":
-  version: 24.0.0
-  resolution: "electron-chromedriver@npm:24.0.0"
+"electron-chromedriver@npm:24.5.0":
+  version: 24.5.0
+  resolution: "electron-chromedriver@npm:24.5.0"
   dependencies:
     "@electron/get": ^2.0.1
     extract-zip: ^2.0.0
   bin:
     chromedriver: chromedriver.js
-  checksum: e19f2f343c6df951ee2d433f1f270ec2279d0f3f0feb6b4b78b07a98bc62ed06b4ab999f2f76ef745eae6a120718d0b993c2aa2bc4a5bf9118f74f78cffe0d74
+  checksum: 6521f9e860591cd8ca429edef957ea7545bf6271793c141543cfa88978ec0e5502d38970de49684306afac9fb03fd11eea9297d33ec7f90671d8a7f0bbc363bf
   languageName: node
   linkType: hard
 
@@ -11023,7 +11023,7 @@ __metadata:
     cubic-spline: 3.0.3
     dataloader: 2.2.2
     electron: 24.4.0
-    electron-chromedriver: 24.0.0
+    electron-chromedriver: 24.5.0
     electron-is-dev: 2.0.0
     electron-packager: 17.1.1
     express: 4.18.2
