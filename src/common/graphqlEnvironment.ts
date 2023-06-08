@@ -45,7 +45,10 @@ function getSubscriptionUrl(): string {
   return `${wsProtocol}://${window.location.hostname}:${window.location.port}/graphql`;
 }
 
-const subscriptionClient = createClient({ url: getSubscriptionUrl() });
+const subscriptionClient = createClient({
+  url: getSubscriptionUrl(),
+  shouldRetry: () => true,
+});
 
 const subscribe = (operation: RequestParameters, variables: Variables) => {
   return Observable.create((sink) => {
