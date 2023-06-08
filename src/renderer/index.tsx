@@ -1,9 +1,13 @@
 import * as Sentry from "@sentry/browser";
+import Kuroshiro from "kuroshiro";
+import KuromojiAnalyzer from "kuroshiro-analyzer-kuromoji";
+
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client"; // tslint:disable-line:no-submodule-imports
 import { RelayEnvironmentProvider } from "react-relay";
 
 import environment from "../common/graphqlEnvironment";
+import { KuroshiroSingleton } from "../common/joysoundParser";
 import App from "./App";
 import "./index.css";
 
@@ -12,11 +16,23 @@ Sentry.init({
   debug: true,
 });
 
-ReactDOM.render(
+const kuroshiro = new Kuroshiro();
+const kuromojiAnalyzer = new KuromojiAnalyzer({ dictPath: "/dict" });
+const kuromojiPromise = kuroshiro.init(kuromojiAnalyzer);
+
+const kuroshiroSingleton: KuroshiroSingleton = {
+  kuroshiro,
+  analyzer: kuromojiAnalyzer,
+  analyzerInitPromise: kuromojiPromise,
+};
+
+const container = document.getElementById("root");
+const root = createRoot(container!);
+
+root.render(
   <React.StrictMode>
     <RelayEnvironmentProvider environment={environment}>
-      <App />
+      <App kuroshiro={kuroshiroSingleton} />
     </RelayEnvironmentProvider>
-  </React.StrictMode>,
-  document.getElementById("root")
+  </React.StrictMode>
 );
