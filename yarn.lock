@@ -2481,6 +2481,39 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@parcel/core@npm:2.9.1":
+  version: 2.9.1
+  resolution: "@parcel/core@npm:2.9.1"
+  dependencies:
+    "@mischnic/json-sourcemap": ^0.1.0
+    "@parcel/cache": 2.9.1
+    "@parcel/diagnostic": 2.9.1
+    "@parcel/events": 2.9.1
+    "@parcel/fs": 2.9.1
+    "@parcel/graph": 2.9.1
+    "@parcel/hash": 2.9.1
+    "@parcel/logger": 2.9.1
+    "@parcel/package-manager": 2.9.1
+    "@parcel/plugin": 2.9.1
+    "@parcel/profiler": 2.9.1
+    "@parcel/source-map": ^2.1.1
+    "@parcel/types": 2.9.1
+    "@parcel/utils": 2.9.1
+    "@parcel/workers": 2.9.1
+    abortcontroller-polyfill: ^1.1.9
+    base-x: ^3.0.8
+    browserslist: ^4.6.6
+    clone: ^2.1.1
+    dotenv: ^7.0.0
+    dotenv-expand: ^5.1.0
+    json5: ^2.2.0
+    msgpackr: ^1.5.4
+    nullthrows: ^1.1.1
+    semver: ^5.7.1
+  checksum: a63a341127b73114cf4310f5c6111b34baf2474a31951ac5aed65aa54f3e00326d22751ef877bad162e9b1e9ba1e8dd2a9daab179e8739f4e935537b7e95be15
+  languageName: node
+  linkType: hard
+
 "@parcel/diagnostic@npm:2.8.3":
   version: 2.8.3
   resolution: "@parcel/diagnostic@npm:2.8.3"
@@ -2567,6 +2600,15 @@ __metadata:
   dependencies:
     nullthrows: ^1.1.1
   checksum: ceed8445f5a23396cca001a54ee0620bd7d6ecbb455977c16bd2f446da14c1791817ed715a4cf70d6ba66310991eeee44d692f15f70ff52e75b98b629da25a88
+  languageName: node
+  linkType: hard
+
+"@parcel/graph@npm:2.9.1":
+  version: 2.9.1
+  resolution: "@parcel/graph@npm:2.9.1"
+  dependencies:
+    nullthrows: ^1.1.1
+  checksum: 04dd15f5bcdb0da16645e034f0ec21c3ac13855f422e38bfb136f8840985ac9cec89e98f2d4a9fb9211aa354289d7de68de1bf537ef6215ee2d1ff6f8bbb6716
   languageName: node
   linkType: hard
 
@@ -2836,7 +2878,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@parcel/plugin@npm:^2.0.0-beta.1":
+"@parcel/plugin@npm:2.9.1, @parcel/plugin@npm:^2.0.0-beta.1":
   version: 2.9.1
   resolution: "@parcel/plugin@npm:2.9.1"
   dependencies:
@@ -10974,7 +11016,7 @@ __metadata:
     "@babel/runtime": 7.21.5
     "@graphql-tools/schema": 10.0.0
     "@parcel/config-default": 2.8.3
-    "@parcel/core": 2.8.3
+    "@parcel/core": 2.9.1
     "@parcel/transformer-glsl": 2.8.3
     "@parcel/transformer-sass": 2.8.3
     "@sentry/browser": 7.53.1
