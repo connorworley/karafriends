@@ -231,6 +231,7 @@ function getMainRomajiBlocks(
       currPhraseWidth = 0;
     }
 
+    // XXX: Welcome hell
     if (!isKanaUnicodeChar(unicodeChar) || unicodeChar === "・") {
       currXPos += currGlyph.width;
     } else {
@@ -254,6 +255,13 @@ function getMainRomajiBlocks(
           tokenizedLyrics[tokenizedLyricsIndex].pronunciation[
             tokenizedLyricsCharIndex
           ];
+      } else if (
+        tokenizedLyricsCharIndex ===
+          tokenizedLyrics[tokenizedLyricsIndex].surface_form.length - 1 &&
+        tokenizedLyrics[tokenizedLyricsIndex].surface_form.slice(-1) === "は"
+      ) {
+        currPhrase +=
+          tokenizedLyrics[tokenizedLyricsIndex].pronunciation.slice(-1);
       } else {
         currPhrase += unicodeChar;
       }
