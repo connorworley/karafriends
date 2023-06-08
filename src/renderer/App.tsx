@@ -1,6 +1,3 @@
-import Kuroshiro from "kuroshiro";
-import KuromojiAnalyzer from "kuroshiro-analyzer-kuromoji";
-
 import M from "materialize-css";
 import "materialize-css/dist/css/materialize.css"; // tslint:disable-line:no-submodule-imports
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -34,7 +31,7 @@ const songAddedSubscription = graphql`
   }
 `;
 
-function App() {
+function App(props: { kuroshiro: KuroshiroSingleton }) {
   const [mics, _setMics] = useState<InputDevice[]>([]);
   const [hostname, setHostname] = useState(HOSTNAME);
 
@@ -45,19 +42,6 @@ function App() {
     }));
     localStorage.setItem("mics", JSON.stringify(micsToSave));
     _setMics(newMics);
-  };
-
-  const kuroshiro = useRef(new Kuroshiro());
-  const kuromojiAnalyzer = useRef(new KuromojiAnalyzer({ dictPath: "/dict" }));
-
-  const kuromojiPromise = kuroshiro.current._analyzer
-    ? null
-    : kuroshiro.current.init(kuromojiAnalyzer.current);
-
-  const kuroshiroSingleton = {
-    kuroshiro,
-    analyzer: kuromojiAnalyzer,
-    analyzerInitPromise: kuromojiPromise,
   };
 
   useEffect(() => {
@@ -110,7 +94,7 @@ function App() {
   return (
     <div className="appMainContainer black row">
       <div className="appPlayer col s11 valign-wrapper">
-        <Player mics={mics} kuroshiro={kuroshiroSingleton} />
+        <Player mics={mics} kuroshiro={props.kuroshiro} />
         <Effects />
       </div>
       <div className="appSidebar col s1 grey lighten-3">

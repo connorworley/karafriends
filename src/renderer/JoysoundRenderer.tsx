@@ -84,7 +84,7 @@ const ROMAJI_FONT_STROKE = 2;
 
 const SCREEN_WIDTH = 720;
 const SCREEN_HEIGHT = 480;
-const TEXT_PADDING = 8;
+const TEXT_PADDING = 16;
 
 let EXPAND_RATE = 1.0;
 let EXPAND_RATE_X = 1.0;
@@ -222,7 +222,7 @@ function setupTextCanvas(
   strokeColor: number[]
 ): void {
   textCtx.canvas.width = getLyricsBlockWidth(lyricsBlock) * EXPAND_RATE_X;
-  textCtx.canvas.height = getLyricsBlockHeight(lyricsBlock) * EXPAND_RATE;
+  textCtx.canvas.height = getLyricsBlockHeight(lyricsBlock) * EXPAND_RATE_Y;
   textCtx.clearRect(0, 0, textCtx.canvas.width, textCtx.canvas.height);
 
   textCtx.textBaseline = "top";
@@ -232,8 +232,8 @@ function setupTextCanvas(
 }
 
 function setupTitleCanvas(textCtx: CanvasRenderingContext2D): void {
-  textCtx.canvas.width = (SCREEN_WIDTH + TEXT_PADDING * 2) * EXPAND_RATE_X;
-  textCtx.canvas.height = (SCREEN_HEIGHT + TEXT_PADDING * 2) * EXPAND_RATE;
+  textCtx.canvas.width = SCREEN_WIDTH * EXPAND_RATE_X;
+  textCtx.canvas.height = SCREEN_HEIGHT * EXPAND_RATE_Y;
   textCtx.clearRect(0, 0, textCtx.canvas.width, textCtx.canvas.height);
 
   textCtx.textBaseline = "top";
@@ -244,6 +244,7 @@ function setupTitleCanvas(textCtx: CanvasRenderingContext2D): void {
 
 function createTitleRows(
   textCtx: CanvasRenderingContext2D,
+  fontStroke: number,
   title: string
 ): JoysoundTitleRow[] {
   const titleRows = [];
@@ -256,7 +257,7 @@ function createTitleRows(
 
     if (
       nextTitleWidth >=
-      SCREEN_WIDTH * (EXPAND_RATE_X / EXPAND_RATE) - TEXT_PADDING * 2
+      (SCREEN_WIDTH - (TEXT_PADDING + fontStroke + 16) * 2) * EXPAND_RATE_X
     ) {
       titleRows.push({ text: currTitleText, width: currTitleWidth });
 
@@ -281,9 +282,12 @@ function drawTitleRowsToCanvas(
   yPos: number
 ) {
   for (const titleRow of titleRows) {
+    const titleRowPaddedWidth =
+      titleRow.width + (TEXT_PADDING + fontStroke) * EXPAND_RATE_X * 2;
+
     const xPos = Math.max(
       0,
-      ((SCREEN_WIDTH - titleRow.width) * (EXPAND_RATE_X / EXPAND_RATE)) / 2
+      (SCREEN_WIDTH * EXPAND_RATE_X - titleRowPaddedWidth) / 2 / EXPAND_RATE_X
     );
 
     drawTextToCanvas(textCtx, fontSize, fontStroke, xPos, yPos, titleRow.text);
@@ -304,21 +308,36 @@ function createTitleTexture(
 
   const titleFontSize =
     metadata.musicName.length < 48 ? TITLE_FONT_SIZE : ARTIST_FONT_SIZE;
-  textCtx.font = `${titleFontSize}px ${JP_FONT_FACE}`;
+  const titleFontStroke =
+    metadata.musicName.length < 48 ? TITLE_FONT_STROKE : ARTIST_FONT_STROKE;
+  textCtx.font = `${titleFontSize * EXPAND_RATE}px ${JP_FONT_FACE}`;
 
-  const titleRows = createTitleRows(textCtx, metadata.musicName);
+  const titleRows = createTitleRows(
+    textCtx,
+    titleFontStroke,
+    metadata.musicName
+  );
   const titleHeight =
-    (titleFontSize + TITLE_FONT_STROKE * 2) * titleRows.length;
+    (titleFontSize + TITLE_FONT_STROKE * 2) * titleRows.length * EXPAND_RATE_Y;
 
   const artistFontSize =
     metadata.artistName.length < 64 ? ARTIST_FONT_SIZE : METADATA_FONT_SIZE;
-  textCtx.font = `${artistFontSize}px ${JP_FONT_FACE}`;
+  const artistFontStroke =
+    metadata.artistName.length < 64 ? ARTIST_FONT_STROKE : METADATA_FONT_STROKE;
 
-  const artistRows = createTitleRows(textCtx, "♪ " + metadata.artistName);
+  textCtx.font = `${artistFontSize * EXPAND_RATE}px ${JP_FONT_FACE}`;
+
+  const artistRows = createTitleRows(
+    textCtx,
+    artistFontStroke,
+    "♪ " + metadata.artistName
+  );
   const artistHeight =
-    (artistFontSize + ARTIST_FONT_STROKE * 2) * artistRows.length;
+    (artistFontSize + ARTIST_FONT_STROKE * 2) *
+    artistRows.length *
+    EXPAND_RATE_Y;
 
-  textCtx.font = `${METADATA_FONT_SIZE}px ${JP_FONT_FACE}`;
+  textCtx.font = `${METADATA_FONT_SIZE * EXPAND_RATE}px ${JP_FONT_FACE}`;
 
   const lyricistText =
     (isRomaji ? "Lyrics: " : "作詞 ") + metadata.lyricistName;
@@ -334,17 +353,15 @@ function createTitleTexture(
     composerMeasure.actualBoundingBoxAscent +
     composerMeasure.actualBoundingBoxDescent;
 
+  const totalHeight =
+    titleHeight + artistHeight + lyricistHeight + composerHeight + 192;
+
   const titleYPos =
-    (SCREEN_HEIGHT -
-      titleHeight -
-      artistHeight -
-      lyricistHeight -
-      composerHeight -
-      128) /
-    2;
-  const artistYPos = titleYPos + titleHeight + 64;
-  const lyricistYPos = artistYPos + artistHeight + 48;
-  const composerYPos = lyricistYPos + lyricistHeight + 16;
+    (SCREEN_HEIGHT * EXPAND_RATE_Y - totalHeight) / 2 / EXPAND_RATE_Y -
+    TEXT_PADDING;
+  const artistYPos = titleYPos + titleHeight / EXPAND_RATE_Y + 64;
+  const lyricistYPos = artistYPos + artistHeight / EXPAND_RATE_Y + 48;
+  const composerYPos = lyricistYPos + lyricistHeight / EXPAND_RATE_Y + 16;
 
   drawTitleRowsToCanvas(
     textCtx,
@@ -365,7 +382,7 @@ function createTitleTexture(
     textCtx,
     METADATA_FONT_SIZE,
     METADATA_FONT_STROKE,
-    48,
+    48 - TEXT_PADDING,
     lyricistYPos,
     lyricistText
   );
@@ -374,7 +391,7 @@ function createTitleTexture(
     textCtx,
     METADATA_FONT_SIZE,
     METADATA_FONT_STROKE,
-    48,
+    48 - TEXT_PADDING,
     composerYPos,
     composerText
   );
@@ -489,13 +506,13 @@ function drawTextToCanvas(
   textCtx.strokeText(
     text,
     (xPos + fontStroke + TEXT_PADDING) * EXPAND_RATE_X,
-    (yPos + fontStroke + TEXT_PADDING) * EXPAND_RATE
+    (yPos + fontStroke + TEXT_PADDING) * EXPAND_RATE_Y
   );
 
   textCtx.fillText(
     text,
     (xPos + fontStroke + TEXT_PADDING) * EXPAND_RATE_X,
-    (yPos + fontStroke + TEXT_PADDING) * EXPAND_RATE
+    (yPos + fontStroke + TEXT_PADDING) * EXPAND_RATE_Y
   );
 }
 
@@ -667,8 +684,8 @@ function drawTitle(
   const positions = quadToTriangles(
     0,
     0,
-    (SCREEN_WIDTH + TEXT_PADDING) * EXPAND_RATE_X - TEXT_PADDING,
-    (SCREEN_HEIGHT + TEXT_PADDING) * EXPAND_RATE_Y - TEXT_PADDING
+    SCREEN_WIDTH * EXPAND_RATE_X,
+    SCREEN_HEIGHT * EXPAND_RATE_Y
   );
 
   drawLyricsTexture(gl, glBuffers, titleTexture, positions, scrollArray, false);
@@ -720,8 +737,7 @@ function drawLyricsBlock(
   );
 
   const currX = lyricsBlock.xPos;
-  const currY =
-    lyricsBlock.yPos - (RUBY_FONT_SIZE + RUBY_FONT_STROKE * 2 + TEXT_PADDING);
+  const currY = lyricsBlock.yPos - (RUBY_FONT_SIZE + RUBY_FONT_STROKE * 2) - 8;
 
   const rectWidth = getLyricsBlockWidth(lyricsBlock);
   const rectHeight = getLyricsBlockHeight(lyricsBlock);
