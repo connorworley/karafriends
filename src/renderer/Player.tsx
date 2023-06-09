@@ -254,12 +254,16 @@ function Player(props: { mics: InputDevice[]; kuroshiro: KuroshiroSingleton }) {
 
     videoRef.current.onended = pollQueue;
 
-    if (playbackState === "WAITING") {
-      pollQueue();
+    if (pollTimeoutRef.current === null) {
+      pollTimeoutRef.current = setTimeout(pollQueue, POLL_INTERVAL_MS);
     }
 
     return () => {
-      if (pollTimeoutRef.current) clearTimeout(pollTimeoutRef.current);
+      if (pollTimeoutRef.current) {
+        clearTimeout(pollTimeoutRef.current);
+
+        pollTimeoutRef.current = null;
+      }
     };
   }, []);
 

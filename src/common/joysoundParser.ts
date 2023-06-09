@@ -207,6 +207,8 @@ function getMainRomajiBlocks(
   let tokenizedLyricsIndex = 0;
   let tokenizedLyricsCharIndex = 0;
 
+  console.log(tokenizedLyrics.map((x) => x.surface_form));
+
   for (const currGlyph of chars) {
     const unicodeChar = decodeJoysoundText(currGlyph.charCode, currGlyph.font);
     const prevUnicodeChar =
@@ -261,6 +263,7 @@ function getMainRomajiBlocks(
             tokenizedLyricsCharIndex
           ];
       } else if (
+        tokenizedLyrics[tokenizedLyricsIndex].surface_form.length > 1 &&
         tokenizedLyricsCharIndex ===
           tokenizedLyrics[tokenizedLyricsIndex].surface_form.length - 1 &&
         tokenizedLyrics[tokenizedLyricsIndex].surface_form.slice(-1) === "は"
