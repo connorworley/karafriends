@@ -251,8 +251,13 @@ function Player(props: { mics: InputDevice[]; kuroshiro: KuroshiroSingleton }) {
           }
         },
       });
+
     videoRef.current.onended = pollQueue;
-    pollQueue();
+
+    if (playbackState === "WAITING") {
+      pollQueue();
+    }
+
     return () => {
       if (pollTimeoutRef.current) clearTimeout(pollTimeoutRef.current);
     };
@@ -260,6 +265,7 @@ function Player(props: { mics: InputDevice[]; kuroshiro: KuroshiroSingleton }) {
 
   useEffect(() => {
     if (!videoRef.current) return;
+
     switch (playbackState) {
       case "PAUSED":
         videoRef.current.pause();
