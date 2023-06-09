@@ -354,13 +354,17 @@ function createTitleTexture(
     composerMeasure.actualBoundingBoxDescent;
 
   const totalHeight =
-    titleHeight + artistHeight + lyricistHeight + composerHeight + 192;
+    titleHeight +
+    artistHeight +
+    lyricistHeight +
+    composerHeight +
+    144 * EXPAND_RATE_Y;
 
   const titleYPos =
     (SCREEN_HEIGHT * EXPAND_RATE_Y - totalHeight) / 2 / EXPAND_RATE_Y -
     TEXT_PADDING;
   const artistYPos = titleYPos + titleHeight / EXPAND_RATE_Y + 64;
-  const lyricistYPos = artistYPos + artistHeight / EXPAND_RATE_Y + 48;
+  const lyricistYPos = artistYPos + artistHeight / EXPAND_RATE_Y + 64;
   const composerYPos = lyricistYPos + lyricistHeight / EXPAND_RATE_Y + 16;
 
   drawTitleRowsToCanvas(
@@ -523,7 +527,11 @@ function drawMainTextToCanvas(
   let currX = 0;
 
   for (const glyphChar of lyricsBlock.chars) {
-    const text = decodeJoysoundText(glyphChar.charCode, glyphChar.font);
+    const text = decodeJoysoundText(
+      glyphChar.charCode,
+      glyphChar.font,
+      lyricsBlock.flags
+    );
 
     textCtx.font = `${MAIN_FONT_SIZE}px ${getFontFace(glyphChar.font)}`;
     textCtx.lineWidth = MAIN_FONT_STROKE * 2;

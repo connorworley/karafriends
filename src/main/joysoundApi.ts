@@ -75,6 +75,45 @@ function parseCookies(setCookie: string, target: JoysoundCookies) {
   }
 }
 
+function unescapeJoysoundString(str: string) {
+  const htmlEntities = {
+    nbsp: " ",
+    cent: "¢",
+    pound: "£",
+    yen: "¥",
+    euro: "€",
+    copy: "©",
+    reg: "®",
+    lt: "<",
+    gt: ">",
+    quot: '"',
+    amp: "&",
+    apos: "'",
+  };
+
+  return str.replace(/\&([^;]+);/g, (entity: string, entityCode: string) => {
+    let match;
+
+    if (htmlEntities[entityCode as keyof typeof htmlEntities] !== undefined) {
+      return htmlEntities[entityCode as keyof typeof htmlEntities];
+    }
+
+    match = entityCode.match(/^#x([\da-fA-F]+)$/);
+
+    if (match) {
+      return String.fromCharCode(parseInt(match[1], 16));
+    }
+
+    match = entityCode.match(/^#(\d+)$/);
+
+    if (match) {
+      return String.fromCharCode(parseInt(match[1], 10));
+    }
+
+    return entity;
+  });
+}
+
 export class JoysoundAPI extends RESTDataSource {
   credsProvider: JoysoundCredentialsProvider;
 
@@ -165,10 +204,10 @@ export class JoysoundAPI extends RESTDataSource {
     invariant(lyricsPreview !== undefined);
 
     const payload: JoysoundSongDetail = {
-      name,
-      artistName,
-      lyricsPreview,
-      tieUp,
+      name: unescapeJoysoundString(name),
+      artistName: unescapeJoysoundString(artistName),
+      lyricsPreview: unescapeJoysoundString(lyricsPreview),
+      tieUp: unescapeJoysoundString(tieUp),
     };
 
     return payload;

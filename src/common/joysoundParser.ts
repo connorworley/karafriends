@@ -101,33 +101,36 @@ const eucKrDecoder = new TextDecoder("euc-kr");
 
 export function decodeJoysoundText(
   charCode: number,
-  fontCode: number = 0
+  fontCode: number = 0,
+  flags: number = 0
 ): string {
   switch (fontCode) {
     case 0:
-      return decodeSJIS(charCode);
+      return decodeSJIS(charCode, flags);
       break;
     case 1:
       return decodeEucKR(charCode);
       break;
     default:
-      return decodeSJIS(charCode);
+      return decodeSJIS(charCode, flags);
   }
 }
 
-function decodeSJIS(charCode: number): string {
+function decodeSJIS(charCode: number, flags: number): string {
   if (charCode <= 0xff) {
     return sjisDecoder.decode(new Uint8Array([charCode]));
   }
 
-  if (charCode === 0x819b) {
-    return "♦";
-  } else if (charCode === 0x819c) {
-    return "♥";
-  } else if (charCode === 0x819e) {
-    return "♣";
-  } else if (charCode === 0x819f) {
-    return "♠";
+  if (flags === 255) {
+    if (charCode === 0x819b) {
+      return "♦";
+    } else if (charCode === 0x819c) {
+      return "♥";
+    } else if (charCode === 0x819e) {
+      return "♣";
+    } else if (charCode === 0x819f) {
+      return "♠";
+    }
   }
 
   const bytes = new Uint8Array([Math.floor(charCode / 256), charCode % 256]);
@@ -204,10 +207,14 @@ function getMainRomajiBlocks(
   let tokenizedLyricsIndex = 0;
   let tokenizedLyricsCharIndex = 0;
 
+  console.log(tokenizedLyrics.map((x) => x.surface_form));
+
   for (const currGlyph of chars) {
-    const unicodeChar = decodeJoysoundText(currGlyph.charCode);
+    const unicodeChar = decodeJoysoundText(currGlyph.charCode, currGlyph.font);
     const prevUnicodeChar =
-      prevGlyph !== null ? decodeJoysoundText(prevGlyph.charCode) : null;
+      prevGlyph !== null
+        ? decodeJoysoundText(prevGlyph.charCode, currGlyph.font)
+        : null;
 
     if (
       prevUnicodeChar !== null &&
@@ -256,6 +263,7 @@ function getMainRomajiBlocks(
             tokenizedLyricsCharIndex
           ];
       } else if (
+        tokenizedLyrics[tokenizedLyricsIndex].surface_form.length > 1 &&
         tokenizedLyricsCharIndex ===
           tokenizedLyrics[tokenizedLyricsIndex].surface_form.length - 1 &&
         tokenizedLyrics[tokenizedLyricsIndex].surface_form.slice(-1) === "は"
@@ -332,7 +340,7 @@ function getNonKanaRomajiBlocks(
   let tokenizedLyricsCharIndex = 0;
 
   for (const currGlyph of chars) {
-    const unicodeChar = decodeJoysoundText(currGlyph.charCode);
+    const unicodeChar = decodeJoysoundText(currGlyph.charCode, currGlyph.font);
 
     if (
       isKanjiUnicodeChar(unicodeChar) &&
