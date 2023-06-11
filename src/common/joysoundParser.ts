@@ -207,8 +207,6 @@ function getMainRomajiBlocks(
   let tokenizedLyricsIndex = 0;
   let tokenizedLyricsCharIndex = 0;
 
-  console.log(tokenizedLyrics.map((x) => x.surface_form));
-
   for (const currGlyph of chars) {
     const unicodeChar = decodeJoysoundText(currGlyph.charCode, currGlyph.font);
     const prevUnicodeChar =
