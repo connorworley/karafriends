@@ -9,6 +9,7 @@ function QRCode(props: { hostname: string }) {
   useEffect(() => {
     function update() {
       if (!canvasRef.current) return;
+
       canvasRef.current.style.width = "100%";
       toCanvas(
         canvasRef.current,

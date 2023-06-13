@@ -34,6 +34,7 @@ const songAddedSubscription = graphql`
 function App(props: { kuroshiro: KuroshiroSingleton }) {
   const [mics, _setMics] = useState<InputDevice[]>([]);
   const [hostname, setHostname] = useState(HOSTNAME);
+  const [sidebarVisible, setSidebarVisible] = useState(true);
 
   const setMics = (newMics: InputDevice[]) => {
     const micsToSave = newMics.map((mic) => ({
@@ -44,7 +45,15 @@ function App(props: { kuroshiro: KuroshiroSingleton }) {
     _setMics(newMics);
   };
 
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === "q" || event.key === "Q") {
+      setSidebarVisible(!sidebarVisible);
+    }
+  };
+
   useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+
     const savedMicInfo = JSON.parse(localStorage.getItem("mics") || "[]");
     const inputDevices = window.karafriends.nativeAudio.inputDevices();
     const channelCounts: { [key: string]: number } = inputDevices.reduce(
@@ -54,14 +63,20 @@ function App(props: { kuroshiro: KuroshiroSingleton }) {
       }),
       {}
     );
+
     const savedMics = savedMicInfo
       .filter(
         ({ name, channel }: SavedMic) =>
           name in channelCounts && channel < channelCounts[name]
       )
       .map(({ name, channel }: SavedMic) => new InputDevice(name, channel));
+
     setMics(savedMics);
-  }, []);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [sidebarVisible]);
 
   useSubscription<AppQueueAddedSubscription>(
     useMemo(
@@ -93,33 +108,39 @@ function App(props: { kuroshiro: KuroshiroSingleton }) {
 
   return (
     <div className="appMainContainer black row">
-      <div className="appPlayer col s11 valign-wrapper">
+      <div
+        className={`appPlayer col ${
+          sidebarVisible ? "s11" : "s12"
+        } valign-wrapper`}
+      >
         <Player mics={mics} kuroshiro={props.kuroshiro} />
         <Effects />
       </div>
-      <div className="appSidebar col s1 grey lighten-3">
-        <QRCode hostname={hostname} />
-        <nav className="center-align">Settings</nav>
-        <div className="section center-align">
-          <HostnameSetting onChange={setHostname} />
-          {mics.map((mic, i) => (
+      {sidebarVisible && (
+        <div className="appSidebar col s1 grey lighten-3">
+          <QRCode hostname={hostname} />
+          <nav className="center-align">Settings</nav>
+          <div className="section center-align">
+            <HostnameSetting onChange={setHostname} />
+            {mics.map((mic, i) => (
+              <MicrophoneSetting
+                key={mic.deviceId}
+                onChange={onChangeMic.bind(null, i)}
+                mic={mic}
+              />
+            ))}
             <MicrophoneSetting
-              key={mic.deviceId}
-              onChange={onChangeMic.bind(null, i)}
-              mic={mic}
+              onChange={onChangeMic.bind(null, mics.length)}
+              mic={null}
             />
-          ))}
-          <MicrophoneSetting
-            onChange={onChangeMic.bind(null, mics.length)}
-            mic={null}
-          />
-          <button className="btn" onClick={clearMics}>
-            Clear mics
-          </button>
+            <button className="btn" onClick={clearMics}>
+              Clear mics
+            </button>
+          </div>
+          <nav className="center-align">Queue</nav>
+          <Queue />
         </div>
-        <nav className="center-align">Queue</nav>
-        <Queue />
-      </div>
+      )}
     </div>
   );
 }
