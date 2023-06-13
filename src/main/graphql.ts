@@ -362,6 +362,7 @@ function hasMaxSongsInQueue(userIdentity: UserIdentity): boolean {
   ).length;
 
   return (
+    !karafriendsConfig.admins.includes(userIdentity.nickname) &&
     karafriendsConfig.paxSongQueueLimit > 0 &&
     songsQueuedByUser + songsDownloadingByUser >=
       karafriendsConfig.paxSongQueueLimit
