@@ -10,6 +10,7 @@ import { InputDevice } from "./audioSystem";
 import Effects from "./Effects";
 import HostnameSetting from "./HostnameSetting";
 import MicrophoneSetting from "./MicrophoneSetting";
+import PitchShifter from "./pitchShifter";
 import Player from "./Player";
 import QRCode from "./QRCode";
 import Queue from "./Queue";
@@ -31,7 +32,10 @@ const songAddedSubscription = graphql`
   }
 `;
 
-function App(props: { kuroshiro: KuroshiroSingleton }) {
+function App(props: {
+  kuroshiro: KuroshiroSingleton;
+  pitchShifter: PitchShifter;
+}) {
   const [mics, _setMics] = useState<InputDevice[]>([]);
   const [hostname, setHostname] = useState(HOSTNAME);
   const [sidebarVisible, setSidebarVisible] = useState(true);
@@ -113,7 +117,11 @@ function App(props: { kuroshiro: KuroshiroSingleton }) {
           sidebarVisible ? "s11" : "s12"
         } valign-wrapper`}
       >
-        <Player mics={mics} kuroshiro={props.kuroshiro} />
+        <Player
+          mics={mics}
+          kuroshiro={props.kuroshiro}
+          pitchShifter={props.pitchShifter}
+        />
         <Effects />
       </div>
       {sidebarVisible && (

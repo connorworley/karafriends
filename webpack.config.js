@@ -18,6 +18,9 @@ const COMMON_CONFIG = {
         test: /\.ts$/,
         use: ["babel-loader", "ts-loader"],
         exclude: /node_modules/,
+        parser: {
+          worker: ["*audioContext.audioWorklet.addModule()", "..."],
+        },
       },
       {
         test: /\.graphql$/,

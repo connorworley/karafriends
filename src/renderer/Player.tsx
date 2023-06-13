@@ -14,6 +14,7 @@ import AdhocLyrics from "./AdhocLyrics";
 import { InputDevice } from "./audioSystem";
 import JoysoundRenderer from "./JoysoundRenderer";
 import PianoRoll from "./PianoRoll";
+import PitchShifter from "./pitchShifter";
 import "./Player.css";
 
 const popSongMutation = graphql`
@@ -64,7 +65,11 @@ const POLL_INTERVAL_MS = 5 * 1000;
 const DAM_GAIN = 1.0;
 const NON_DAM_GAIN = 0.8;
 
-function Player(props: { mics: InputDevice[]; kuroshiro: KuroshiroSingleton }) {
+function Player(props: {
+  mics: InputDevice[];
+  kuroshiro: KuroshiroSingleton;
+  pitchShifter: PitchShifter;
+}) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const trackRef = useRef<HTMLTrackElement>(null);
   const [scoringData, setScoringData] = useState<readonly number[]>([]);
@@ -78,7 +83,12 @@ function Player(props: { mics: InputDevice[]; kuroshiro: KuroshiroSingleton }) {
     useState<boolean>(false);
   const { playbackState, setPlaybackState } = usePlaybackState();
   const pollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const audioCtx = useRef<AudioContext | null>(null);
   const gainNode = useRef<GainNode | null>(null);
+  const vocoderNode = useRef<AudioWorkletNode | null>(null);
+  const audioChainStartNode = useRef<AudioNode | null>(null);
+  const videoAudioSrc = useRef<MediaElementAudioSourceNode | null>(null);
 
   let hls: Hls | null = null;
 
@@ -96,14 +106,15 @@ function Player(props: { mics: InputDevice[]; kuroshiro: KuroshiroSingleton }) {
             trackRef.current.src = "";
           }
 
-          if (!gainNode.current) {
-            const audioCtx = new AudioContext();
-            const audioSource = audioCtx.createMediaElementSource(
+          if (
+            !videoAudioSrc.current &&
+            audioCtx.current &&
+            audioChainStartNode.current
+          ) {
+            videoAudioSrc.current = audioCtx.current.createMediaElementSource(
               videoRef.current
             );
-            gainNode.current = audioCtx.createGain();
-            audioSource.connect(gainNode.current);
-            gainNode.current.connect(audioCtx.destination);
+            videoAudioSrc.current.connect(audioChainStartNode.current);
           }
 
           if (popSong !== null) {
@@ -220,7 +231,7 @@ function Player(props: { mics: InputDevice[]; kuroshiro: KuroshiroSingleton }) {
                 console.log(
                   `Using ${popSong.gainValue} for gain on Youtube queue item`
                 );
-                gainNode.current.gain.value = popSong.gainValue;
+                gainNode.current!.gain.value = popSong.gainValue;
 
                 navigator.mediaSession.metadata = new MediaMetadata({
                   title: popSong.name,
@@ -235,7 +246,7 @@ function Player(props: { mics: InputDevice[]; kuroshiro: KuroshiroSingleton }) {
 
                 videoRef.current.src = `karafriends://nico-${popSong.songId}.mp4`;
 
-                gainNode.current.gain.value = NON_DAM_GAIN;
+                gainNode.current!.gain.value = NON_DAM_GAIN;
 
                 navigator.mediaSession.metadata = new MediaMetadata({
                   title: popSong.name,
@@ -287,6 +298,27 @@ function Player(props: { mics: InputDevice[]; kuroshiro: KuroshiroSingleton }) {
         break;
     }
   }, [playbackState]);
+
+  useEffect(() => {
+    (async () => {
+      if (audioCtx.current === props.pitchShifter.audioContext) {
+        return;
+      }
+
+      videoAudioSrc.current = null;
+      audioCtx.current = props.pitchShifter.audioContext;
+      gainNode.current = props.pitchShifter.audioContext.createGain();
+      vocoderNode.current = await props.pitchShifter.pitchShiftNode();
+      // @ts-expect-error i swear there's a .get method on this object.
+      vocoderNode.current.parameters.get("pitchFactor").value = 1.25;
+
+      audioChainStartNode.current = vocoderNode.current;
+      audioChainStartNode.current.connect(gainNode.current);
+      gainNode.current.connect(audioCtx.current.destination);
+
+      console.log("set up audiocontext");
+    })().catch(console.log);
+  }, [props.pitchShifter]);
 
   return (
     <div className="karaVidContainer">
