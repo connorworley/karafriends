@@ -10,8 +10,11 @@ import {
 } from "./__generated__/DamQueueButtonMutation.graphql";
 
 const damQueueButtonMutation = graphql`
-  mutation DamQueueButtonMutation($input: QueueDamSongInput!) {
-    queueDamSong(input: $input) {
+  mutation DamQueueButtonMutation(
+    $input: QueueDamSongInput!
+    $tryHeadOfQueue: Boolean!
+  ) {
+    queueDamSong(input: $input, tryHeadOfQueue: $tryHeadOfQueue) {
       ... on QueueSongInfo {
         __typename
         eta
@@ -56,7 +59,8 @@ const DamQueueButton = ({ song, streamingUrlIndex, userIdentity }: Props) => {
     return () => clearTimeout(timeout);
   });
 
-  const onClick = () => {
+  const onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    console.log(`tryHeadOfQueue=${e.shiftKey}`);
     commit({
       variables: {
         input: {
@@ -67,6 +71,7 @@ const DamQueueButton = ({ song, streamingUrlIndex, userIdentity }: Props) => {
           streamingUrlIdx: streamingUrlIndex,
           userIdentity,
         },
+        tryHeadOfQueue: e.shiftKey,
       },
       onCompleted: ({ queueDamSong }) => {
         switch (queueDamSong.__typename) {

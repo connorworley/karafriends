@@ -361,6 +361,13 @@ function hasMaxSongsInQueue(userIdentity: UserIdentity): boolean {
     (x) => x.userIdentity.deviceId === userIdentity.deviceId
   ).length;
 
+  console.log(
+    `hasMaxSongsInQueue: user ${userIdentity.nickname} has ${songsQueuedByUser}, ${songsDownloadingByUser} downloading`
+  );
+  console.log(
+    `adminNicks=${karafriendsConfig.adminNicks}, adminDeviceIds=${karafriendsConfig.adminDeviceIds}`
+  );
+
   return (
     !karafriendsConfig.adminNicks.includes(userIdentity.nickname) &&
     !karafriendsConfig.adminDeviceIds.includes(userIdentity.deviceId) &&
@@ -370,12 +377,30 @@ function hasMaxSongsInQueue(userIdentity: UserIdentity): boolean {
   );
 }
 
-function pushSongToQueue(queueItem: QueueItem): QueueSongResult {
+function canPushToHeadOfQueue(userIdentity: UserIdentity): boolean {
+  return (
+    karafriendsConfig.adminNicks.includes(userIdentity.nickname) ||
+    karafriendsConfig.adminDeviceIds.includes(userIdentity.deviceId)
+  );
+}
+
+function pushSongToQueue(
+  queueItem: QueueItem,
+  pushToHead: boolean = false
+): QueueSongResult {
   const eta =
     (db.currentSong?.playtime || 0) +
     db.songQueue.reduce((acc, cur) => acc + (cur.playtime || 0), 0);
 
-  db.songQueue.push(queueItem);
+  console.log(
+    `pushSongToQueue: pushing ${queueItem} with an eta of ${eta}; pushToHead=${pushToHead}`
+  );
+
+  if (pushToHead === true) {
+    db.songQueue.unshift(queueItem);
+  } else {
+    db.songQueue.push(queueItem);
+  }
 
   pubsub.publish(SubscriptionEvent.QueueChanged, {
     queueChanged: {
@@ -869,7 +894,7 @@ const resolvers = {
     },
     queueDamSong: (
       _: any,
-      args: { input: QueueDamSongInput },
+      args: { input: QueueDamSongInput; tryHeadOfQueue: boolean },
       { dataSources }: IDataSources
     ): QueueSongResult => {
       const queueItem: DamQueueItem = {
@@ -885,6 +910,10 @@ const resolvers = {
         };
       }
 
+      const pushToHead =
+        args.tryHeadOfQueue && canPushToHeadOfQueue(queueItem.userIdentity);
+      console.log(`queueDamSong: pushToHead=${pushToHead}`);
+
       if (karafriendsConfig.predownloadDAM) {
         console.log(`Starting offline download of ${queueItem.songId}`);
         dataSources.minsei
@@ -899,7 +928,7 @@ const resolvers = {
           });
       }
 
-      return pushSongToQueue(queueItem);
+      return pushSongToQueue(queueItem, pushToHead);
     },
     queueYoutubeSong: (
       _: any,
