@@ -863,7 +863,7 @@ const resolvers = {
     },
     queueJoysoundSong: (
       _: any,
-      args: { input: QueueJoysoundSongInput },
+      args: { input: QueueJoysoundSongInput; tryHeadOfQueue: boolean },
       { dataSources }: IDataSources
     ): QueueSongResult => {
       const queueItem: JoysoundQueueItem = {
@@ -879,11 +879,16 @@ const resolvers = {
         };
       }
 
+      const pushToHead =
+        args.tryHeadOfQueue && canPushToHeadOfQueue(queueItem.userIdentity);
+      console.log(`queueDamSong: pushToHead=${pushToHead}`);
+
       downloadJoysoundData(
         db.downloadQueue,
         queueItem.userIdentity,
         dataSources.joysound,
         queueItem,
+        pushToHead,
         pushSongToQueue
       );
 

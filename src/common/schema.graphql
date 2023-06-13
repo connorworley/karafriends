@@ -43,7 +43,10 @@ type Mutation {
     input: QueueDamSongInput
     tryHeadOfQueue: Boolean!
   ): QueueSongResult!
-  queueJoysoundSong(input: QueueJoysoundSongInput): QueueSongResult!
+  queueJoysoundSong(
+    input: QueueJoysoundSongInput
+    tryHeadOfQueue: Boolean!
+  ): QueueSongResult!
   queueYoutubeSong(input: QueueYoutubeSongInput): QueueSongResult!
   queueNicoSong(input: QueueNicoSongInput): QueueSongResult!
   removeSong(songId: String!, timestamp: String!): Boolean!
