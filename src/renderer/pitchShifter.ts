@@ -1,5 +1,3 @@
-import "./global";
-
 export default class PitchShifter {
   private nodePromise: Promise<AudioWorkletNode>;
 
