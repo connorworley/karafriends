@@ -397,7 +397,9 @@ function pushSongToQueue(
   );
 
   if (pushToHead === true) {
-    db.songQueue.unshift(queueItem);
+    // To give things time to download, we don't actually push to the front, but the second.
+    // Due to :js:, this is OK regardless of the size of db.songQueue
+    db.songQueue.splice(1, 0, queueItem);
   } else {
     db.songQueue.push(queueItem);
   }
@@ -937,7 +939,7 @@ const resolvers = {
     },
     queueYoutubeSong: (
       _: any,
-      args: { input: QueueYoutubeSongInput }
+      args: { input: QueueYoutubeSongInput; tryHeadOfQueue: boolean }
     ): QueueSongResult => {
       const queueItem: YoutubeQueueItem = {
         timestamp: Date.now().toString(),
@@ -955,6 +957,10 @@ const resolvers = {
         };
       }
 
+      const pushToHead =
+        args.tryHeadOfQueue && canPushToHeadOfQueue(queueItem.userIdentity);
+      console.log(`queueDamSong: pushToHead=${pushToHead}`);
+
       if (args.input.adhocSongLyrics) {
         db.idToAdhocLyrics[args.input.songId] = cleanupAdhocSongLyrics(
           args.input.adhocSongLyrics
@@ -966,7 +972,7 @@ const resolvers = {
         queueItem.userIdentity,
         args.input.songId,
         args.input.captionCode,
-        pushSongToQueue.bind(null, queueItem)
+        pushSongToQueue.bind(null, queueItem, pushToHead)
       );
 
       // The song likely hasn't actually been added to the queue yet since it needs to download,

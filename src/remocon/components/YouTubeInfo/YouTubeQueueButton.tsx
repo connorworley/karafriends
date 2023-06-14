@@ -30,8 +30,11 @@ const youTubeQueueButtonGetVideoDownloadProgressQuery = graphql`
 `;
 
 const youTubeQueueButtonMutation = graphql`
-  mutation YouTubeQueueButtonMutation($input: QueueYoutubeSongInput!) {
-    queueYoutubeSong(input: $input) {
+  mutation YouTubeQueueButtonMutation(
+    $input: QueueYoutubeSongInput!
+    $tryHeadOfQueue: Boolean!
+  ) {
+    queueYoutubeSong(input: $input, tryHeadOfQueue: $tryHeadOfQueue) {
       ... on QueueSongInfo {
         __typename
         eta
@@ -124,9 +127,10 @@ const YouTubeQueueButton = ({
     };
   }, [text]);
 
-  const onClick = () => {
+  const onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     setText("Waiting for server...");
 
+    console.log(`tryHeadOfQueue=${e.shiftKey}`);
     commit({
       variables: {
         input: {
@@ -139,6 +143,7 @@ const YouTubeQueueButton = ({
           captionCode: selectedCaption || null,
           gainValue: videoInfo.gainValue,
         },
+        tryHeadOfQueue: e.shiftKey,
       },
       onCompleted: ({ queueYoutubeSong }) => {
         switch (queueYoutubeSong.__typename) {
