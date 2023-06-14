@@ -16,9 +16,6 @@ declare global {
         };
         inputDevice_stop: (deviceId: number) => void;
       };
-      webAudio: {
-        workletModuleLoaded: boolean;
-      };
     };
   }
 

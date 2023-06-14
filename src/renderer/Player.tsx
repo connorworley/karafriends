@@ -310,7 +310,8 @@ function Player(props: {
       gainNode.current = props.pitchShifter.audioContext.createGain();
       vocoderNode.current = await props.pitchShifter.pitchShiftNode();
       // @ts-expect-error i swear there's a .get method on this object.
-      vocoderNode.current.parameters.get("pitchFactor").value = 1.25;
+      vocoderNode.current.parameters.get("pitchFactor").value =
+        Math.pow(2, 1 / 12) * 4;
 
       audioChainStartNode.current = vocoderNode.current;
       audioChainStartNode.current.connect(gainNode.current);
