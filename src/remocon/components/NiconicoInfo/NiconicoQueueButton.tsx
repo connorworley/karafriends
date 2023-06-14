@@ -30,8 +30,11 @@ const niconicoQueueButtonGetVideoDownloadProgressQuery = graphql`
 `;
 
 const niconicoQueueButtonMutation = graphql`
-  mutation NiconicoQueueButtonMutation($input: QueueNicoSongInput!) {
-    queueNicoSong(input: $input) {
+  mutation NiconicoQueueButtonMutation(
+    $input: QueueNicoSongInput!
+    $tryHeadOfQueue: Boolean!
+  ) {
+    queueNicoSong(input: $input, tryHeadOfQueue: $tryHeadOfQueue) {
       ... on QueueSongInfo {
         __typename
         eta
@@ -116,9 +119,10 @@ const NiconicoQueueButton = ({ videoId, videoInfo, userIdentity }: Props) => {
     };
   }, [text]);
 
-  const onClick = () => {
+  const onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     setText("Waiting for server...");
 
+    console.log(`tryHeadOfQueue=${e.shiftKey}`);
     commit({
       variables: {
         input: {
@@ -128,6 +132,7 @@ const NiconicoQueueButton = ({ videoId, videoInfo, userIdentity }: Props) => {
           playtime: videoInfo.lengthSeconds,
           userIdentity,
         },
+        tryHeadOfQueue: e.shiftKey,
       },
       onCompleted: ({ queueNicoSong }) => {
         switch (queueNicoSong.__typename) {

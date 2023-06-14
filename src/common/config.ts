@@ -18,6 +18,10 @@ export interface KarafriendsConfig {
   joysoundEmail: string;
   // Joysound password for joysound creds
   joysoundPassword: string;
+  // List of admins by nickname
+  adminNicks: string[];
+  // List of admins by deviceId
+  adminDeviceIds: string[];
 }
 
 const DEFAULT_CONFIG: KarafriendsConfig = {
@@ -28,6 +32,8 @@ const DEFAULT_CONFIG: KarafriendsConfig = {
   damPassword: "YOUR_PASSWORD_HERE",
   joysoundEmail: "YOUR_EMAIL_HERE",
   joysoundPassword: "YOUR_PASSWORD_HERE",
+  adminNicks: [],
+  adminDeviceIds: [],
 };
 
 function getConfig(): KarafriendsConfig {

@@ -504,7 +504,11 @@ function padJoysoundVideoPromise(
   videoFilename: string,
   ffmpegLogFilename: string,
   queueItem: JoysoundQueueItem,
-  pushSongToQueue: (queueItem: JoysoundQueueItem) => QueueSongResult
+  pushToHead: boolean,
+  pushSongToQueue: (
+    queueItem: JoysoundQueueItem,
+    pushToHead: boolean
+  ) => QueueSongResult
 ): Promise<number> {
   const videoBaseFilename = videoFilename.substr(0, videoFilename.length - 4);
 
@@ -697,7 +701,7 @@ function padJoysoundVideoPromise(
             fs.unlinkSync(videoTempFilename);
             fs.unlinkSync(videoConcatFilename);
 
-            pushSongToQueue(queueItem);
+            pushSongToQueue(queueItem, pushToHead);
 
             resolve(code);
           } else {
@@ -726,7 +730,11 @@ export function downloadJoysoundData(
   userIdentity: UserIdentity,
   joysoundApi: JoysoundAPI,
   queueItem: JoysoundQueueItem,
-  pushSongToQueue: (queueItem: JoysoundQueueItem) => QueueSongResult
+  pushToHead: boolean,
+  pushSongToQueue: (
+    queueItem: JoysoundQueueItem,
+    pushToHead: boolean
+  ) => QueueSongResult
 ): void {
   if (!fs.existsSync(TEMP_FOLDER)) {
     fs.mkdirSync(TEMP_FOLDER);
@@ -758,7 +766,7 @@ export function downloadJoysoundData(
         playtime: getSongDuration(telopBuffer.buffer),
       };
 
-      pushSongToQueue(queueItem);
+      pushSongToQueue(queueItem, pushToHead);
       return;
     } else {
       console.error(
@@ -872,10 +880,11 @@ export function downloadJoysoundData(
           videoFilename,
           ffmpegLogFilename,
           queueItem,
+          pushToHead,
           pushSongToQueue
         );
       } else {
-        pushSongToQueue(queueItem);
+        pushSongToQueue(queueItem, pushToHead);
       }
     });
 }

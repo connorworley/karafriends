@@ -39,10 +39,22 @@ type Mutation {
   sendEmote(emote: EmoteInput!): Boolean!
   popSong: QueueItem
   pushAdhocLyrics(input: PushAdhocLyricsInput): Boolean!
-  queueDamSong(input: QueueDamSongInput): QueueSongResult!
-  queueJoysoundSong(input: QueueJoysoundSongInput): QueueSongResult!
-  queueYoutubeSong(input: QueueYoutubeSongInput): QueueSongResult!
-  queueNicoSong(input: QueueNicoSongInput): QueueSongResult!
+  queueDamSong(
+    input: QueueDamSongInput
+    tryHeadOfQueue: Boolean!
+  ): QueueSongResult!
+  queueJoysoundSong(
+    input: QueueJoysoundSongInput
+    tryHeadOfQueue: Boolean!
+  ): QueueSongResult!
+  queueYoutubeSong(
+    input: QueueYoutubeSongInput
+    tryHeadOfQueue: Boolean!
+  ): QueueSongResult!
+  queueNicoSong(
+    input: QueueNicoSongInput
+    tryHeadOfQueue: Boolean!
+  ): QueueSongResult!
   removeSong(songId: String!, timestamp: String!): Boolean!
   setPlaybackState(playbackState: PlaybackState!): Boolean!
 }

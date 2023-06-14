@@ -30,8 +30,11 @@ const joysoundQueueButtonGetVideoDownloadProgressQuery = graphql`
 `;
 
 const joysoundQueueButtonMutation = graphql`
-  mutation JoysoundQueueButtonMutation($input: QueueJoysoundSongInput!) {
-    queueJoysoundSong(input: $input) {
+  mutation JoysoundQueueButtonMutation(
+    $input: QueueJoysoundSongInput!
+    $tryHeadOfQueue: Boolean!
+  ) {
+    queueJoysoundSong(input: $input, tryHeadOfQueue: $tryHeadOfQueue) {
       ... on QueueSongInfo {
         __typename
         eta
@@ -129,10 +132,11 @@ const JoysoundQueueButton = ({
     };
   }, [text]);
 
-  const onClick = () => {
+  const onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     setDisabled(true);
     setText("Waiting for server...");
 
+    console.log(`tryHeadOfQueue=${e.shiftKey}`);
     commit({
       variables: {
         input: {
@@ -144,6 +148,7 @@ const JoysoundQueueButton = ({
           isRomaji,
           youtubeVideoId,
         },
+        tryHeadOfQueue: e.shiftKey,
       },
       onCompleted: ({ queueJoysoundSong }) => {
         switch (queueJoysoundSong.__typename) {
