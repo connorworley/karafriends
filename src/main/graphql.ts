@@ -921,19 +921,17 @@ const resolvers = {
         args.tryHeadOfQueue && canPushToHeadOfQueue(queueItem.userIdentity);
       console.log(`queueDamSong: pushToHead=${pushToHead}`);
 
-      if (karafriendsConfig.predownloadDAM) {
-        console.log(`Starting offline download of ${queueItem.songId}`);
-        dataSources.minsei
-          .getMusicStreamingUrls(queueItem.songId)
-          .then((data) => {
-            // XXX: This should be already be a number but typescript tells me it is not
-            const selectedIndex = data.list[+queueItem.streamingUrlIdx];
-            const url = karafriendsConfig.useLowBitrateUrl
-              ? selectedIndex.lowBitrateUrl
-              : selectedIndex.highBitrateUrl;
-            downloadDamVideo(url, queueItem.songId, queueItem.streamingUrlIdx);
-          });
-      }
+      console.log(`Starting offline download of ${queueItem.songId}`);
+      dataSources.minsei
+        .getMusicStreamingUrls(queueItem.songId)
+        .then((data) => {
+          // XXX: This should be already be a number but typescript tells me it is not
+          const selectedIndex = data.list[+queueItem.streamingUrlIdx];
+          const url = karafriendsConfig.useLowBitrateUrl
+            ? selectedIndex.lowBitrateUrl
+            : selectedIndex.highBitrateUrl;
+          downloadDamVideo(url, queueItem.songId, queueItem.streamingUrlIdx);
+        });
 
       return pushSongToQueue(queueItem, pushToHead);
     },

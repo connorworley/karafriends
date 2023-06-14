@@ -36,7 +36,7 @@ export function isYouTubeVideoWithLyricsPlaying(
     return false;
   }
 
-  invariant(currentSong.hasAdhocLyrics);
+  invariant(currentSong.hasAdhocLyrics !== undefined);
 
   return (
     currentSong.songId === videoId &&
