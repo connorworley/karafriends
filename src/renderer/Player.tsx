@@ -85,9 +85,6 @@ function Player(props: {
   const pollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const audioCtx = useRef<AudioContext | null>(null);
-  const gainNode = useRef<GainNode | null>(null);
-  const vocoderNode = useRef<AudioWorkletNode | null>(null);
-  const audioChainStartNode = useRef<AudioNode | null>(null);
   const videoAudioSrc = useRef<MediaElementAudioSourceNode | null>(null);
 
   let hls: Hls | null = null;
@@ -106,15 +103,16 @@ function Player(props: {
             trackRef.current.src = "";
           }
 
-          if (
-            !videoAudioSrc.current &&
-            audioCtx.current &&
-            audioChainStartNode.current
-          ) {
+          if (audioCtx.current !== props.audio.audioContext) {
+            if (videoAudioSrc.current) {
+              videoAudioSrc.current.disconnect();
+            }
+
+            audioCtx.current = props.audio.audioContext;
             videoAudioSrc.current = audioCtx.current.createMediaElementSource(
               videoRef.current
             );
-            videoAudioSrc.current.connect(audioChainStartNode.current);
+            videoAudioSrc.current.connect(props.audio.sink());
           }
 
           if (popSong !== null) {
@@ -157,7 +155,7 @@ function Player(props: {
                       );
                       loadRemote();
                     }
-                    gainNode.current!.gain.value = DAM_GAIN;
+                    props.audio.gain(DAM_GAIN);
 
                     navigator.mediaSession.metadata = new MediaMetadata({
                       title: popSong.name,
@@ -179,7 +177,7 @@ function Player(props: {
                     // Pretend nothing happened.
                     loadRemote();
 
-                    gainNode.current!.gain.value = DAM_GAIN;
+                    props.audio.gain(DAM_GAIN);
 
                     navigator.mediaSession.metadata = new MediaMetadata({
                       title: popSong.name,
@@ -231,7 +229,7 @@ function Player(props: {
                 console.log(
                   `Using ${popSong.gainValue} for gain on Youtube queue item`
                 );
-                gainNode.current!.gain.value = popSong.gainValue;
+                props.audio.gain(popSong.gainValue);
 
                 navigator.mediaSession.metadata = new MediaMetadata({
                   title: popSong.name,
@@ -246,7 +244,7 @@ function Player(props: {
 
                 videoRef.current.src = `karafriends://nico-${popSong.songId}.mp4`;
 
-                gainNode.current!.gain.value = NON_DAM_GAIN;
+                props.audio.gain(NON_DAM_GAIN);
 
                 navigator.mediaSession.metadata = new MediaMetadata({
                   title: popSong.name,
@@ -276,7 +274,7 @@ function Player(props: {
         pollTimeoutRef.current = null;
       }
     };
-  }, []);
+  }, [props.audio]);
 
   useEffect(() => {
     if (!videoRef.current) return;
@@ -298,26 +296,6 @@ function Player(props: {
         break;
     }
   }, [playbackState]);
-
-  useEffect(() => {
-    (async () => {
-      if (audioCtx.current === props.audio.audioContext) {
-        return;
-      }
-
-      videoAudioSrc.current = null;
-      audioCtx.current = props.audio.audioContext;
-      gainNode.current = props.audio.audioContext.createGain();
-      vocoderNode.current = await props.audio.pitchShiftNode();
-      props.audio.pitchShift(3);
-
-      audioChainStartNode.current = vocoderNode.current;
-      audioChainStartNode.current.connect(gainNode.current);
-      gainNode.current.connect(audioCtx.current.destination);
-
-      console.log("set up audiocontext");
-    })().catch(console.log);
-  }, [props.audio]);
 
   return (
     <div className="karaVidContainer">

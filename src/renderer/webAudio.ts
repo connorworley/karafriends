@@ -1,26 +1,51 @@
 export default class KarafriendsAudio {
-  private pitchShiftPromise: Promise<AudioWorkletNode>;
+  private gainNode: GainNode;
+  private vocoderNode: AudioWorkletNode | null;
 
   audioContext: AudioContext;
 
   constructor() {
     this.audioContext = new AudioContext();
-    this.pitchShiftPromise = this.audioContext.audioWorklet
+    this.gainNode = this.audioContext.createGain();
+    this.gainNode.connect(this.audioContext.destination);
+
+    this.vocoderNode = null;
+    this.audioContext.audioWorklet
       .addModule(new URL("./audio/phazeAudioWorklet.ts", import.meta.url))
-      .then(() => {
-        return new AudioWorkletNode(this.audioContext, "phase-vocoder");
-      });
+      .then(
+        () => {
+          this.vocoderNode = new AudioWorkletNode(
+            this.audioContext,
+            "phase-vocoder"
+          );
+          this.gainNode.disconnect();
+          this.gainNode.connect(this.vocoderNode);
+          this.vocoderNode.connect(this.audioContext.destination);
+        },
+        (e) => {
+          console.log(
+            "could not load pitch shift audio worklet, pitch shift will not work",
+            e
+          );
+        }
+      );
   }
 
   pitchShift(semitones: number) {
-    (async () => {
+    if (this.vocoderNode) {
       // @ts-expect-error i swear there's a .get method on this object.
-      (await this.pitchShiftNode()).parameters.get("pitchFactor").value =
-        Math.pow(2, semitones / 12);
-    })().catch(console.log);
+      this.vocoderNode.parameters.get("pitchFactor").value = Math.pow(
+        2,
+        semitones / 12
+      );
+    }
   }
 
-  async pitchShiftNode() {
-    return this.pitchShiftPromise;
+  gain(gain: number) {
+    this.gainNode.gain.value = gain;
+  }
+
+  sink(): AudioNode {
+    return this.vocoderNode || this.gainNode;
   }
 }
