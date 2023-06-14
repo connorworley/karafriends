@@ -269,6 +269,7 @@ type NotARealDb = {
   currentSong: QueueItem | null;
   currentSongAdhocLyrics: AdhocLyricsEntry[];
   idToAdhocLyrics: Record<string, string[]>;
+  pitchShiftSemis: number;
   playbackState: PlaybackState;
   songQueue: QueueItem[];
   downloadQueue: DownloadQueueItem[];
@@ -279,6 +280,7 @@ enum SubscriptionEvent {
   CurrentSongAdhocLyricsChanged = "CurrentSongAdhocLyricsChanged",
   CurrentSongChanged = "CurrentSongChanged",
   Emote = "Emote",
+  PitchShiftSemisChanged = "PitchShiftSemisChanged",
   PlaybackStateChanged = "PlaybackStateChanged",
   QueueAdded = "QueueAdded",
   QueueChanged = "QueueChanged",
@@ -289,6 +291,7 @@ let db: NotARealDb = {
   currentSong: null,
   currentSongAdhocLyrics: [],
   idToAdhocLyrics: {},
+  pitchShiftSemis: 0,
   playbackState: PlaybackState.WAITING,
   songQueue: [],
   downloadQueue: [],
@@ -320,6 +323,7 @@ function loadDb(): NotARealDb {
     currentSong: null,
     currentSongAdhocLyrics: [],
     idToAdhocLyrics: {},
+    pitchShiftSemis: 0,
     playbackState: PlaybackState.WAITING,
     songQueue: [],
     downloadQueue: [],
@@ -839,6 +843,7 @@ const resolvers = {
         };
       }
     },
+    pitchShiftSemis: () => db.pitchShiftSemis,
     playbackState: () => db.playbackState,
     videoDownloadProgress: (
       _: any,
@@ -1095,6 +1100,14 @@ const resolvers = {
       saveDb();
       return true;
     },
+    setPitchShiftSemis: (_: any, args: { semis: number }): boolean => {
+      db.pitchShiftSemis = args.semis;
+      pubsub.publish(SubscriptionEvent.PitchShiftSemisChanged, {
+        pitchShiftSemisChanged: args.semis,
+      });
+      saveDb();
+      return true;
+    },
     setPlaybackState: (
       _: any,
       args: { playbackState: PlaybackState }
@@ -1118,6 +1131,10 @@ const resolvers = {
     },
     emote: {
       subscribe: () => pubsub.asyncIterator([SubscriptionEvent.Emote]),
+    },
+    pitchShiftSemisChanged: {
+      subscribe: () =>
+        pubsub.asyncIterator([SubscriptionEvent.PitchShiftSemisChanged]),
     },
     playbackStateChanged: {
       subscribe: () =>

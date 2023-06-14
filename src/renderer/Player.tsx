@@ -8,14 +8,15 @@ import YoutubePlayer from "youtube-player";
 import { PlayerPopSongMutation } from "./__generated__/PlayerPopSongMutation.graphql";
 
 import environment from "../common/graphqlEnvironment";
+import usePitchShiftSemis from "../common/hooks/usePitchShiftSemis";
 import usePlaybackState from "../common/hooks/usePlaybackState";
 import { KuroshiroSingleton } from "../common/joysoundParser";
 import AdhocLyrics from "./AdhocLyrics";
-import { InputDevice } from "./nativeAudio";
 import JoysoundRenderer from "./JoysoundRenderer";
+import { InputDevice } from "./nativeAudio";
 import PianoRoll from "./PianoRoll";
-import KarafriendsAudio from "./webAudio";
 import "./Player.css";
+import KarafriendsAudio from "./webAudio";
 
 const popSongMutation = graphql`
   mutation PlayerPopSongMutation {
@@ -82,6 +83,7 @@ function Player(props: {
   const [shouldShowAdhocLyrics, setShouldShowAdhocLyrics] =
     useState<boolean>(false);
   const { playbackState, setPlaybackState } = usePlaybackState();
+  const { pitchShiftSemis, setPitchShiftSemis } = usePitchShiftSemis();
   const pollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const audioCtx = useRef<AudioContext | null>(null);
@@ -103,17 +105,7 @@ function Player(props: {
             trackRef.current.src = "";
           }
 
-          if (audioCtx.current !== props.audio.audioContext) {
-            if (videoAudioSrc.current) {
-              videoAudioSrc.current.disconnect();
-            }
-
-            audioCtx.current = props.audio.audioContext;
-            videoAudioSrc.current = audioCtx.current.createMediaElementSource(
-              videoRef.current
-            );
-            videoAudioSrc.current.connect(props.audio.sink());
-          }
+          setPitchShiftSemis(0);
 
           if (popSong !== null) {
             if (hls) hls.destroy();
@@ -274,7 +266,7 @@ function Player(props: {
         pollTimeoutRef.current = null;
       }
     };
-  }, [props.audio]);
+  }, []);
 
   useEffect(() => {
     if (!videoRef.current) return;
@@ -296,6 +288,26 @@ function Player(props: {
         break;
     }
   }, [playbackState]);
+
+  useEffect(() => {
+    props.audio.pitchShift(pitchShiftSemis);
+  }, [props.audio, pitchShiftSemis]);
+
+  useEffect(() => {
+    if (!videoRef.current) return;
+
+    if (audioCtx.current !== props.audio.audioContext) {
+      if (videoAudioSrc.current) {
+        videoAudioSrc.current.disconnect();
+      }
+
+      audioCtx.current = props.audio.audioContext;
+      videoAudioSrc.current = audioCtx.current.createMediaElementSource(
+        videoRef.current
+      );
+      videoAudioSrc.current.connect(props.audio.sink());
+    }
+  }, [props.audio, videoRef.current]);
 
   return (
     <div className="karaVidContainer">
