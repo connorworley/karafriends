@@ -51,7 +51,10 @@ type Mutation {
     input: QueueYoutubeSongInput
     tryHeadOfQueue: Boolean!
   ): QueueSongResult!
-  queueNicoSong(input: QueueNicoSongInput): QueueSongResult!
+  queueNicoSong(
+    input: QueueNicoSongInput
+    tryHeadOfQueue: Boolean!
+  ): QueueSongResult!
   removeSong(songId: String!, timestamp: String!): Boolean!
   setPlaybackState(playbackState: PlaybackState!): Boolean!
 }

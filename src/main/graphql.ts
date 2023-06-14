@@ -986,7 +986,7 @@ const resolvers = {
     },
     queueNicoSong: (
       _: any,
-      args: { input: QueueNicoSongInput }
+      args: { input: QueueNicoSongInput; tryHeadOfQueue: boolean }
     ): QueueSongResult => {
       const queueItem: NicoQueueItem = {
         timestamp: Date.now().toString(),
@@ -1001,11 +1001,15 @@ const resolvers = {
         };
       }
 
+      const pushToHead =
+        args.tryHeadOfQueue && canPushToHeadOfQueue(queueItem.userIdentity);
+      console.log(`queueDamSong: pushToHead=${pushToHead}`);
+
       downloadNicoVideo(
         db.downloadQueue,
         queueItem.userIdentity,
         args.input.songId,
-        pushSongToQueue.bind(null, queueItem)
+        pushSongToQueue.bind(null, queueItem, pushToHead)
       );
       // The song likely hasn't actually been added to the queue yet since it needs to download,
       // but let's optimistically return the eta assuming it will successfully queue
