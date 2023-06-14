@@ -6,14 +6,14 @@ import { graphql, useSubscription } from "react-relay";
 import { HOSTNAME } from "../common/constants";
 import { KuroshiroSingleton } from "../common/joysoundParser";
 import "./App.css";
-import { InputDevice } from "./audioSystem";
 import Effects from "./Effects";
 import HostnameSetting from "./HostnameSetting";
 import MicrophoneSetting from "./MicrophoneSetting";
-import PitchShifter from "./pitchShifter";
+import { InputDevice } from "./nativeAudio";
 import Player from "./Player";
 import QRCode from "./QRCode";
 import Queue from "./Queue";
+import KarafriendsAudio from "./webAudio";
 import { AppQueueAddedSubscription } from "./__generated__/AppQueueAddedSubscription.graphql";
 
 interface SavedMic {
@@ -34,7 +34,7 @@ const songAddedSubscription = graphql`
 
 function App(props: {
   kuroshiro: KuroshiroSingleton;
-  pitchShifter: PitchShifter;
+  audio: KarafriendsAudio;
 }) {
   const [mics, _setMics] = useState<InputDevice[]>([]);
   const [hostname, setHostname] = useState(HOSTNAME);
@@ -120,7 +120,7 @@ function App(props: {
         <Player
           mics={mics}
           kuroshiro={props.kuroshiro}
-          pitchShifter={props.pitchShifter}
+          audio={props.audio}
         />
         <Effects />
       </div>

@@ -10,7 +10,7 @@ import environment from "../common/graphqlEnvironment";
 import { KuroshiroSingleton } from "../common/joysoundParser";
 import App from "./App";
 import "./index.css";
-import PitchShifter from "./pitchShifter";
+import KarafriendsAudio from "./webAudio";
 
 Sentry.init({
   dsn: "https://80cbda8ca4af42d9b95c60eb1f00566f@sentry.io/6728669",
@@ -27,7 +27,7 @@ const kuroshiroSingleton: KuroshiroSingleton = {
   analyzerInitPromise: kuromojiPromise,
 };
 
-const pitchShifter = new PitchShifter();
+const audio = new KarafriendsAudio();
 
 const container = document.getElementById("root");
 const root = createRoot(container!);
@@ -35,7 +35,7 @@ const root = createRoot(container!);
 root.render(
   <React.StrictMode>
     <RelayEnvironmentProvider environment={environment}>
-      <App kuroshiro={kuroshiroSingleton} pitchShifter={pitchShifter} />
+      <App kuroshiro={kuroshiroSingleton} audio={audio} />
     </RelayEnvironmentProvider>
   </React.StrictMode>
 );

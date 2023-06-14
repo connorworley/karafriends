@@ -6,7 +6,7 @@ import vec from "gl-vec2";
 import getNormals from "polyline-normals";
 import React, { useEffect, useRef, useState } from "react";
 
-import { InputDevice } from "./audioSystem";
+import { InputDevice } from "./nativeAudio";
 import "./PianoRoll.css";
 import midiVertShaderRaw from "./shaders/PianoRollMidi.vert.glsl";
 import noteFragShaderRaw from "./shaders/PianoRollNote.frag.glsl";

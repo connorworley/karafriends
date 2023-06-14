@@ -1,8 +1,8 @@
 import M from "materialize-css";
 import React, { useEffect } from "react";
 
-import { InputDevice } from "./audioSystem";
 import "./global";
+import { InputDevice } from "./nativeAudio";
 
 const MicrophoneSettingOption = ({
   name,

@@ -11,10 +11,10 @@ import environment from "../common/graphqlEnvironment";
 import usePlaybackState from "../common/hooks/usePlaybackState";
 import { KuroshiroSingleton } from "../common/joysoundParser";
 import AdhocLyrics from "./AdhocLyrics";
-import { InputDevice } from "./audioSystem";
+import { InputDevice } from "./nativeAudio";
 import JoysoundRenderer from "./JoysoundRenderer";
 import PianoRoll from "./PianoRoll";
-import PitchShifter from "./pitchShifter";
+import KarafriendsAudio from "./webAudio";
 import "./Player.css";
 
 const popSongMutation = graphql`
@@ -68,7 +68,7 @@ const NON_DAM_GAIN = 0.8;
 function Player(props: {
   mics: InputDevice[];
   kuroshiro: KuroshiroSingleton;
-  pitchShifter: PitchShifter;
+  audio: KarafriendsAudio;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const trackRef = useRef<HTMLTrackElement>(null);
@@ -301,17 +301,15 @@ function Player(props: {
 
   useEffect(() => {
     (async () => {
-      if (audioCtx.current === props.pitchShifter.audioContext) {
+      if (audioCtx.current === props.audio.audioContext) {
         return;
       }
 
       videoAudioSrc.current = null;
-      audioCtx.current = props.pitchShifter.audioContext;
-      gainNode.current = props.pitchShifter.audioContext.createGain();
-      vocoderNode.current = await props.pitchShifter.pitchShiftNode();
-      // @ts-expect-error i swear there's a .get method on this object.
-      vocoderNode.current.parameters.get("pitchFactor").value =
-        Math.pow(2, 1 / 12) * 4;
+      audioCtx.current = props.audio.audioContext;
+      gainNode.current = props.audio.audioContext.createGain();
+      vocoderNode.current = await props.audio.pitchShiftNode();
+      props.audio.pitchShift(3);
 
       audioChainStartNode.current = vocoderNode.current;
       audioChainStartNode.current.connect(gainNode.current);
@@ -319,7 +317,7 @@ function Player(props: {
 
       console.log("set up audiocontext");
     })().catch(console.log);
-  }, [props.pitchShifter]);
+  }, [props.audio]);
 
   return (
     <div className="karaVidContainer">
