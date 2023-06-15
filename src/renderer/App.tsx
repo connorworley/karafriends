@@ -6,13 +6,14 @@ import { graphql, useSubscription } from "react-relay";
 import { HOSTNAME } from "../common/constants";
 import { KuroshiroSingleton } from "../common/joysoundParser";
 import "./App.css";
-import { InputDevice } from "./audioSystem";
 import Effects from "./Effects";
 import HostnameSetting from "./HostnameSetting";
 import MicrophoneSetting from "./MicrophoneSetting";
+import { InputDevice } from "./nativeAudio";
 import Player from "./Player";
 import QRCode from "./QRCode";
 import Queue from "./Queue";
+import KarafriendsAudio from "./webAudio";
 import { AppQueueAddedSubscription } from "./__generated__/AppQueueAddedSubscription.graphql";
 
 interface SavedMic {
@@ -31,7 +32,10 @@ const songAddedSubscription = graphql`
   }
 `;
 
-function App(props: { kuroshiro: KuroshiroSingleton }) {
+function App(props: {
+  kuroshiro: KuroshiroSingleton;
+  audio: KarafriendsAudio;
+}) {
   const [mics, _setMics] = useState<InputDevice[]>([]);
   const [hostname, setHostname] = useState(HOSTNAME);
   const [sidebarVisible, setSidebarVisible] = useState(true);
@@ -113,7 +117,11 @@ function App(props: { kuroshiro: KuroshiroSingleton }) {
           sidebarVisible ? "s11" : "s12"
         } valign-wrapper`}
       >
-        <Player mics={mics} kuroshiro={props.kuroshiro} />
+        <Player
+          mics={mics}
+          kuroshiro={props.kuroshiro}
+          audio={props.audio}
+        />
         <Effects />
       </div>
       {sidebarVisible && (

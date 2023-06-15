@@ -20,6 +20,7 @@ type Query {
     after: String
   ): JoysoundSongConnection!
   nicoVideoInfo(videoId: String): NicoVideoInfoResult!
+  pitchShiftSemis: Int!
   playbackState: PlaybackState!
   queue: [QueueItem!]!
   songById(id: String!): Song!
@@ -56,6 +57,7 @@ type Mutation {
     tryHeadOfQueue: Boolean!
   ): QueueSongResult!
   removeSong(songId: String!, timestamp: String!): Boolean!
+  setPitchShiftSemis(semis: Int!): Boolean!
   setPlaybackState(playbackState: PlaybackState!): Boolean!
 }
 
@@ -63,6 +65,7 @@ type Subscription {
   currentSongAdhocLyricsChanged: [AdhocLyricsEntry!]!
   currentSongChanged: QueueItem
   emote: Emote!
+  pitchShiftSemisChanged: Int!
   playbackStateChanged: PlaybackState!
   queueAdded: QueueItem!
   queueChanged: SubscriptionQueueChanged!

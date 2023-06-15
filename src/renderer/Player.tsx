@@ -8,13 +8,15 @@ import YoutubePlayer from "youtube-player";
 import { PlayerPopSongMutation } from "./__generated__/PlayerPopSongMutation.graphql";
 
 import environment from "../common/graphqlEnvironment";
+import usePitchShiftSemis from "../common/hooks/usePitchShiftSemis";
 import usePlaybackState from "../common/hooks/usePlaybackState";
 import { KuroshiroSingleton } from "../common/joysoundParser";
 import AdhocLyrics from "./AdhocLyrics";
-import { InputDevice } from "./audioSystem";
 import JoysoundRenderer from "./JoysoundRenderer";
+import { InputDevice } from "./nativeAudio";
 import PianoRoll from "./PianoRoll";
 import "./Player.css";
+import KarafriendsAudio from "./webAudio";
 
 const popSongMutation = graphql`
   mutation PlayerPopSongMutation {
@@ -64,7 +66,11 @@ const POLL_INTERVAL_MS = 5 * 1000;
 const DAM_GAIN = 1.0;
 const NON_DAM_GAIN = 0.8;
 
-function Player(props: { mics: InputDevice[]; kuroshiro: KuroshiroSingleton }) {
+function Player(props: {
+  mics: InputDevice[];
+  kuroshiro: KuroshiroSingleton;
+  audio: KarafriendsAudio;
+}) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const trackRef = useRef<HTMLTrackElement>(null);
   const [scoringData, setScoringData] = useState<readonly number[]>([]);
@@ -77,8 +83,11 @@ function Player(props: { mics: InputDevice[]; kuroshiro: KuroshiroSingleton }) {
   const [shouldShowAdhocLyrics, setShouldShowAdhocLyrics] =
     useState<boolean>(false);
   const { playbackState, setPlaybackState } = usePlaybackState();
+  const { pitchShiftSemis, setPitchShiftSemis } = usePitchShiftSemis();
   const pollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const gainNode = useRef<GainNode | null>(null);
+
+  const audioCtx = useRef<AudioContext | null>(null);
+  const videoAudioSrc = useRef<MediaElementAudioSourceNode | null>(null);
 
   let hls: Hls | null = null;
 
@@ -96,15 +105,7 @@ function Player(props: { mics: InputDevice[]; kuroshiro: KuroshiroSingleton }) {
             trackRef.current.src = "";
           }
 
-          if (!gainNode.current) {
-            const audioCtx = new AudioContext();
-            const audioSource = audioCtx.createMediaElementSource(
-              videoRef.current
-            );
-            gainNode.current = audioCtx.createGain();
-            audioSource.connect(gainNode.current);
-            gainNode.current.connect(audioCtx.destination);
-          }
+          setPitchShiftSemis(0);
 
           if (popSong !== null) {
             if (hls) hls.destroy();
@@ -146,7 +147,7 @@ function Player(props: { mics: InputDevice[]; kuroshiro: KuroshiroSingleton }) {
                       );
                       loadRemote();
                     }
-                    gainNode.current!.gain.value = DAM_GAIN;
+                    props.audio.gain(DAM_GAIN);
 
                     navigator.mediaSession.metadata = new MediaMetadata({
                       title: popSong.name,
@@ -168,7 +169,7 @@ function Player(props: { mics: InputDevice[]; kuroshiro: KuroshiroSingleton }) {
                     // Pretend nothing happened.
                     loadRemote();
 
-                    gainNode.current!.gain.value = DAM_GAIN;
+                    props.audio.gain(DAM_GAIN);
 
                     navigator.mediaSession.metadata = new MediaMetadata({
                       title: popSong.name,
@@ -220,7 +221,7 @@ function Player(props: { mics: InputDevice[]; kuroshiro: KuroshiroSingleton }) {
                 console.log(
                   `Using ${popSong.gainValue} for gain on Youtube queue item`
                 );
-                gainNode.current.gain.value = popSong.gainValue;
+                props.audio.gain(popSong.gainValue);
 
                 navigator.mediaSession.metadata = new MediaMetadata({
                   title: popSong.name,
@@ -235,7 +236,7 @@ function Player(props: { mics: InputDevice[]; kuroshiro: KuroshiroSingleton }) {
 
                 videoRef.current.src = `karafriends://nico-${popSong.songId}.mp4`;
 
-                gainNode.current.gain.value = NON_DAM_GAIN;
+                props.audio.gain(NON_DAM_GAIN);
 
                 navigator.mediaSession.metadata = new MediaMetadata({
                   title: popSong.name,
@@ -287,6 +288,26 @@ function Player(props: { mics: InputDevice[]; kuroshiro: KuroshiroSingleton }) {
         break;
     }
   }, [playbackState]);
+
+  useEffect(() => {
+    props.audio.pitchShift(pitchShiftSemis);
+  }, [props.audio, pitchShiftSemis]);
+
+  useEffect(() => {
+    if (!videoRef.current) return;
+
+    if (audioCtx.current !== props.audio.audioContext) {
+      if (videoAudioSrc.current) {
+        videoAudioSrc.current.disconnect();
+      }
+
+      audioCtx.current = props.audio.audioContext;
+      videoAudioSrc.current = audioCtx.current.createMediaElementSource(
+        videoRef.current
+      );
+      videoAudioSrc.current.connect(props.audio.sink());
+    }
+  }, [props.audio, videoRef.current]);
 
   return (
     <div className="karaVidContainer">
