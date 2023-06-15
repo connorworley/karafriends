@@ -88,7 +88,7 @@
     "@babel/runtime": "7.21.5",
     "@parcel/config-default": "2.8.3",
     "@parcel/core": "2.8.3",
-    "@parcel/transformer-glsl": "2.8.3",
+    "@parcel/transformer-glsl": "2.9.2",
     "@parcel/transformer-sass": "2.8.3",
     "@types/audioworklet": "0.0.46",
     "@types/babel__core": "7",
