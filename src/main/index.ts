@@ -11,6 +11,7 @@ inspector.open();
 
 import path from "path";
 
+import compression from "compression";
 import {
   app,
   BrowserWindow,
@@ -123,6 +124,8 @@ function createWindow() {
   });
 
   const expressApp = express();
+
+  expressApp.use(compression());
 
   applyGraphQLMiddleware(
     expressApp,
