@@ -1,0 +1,30 @@
+.controls {
+  position: fixed;
+  right: 8px;
+  bottom: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  font-size: 24px;
+  line-height: 48px;
+  color: #fff;
+  cursor: default;
+  user-select: none;
+}
+
+.symbol {
+  font-family: "Noto Sans JP", sans-serif;
+}
+
+.disabled {
+  pointer-events: none;
+  color: #ccc;
+}
+
+.display {
+  background-color: #1c5cff39;
+  line-height: 24px;
+  padding: 6px;
+  border-radius: 6px;
+}
