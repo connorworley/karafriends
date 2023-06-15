@@ -309,6 +309,7 @@ function saveDb() {
     DB_PATH,
     JSON.stringify({
       ...db,
+      pitchShiftSemis: 0,
       currentSong: null,
       currentSongAdhocLyrics: [],
       songQueue: [db.currentSong, ...db.songQueue],
@@ -1105,7 +1106,6 @@ const resolvers = {
       pubsub.publish(SubscriptionEvent.PitchShiftSemisChanged, {
         pitchShiftSemisChanged: args.semis,
       });
-      saveDb();
       return true;
     },
     setPlaybackState: (
