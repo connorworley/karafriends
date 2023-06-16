@@ -331,6 +331,8 @@ function Player(props: {
         ref={videoRef}
         crossOrigin="anonymous"
         controls
+        controlsList="nodownload noplaybackrate"
+        disablePictureInPicture
       >
         <track ref={trackRef} kind="subtitles" src="" default />
       </video>
