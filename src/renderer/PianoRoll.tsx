@@ -434,6 +434,7 @@ export default function PianoRoll(props: {
   scoringData: readonly number[];
   videoRef: React.RefObject<HTMLVideoElement>;
   mics: InputDevice[];
+  pitchShiftSemis: number;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationFrameRequestRef = useRef<number>(0);
@@ -458,7 +459,7 @@ export default function PianoRoll(props: {
       notes.push({
         startTime: view[i] / 1000,
         endTime: view[i + 1] / 1000,
-        midiNumber: view[i + 2],
+        midiNumber: view[i + 2] + props.pitchShiftSemis,
       });
     }
 

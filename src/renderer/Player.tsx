@@ -324,6 +324,7 @@ function Player(props: {
           scoringData={scoringData}
           videoRef={videoRef}
           mics={props.mics}
+          pitchShiftSemis={pitchShiftSemis}
         />
       ) : null}
       <video
