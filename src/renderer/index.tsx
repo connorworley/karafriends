@@ -17,7 +17,7 @@ Sentry.init({
 });
 
 const kuroshiro = new Kuroshiro();
-const kuromojiAnalyzer = new KuromojiAnalyzer({ dictPath: "/dict" });
+const kuromojiAnalyzer = new KuromojiAnalyzer({ dictPath: "./dict" });
 const kuromojiPromise = kuroshiro.init(kuromojiAnalyzer);
 
 const kuroshiroSingleton: KuroshiroSingleton = {
