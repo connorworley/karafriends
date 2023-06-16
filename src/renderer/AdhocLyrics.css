@@ -7,14 +7,13 @@
 }
 
 .entry-container {
-  font-size: 4vw; /* this must match the canvas width check in AdhocLyrics.tsx */
+  font-size: 44px;
+  /* Replace with real stroke when https://bugs.chromium.org/p/chromium/issues/detail?id=815111 is fixed */
+  text-shadow: 0 0 4px black, 0 0 4px black, 0 0 4px black, 0 0 4px black;
   position: absolute;
   left: 0%;
   top: 100%;
   transition: margin-top 0.25s ease-out;
   font-family: notoSerifJP, notoSerifKR;
-  font-weight: 900;
   color: white;
-  -webkit-text-stroke-color: black;
-  -webkit-text-stroke-width: 0.1vw;
 }
