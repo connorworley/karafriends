@@ -12,6 +12,7 @@
   left: 0%;
   top: 100%;
   transition: margin-top 0.25s ease-out;
+  font-family: notoSerifJP, notoSerifKR;
   font-weight: 900;
   color: white;
   -webkit-text-stroke-color: black;
