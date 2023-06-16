@@ -16,4 +16,5 @@
   transition: margin-top 0.25s ease-out;
   font-family: notoSerifJP, notoSerifKR;
   color: white;
+  background-color: rgba(0, 0, 0, 0.7);
 }
