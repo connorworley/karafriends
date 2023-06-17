@@ -41,11 +41,10 @@ const SongQueueItem = ({ item, eta, myNickname, isCurrent }: Props) => {
   const config = useConfig();
   const identity = useUserIdentity();
 
-  let canRemove;
-  // Eh this will load eventually.
-  if (config === undefined) {
-    canRemove = true;
-  } else {
+  let canRemove = true;
+
+  // Config finally loaded, let's evaluate things
+  if (config !== undefined) {
     const itemOwnedByUser =
       item.userIdentity!.nickname === identity.nickname ||
       item.userIdentity!.deviceId === identity.nickname;
