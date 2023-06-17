@@ -2,6 +2,7 @@ type Query {
   adhocLyrics(id: String!): [String!]
   artistById(id: String, first: Int, after: String): Artist!
   artistsByName(name: String, first: Int, after: String): ArtistConnection!
+  config: KarafriendsConfig!
   currentSong: QueueItem
   joysoundArtistsByKeyword(
     keyword: String
@@ -392,4 +393,10 @@ enum PlaybackState {
 
 type VideoDownloadProgress {
   progress: Float!
+}
+
+type KarafriendsConfig {
+  adminNicks: [String!]!
+  adminDeviceIds: [String!]!
+  supervisedMode: Boolean!
 }

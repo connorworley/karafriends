@@ -754,6 +754,12 @@ const resolvers = {
       if (!db.songQueue.length) return [];
       return db.songQueue;
     },
+    config: () => {
+      return {
+        ...karafriendsConfig,
+        __typename: "KarafriendsConfig",
+      };
+    },
     songHistory: (
       _: any,
       args: { first: number | null; after: string | null }
