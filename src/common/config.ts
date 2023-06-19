@@ -22,6 +22,8 @@ export interface KarafriendsConfig {
   adminNicks: string[];
   // List of admins by deviceId
   adminDeviceIds: string[];
+  // Whether to enable supervised mode
+  supervisedMode: boolean;
 }
 
 const DEFAULT_CONFIG: KarafriendsConfig = {
@@ -34,6 +36,7 @@ const DEFAULT_CONFIG: KarafriendsConfig = {
   joysoundPassword: "YOUR_PASSWORD_HERE",
   adminNicks: [],
   adminDeviceIds: [],
+  supervisedMode: false,
 };
 
 function getConfig(): KarafriendsConfig {

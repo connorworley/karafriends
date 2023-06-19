@@ -11,6 +11,8 @@ import { useNavigate } from "react-router-dom";
 
 import { cyrb53 } from "../../../common/hash";
 import { useQueueQueueQuery$data } from "../../../common/hooks/__generated__/useQueueQueueQuery.graphql";
+import useConfig from "../../hooks/useConfig";
+import useUserIdentity from "../../hooks/useUserIdentity";
 import Marquee from "../Marquee";
 import * as styles from "./SongQueue.module.scss";
 import { SongQueueItemRemoveSongMutation } from "./__generated__/SongQueueItemRemoveSongMutation.graphql";
@@ -35,6 +37,22 @@ const SongQueueItem = ({ item, eta, myNickname, isCurrent }: Props) => {
   const navigate = useNavigate();
   const [expanded, setExpanded] = useState(false);
   const [commit, isInFlight] = useMutation(removeSongMutation);
+
+  const config = useConfig();
+  const identity = useUserIdentity();
+
+  let canRemove = true;
+
+  // Config finally loaded, let's evaluate things
+  if (config !== undefined) {
+    const itemOwnedByUser =
+      item.userIdentity!.nickname === identity.nickname ||
+      item.userIdentity!.deviceId === identity.nickname;
+    canRemove =
+      config.adminNicks.includes(identity.nickname) ||
+      config.adminDeviceIds.includes(identity.deviceId) ||
+      !(config.supervisedMode === true && !itemOwnedByUser);
+  }
 
   const itemType = item.__typename;
   const nickname =
@@ -73,7 +91,7 @@ const SongQueueItem = ({ item, eta, myNickname, isCurrent }: Props) => {
           >
             {nickname}
           </div>
-          {item.songId && item.timestamp && !isCurrent && (
+          {item.songId && item.timestamp && !isCurrent && canRemove && (
             <div
               className={styles.remove}
               onClick={() => onRemove(item.songId, item.timestamp)}
