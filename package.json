@@ -45,7 +45,7 @@
     "gl-vec2": "1.3.0",
     "graphql": "16.6.0",
     "graphql-subscriptions": "2.0.0",
-    "graphql-ws": "5.13.1",
+    "graphql-ws": "5.14.0",
     "hls.js": "1.4.3",
     "kuromoji": "0.1.2",
     "kuroshiro": "1.2.0",
