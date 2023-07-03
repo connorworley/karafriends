@@ -117,7 +117,7 @@
     "@wdio/cli": "8.10.5",
     "@wdio/local-runner": "8.10.5",
     "@wdio/mocha-framework": "8.10.4",
-    "@yarnpkg/pnpify": "4.0.0-rc.44",
+    "@yarnpkg/pnpify": "4.0.0-rc.48",
     "babel-loader": "9.1.2",
     "babel-plugin-relay": "15.0.0",
     "cargo-cp-artifact": "0.1.8",
