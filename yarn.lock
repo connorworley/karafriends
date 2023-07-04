@@ -9305,10 +9305,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hls.js@npm:1.4.3":
-  version: 1.4.3
-  resolution: "hls.js@npm:1.4.3"
-  checksum: b773f06acfa6eb41c2d84fb8995ee8942672dd34c9f9d3b72715b60176cada3f975b3efadd29e31ac1e03310e09c76f5c118aceb5d8e9cc0232fb2b0ad2a168f
+"hls.js@npm:1.4.8":
+  version: 1.4.8
+  resolution: "hls.js@npm:1.4.8"
+  checksum: abbd3985e5339dea9b0cd244080b914ad9fb6b092e926a41f9bc9affe3383e4ed1ccda32515ef35b78580feb13373cabfdb7d23c3fb1c7ef9cd02f62f3302353
   languageName: node
   linkType: hard
 
@@ -11091,7 +11091,7 @@ __metadata:
     graphql: 16.6.0
     graphql-subscriptions: 2.0.0
     graphql-ws: 5.13.1
-    hls.js: 1.4.3
+    hls.js: 1.4.8
     husky: 8.0.3
     kuromoji: 0.1.2
     kuroshiro: 1.2.0
