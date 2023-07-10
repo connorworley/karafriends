@@ -127,7 +127,7 @@
     "electron": "24.4.0",
     "electron-chromedriver": "24.0.0",
     "electron-packager": "17.1.1",
-    "glob": "10.2.6",
+    "glob": "10.3.3",
     "husky": "8.0.3",
     "lint-staged": "13.2.2",
     "node-loader": "2.0.0",
