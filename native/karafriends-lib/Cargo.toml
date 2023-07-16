@@ -14,7 +14,7 @@ cpal = { git = "https://github.com/RustAudio/cpal", rev = "d4ba28df733fbb5e5a4d7
 lazy_static = "1.4.0"
 neon = { version = "1.0.0-alpha.4", default-features = false, features = ["napi-8"] }
 num-traits = "0.2.15"
-realfft = "3.2.0"
+realfft = "3.3.0"
 ringbuf = "0.3.3"
 rubato = "0.12.0"
 
