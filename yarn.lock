@@ -4216,12 +4216,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/split2@npm:^3.2.1":
-  version: 3.2.1
-  resolution: "@types/split2@npm:3.2.1"
+"@types/split2@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "@types/split2@npm:4.2.0"
   dependencies:
     "@types/node": "*"
-  checksum: 3c625ad8bdf937650f8533af85b4de22b21dc474e0867bb36dcf91da8bef0af80e18821736581c22e2d402b8c14548e00d0b5dc885a62feae72a5eec04b36d05
+  checksum: 30f2c59d26dd9692e2f0e2eb8e5282da8d602aacad83a75b41c77ab7377a932739254c188dd1397cfb5894b5458bebf8d305fd7de94b17cd233a4ba0889b7251
   languageName: node
   linkType: hard
 
@@ -4451,6 +4451,18 @@ __metadata:
     loglevel-plugin-prefix: ^0.8.4
     strip-ansi: ^6.0.0
   checksum: b17effd00f0b5f4450b83e4d65e0f29bc60bc19a53b9c44fc3569e14bd53bcf6c0dfc8da517ddf639da503c1e68491ec20f97fddbb78b34d8b20136f7a60a4fe
+  languageName: node
+  linkType: hard
+
+"@wdio/logger@npm:^8.11.0":
+  version: 8.11.0
+  resolution: "@wdio/logger@npm:8.11.0"
+  dependencies:
+    chalk: ^5.1.2
+    loglevel: ^1.6.0
+    loglevel-plugin-prefix: ^0.8.4
+    strip-ansi: ^7.1.0
+  checksum: b62d0db074240a993c72d95793606d4fa7890fcbebdff5e344bf5c7be90f8189e94432056c1fbb5e636a74b0f036a8a1d88af6c04e4c01e436e9dfab7048f638
   languageName: node
   linkType: hard
 
@@ -8523,7 +8535,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fs-extra@npm:^11.1.0":
+"fs-extra@npm:^11.1.0, fs-extra@npm:^11.1.1":
   version: 11.1.1
   resolution: "fs-extra@npm:11.1.1"
   dependencies:
@@ -11138,7 +11150,7 @@ __metadata:
     wait-on: 7.0.1
     wanakana: 5.1.0
     wdio-chromedriver-service: 8.1.1
-    wdio-safaridriver-service: 2.1.0
+    wdio-safaridriver-service: 2.1.1
     webdriverio: 8.10.5
     webpack: 5.86.0
     webpack-cli: 5.1.1
@@ -14447,10 +14459,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"safaridriver@npm:^0.0.4":
-  version: 0.0.4
-  resolution: "safaridriver@npm:0.0.4"
-  checksum: 1ea3d7213316b4124e460618ffd1c1b0e84b2b809f78da35ea42bb15e20ec0104a0ede49d96c4014b5da77f6e2b904896247d019f70ed82c10d15bf784469c8c
+"safaridriver@npm:^0.0.6":
+  version: 0.0.6
+  resolution: "safaridriver@npm:0.0.6"
+  checksum: f15ebb6b597ba2c145cffc00b11f21fef36fbc6fc9c6bc8c686085c2c23e5d966d788478e8a218d49e5dabddca1bf0f74fee5f37bf1f787edfb7776e3f154879
   languageName: node
   linkType: hard
 
@@ -15026,7 +15038,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"split2@npm:^4.1.0":
+"split2@npm:^4.1.0, split2@npm:^4.2.0":
   version: 4.2.0
   resolution: "split2@npm:4.2.0"
   checksum: 05d54102546549fe4d2455900699056580cca006c0275c334611420f854da30ac999230857a85fdd9914dc2109ae50f80fda43d2a445f2aa86eccdc1dfce779d
@@ -15200,6 +15212,15 @@ __metadata:
   dependencies:
     ansi-regex: ^6.0.1
   checksum: 257f78fa433520e7f9897722731d78599cb3fce29ff26a20a5e12ba4957463b50a01136f37c43707f4951817a75e90820174853d6ccc240997adc5df8f966039
+  languageName: node
+  linkType: hard
+
+"strip-ansi@npm:^7.1.0":
+  version: 7.1.0
+  resolution: "strip-ansi@npm:7.1.0"
+  dependencies:
+    ansi-regex: ^6.0.1
+  checksum: 859c73fcf27869c22a4e4d8c6acfe690064659e84bef9458aa6d13719d09ca88dcfd40cbf31fd0be63518ea1a643fe070b4827d353e09533a5b0b9fd4553d64d
   languageName: node
   linkType: hard
 
@@ -16235,16 +16256,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"wdio-safaridriver-service@npm:2.1.0":
-  version: 2.1.0
-  resolution: "wdio-safaridriver-service@npm:2.1.0"
+"wdio-safaridriver-service@npm:2.1.1":
+  version: 2.1.1
+  resolution: "wdio-safaridriver-service@npm:2.1.1"
   dependencies:
-    "@types/split2": ^3.2.1
+    "@types/split2": ^4.2.0
     "@types/tcp-port-used": ^1.0.1
-    "@wdio/logger": ^8.1.0
-    fs-extra: ^11.1.0
-    safaridriver: ^0.0.4
-    split2: ^4.1.0
+    "@wdio/logger": ^8.11.0
+    fs-extra: ^11.1.1
+    safaridriver: ^0.0.6
+    split2: ^4.2.0
     tcp-port-used: ^1.0.2
   peerDependencies:
     "@wdio/types": ^7.0.0 || ^8.0.0-alpha.219
@@ -16254,7 +16275,7 @@ __metadata:
       optional: true
     webdriverio:
       optional: false
-  checksum: de54c72728ee5322d9d932c77e8167c08e72f47724e27e874c3dd915e82a3ff06d5b9a305f39899ad7319e2ecbd12c6421aae6ff1d119824db9ad516794402bd
+  checksum: 29409d62fc667310cffcc18d67522ea220dd49b404d7806ce849c8d3fe0959836ac962c1db71447fc98682fbe309210cd29deaee88e2a8db086e9a85717ace4f
   languageName: node
   linkType: hard
 
