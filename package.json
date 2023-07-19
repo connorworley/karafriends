@@ -121,7 +121,7 @@
     "babel-loader": "9.1.2",
     "babel-plugin-relay": "15.0.0",
     "cargo-cp-artifact": "0.1.8",
-    "chromedriver": "113.0.0",
+    "chromedriver": "114.0.3",
     "concurrently": "8.0.1",
     "cross-env": "7.0.3",
     "electron": "24.4.0",
