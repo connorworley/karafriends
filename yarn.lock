@@ -11105,7 +11105,7 @@ __metadata:
     node-fetch: 3.3.1
     node-loader: 2.0.0
     parcel: 2.8.3
-    parcel-reporter-static-files-copy: 1.5.0
+    parcel-reporter-static-files-copy: 1.5.2
     path-browserify: ^1.0.0
     polyline-normals: 2.0.2
     postcss: 8.4.23
@@ -13054,12 +13054,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"parcel-reporter-static-files-copy@npm:1.5.0":
-  version: 1.5.0
-  resolution: "parcel-reporter-static-files-copy@npm:1.5.0"
+"parcel-reporter-static-files-copy@npm:1.5.2":
+  version: 1.5.2
+  resolution: "parcel-reporter-static-files-copy@npm:1.5.2"
   dependencies:
     "@parcel/plugin": ^2.0.0-beta.1
-  checksum: fc55e492af7c197331f8d0a4a108e0487def8d1b80c64702d56f5d2669930230900039eab7a8cd714f4bbd186b27df75135092e94d1758cffca44d4640d920cf
+  checksum: ffa65eff2b0ba854f8c5cd2e3f0ba8b6328f9e14a2ce624554a727b2c2f537bce36c39caa3b991a36b4ef6025c6a1fb8840fcc4dad210954b8a94b2e213e2afb
   languageName: node
   linkType: hard
 
