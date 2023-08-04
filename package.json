@@ -91,7 +91,7 @@
     "@parcel/core": "2.8.3",
     "@parcel/transformer-glsl": "2.8.3",
     "@parcel/transformer-sass": "2.8.3",
-    "@types/audioworklet": "0.0.46",
+    "@types/audioworklet": "0.0.50",
     "@types/babel__core": "7",
     "@types/color-convert": "2.0.0",
     "@types/compression": "^1",
