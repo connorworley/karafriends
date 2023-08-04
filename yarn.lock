@@ -3611,10 +3611,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/audioworklet@npm:0.0.46":
-  version: 0.0.46
-  resolution: "@types/audioworklet@npm:0.0.46"
-  checksum: d4de82a69bf311ab71b58c590f3b315c73e207084eae4fe372f8b25c1ebfc35f609a1b8a4593b0a1160b7e8bde421ab4f423287e58d12d5c4b1493cfd2820163
+"@types/audioworklet@npm:0.0.50":
+  version: 0.0.50
+  resolution: "@types/audioworklet@npm:0.0.50"
+  checksum: ecf691bdc84afde09c3e7bf2608ebd7a1f4103388ad8177d5de116d9fed5929105e75b0a7f01d8f56ee38d6004a48b47557a2c063857f6672de047ec8489b9ec
   languageName: node
   linkType: hard
 
@@ -11033,7 +11033,7 @@ __metadata:
     "@parcel/transformer-sass": 2.8.3
     "@sentry/browser": 7.53.1
     "@sentry/node": 7.53.0
-    "@types/audioworklet": 0.0.46
+    "@types/audioworklet": 0.0.50
     "@types/babel__core": 7
     "@types/color-convert": 2.0.0
     "@types/compression": ^1
