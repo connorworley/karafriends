@@ -156,6 +156,9 @@ export class JoysoundAPI extends RESTDataSource {
       order: "asc",
       start: start.toString(),
       count: count.toString(),
+    }).catch((err) => {
+      console.log(err);
+      return [] as JoysoundArtistListItem[];
     });
   }
 
@@ -170,7 +173,18 @@ export class JoysoundAPI extends RESTDataSource {
   }
 
   async getSongDetail(id: string) {
-    const creds = await this.credsProvider();
+    const creds = await this.credsProvider().catch((err) => {
+      console.log("Login Failed");
+      return null;
+    });
+    if (creds === undefined || creds === null) {
+      return {
+        name: "Error",
+        artistName: "Error",
+        lyricsPreview: "Error",
+        tieUp: "Error",
+      };
+    }
 
     const data = await this.get(
       `songdetail/${id}`,
@@ -220,6 +234,9 @@ export class JoysoundAPI extends RESTDataSource {
       order: "asc",
       start: start.toString(),
       count: count.toString(),
+    }).catch((err) => {
+      console.log(err);
+      return [] as JoysoundSongListItem[];
     });
   }
 
@@ -231,6 +248,9 @@ export class JoysoundAPI extends RESTDataSource {
       order: "asc",
       start: start.toString(),
       count: count.toString(),
+    }).catch((err) => {
+      console.log(err);
+      return [] as JoysoundSongListItem[];
     });
   }
 
