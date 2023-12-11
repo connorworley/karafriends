@@ -15,7 +15,7 @@
     "build-dev": "concurrently \"yarn get-external-resources && yarn build-native-dev\" \"yarn build-relay-dev\" && concurrently \"yarn build-electron-dev\" \"yarn build-frontend-dev\"",
     "build-prod": "concurrently \"yarn get-external-resources && yarn build-native-prod\" \"yarn build-relay-prod\" && concurrently \"yarn build-electron-prod\" \"yarn build-frontend-prod\"",
     "run-dev": "cross-env NODE_ENV=development yarn _run-dev",
-    "_run-dev": "yarn build-dev && concurrently \"parcel serve --dist-dir build/dev --port 3000\" \"wait-on http://127.0.0.1:3000/renderer/ && node ./electron.js build/dev/main/main.js\"",
+    "_run-dev": "yarn build-dev && concurrently \"webpack serve --mode=development\" \"wait-on http://127.0.0.1:3000/renderer/ && node ./electron.js build/dev/main/main.js\"",
     "package-prod": "node packager.js",
     "get-external-resources": "node scripts/getExternalResources.mjs",
     "test:wdio": "concurrently --kill-others \"parcel serve --dist-dir build/dev --port 3000\" \"wait-on http://127.0.0.1:3000/renderer/ && pnpify wdio run renderer.wdio.conf.js && pnpify wdio run remocon.wdio.conf.js\"",
@@ -146,8 +146,9 @@
     "wdio-chromedriver-service": "8.1.1",
     "wdio-safaridriver-service": "2.1.0",
     "webdriverio": "8.10.5",
-    "webpack": "5.86.0",
-    "webpack-cli": "5.1.1",
+    "webpack": "5.89.0",
+    "webpack-cli": "5.1.4",
+    "webpack-dev-server": "4.15.1",
     "webpack-merge": "5.9.0"
   },
   "resolutions": {
