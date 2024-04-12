@@ -370,6 +370,10 @@ function downloadJoysoundYoutubeVideoPromise(
     const ytdlpLogFilename = `${TEMP_FOLDER}/yt-${youtubeVideoId}.log`;
     const ytdlpLogStream = fs.createWriteStream(ytdlpLogFilename);
 
+    const env = { ...process.env };
+    // Don't need a proxy to download from YouTube
+    delete process.env.http_proxy;
+
     const ytdlp = spawn(
       resourcePaths.ytdlp,
       [
@@ -388,7 +392,10 @@ function downloadJoysoundYoutubeVideoPromise(
         "--",
         youtubeVideoId!,
       ],
-      { stdio: ["ignore", "pipe", "pipe"] }
+      {
+        env,
+        stdio: ["ignore", "pipe", "pipe"],
+      }
     );
 
     invariant(ytdlp.stdout);
@@ -1048,6 +1055,10 @@ export function downloadNicoVideo(
 
   const ytdlpLogStream = fs.createWriteStream(ytdlpLogFilename);
 
+  const env = { ...process.env };
+  // Don't need a proxy to download from Niconico
+  delete process.env.http_proxy;
+
   const ytdlp = spawn(
     resourcePaths.ytdlp,
     [
@@ -1058,7 +1069,10 @@ export function downloadNicoVideo(
       "--",
       `https://www.nicovideo.jp/watch/${videoId}`,
     ],
-    { stdio: ["ignore", "pipe", "pipe"] }
+    {
+      env,
+      stdio: ["ignore", "pipe", "pipe"],
+    }
   );
 
   invariant(ytdlp.stdout);
