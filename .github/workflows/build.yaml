@@ -9,7 +9,7 @@ permissions:
   pull-requests: write
 jobs:
   build-macos-x86_64:
-    runs-on: [self-hosted, macOS]
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions-rs/toolchain@v1
@@ -51,7 +51,7 @@ jobs:
             ![remocon-Safari.png](${{ env.REMOCON_SAFARI_URL }})
         if: github.event_name == 'pull_request'
   build-macos-aarch64:
-    runs-on: [self-hosted, macOS]
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions-rs/toolchain@v1
