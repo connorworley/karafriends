@@ -24,6 +24,14 @@ export interface KarafriendsConfig {
   adminDeviceIds: string[];
   // Whether to enable supervised mode
   supervisedMode: boolean;
+  // Whether to use a HTTP proxy (for outgoing connections)
+  proxyEnable: boolean;
+  // URL (host:port) of the HTTP proxy to use
+  proxyURL: string;
+  // HTTP Basic username of the HTTP proxy to use
+  proxyUser: string;
+  // HTTP Basic password of the HTTP proxy to use
+  proxyPass: string;
 }
 
 const DEFAULT_CONFIG: KarafriendsConfig = {
@@ -37,6 +45,10 @@ const DEFAULT_CONFIG: KarafriendsConfig = {
   adminNicks: [],
   adminDeviceIds: [],
   supervisedMode: false,
+  proxyEnable: false,
+  proxyURL: "PROXY_URL_HERE",
+  proxyUser: "PROXY_USER_HERE",
+  proxyPass: "PROXY_PASS_HERE",
 };
 
 function getConfig(): KarafriendsConfig {

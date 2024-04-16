@@ -398,7 +398,9 @@ function pushSongToQueue(
     db.songQueue.reduce((acc, cur) => acc + (cur.playtime || 0), 0);
 
   console.log(
-    `pushSongToQueue: pushing ${queueItem} with an eta of ${eta}; pushToHead=${pushToHead}`
+    `pushSongToQueue: pushing ${JSON.stringify(
+      queueItem
+    )} with an eta of ${eta}; pushToHead=${pushToHead}`
   );
 
   if (pushToHead === true) {

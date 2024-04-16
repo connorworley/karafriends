@@ -124,7 +124,7 @@ function Player(props: {
                 const loadRemote = () => {
                   if (!videoRef.current) return;
 
-                  hls = new Hls();
+                  hls = new Hls({ maxBufferLength: 90 /* seconds */ });
                   hls.attachMedia(videoRef.current);
                   hls.loadSource(
                     popSong.streamingUrls[popSong.streamingUrlIdx].url

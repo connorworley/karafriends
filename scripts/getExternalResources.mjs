@@ -132,7 +132,7 @@ const macosTasks = {
         `${extraResourcesDir}/ytdlp/yt-dlp_macos`
       ),
       downloadFile(
-        "https://evermeet.cx/ffmpeg/ffmpeg-5.0.1.zip",
+        "https://evermeet.cx/ffmpeg/ffmpeg-6.1.1.zip",
         `${tmpDir}/ffmpeg/macos/ffmpeg.zip`
       ),
     ]),

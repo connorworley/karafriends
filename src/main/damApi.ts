@@ -61,7 +61,9 @@ export class MinseiAPI extends RESTDataSource {
     })
       .map(([k, v]) => `${k}=${v}`)
       .join("&");
-    console.debug(`[minsei] curl ${this.baseURL}${url} -d '${body}'`);
+    console.debug(
+      `[minsei] curl ${this.baseURL}${url} -d '${JSON.stringify(body)}'`
+    );
     return super.post(url, body, {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -233,7 +235,9 @@ export class DkwebsysAPI extends RESTDataSource {
   }
 
   post<T>(url: string, data: object): Promise<T> {
-    console.debug(`[dkwebsys] curl ${this.baseURL}${url} -d '${data}'`);
+    console.debug(
+      `[dkwebsys] curl ${this.baseURL}${url} -d '${JSON.stringify(data)}'`
+    );
     return super.post(url, {
       ...BASE_DKWEBSYS_REQUEST,
       ...data,
