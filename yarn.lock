@@ -11777,7 +11777,7 @@ __metadata:
     utf-8-validate: 6.0.3
     uuid: 9.0.0
     wait-on: 7.0.1
-    wanakana: 5.1.0
+    wanakana: 5.3.1
     wdio-electron-service: 6.4.1
     webdriverio: 8.36.0
     webpack: 5.86.0
@@ -17087,10 +17087,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"wanakana@npm:5.1.0":
-  version: 5.1.0
-  resolution: "wanakana@npm:5.1.0"
-  checksum: 4f683e129e3cfe05d75130b1d46b1259c0a6ceda5e46ebcfcd6036f79721a27e0ea7711ee1d61d5dde7455c42261661dfd933653d16d4f0b4fb26a71a420d52f
+"wanakana@npm:5.3.1":
+  version: 5.3.1
+  resolution: "wanakana@npm:5.3.1"
+  checksum: db20c5841f8b276f2d0c600bb2c3a0f2f88f4593e2f96f308fddbe825cc871111a2b932118fe7beea192f19de3ff33df934d19de222493a691a9a33e6b65243c
   languageName: node
   linkType: hard
 
