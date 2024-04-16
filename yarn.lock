@@ -11766,7 +11766,7 @@ __metadata:
     relay-compiler: 15.0.0
     relay-compiler-language-typescript: 15.0.1
     relay-config: 12.0.1
-    relay-runtime: 15.0.0
+    relay-runtime: 16.2.0
     supports-color: 9.3.1
     ts-invariant: 0.10.3
     ts-loader: 9.5.1
@@ -14889,6 +14889,17 @@ __metadata:
     fbjs: ^3.0.2
     invariant: ^2.2.4
   checksum: ccf41ac4778b54560ea35901076a00eaa60597a89c908f6fb7b15812b76aad6aa57bfe81fe5af159dd6aaf716eb46208ec6e77cf8357c479d288af6f5a04698d
+  languageName: node
+  linkType: hard
+
+"relay-runtime@npm:16.2.0":
+  version: 16.2.0
+  resolution: "relay-runtime@npm:16.2.0"
+  dependencies:
+    "@babel/runtime": ^7.0.0
+    fbjs: ^3.0.2
+    invariant: ^2.2.4
+  checksum: 7a6378b48495d014404bf08ba3ed4afa07838727800141ead3cd1b908c61556ef56d1ae7756f4b72134fd4e62b916b9522e65fde4144806feed29aecf57d3bfc
   languageName: node
   linkType: hard
 
