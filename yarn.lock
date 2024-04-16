@@ -4176,12 +4176,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/color-convert@npm:2.0.0":
-  version: 2.0.0
-  resolution: "@types/color-convert@npm:2.0.0"
+"@types/color-convert@npm:2.0.3":
+  version: 2.0.3
+  resolution: "@types/color-convert@npm:2.0.3"
   dependencies:
     "@types/color-name": "*"
-  checksum: 027b68665dc2278cc2d83e796ada0a05a08aa5a11297e227c48c7f9f6eac518dec98578ab0072bd211963d3e4b431da70b20ea28d6c3136d0badfd3f9913baee
+  checksum: bb6649b49a9da85435c0076c0b00183b972ee2ccbebb7f2f20e58843f081616bba054280fad96fe19e8bb998b3494a3f4c105dea6fef31147f92097f2c08f1ca
   languageName: node
   linkType: hard
 
@@ -11678,7 +11678,7 @@ __metadata:
     "@sentry/node": 7.110.1
     "@types/audioworklet": 0.0.55
     "@types/babel__core": 7
-    "@types/color-convert": 2.0.0
+    "@types/color-convert": 2.0.3
     "@types/compression": ^1
     "@types/express": 4.17.17
     "@types/format-duration": 1.0.1
