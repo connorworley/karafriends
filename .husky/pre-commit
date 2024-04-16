@@ -1,5 +1,2 @@
-#!/bin/sh
-. "$(dirname $0)/_/husky.sh"
-
 cargo clippy --manifest-path native/Cargo.toml
 yarn lint-staged
