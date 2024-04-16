@@ -1677,7 +1677,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:7.21.5, @babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.4":
+"@babel/runtime@npm:7.24.4":
+  version: 7.24.4
+  resolution: "@babel/runtime@npm:7.24.4"
+  dependencies:
+    regenerator-runtime: ^0.14.0
+  checksum: 2f27d4c0ffac7ae7999ac0385e1106f2a06992a8bdcbf3da06adcac7413863cd08c198c2e4e970041bbea849e17f02e1df18875539b6afba76c781b6b59a07c3
+  languageName: node
+  linkType: hard
+
+"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.4":
   version: 7.21.5
   resolution: "@babel/runtime@npm:7.21.5"
   dependencies:
@@ -11540,7 +11549,7 @@ __metadata:
     "@babel/core": 7.24.4
     "@babel/preset-env": 7.21.5
     "@babel/preset-react": 7.24.1
-    "@babel/runtime": 7.21.5
+    "@babel/runtime": 7.24.4
     "@graphql-tools/schema": 10.0.3
     "@parcel/config-default": 2.8.3
     "@parcel/core": 2.8.3
@@ -14621,7 +14630,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"regenerator-runtime@npm:0.14.1":
+"regenerator-runtime@npm:0.14.1, regenerator-runtime@npm:^0.14.0":
   version: 0.14.1
   resolution: "regenerator-runtime@npm:0.14.1"
   checksum: 9f57c93277b5585d3c83b0cf76be47b473ae8c6d9142a46ce8b0291a04bb2cf902059f0f8445dcabb3fb7378e5fe4bb4ea1e008876343d42e46d3b484534ce38
