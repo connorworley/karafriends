@@ -15,5 +15,6 @@ exports.config = {
     timeout: 5 * 60 * 1000,
   },
   runner: "local",
+  services: ["electron"],
   specs: ["tests/wdio/renderer/**"],
 };
