@@ -27,7 +27,7 @@ jobs:
           script: |
             core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
             core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
-      - uses: MasterworksIO/action-local-cache@1.0.0
+      - uses: MasterworksIO/action-local-cache@2.1.0
         with:
           path: |
             extraResources
@@ -69,7 +69,7 @@ jobs:
           node-version: 16
       - run: npm install -g yarn
       - uses: mozilla-actions/sccache-action@v0.0.3
-      - uses: MasterworksIO/action-local-cache@1.0.0
+      - uses: MasterworksIO/action-local-cache@2.1.0
         with:
           path: |
             extraResources
