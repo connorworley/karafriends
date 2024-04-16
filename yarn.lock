@@ -4494,10 +4494,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/youtube-player@npm:5.5.7":
-  version: 5.5.7
-  resolution: "@types/youtube-player@npm:5.5.7"
-  checksum: 5e18dc1b48a62e416a920b5dd3076c443c15537f2c96d9a834c715864c4cde2e7f8a2b5de7d8a6addfb2b26e5dbc4dd5d61319e7e9c8a9fbb90275dd06e61ef7
+"@types/youtube-player@npm:5.5.11":
+  version: 5.5.11
+  resolution: "@types/youtube-player@npm:5.5.11"
+  checksum: 364c89396b2d8b233a0e6123ad69e0b3a3f18645b4e1bb1eed8d00fd18c6bf074eb4fab73446a4d8d5f5cedb3710f39b21ece396534bd4d60038b3be42b7965b
   languageName: node
   linkType: hard
 
@@ -11430,7 +11430,7 @@ __metadata:
     "@types/webpack-env": 1.18.1
     "@types/wicg-mediasession": 1.1.4
     "@types/ws": ^8
-    "@types/youtube-player": 5.5.7
+    "@types/youtube-player": 5.5.11
     "@wdio/cli": 8.36.0
     "@wdio/local-runner": 8.36.0
     "@wdio/mocha-framework": 8.36.0
