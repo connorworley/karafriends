@@ -5,7 +5,8 @@ exports.config = {
     {
       browserName: "electron",
       "wdio:electronServiceOptions": {
-        appBinaryPath: resolve(__dirname, "build/dev/main/main.js"),
+        appBinaryPath: resolve(__dirname, "electron.js"),
+        appArgs: [`app=${resolve(__dirname, "build/dev/main/main.js")}`],
       },
     },
   ],
