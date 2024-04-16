@@ -4408,12 +4408,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/kuromoji@npm:0.1.1":
-  version: 0.1.1
-  resolution: "@types/kuromoji@npm:0.1.1"
+"@types/kuromoji@npm:0.1.3":
+  version: 0.1.3
+  resolution: "@types/kuromoji@npm:0.1.3"
   dependencies:
     "@types/doublearray": "*"
-  checksum: d46180499f4c1af4d2c37ee54da01946fc8f6b9f5b71f13d0fbeae10c220638bdbb030c15ca994d5d30f84514a28c05abe75304a6e76758899d13ffb3439bafa
+  checksum: 6a15cb082a74ca1356956ed5158e338d6bae17f10596271578f559ba91e7d451992f152f0427e27bf7b18a9efb5423d0c2bc2c8521cdb9d5a43caea0f696cb05
   languageName: node
   linkType: hard
 
@@ -11684,7 +11684,7 @@ __metadata:
     "@types/format-duration": 1.0.1
     "@types/gl-vec2": 1.3.2
     "@types/hls.js": 1.0.0
-    "@types/kuromoji": 0.1.1
+    "@types/kuromoji": 0.1.3
     "@types/lodash": 4.17.0
     "@types/materialize-css": 1.0.11
     "@types/node": 20.12.7
