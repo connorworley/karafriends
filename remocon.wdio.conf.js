@@ -28,10 +28,10 @@ exports.config = {
       },
     ]),
   ],
-  connectionRetryTimeout: 5 * 60 * 1000,
+  connectionRetryTimeout: 10 * 60 * 1000,
   framework: "mocha",
   mochaOpts: {
-    timeout: 5 * 60 * 1000,
+    timeout: 10 * 60 * 1000,
   },
   runner: "local",
   specs: ["tests/wdio/remocon/**"],
@@ -46,7 +46,7 @@ exports.config = {
           "com.apple.CoreSimulator.SimDeviceType.iPhone-15",
           "com.apple.CoreSimulator.SimRuntime.iOS-17-4",
         ],
-        { encoding: "utf-8" }
+        { encoding: "utf-8" },
       ).trim();
       execFileSync("xcrun", ["simctl", "bootstatus", udid, "-b"], {
         stdio: "inherit",

@@ -9,7 +9,7 @@ permissions:
   pull-requests: write
 jobs:
   build-macos-aarch64:
-    runs-on: flyci-macos-xlarge-latest-m2
+    runs-on: [macOS, ARM64]
     steps:
       - uses: actions/checkout@v4
       - uses: actions-rs/toolchain@v1
