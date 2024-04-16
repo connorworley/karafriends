@@ -81,11 +81,16 @@ exports.config = {
       execFileSync("xcrun", ["simctl", "shutdown", caps["safari:deviceUDID"]], {
         stdio: "inherit",
       });
-      const cachePath = `/tmp/karafriendsIntegrationDevices/${caps["safari:deviceUDID"]}`;
-      if (!fs.existsSync(cachePath)) {
-        fs.mkdirSync("/tmp/karafriendsIntegrationDevices", { recursive: true });
-        fs.renameSync(
-          `~/Library/Logs/CoreSimulator/${caps["safari:deviceUDID"]}`,
+      const cachePath = "/tmp/karafriendsIntegrationDevices";
+      if (!fs.existsSync(`${cachePath}/${caps["safari:deviceUDID"]}`)) {
+        fs.mkdirSync(cachePath, { recursive: true });
+        fs.cpSync(
+          `~/Library/Developer/CoreSimulator/Devices/${caps["safari:deviceUDID"]}`,
+          cachePath,
+          { recursive: true }
+        );
+        fs.cpSync(
+          "~/Library/Developer/CoreSimulator/Devices/device_set.plist",
           cachePath
         );
       }
