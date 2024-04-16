@@ -16,7 +16,7 @@ jobs:
         with:
           toolchain: stable
           target: aarch64-apple-darwin
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 16
       - run: npm install -g yarn
@@ -64,7 +64,7 @@ jobs:
         with:
           toolchain: stable
           target: x86_64-apple-darwin
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 16
       - run: npm install -g yarn
@@ -84,7 +84,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 16
       - uses: mozilla-actions/sccache-action@v0.0.3
@@ -111,7 +111,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 16
       - uses: mozilla-actions/sccache-action@v0.0.3
