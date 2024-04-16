@@ -37,7 +37,7 @@ exports.config = {
   beforeSession: (_config, caps, _specs) => {
     if (caps["safari:useSimulator"] === true) {
       const desiredDeviceType =
-        "com.apple.CoreSimulator.SimDeviceType.iPhone-12";
+        "com.apple.CoreSimulator.SimDeviceType.iPhone-15";
       const desiredRuntime = "com.apple.CoreSimulator.SimRuntime.iOS-17-4";
 
       const devices = JSON.parse(
