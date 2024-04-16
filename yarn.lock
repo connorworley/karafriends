@@ -4462,13 +4462,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node-fetch@npm:2.6.4":
-  version: 2.6.4
-  resolution: "@types/node-fetch@npm:2.6.4"
+"@types/node-fetch@npm:2.6.11":
+  version: 2.6.11
+  resolution: "@types/node-fetch@npm:2.6.11"
   dependencies:
     "@types/node": "*"
-    form-data: ^3.0.0
-  checksum: f3e1d881bb42269e676ecaf49f0e096ab345e22823a2b2d071d60619414817fe02df48a31a8d05adb23054028a2a65521bdb3906ceb763ab6d3339c8d8775058
+    form-data: ^4.0.0
+  checksum: 180e4d44c432839bdf8a25251ef8c47d51e37355ddd78c64695225de8bc5dc2b50b7bb855956d471c026bb84bd7295688a0960085e7158cbbba803053492568b
   languageName: node
   linkType: hard
 
@@ -11688,7 +11688,7 @@ __metadata:
     "@types/lodash": 4.17.0
     "@types/materialize-css": 1.0.14
     "@types/node": 20.12.7
-    "@types/node-fetch": 2.6.4
+    "@types/node-fetch": 2.6.11
     "@types/promise-retry": 1.1.6
     "@types/qrcode": 1.5.0
     "@types/react": 18.2.6
