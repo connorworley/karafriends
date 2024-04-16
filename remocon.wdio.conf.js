@@ -1,9 +1,11 @@
 const { execFileSync } = require("child_process");
+const fs = require("fs");
 
 exports.config = {
   capabilities: [
     {
       browserName: "chrome",
+      browserVersion: "stable",
       "goog:chromeOptions": {
         mobileEmulation: {
           // Pixel 6-esque settings
@@ -32,7 +34,6 @@ exports.config = {
     timeout: 5 * 60 * 1000,
   },
   runner: "local",
-  services: [["chromedriver"], ["safaridriver"]],
   specs: ["tests/wdio/remocon/**"],
   beforeSession: (_config, caps, _specs) => {
     if (caps["safari:useSimulator"] === true) {
@@ -42,8 +43,8 @@ exports.config = {
           "simctl",
           "create",
           "karafriendsIntegrationDevice",
-          "com.apple.CoreSimulator.SimDeviceType.iPhone-12",
-          "com.apple.CoreSimulator.SimRuntime.iOS-15-5",
+          "com.apple.CoreSimulator.SimDeviceType.iPhone-15",
+          "com.apple.CoreSimulator.SimRuntime.iOS-17-4",
         ],
         { encoding: "utf-8" }
       ).trim();
