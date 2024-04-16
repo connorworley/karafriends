@@ -4005,7 +4005,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^18.0.0, @types/node@npm:^18.11.11, @types/node@npm:^18.11.18":
+"@types/node@npm:^18.0.0, @types/node@npm:^18.11.11":
   version: 18.16.5
   resolution: "@types/node@npm:18.16.5"
   checksum: b6df96a76a7655cd944794197cf63f5269e5034041bc355f4f243cb3f185ad3e1948011b6f0ac66c22434e50bc53a20ec3a9d95ad284f0e3819813d309d1650b
@@ -4016,6 +4016,15 @@ __metadata:
   version: 20.1.2
   resolution: "@types/node@npm:20.1.2"
   checksum: 9bb2cf0a846e60cc06c44a5622c1998d8373c8675b24d11c86845a29f32c60f5bca9627f2a2535640f902be3dbcc60f126a895abe8e10f12e1467ae3deaba56d
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^20.9.0":
+  version: 20.12.7
+  resolution: "@types/node@npm:20.12.7"
+  dependencies:
+    undici-types: ~5.26.4
+  checksum: 7cc979f7e2ca9a339ec71318c3901b9978555257929ef3666987f3e447123bc6dc92afcc89f6347e09e07d602fde7d51bcddea626c23aa2bb74aeaacfd1e1686
   languageName: node
   linkType: hard
 
@@ -7602,15 +7611,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-chromedriver@npm:24.0.0":
-  version: 24.0.0
-  resolution: "electron-chromedriver@npm:24.0.0"
+"electron-chromedriver@npm:~29.0.0":
+  version: 29.0.1
+  resolution: "electron-chromedriver@npm:29.0.1"
   dependencies:
     "@electron/get": ^2.0.1
     extract-zip: ^2.0.0
   bin:
     chromedriver: chromedriver.js
-  checksum: e19f2f343c6df951ee2d433f1f270ec2279d0f3f0feb6b4b78b07a98bc62ed06b4ab999f2f76ef745eae6a120718d0b993c2aa2bc4a5bf9118f74f78cffe0d74
+  checksum: 8647dcb8b040002ae36b470cc5e8f1c563d9cb9da5f573dcaeb49ad5ff88645eafe5f79047a53927083e5e235da9616019a6f77df837d4a8b6ff62d48109938f
   languageName: node
   linkType: hard
 
@@ -7657,16 +7666,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:24.4.0":
-  version: 24.4.0
-  resolution: "electron@npm:24.4.0"
+"electron@npm:29.3.0":
+  version: 29.3.0
+  resolution: "electron@npm:29.3.0"
   dependencies:
     "@electron/get": ^2.0.0
-    "@types/node": ^18.11.18
+    "@types/node": ^20.9.0
     extract-zip: ^2.0.1
   bin:
     electron: cli.js
-  checksum: 352a1f80c30b3c44a6224df2690984b6fa8cb6bccfce54f530f58fe3b26540d8c98064e57644ecd9cfca3e0c7bd316d09ddfbce24f77b0f56397b1f20029aeb6
+  checksum: 4d7c2f87e38dc29611d3f5fd11e7440611086936477da11483a750611690d280b9d536190606f2227bb18e1f7314176ca5c6d6c33494e6eb6bd56ed69441723d
   languageName: node
   linkType: hard
 
@@ -11217,8 +11226,8 @@ __metadata:
     cross-env: 7.0.3
     cubic-spline: 3.0.3
     dataloader: 2.2.2
-    electron: 24.4.0
-    electron-chromedriver: 24.0.0
+    electron: 29.3.0
+    electron-chromedriver: ~29.0.0
     electron-is-dev: 2.0.0
     electron-packager: 17.1.1
     express: 4.18.2
@@ -16109,6 +16118,13 @@ __metadata:
   version: 1.13.6
   resolution: "underscore@npm:1.13.6"
   checksum: d5cedd14a9d0d91dd38c1ce6169e4455bb931f0aaf354108e47bd46d3f2da7464d49b2171a5cf786d61963204a42d01ea1332a903b7342ad428deaafaf70ec36
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~5.26.4":
+  version: 5.26.5
+  resolution: "undici-types@npm:5.26.5"
+  checksum: 3192ef6f3fd5df652f2dc1cd782b49d6ff14dc98e5dced492aa8a8c65425227da5da6aafe22523c67f035a272c599bb89cfe803c1db6311e44bed3042fc25487
   languageName: node
   linkType: hard
 
