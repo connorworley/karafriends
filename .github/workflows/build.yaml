@@ -8,68 +8,26 @@ on:
 permissions:
   pull-requests: write
 jobs:
-  build-macos-x86_64:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          target: x86_64-apple-darwin
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - run: npm install -g yarn
-      - uses: mozilla-actions/sccache-action@v0.0.3
-      - uses: MasterworksIO/action-local-cache@1.0.0
-        with:
-          path: |
-            extraResources
-          key: ${{ runner.os }}-resources-${{ hashFiles('scripts/getExternalResources.mjs') }}
-      - run: yarn install --immutable
-      - run: yarn build-dev
-        env:
-          CARGO_ARGS: --target x86_64-apple-darwin
-          CARGO_INCREMENTAL: false
-          RUSTC_WRAPPER: sccache
-      - run: yarn test:wdio
-      - run: |
-          echo RENDERER_URL=$(curl -F "reqtype=fileupload" -F "fileToUpload=@renderer.png" https://catbox.moe/user/api.php) >> $GITHUB_ENV
-          echo REMOCON_CHROME_URL=$(curl -F "reqtype=fileupload" -F "fileToUpload=@remocon-chrome.png" https://catbox.moe/user/api.php) >> $GITHUB_ENV
-          echo REMOCON_SAFARI_URL=$(curl -F "reqtype=fileupload" -F "fileToUpload=@remocon-Safari.png" https://catbox.moe/user/api.php) >> $GITHUB_ENV
-        if: github.event_name == 'pull_request'
-      - uses: peter-evans/create-or-update-comment@v3
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            # WDIO Screenshots
-            ## Renderer (Electron)
-            ![renderer.png](${{ env.RENDERER_URL }})
-            ## Remocon (Chrome / Pixel 6)
-            ![remocon-chrome.png](${{ env.REMOCON_CHROME_URL }})
-            ## Remocon (Safari iPhone 14)
-            ![remocon-Safari.png](${{ env.REMOCON_SAFARI_URL }})
-        if: github.event_name == 'pull_request'
   build-macos-aarch64:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
           target: aarch64-apple-darwin
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 16
       - run: npm install -g yarn
-      - uses: mozilla-actions/sccache-action@v0.0.3
+      - uses: mozilla-actions/sccache-action@v0.0.4
       - name: Configure sccache
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
             core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
-      - uses: MasterworksIO/action-local-cache@1.0.0
+      - uses: MasterworksIO/action-local-cache@2.1.0
         with:
           path: |
             extraResources
@@ -80,21 +38,63 @@ jobs:
           CARGO_ARGS: --target aarch64-apple-darwin
           CARGO_INCREMENTAL: false
           RUSTC_WRAPPER: sccache
+      - run: yarn test:wdio
+      - run: |
+          echo RENDERER_URL=$(curl -F "reqtype=fileupload" -F "fileToUpload=@renderer.png" https://catbox.moe/user/api.php) >> $GITHUB_ENV
+          echo REMOCON_CHROME_URL=$(curl -F "reqtype=fileupload" -F "fileToUpload=@remocon-chrome.png" https://catbox.moe/user/api.php) >> $GITHUB_ENV
+          echo REMOCON_SAFARI_URL=$(curl -F "reqtype=fileupload" -F "fileToUpload=@remocon-Safari.png" https://catbox.moe/user/api.php) >> $GITHUB_ENV
+        if: github.event_name == 'pull_request'
+      - uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            # WDIO Screenshots
+            ## Renderer (Electron)
+            ![renderer.png](${{ env.RENDERER_URL }})
+            ## Remocon (Chrome / Pixel 6)
+            ![remocon-chrome.png](${{ env.REMOCON_CHROME_URL }})
+            ## Remocon (Safari iPhone 15)
+            ![remocon-Safari.png](${{ env.REMOCON_SAFARI_URL }})
+        if: github.event_name == 'pull_request'
+  build-macos-x86_64:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: x86_64-apple-darwin
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 16
+      - run: npm install -g yarn
+      - uses: mozilla-actions/sccache-action@v0.0.4
+      - uses: MasterworksIO/action-local-cache@2.1.0
+        with:
+          path: |
+            extraResources
+          key: ${{ runner.os }}-resources-${{ hashFiles('scripts/getExternalResources.mjs') }}
+      - run: yarn install --immutable
+      - run: yarn build-dev
+        env:
+          CARGO_ARGS: --target x86_64-apple-darwin
+          CARGO_INCREMENTAL: false
+          RUSTC_WRAPPER: sccache
   build-windows:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 16
-      - uses: mozilla-actions/sccache-action@v0.0.3
+      - uses: mozilla-actions/sccache-action@v0.0.4
       - name: Configure sccache
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
             core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: |
             buildResources
@@ -110,18 +110,18 @@ jobs:
   build-linux:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 16
-      - uses: mozilla-actions/sccache-action@v0.0.3
+      - uses: mozilla-actions/sccache-action@v0.0.4
       - name: Configure sccache
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
             core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: |
             buildResources

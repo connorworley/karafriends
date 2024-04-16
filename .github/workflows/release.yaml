@@ -5,57 +5,15 @@ on:
   workflow_dispatch:
 
 jobs:
-  release-macos-x86_64:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          target: x86_64-apple-darwin
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - name: Setup code signing cert
-        env:
-          MACOS_NOTARIZATION_API_KEY_BASE64: ${{ secrets.MACOS_NOTARIZATION_API_KEY_BASE64 }}
-          MACOS_SIGNING_CERT_BASE64: ${{ secrets.MACOS_SIGNING_CERT_BASE64 }}
-          MACOS_SIGNING_CERT_PASSWORD: ${{ secrets.MACOS_SIGNING_CERT_PASSWORD }}
-          MACOS_KEYCHAIN_PASSWORD: ${{ secrets.MACOS_KEYCHAIN_PASSWORD }}
-        run: |
-          NOTARIZATION_KEY_PATH=$RUNNER_TEMP/notarization_key.p8
-          CERTIFICATE_PATH=$RUNNER_TEMP/signing_cert.p12
-          KEYCHAIN_PATH=$RUNNER_TEMP/signing.keychain-db
-
-          echo -n "$MACOS_NOTARIZATION_API_KEY_BASE64" | base64 --decode -o $NOTARIZATION_KEY_PATH
-          echo -n "$MACOS_SIGNING_CERT_BASE64" | base64 --decode -o $CERTIFICATE_PATH
-
-          security create-keychain -p "$MACOS_KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
-          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
-          security unlock-keychain -p "$MACOS_KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
-
-          security import $CERTIFICATE_PATH -P "$MACOS_SIGNING_CERT_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
-          security list-keychain -d user -s $KEYCHAIN_PATH
-      - run: yarn install --immutable
-      - run: yarn build-prod
-        env:
-          CARGO_ARGS: --target x86_64-apple-darwin
-      - run: |
-          NOTARIZATION_KEY_PATH=$RUNNER_TEMP/notarization_key.p8 yarn package-prod
-        env:
-          PACKAGER_ARCH: x64
-      - uses: softprops/action-gh-release@v1
-        with:
-          files: dist/karafriends-darwin-x64.zip
   release-macos-aarch64:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
           target: aarch64-apple-darwin
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 16
       - name: Setup code signing cert
@@ -86,14 +44,56 @@ jobs:
           NOTARIZATION_KEY_PATH=$RUNNER_TEMP/notarization_key.p8 yarn package-prod
         env:
           PACKAGER_ARCH: arm64
-      - uses: softprops/action-gh-release@v1
+      - uses: softprops/action-gh-release@v2
         with:
           files: dist/karafriends-darwin-arm64.zip
+  release-macos-x86_64:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: x86_64-apple-darwin
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 16
+      - name: Setup code signing cert
+        env:
+          MACOS_NOTARIZATION_API_KEY_BASE64: ${{ secrets.MACOS_NOTARIZATION_API_KEY_BASE64 }}
+          MACOS_SIGNING_CERT_BASE64: ${{ secrets.MACOS_SIGNING_CERT_BASE64 }}
+          MACOS_SIGNING_CERT_PASSWORD: ${{ secrets.MACOS_SIGNING_CERT_PASSWORD }}
+          MACOS_KEYCHAIN_PASSWORD: ${{ secrets.MACOS_KEYCHAIN_PASSWORD }}
+        run: |
+          NOTARIZATION_KEY_PATH=$RUNNER_TEMP/notarization_key.p8
+          CERTIFICATE_PATH=$RUNNER_TEMP/signing_cert.p12
+          KEYCHAIN_PATH=$RUNNER_TEMP/signing.keychain-db
+
+          echo -n "$MACOS_NOTARIZATION_API_KEY_BASE64" | base64 --decode -o $NOTARIZATION_KEY_PATH
+          echo -n "$MACOS_SIGNING_CERT_BASE64" | base64 --decode -o $CERTIFICATE_PATH
+
+          security create-keychain -p "$MACOS_KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security unlock-keychain -p "$MACOS_KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+
+          security import $CERTIFICATE_PATH -P "$MACOS_SIGNING_CERT_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security list-keychain -d user -s $KEYCHAIN_PATH
+      - run: yarn install --immutable
+      - run: yarn build-prod
+        env:
+          CARGO_ARGS: --target x86_64-apple-darwin
+      - run: |
+          NOTARIZATION_KEY_PATH=$RUNNER_TEMP/notarization_key.p8 yarn package-prod
+        env:
+          PACKAGER_ARCH: x64
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist/karafriends-darwin-x64.zip
   release-windows:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 16
       - run: yarn install --immutable
@@ -101,20 +101,20 @@ jobs:
         env:
           CARGO_ARGS: --features asio
       - run: yarn package-prod
-      - uses: softprops/action-gh-release@v1
+      - uses: softprops/action-gh-release@v2
         with:
           files: dist/karafriends-win32-x64.zip
   release-linux:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 16
       - run: sudo apt-get update && sudo apt-get install -y libasound2-dev
       - run: yarn install --immutable
       - run: yarn build-prod
       - run: yarn package-prod
-      - uses: softprops/action-gh-release@v1
+      - uses: softprops/action-gh-release@v2
         with:
           files: dist/karafriends-linux-x64.zip
