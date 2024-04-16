@@ -1,4 +1,5 @@
 const { execFileSync } = require("child_process");
+const fs = require("fs");
 
 exports.config = {
   capabilities: [
@@ -36,33 +37,17 @@ exports.config = {
   specs: ["tests/wdio/remocon/**"],
   beforeSession: (_config, caps, _specs) => {
     if (caps["safari:useSimulator"] === true) {
-      const desiredDeviceType =
-        "com.apple.CoreSimulator.SimDeviceType.iPhone-15";
-      const desiredRuntime = "com.apple.CoreSimulator.SimRuntime.iOS-17-4";
-
-      const devices = JSON.parse(
-        execFileSync(
-          "xcrun",
-          ["simctl", "list", "--json", "devices", "available"],
-          { encoding: "utf-8" }
-        )
-      );
-
-      let udid = null;
-
-      if (devices["devices"] && devices["devices"][desiredRuntime]) {
-        const device = devices["devices"][desiredRuntime].filter(
-          (device) => device.deviceTypeIdentifier === desiredDeviceType
-        )[0];
-        if (device) {
-          udid = device["udid"];
-          console.log(`Selected device: ${device["name"]}`);
-        }
-      }
-
-      if (!udid) {
-        throw new Error("Could not find a suitable sim device!");
-      }
+      const udid = execFileSync(
+        "xcrun",
+        [
+          "simctl",
+          "create",
+          "karafriendsIntegrationDevice",
+          "com.apple.CoreSimulator.SimDeviceType.iPhone-15",
+          "com.apple.CoreSimulator.SimRuntime.iOS-17-4",
+        ],
+        { encoding: "utf-8" }
+      ).trim();
       execFileSync("xcrun", ["simctl", "bootstatus", udid, "-b"], {
         stdio: "inherit",
       });
@@ -71,7 +56,7 @@ exports.config = {
   },
   afterSession: (_config, caps, _specs) => {
     if (caps["safari:useSimulator"] === true) {
-      execFileSync("xcrun", ["simctl", "shutdown", caps["safari:deviceUDID"]], {
+      execFileSync("xcrun", ["simctl", "delete", caps["safari:deviceUDID"]], {
         stdio: "inherit",
       });
     }
