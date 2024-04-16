@@ -22,7 +22,7 @@
     "postinstall": "husky install"
   },
   "dependencies": {
-    "@graphql-tools/schema": "10.0.0",
+    "@graphql-tools/schema": "10.0.3",
     "@sentry/browser": "7.53.1",
     "@sentry/node": "7.53.0",
     "@types/react-fade-in": "2.0.2",
