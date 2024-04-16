@@ -38,7 +38,7 @@
     "compression": "1.7.4",
     "cubic-spline": "3.0.3",
     "dataloader": "2.2.2",
-    "electron-is-dev": "2.0.0",
+    "electron-is-dev": "3.0.1",
     "express": "4.19.2",
     "fft.js": "4.0.4",
     "format-duration": "3.0.2",
