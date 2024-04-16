@@ -4515,10 +4515,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/user-agents@npm:1.0.2":
-  version: 1.0.2
-  resolution: "@types/user-agents@npm:1.0.2"
-  checksum: 67ed527ce058711d3c5710099f4a6771f32d687c8e10cbf9df5f7facfc4b91fec5bc212c8985cc48d41160ff958ff14c7e9d9bc5d7b0da51ab7c618e0c83d2d5
+"@types/user-agents@npm:1.0.4":
+  version: 1.0.4
+  resolution: "@types/user-agents@npm:1.0.4"
+  checksum: e76d540672ca549e9fe24ed99dd2322744afdff3cbd79c14f04b2560dec04b4045e9f520ae6309f5240e978a7fa8b174f8af99460a3de46bfd4aa20b20472452
   languageName: node
   linkType: hard
 
@@ -7562,13 +7562,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"detect-indent@npm:~6.0.0":
-  version: 6.0.0
-  resolution: "detect-indent@npm:6.0.0"
-  checksum: 0c38f362016e2d07af1c65b1ecd6ad8a91f06bfdd11383887c867a495ad286d04be2ab44027ac42444704d523982013115bd748c1541df7c9396ad76b22aaf5d
-  languageName: node
-  linkType: hard
-
 "detect-libc@npm:^1.0.3":
   version: 1.0.3
   resolution: "detect-libc@npm:1.0.3"
@@ -7676,13 +7669,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"docopt@npm:~0.6.2":
-  version: 0.6.2
-  resolution: "docopt@npm:0.6.2"
-  checksum: b6640c723c680ff623a06826bdd3c85dd6cc33f589e3d031f486898eb72398334d63f701397813d9233c0e4d17053c0878ec13f21b8a3c323ab4a69bfdc74a77
-  languageName: node
-  linkType: hard
-
 "dom-serializer@npm:^1.0.1":
   version: 1.4.1
   resolution: "dom-serializer@npm:1.4.1"
@@ -7727,19 +7713,6 @@ __metadata:
     domelementtype: ^2.2.0
     domhandler: ^4.2.0
   checksum: abf7434315283e9aadc2a24bac0e00eab07ae4313b40cc239f89d84d7315ebdfd2fb1b5bf750a96bc1b4403d7237c7b2ebf60459be394d625ead4ca89b934391
-  languageName: node
-  linkType: hard
-
-"dot-json@npm:^1.3.0":
-  version: 1.3.0
-  resolution: "dot-json@npm:1.3.0"
-  dependencies:
-    detect-indent: ~6.0.0
-    docopt: ~0.6.2
-    underscore-keypath: ~0.0.22
-  bin:
-    dot-json: bin/dot-json.js
-  checksum: 8b41f29be4c4fd0dc8b50eb2e86a843bf999a27386e706dcd1426e52c2a478858752b5897ba02c512d7bb19098232049a214c96baf7ced02163178d666de08b6
   languageName: node
   linkType: hard
 
@@ -11564,7 +11537,7 @@ __metadata:
     "@types/react-router-dom": 5.3.3
     "@types/react-swipeable": 5.2.0
     "@types/relay-runtime": 14.1.10
-    "@types/user-agents": 1.0.2
+    "@types/user-agents": 1.0.4
     "@types/uuid": ^9
     "@types/webpack-env": 1.18.1
     "@types/wicg-mediasession": 1.1.4
@@ -11639,7 +11612,7 @@ __metadata:
     tslint: 6.1.3
     tslint-config-prettier: 1.18.0
     typescript: 5.0.4
-    user-agents: 1.0.1390
+    user-agents: 1.1.175
     utf-8-validate: 6.0.3
     uuid: 9.0.0
     wait-on: 7.0.1
@@ -16557,22 +16530,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"underscore-keypath@npm:~0.0.22":
-  version: 0.0.22
-  resolution: "underscore-keypath@npm:0.0.22"
-  dependencies:
-    underscore: "*"
-  checksum: 858c1a09cb39ed59bd2447f2658f6e2ea6c0dcc41464b837586ec697b856a57b410fb5569aae859bb8b7e2e62d764e85becf4d6c5dd45eb3859fb9bd39ed2ab4
-  languageName: node
-  linkType: hard
-
-"underscore@npm:*":
-  version: 1.13.6
-  resolution: "underscore@npm:1.13.6"
-  checksum: d5cedd14a9d0d91dd38c1ce6169e4455bb931f0aaf354108e47bd46d3f2da7464d49b2171a5cf786d61963204a42d01ea1332a903b7342ad428deaafaf70ec36
-  languageName: node
-  linkType: hard
-
 "undici-types@npm:~5.26.4":
   version: 5.26.5
   resolution: "undici-types@npm:5.26.5"
@@ -16765,13 +16722,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"user-agents@npm:1.0.1390":
-  version: 1.0.1390
-  resolution: "user-agents@npm:1.0.1390"
+"user-agents@npm:1.1.175":
+  version: 1.1.175
+  resolution: "user-agents@npm:1.1.175"
   dependencies:
-    dot-json: ^1.3.0
     lodash.clonedeep: ^4.5.0
-  checksum: 5c4cb56637e9bfb7e4e533484f0cc6047caa0924807eb47a0fdbdd89d2f1cd9931b4a98f793fe067c3508c48b25f22212966d633765bcd6247800c992a70d1fe
+  checksum: c400fefa9e75dc3a3ebd24a781ead716739171cf2a36d6e8f04606f9086e9a28342a250b58d4f607c671c4253fbec12fb8dec7968c2da49e110c4c509441a6a5
   languageName: node
   linkType: hard
 
