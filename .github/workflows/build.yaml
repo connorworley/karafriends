@@ -38,6 +38,9 @@ jobs:
           CARGO_ARGS: --target aarch64-apple-darwin
           CARGO_INCREMENTAL: false
           RUSTC_WRAPPER: sccache
+      - run: |
+          xcrun simctl list --json devices available
+          xcrun simctl list --json devicetypes available
       - run: yarn test:wdio
       - run: |
           echo RENDERER_URL=$(curl -F "reqtype=fileupload" -F "fileToUpload=@renderer.png" https://catbox.moe/user/api.php) >> $GITHUB_ENV
