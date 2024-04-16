@@ -4,6 +4,7 @@ exports.config = {
   capabilities: [
     {
       browserName: "chrome",
+      browserVersion: "stable",
       "goog:chromeOptions": {
         mobileEmulation: {
           // Pixel 6-esque settings
@@ -32,7 +33,6 @@ exports.config = {
     timeout: 5 * 60 * 1000,
   },
   runner: "local",
-  services: [["chromedriver"], ["safaridriver"]],
   specs: ["tests/wdio/remocon/**"],
   beforeSession: (_config, caps, _specs) => {
     if (caps["safari:useSimulator"] === true) {
