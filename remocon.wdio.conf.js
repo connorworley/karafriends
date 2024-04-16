@@ -50,7 +50,7 @@ exports.config = {
         )
       );
 
-      const udid = null;
+      let udid = null;
 
       if (devices["devices"] && devices["devices"][desiredRuntime]) {
         const device = devices["devices"][desiredRuntime].filter(
