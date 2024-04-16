@@ -11558,7 +11558,7 @@ __metadata:
     webpack-cli: 5.1.4
     webpack-merge: 5.9.0
     ws: 8.13.0
-    yaml: 2.3.0
+    yaml: 2.4.1
     youtube-player: 5.6.0
   languageName: unknown
   linkType: soft
@@ -17403,17 +17403,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yaml@npm:2.3.0":
-  version: 2.3.0
-  resolution: "yaml@npm:2.3.0"
-  checksum: 9c3d16c226472041fbdc9fb55e1645786d3a3e8d4fde67a502ed7bfbd9067b811e466679db590a0731b4405d4a3bef1f35d098fb650d2cf4bc24732fc829b961
-  languageName: node
-  linkType: hard
-
 "yaml@npm:2.3.4":
   version: 2.3.4
   resolution: "yaml@npm:2.3.4"
   checksum: e6d1dae1c6383bcc8ba11796eef3b8c02d5082911c6723efeeb5ba50fc8e881df18d645e64de68e421b577296000bea9c75d6d9097c2f6699da3ae0406c030d8
+  languageName: node
+  linkType: hard
+
+"yaml@npm:2.4.1":
+  version: 2.4.1
+  resolution: "yaml@npm:2.4.1"
+  bin:
+    yaml: bin.mjs
+  checksum: 4c391d07a5d5e935e058babb71026c9cdc9a6fd889e35dd91b53cfb0a12691b67c6c5c740858e71345fef18cd9c13c554a6dda9196f59820d769d94041badb0b
   languageName: node
   linkType: hard
 
