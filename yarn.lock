@@ -5804,14 +5804,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-relay@npm:15.0.0":
-  version: 15.0.0
-  resolution: "babel-plugin-relay@npm:15.0.0"
+"babel-plugin-relay@npm:16.2.0":
+  version: 16.2.0
+  resolution: "babel-plugin-relay@npm:16.2.0"
   dependencies:
     babel-plugin-macros: ^2.0.0
     cosmiconfig: ^5.0.5
     graphql: 15.3.0
-  checksum: e3e245c8902a38b54ac084b32f079db318ff257e03d026957ee1b34d3df4a0ca2e6b11eb5d2e4d4f32fe55deac930888bd51e8de8af02cc6bffff31218155f9a
+  checksum: 115c3743f0156c47e24eb95f200fc82407e34dc8be126bc6627cd851bd1b14c3bcbac29bd70d23c54f626764636383a4c877d8a226fa6fcf7b3a62f1e49c4e02
   languageName: node
   linkType: hard
 
@@ -11474,7 +11474,7 @@ __metadata:
     apollo-datasource-rest: 3.7.0
     apollo-server-express: 3.12.0
     babel-loader: 9.1.2
-    babel-plugin-relay: 15.0.0
+    babel-plugin-relay: 16.2.0
     bufferutil: 4.0.8
     cargo-cp-artifact: 0.1.8
     classnames: 2.3.2
