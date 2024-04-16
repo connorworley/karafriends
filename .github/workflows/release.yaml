@@ -6,7 +6,7 @@ on:
 
 jobs:
   release-macos-aarch64:
-    runs-on: flyci-macos-14-m2
+    runs-on: flyci-macos-14-xlarge-m2
     steps:
       - uses: actions/checkout@v3
       - uses: actions-rs/toolchain@v1
@@ -48,7 +48,7 @@ jobs:
         with:
           files: dist/karafriends-darwin-arm64.zip
   release-macos-x86_64:
-    runs-on: flyci-macos-14-m2
+    runs-on: flyci-macos-14-xlarge-m2
     steps:
       - uses: actions/checkout@v3
       - uses: actions-rs/toolchain@v1
