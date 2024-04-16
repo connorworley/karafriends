@@ -43,7 +43,7 @@ exports.config = {
           "simctl",
           "create",
           "karafriendsIntegrationDevice",
-          "com.apple.CoreSimulator.SimDeviceType.iPhone-14",
+          "com.apple.CoreSimulator.SimDeviceType.iPhone-15",
           "com.apple.CoreSimulator.SimRuntime.iOS-17-4",
         ],
         { encoding: "utf-8" }

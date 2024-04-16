@@ -53,7 +53,7 @@ jobs:
             ![renderer.png](${{ env.RENDERER_URL }})
             ## Remocon (Chrome / Pixel 6)
             ![remocon-chrome.png](${{ env.REMOCON_CHROME_URL }})
-            ## Remocon (Safari iPhone 14)
+            ## Remocon (Safari iPhone 15)
             ![remocon-Safari.png](${{ env.REMOCON_SAFARI_URL }})
         if: github.event_name == 'pull_request'
   build-macos-x86_64:
