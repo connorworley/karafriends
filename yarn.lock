@@ -194,6 +194,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/code-frame@npm:^7.22.13":
+  version: 7.24.2
+  resolution: "@babel/code-frame@npm:7.24.2"
+  dependencies:
+    "@babel/highlight": ^7.24.2
+    picocolors: ^1.0.0
+  checksum: 70e867340cfe09ca5488b2f36372c45cabf43c79a5b6426e6df5ef0611ff5dfa75a57dda841895693de6008f32c21a7c97027a8c7bcabd63a7d17416cbead6f8
+  languageName: node
+  linkType: hard
+
 "@babel/compat-data@npm:^7.17.7, @babel/compat-data@npm:^7.20.5, @babel/compat-data@npm:^7.21.5":
   version: 7.21.7
   resolution: "@babel/compat-data@npm:7.21.7"
@@ -462,6 +472,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/helper-validator-identifier@npm:^7.22.20":
+  version: 7.22.20
+  resolution: "@babel/helper-validator-identifier@npm:7.22.20"
+  checksum: 136412784d9428266bcdd4d91c32bcf9ff0e8d25534a9d94b044f77fe76bc50f941a90319b05aafd1ec04f7d127cd57a179a3716009ff7f3412ef835ada95bdc
+  languageName: node
+  linkType: hard
+
 "@babel/helper-validator-option@npm:^7.18.6, @babel/helper-validator-option@npm:^7.21.0":
   version: 7.21.0
   resolution: "@babel/helper-validator-option@npm:7.21.0"
@@ -500,6 +517,18 @@ __metadata:
     chalk: ^2.0.0
     js-tokens: ^4.0.0
   checksum: 92d8ee61549de5ff5120e945e774728e5ccd57fd3b2ed6eace020ec744823d4a98e242be1453d21764a30a14769ecd62170fba28539b211799bbaf232bbb2789
+  languageName: node
+  linkType: hard
+
+"@babel/highlight@npm:^7.24.2":
+  version: 7.24.2
+  resolution: "@babel/highlight@npm:7.24.2"
+  dependencies:
+    "@babel/helper-validator-identifier": ^7.22.20
+    chalk: ^2.4.2
+    js-tokens: ^4.0.0
+    picocolors: ^1.0.0
+  checksum: 5f17b131cc3ebf3ab285a62cf98a404aef1bd71a6be045e748f8d5bf66d6a6e1aefd62f5972c84369472e8d9f22a614c58a89cd331eb60b7ba965b31b1bbeaf5
   languageName: node
   linkType: hard
 
@@ -4049,6 +4078,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/normalize-package-data@npm:^2.4.3":
+  version: 2.4.4
+  resolution: "@types/normalize-package-data@npm:2.4.4"
+  checksum: 65dff72b543997b7be8b0265eca7ace0e34b75c3e5fee31de11179d08fa7124a7a5587265d53d0409532ecb7f7fba662c2012807963e1f9b059653ec2c83ee05
+  languageName: node
+  linkType: hard
+
 "@types/parse-json@npm:^4.0.0":
   version: 4.0.0
   resolution: "@types/parse-json@npm:4.0.0"
@@ -4356,6 +4392,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@vitest/spy@npm:^1.2.0":
+  version: 1.5.0
+  resolution: "@vitest/spy@npm:1.5.0"
+  dependencies:
+    tinyspy: ^2.2.0
+  checksum: 518c847bb129f266b9cd164c0021a4497c8a1ca8d2f1dd995b3aac55186f41926f7b0d966313b5093b0b32ad02547b58917376e71cd8a6f6b88845be8c8bd26f
+  languageName: node
+  linkType: hard
+
 "@wdio/cli@npm:8.36.0":
   version: 8.36.0
   resolution: "@wdio/cli@npm:8.36.0"
@@ -4436,7 +4481,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wdio/logger@npm:8.28.0, @wdio/logger@npm:^8.28.0":
+"@wdio/logger@npm:8.28.0, @wdio/logger@npm:^8.16.17, @wdio/logger@npm:^8.28.0":
   version: 8.28.0
   resolution: "@wdio/logger@npm:8.28.0"
   dependencies:
@@ -6226,7 +6271,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chalk@npm:^2.0.0, chalk@npm:^2.3.0":
+"chalk@npm:^2.0.0, chalk@npm:^2.3.0, chalk@npm:^2.4.2":
   version: 2.4.2
   resolution: "chalk@npm:2.4.2"
   dependencies:
@@ -6624,6 +6669,13 @@ __metadata:
   version: 0.1.2
   resolution: "compare-version@npm:0.1.2"
   checksum: 0ceaf50b5f912c8eb8eeca19375e617209d200abebd771e9306510166462e6f91ad764f33f210a3058ee27c83f2f001a7a4ca32f509da2d207d0143a3438a020
+  languageName: node
+  linkType: hard
+
+"compare-versions@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "compare-versions@npm:6.1.0"
+  checksum: d4e2a45706a023d8d0b6680338b66b79e20bd02d1947f0ac6531dab634cbed89fa373b3f03d503c5e489761194258d6e1bae67a07f88b1efc61648454f2d47e7
   languageName: node
   linkType: hard
 
@@ -7587,6 +7639,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"electron-to-chromium@npm:^1.4.630":
+  version: 1.4.736
+  resolution: "electron-to-chromium@npm:1.4.736"
+  checksum: dcba6d43ffbc40e5d3decb3a0de67b9721a257fefde4eceac0d75202029c62ace7b377d217f49d1ba9cfbad61f89a14514e85a4de77b7205cee336f2e1f0baee
+  languageName: node
+  linkType: hard
+
 "electron@npm:30.0.0":
   version: 30.0.0
   resolution: "electron@npm:30.0.0"
@@ -8169,6 +8228,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fast-copy@npm:^3.0.1":
+  version: 3.0.2
+  resolution: "fast-copy@npm:3.0.2"
+  checksum: 47f584bcede08ab3198559d3e0e093a547d567715b86be2198da6e3366c3c73eed550d97b86f9fb90dae179982b89c15d68187def960f522cdce14bacdfc6184
+  languageName: node
+  linkType: hard
+
 "fast-deep-equal@npm:^2.0.1":
   version: 2.0.1
   resolution: "fast-deep-equal@npm:2.0.1"
@@ -8374,6 +8440,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"find-up-simple@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "find-up-simple@npm:1.0.0"
+  checksum: 91c3d51c1111b5eb4e6e6d71d21438f6571a37a69dc288d4222b98996756e2f472fa5393a4dddb5e1a84929405d87e86f4bdce798ba84ee513b79854960ec140
+  languageName: node
+  linkType: hard
+
 "find-up@npm:5.0.0":
   version: 5.0.0
   resolution: "find-up@npm:5.0.0"
@@ -8410,6 +8483,15 @@ __metadata:
     locate-path: ^7.1.0
     path-exists: ^5.0.0
   checksum: 9a21b7f9244a420e54c6df95b4f6fc3941efd3c3e5476f8274eb452f6a85706e7a6a90de71353ee4f091fcb4593271a6f92810a324ec542650398f928783c280
+  languageName: node
+  linkType: hard
+
+"find-versions@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "find-versions@npm:5.1.0"
+  dependencies:
+    semver-regex: ^4.0.5
+  checksum: 680bdb0081f631f7bfb6f0f8edcfa0b74ab8cabc82097a4527a37b0d042aabc56685bf459ff27991eab0baddc04eb8e3bba8a2869f5004ecf7cdd2779b6e51de
   languageName: node
   linkType: hard
 
@@ -9753,6 +9835,13 @@ __metadata:
   version: 4.0.0
   resolution: "indent-string@npm:4.0.0"
   checksum: 824cfb9929d031dabf059bebfe08cf3137365e112019086ed3dcff6a0a7b698cb80cf67ccccde0e25b9e2d7527aa6cc1fed1ac490c752162496caba3e6699612
+  languageName: node
+  linkType: hard
+
+"index-to-position@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "index-to-position@npm:0.1.2"
+  checksum: ce0ab15544b154d6821b4f8b3fdb5dc410d560d20e43bcb0fb8ea2ccc5f93dc04caeee6b3ebd4abc7091e437156db4caaaef934ce20f05f079a1dbc73755f7e7
   languageName: node
   linkType: hard
 
@@ -11316,6 +11405,7 @@ __metadata:
     uuid: 9.0.0
     wait-on: 7.0.1
     wanakana: 5.1.0
+    wdio-electron-service: 6.4.1
     webdriverio: 8.36.0
     webpack: 5.86.0
     webpack-cli: 5.1.1
@@ -13350,6 +13440,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"parse-json@npm:^8.0.0":
+  version: 8.1.0
+  resolution: "parse-json@npm:8.1.0"
+  dependencies:
+    "@babel/code-frame": ^7.22.13
+    index-to-position: ^0.1.2
+    type-fest: ^4.7.1
+  checksum: efc4256c91e835b1340e2b4f535272247f174fcba85eead15ff938be23b3ca2d521a04c76e564d1dc2f61c0c9ebcb6157d5433d459c7e736c81d014b49577b31
+  languageName: node
+  linkType: hard
+
 "parse5@npm:6.0.1":
   version: 6.0.1
   resolution: "parse5@npm:6.0.1"
@@ -14102,6 +14203,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"read-package-up@npm:^11.0.0":
+  version: 11.0.0
+  resolution: "read-package-up@npm:11.0.0"
+  dependencies:
+    find-up-simple: ^1.0.0
+    read-pkg: ^9.0.0
+    type-fest: ^4.6.0
+  checksum: 535b7554d47fae5fb5c2e7aceebd48b5de4142cdfe7b21f942fa9a0f56db03d3b53cce298e19438e1149292279c285e6ba6722eca741d590fd242519c4bdbc17
+  languageName: node
+  linkType: hard
+
 "read-pkg-up@npm:10.0.0":
   version: 10.0.0
   resolution: "read-pkg-up@npm:10.0.0"
@@ -14166,6 +14278,19 @@ __metadata:
     parse-json: ^7.0.0
     type-fest: ^4.2.0
   checksum: f4cd164f096e78cf3e338a55f800043524e3055f9b0b826143290002fafc951025fc3cbd6ca683ebaf7945efcfb092d31c683dd252a7871a974662985c723b67
+  languageName: node
+  linkType: hard
+
+"read-pkg@npm:^9.0.0":
+  version: 9.0.1
+  resolution: "read-pkg@npm:9.0.1"
+  dependencies:
+    "@types/normalize-package-data": ^2.4.3
+    normalize-package-data: ^6.0.0
+    parse-json: ^8.0.0
+    type-fest: ^4.6.0
+    unicorn-magic: ^0.1.0
+  checksum: 5544bea2a58c6e5706db49a96137e8f0768c69395f25363f934064fbba00bdcdaa326fcd2f4281741df38cf81dbf27b76138240dc6de0ed718cf650475e0de3c
   languageName: node
   linkType: hard
 
@@ -14790,6 +14915,13 @@ __metadata:
   version: 1.0.0
   resolution: "semver-compare@npm:1.0.0"
   checksum: dd1d7e2909744cf2cf71864ac718efc990297f9de2913b68e41a214319e70174b1d1793ac16e31183b128c2b9812541300cb324db8168e6cf6b570703b171c68
+  languageName: node
+  linkType: hard
+
+"semver-regex@npm:^4.0.5":
+  version: 4.0.5
+  resolution: "semver-regex@npm:4.0.5"
+  checksum: b9e5c0573c4a997fb7e6e76321385d254797e86c8dba5e23f3cd8cf8f40b40414097a51514e5fead61dcb88ff10d3676355c01e2040f3c68f6c24bfd2073da2e
   languageName: node
   linkType: hard
 
@@ -15799,6 +15931,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tinyspy@npm:^2.2.0":
+  version: 2.2.1
+  resolution: "tinyspy@npm:2.2.1"
+  checksum: 170d6232e87f9044f537b50b406a38fbfd6f79a261cd12b92879947bd340939a833a678632ce4f5c4a6feab4477e9c21cd43faac3b90b68b77dd0536c4149736
+  languageName: node
+  linkType: hard
+
 "tmp@npm:^0.0.33":
   version: 0.0.33
   resolution: "tmp@npm:0.0.33"
@@ -16105,7 +16244,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"type-fest@npm:^4.2.0":
+"type-fest@npm:^4.2.0, type-fest@npm:^4.6.0, type-fest@npm:^4.7.1":
   version: 4.15.0
   resolution: "type-fest@npm:4.15.0"
   checksum: 8da2b8c4556a6bbafd79c0d50b4f3ba6526942aead9c1687038980276eee72b95a1d195bc6f1408e0ebf96ebfbe9d33436b506b35ed4b68f14f8b3ff56753850
@@ -16219,6 +16358,13 @@ __metadata:
   version: 2.1.0
   resolution: "unicode-property-aliases-ecmascript@npm:2.1.0"
   checksum: 243524431893649b62cc674d877bd64ef292d6071dd2fd01ab4d5ad26efbc104ffcd064f93f8a06b7e4ec54c172bf03f6417921a0d8c3a9994161fe1f88f815b
+  languageName: node
+  linkType: hard
+
+"unicorn-magic@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "unicorn-magic@npm:0.1.0"
+  checksum: 48c5882ca3378f380318c0b4eb1d73b7e3c5b728859b060276e0a490051d4180966beeb48962d850fd0c6816543bcdfc28629dcd030bb62a286a2ae2acb5acb6
   languageName: node
   linkType: hard
 
@@ -16548,6 +16694,31 @@ __metadata:
   dependencies:
     defaults: ^1.0.3
   checksum: 814e9d1ddcc9798f7377ffa448a5a3892232b9275ebb30a41b529607691c0491de47cba426e917a4d08ded3ee7e9ba2f3fe32e62ee3cd9c7d3bafb7754bd553c
+  languageName: node
+  linkType: hard
+
+"wdio-electron-service@npm:6.4.1":
+  version: 6.4.1
+  resolution: "wdio-electron-service@npm:6.4.1"
+  dependencies:
+    "@vitest/spy": ^1.2.0
+    "@wdio/logger": ^8.16.17
+    compare-versions: ^6.1.0
+    debug: ^4.3.4
+    electron-to-chromium: ^1.4.630
+    fast-copy: ^3.0.1
+    find-versions: ^5.1.0
+    node-fetch: ^3.3.2
+    read-package-up: ^11.0.0
+  peerDependencies:
+    electron: "*"
+    webdriverio: ">8.15.0"
+  peerDependenciesMeta:
+    electron:
+      optional: true
+    webdriverio:
+      optional: false
+  checksum: fb18e840f8ccc1ad95fda352ee025bd1d8fcf0371fa8e857bf72d5d28c0c8b416681118aa8a1fe8f94f14228f16c6b4f3d74148ae874712ed966e138dda099d3
   languageName: node
   linkType: hard
 
