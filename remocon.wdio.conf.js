@@ -78,7 +78,7 @@ exports.config = {
   },
   afterSession: (_config, caps, _specs) => {
     if (caps["safari:useSimulator"] === true) {
-      execFileSync("xcrun", ["simctl", "delete", caps["safari:deviceUDID"]], {
+      execFileSync("xcrun", ["simctl", "shutdown", caps["safari:deviceUDID"]], {
         stdio: "inherit",
       });
       const cachePath = `/tmp/karafriendsIntegrationDevices/${caps["safari:deviceUDID"]}`;
