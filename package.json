@@ -55,7 +55,7 @@
     "multicast-dns": "7.2.5",
     "mv": "2.1.1",
     "niconico": "1.2.0",
-    "node-fetch": "3.3.1",
+    "node-fetch": "3.3.2",
     "parcel-reporter-static-files-copy": "1.5.0",
     "polyline-normals": "2.0.2",
     "postcss": "8.4.38",
