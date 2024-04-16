@@ -1,5 +1,4 @@
 const { execFileSync } = require("child_process");
-const fs = require("fs");
 
 exports.config = {
   capabilities: [
@@ -40,7 +39,6 @@ exports.config = {
       const desiredDeviceType =
         "com.apple.CoreSimulator.SimDeviceType.iPhone-12";
       const desiredRuntime = "com.apple.CoreSimulator.SimRuntime.iOS-17-4";
-      const deviceName = "karafriendsIntegrationDevice";
 
       const devices = JSON.parse(
         execFileSync(
@@ -54,21 +52,16 @@ exports.config = {
 
       if (devices["devices"] && devices["devices"][desiredRuntime]) {
         const device = devices["devices"][desiredRuntime].filter(
-          (device) =>
-            device.deviceTypeIdentifier === desiredDeviceType &&
-            device.name === deviceName
+          (device) => device.deviceTypeIdentifier === desiredDeviceType
         )[0];
         if (device) {
           udid = device["udid"];
+          console.log(`Selected device: ${device["name"]}`);
         }
       }
 
       if (!udid) {
-        udid = execFileSync(
-          "xcrun",
-          ["simctl", "create", deviceName, desiredDeviceType, desiredRuntime],
-          { encoding: "utf-8" }
-        ).trim();
+        throw new Error("Could not find a suitable sim device!");
       }
       execFileSync("xcrun", ["simctl", "bootstatus", udid, "-b"], {
         stdio: "inherit",
@@ -81,19 +74,6 @@ exports.config = {
       execFileSync("xcrun", ["simctl", "shutdown", caps["safari:deviceUDID"]], {
         stdio: "inherit",
       });
-      const cachePath = "/tmp/karafriendsIntegrationDevices";
-      if (!fs.existsSync(`${cachePath}/${caps["safari:deviceUDID"]}`)) {
-        fs.mkdirSync(cachePath, { recursive: true });
-        fs.cpSync(
-          `~/Library/Developer/CoreSimulator/Devices/${caps["safari:deviceUDID"]}`,
-          cachePath,
-          { recursive: true }
-        );
-        fs.cpSync(
-          "~/Library/Developer/CoreSimulator/Devices/device_set.plist",
-          cachePath
-        );
-      }
     }
   },
 };
