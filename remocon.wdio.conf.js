@@ -51,6 +51,13 @@ exports.config = {
       execFileSync("xcrun", ["simctl", "bootstatus", udid, "-b"], {
         stdio: "inherit",
       });
+      execFileSync(
+        "xcrun",
+        ["simctl", "launch", udid, "com.apple.mobilesafari"],
+        {
+          stdio: "inherit",
+        },
+      );
       caps["safari:deviceUDID"] = udid;
     }
   },
