@@ -12,8 +12,6 @@ jobs:
     runs-on: [self-hosted, karafriends-integration]
     steps:
       - uses: actions/checkout@v4
-        with:
-          lfs: true
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
@@ -62,8 +60,6 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          lfs: true
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
@@ -88,8 +84,6 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          lfs: true
       - uses: actions/setup-node@v4
         with:
           node-version: 16
@@ -117,8 +111,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          lfs: true
       - uses: actions/setup-node@v4
         with:
           node-version: 16
