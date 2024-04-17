@@ -37,35 +37,8 @@ exports.config = {
   specs: ["tests/wdio/remocon/**"],
   beforeSession: (_config, caps, _specs) => {
     if (caps["safari:useSimulator"] === true) {
-      const udid = execFileSync(
-        "xcrun",
-        [
-          "simctl",
-          "create",
-          "karafriendsIntegrationDevice",
-          "com.apple.CoreSimulator.SimDeviceType.iPhone-15",
-          "com.apple.CoreSimulator.SimRuntime.iOS-17-4",
-        ],
-        { encoding: "utf-8" },
-      ).trim();
-      execFileSync("xcrun", ["simctl", "bootstatus", udid, "-b"], {
-        stdio: "inherit",
-      });
-      execFileSync(
-        "xcrun",
-        ["simctl", "launch", udid, "com.apple.mobilesafari"],
-        {
-          stdio: "inherit",
-        },
-      );
-      caps["safari:deviceUDID"] = udid;
+      caps["safari:deviceUDID"] = "6CA1174F-4345-4492-9A41-1FE59BDAD9BA";
     }
   },
-  afterSession: (_config, caps, _specs) => {
-    if (caps["safari:useSimulator"] === true) {
-      execFileSync("xcrun", ["simctl", "delete", caps["safari:deviceUDID"]], {
-        stdio: "inherit",
-      });
-    }
-  },
+  afterSession: (_config, caps, _specs) => {},
 };
