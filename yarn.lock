@@ -4616,10 +4616,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/wicg-mediasession@npm:1.1.4":
-  version: 1.1.4
-  resolution: "@types/wicg-mediasession@npm:1.1.4"
-  checksum: 84ba616386d559812e8dd76edc350ef788dc954b6b9386ea64ece0b45821046bb3475183929fdbfb99292e435a5b857e431073e4c55399ef403a45db3eeab09b
+"@types/wicg-mediasession@npm:1.1.8":
+  version: 1.1.8
+  resolution: "@types/wicg-mediasession@npm:1.1.8"
+  checksum: 90db25e99032a6ebc57a7bd8a9bd8899b6303180509db283d67a8f3dd27c33863a173940e1c46a5a101d391d66c93037f41311a0c9c8186a89b95666b0d005ab
   languageName: node
   linkType: hard
 
@@ -11556,7 +11556,7 @@ __metadata:
     "@types/user-agents": 1.0.4
     "@types/uuid": ^9
     "@types/webpack-env": 1.18.1
-    "@types/wicg-mediasession": 1.1.4
+    "@types/wicg-mediasession": 1.1.8
     "@types/ws": ^8
     "@types/youtube-player": 5.5.11
     "@wdio/cli": 8.36.0
