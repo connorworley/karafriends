@@ -4,7 +4,7 @@ import isDev from "electron-is-dev";
 import express, { Request, Response } from "express";
 import fetch from "node-fetch";
 
-function remoconReverseProxy() {
+function remoconReverseProxy(devPort: number) {
   if (isDev) {
     // On dev, we should proxy non-graphql requests to the remocon dev server
     return (req: Request, res: Response, next: () => void) => {
@@ -13,7 +13,7 @@ function remoconReverseProxy() {
         return;
       }
       fetch(
-        `http://127.0.0.1:3000/${
+        `http://127.0.0.1:${devPort}/${
           !req.path.startsWith("/remocon") ? "remocon" : ""
         }${req.originalUrl}`,
         {
@@ -22,7 +22,7 @@ function remoconReverseProxy() {
             header,
             req.headers[header] as string,
           ]),
-        }
+        },
       ).then((proxiedRes) => {
         res.status(proxiedRes.status);
         proxiedRes.headers.forEach((value, name) => res.set(name, value));

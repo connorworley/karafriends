@@ -8,6 +8,8 @@ export interface KarafriendsConfig {
   useLowBitrateUrl: boolean;
   // Whether to download DAM songs locally instead of streaming them
   paxSongQueueLimit: number;
+  // Which port to connect to the development server on
+  devPort: number;
   // Which port to listen on for the remocon server
   remoconPort: number;
   // DAM username for DAM creds
@@ -37,6 +39,7 @@ export interface KarafriendsConfig {
 const DEFAULT_CONFIG: KarafriendsConfig = {
   useLowBitrateUrl: false,
   paxSongQueueLimit: 1,
+  devPort: 3000,
   remoconPort: 8080,
   damUsername: "YOUR_USERNAME_HERE",
   damPassword: "YOUR_PASSWORD_HERE",
@@ -51,12 +54,18 @@ const DEFAULT_CONFIG: KarafriendsConfig = {
   proxyPass: "PROXY_PASS_HERE",
 };
 
+function applyEnvironmentOverrides(config: KarafriendsConfig) {
+  if (process.env.KARAFRIENDS_DEV_PORT)
+    config.devPort = parseInt(process.env.KARAFRIENDS_DEV_PORT, 10);
+  return config;
+}
+
 function getConfig(): KarafriendsConfig {
   // Refer to https://www.electronjs.org/docs/latest/api/app#appgetpathname
   // for where the config file should be placed. On Windows, it should be %APPDATA%/karafriends/config.yaml
   const configFilepath: string = path.join(
     app.getPath("userData"),
-    "config.yaml"
+    "config.yaml",
   );
 
   console.log(`Checking ${configFilepath} for configs`);
@@ -64,16 +73,16 @@ function getConfig(): KarafriendsConfig {
   if (fs.existsSync(configFilepath)) {
     console.log(`Configs found. Loading them up.`);
     const localConfig: KarafriendsConfig = parse(
-      fs.readFileSync(configFilepath, { encoding: "utf8", flag: "r" })
+      fs.readFileSync(configFilepath, { encoding: "utf8", flag: "r" }),
     );
-    return {
+    return applyEnvironmentOverrides({
       ...DEFAULT_CONFIG,
       ...localConfig,
-    };
+    });
   }
 
   console.log("No local configs found. Using default.");
-  return DEFAULT_CONFIG;
+  return applyEnvironmentOverrides(DEFAULT_CONFIG);
 }
 
 const karafriendsConfig: KarafriendsConfig = getConfig();

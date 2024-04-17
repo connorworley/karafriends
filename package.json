@@ -18,7 +18,8 @@
     "_run-dev": "yarn build-dev && concurrently \"parcel serve --dist-dir build/dev --port 3000\" \"wait-on http://127.0.0.1:3000/renderer/ && node ./electron.js build/dev/main/main.js\"",
     "package-prod": "node packager.js",
     "get-external-resources": "node scripts/getExternalResources.mjs",
-    "test:wdio": "concurrently --kill-others \"parcel serve --dist-dir build/dev --port 3000\" \"wait-on http://127.0.0.1:3000/renderer/ && pnpify wdio run renderer.wdio.conf.js && pnpify wdio run remocon.wdio.conf.js\"",
+    "test:wdio": "cross-env KARAFRIENDS_DEV_PORT=\"$(ephemeral-port-reserve)\" yarn _test:wdio",
+    "_test:wdio": "concurrently --kill-others \"parcel serve --dist-dir build/dev --port $KARAFRIENDS_DEV_PORT\" \"wait-on http://127.0.0.1:$KARAFRIENDS_DEV_PORT/renderer/ && pnpify wdio run renderer.wdio.conf.js && pnpify wdio run remocon.wdio.conf.js\"",
     "postinstall": "husky"
   },
   "dependencies": {

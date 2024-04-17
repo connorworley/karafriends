@@ -66,7 +66,7 @@ async function minseiCredentialsProvider() {
 async function joysoundCredentialsProvider() {
   const joysoundEmail = encodeURIComponent(karafriendsConfig.joysoundEmail);
   const joysoundPassword = encodeURIComponent(
-    karafriendsConfig.joysoundPassword
+    karafriendsConfig.joysoundPassword,
   );
   return JoysoundAPI.login(joysoundEmail, joysoundPassword);
 }
@@ -103,7 +103,7 @@ function createWindow() {
     (details, callback) => {
       delete details.requestHeaders.Origin;
       callback({ requestHeaders: details.requestHeaders });
-    }
+    },
   );
 
   session.webRequest.onHeadersReceived(
@@ -114,7 +114,7 @@ function createWindow() {
       delete details.responseHeaders!["access-control-allow-origin"];
       details.responseHeaders!["Access-Control-Allow-Origin"] = ["*"];
       callback({ responseHeaders: details.responseHeaders });
-    }
+    },
   );
 
   if (karafriendsConfig.proxyEnable) {
@@ -138,19 +138,19 @@ function createWindow() {
   applyGraphQLMiddleware(
     expressApp,
     memoize(minseiCredentialsProvider),
-    memoize(joysoundCredentialsProvider)
+    memoize(joysoundCredentialsProvider),
   );
 
   expressApp.use(remoconServiceWorkerAllowed());
 
   // This middleware terminates the request/response cycle and should be applied last
-  expressApp.use(remoconReverseProxy());
+  expressApp.use(remoconReverseProxy(karafriendsConfig.devPort));
 
   if (rendererWindow)
     rendererWindow.loadURL(
       isDev
-        ? "http://localhost:3000/renderer/"
-        : `file://${path.join(__dirname, "..", "renderer", "index.html")}`
+        ? `http://localhost:${karafriendsConfig.devPort}/renderer/`
+        : `file://${path.join(__dirname, "..", "renderer", "index.html")}`,
     );
 
   ipcMain.on("config", (event: IpcMainEvent) => {
@@ -197,7 +197,7 @@ app.on("browser-window-blur", () => {
 
 app.on("login", (event, webContents, request, authInfo, callback) => {
   console.log(
-    `login event received: authinfo=${authInfo} callback=${callback}`
+    `login event received: authinfo=${authInfo} callback=${callback}`,
   );
   if (karafriendsConfig.proxyEnable) {
     const { proxyURL, proxyUser, proxyPass } = karafriendsConfig;
