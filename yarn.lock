@@ -4404,12 +4404,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/qrcode@npm:1.5.0":
-  version: 1.5.0
-  resolution: "@types/qrcode@npm:1.5.0"
+"@types/qrcode@npm:1.5.5":
+  version: 1.5.5
+  resolution: "@types/qrcode@npm:1.5.5"
   dependencies:
     "@types/node": "*"
-  checksum: b0ece3834ca5ba6171132928fd1ef764772dc619b45cb4123461ee05e377ad15553a330d234c69db0d0028c6639a99429e88d99192fbba9c5ee97c23f278c48b
+  checksum: d92c1d3e77406bf13a03ec521b2ffb1ac99b2e6ea3a17cad670f2610f62e1293554c57e4074bb2fd4e9369f475f863b69e0ae8c543cb049c4a3c1b0c2d92522a
   languageName: node
   linkType: hard
 
@@ -11542,7 +11542,7 @@ __metadata:
     "@types/node": 20.12.7
     "@types/node-fetch": 2.6.11
     "@types/promise-retry": 1.1.6
-    "@types/qrcode": 1.5.0
+    "@types/qrcode": 1.5.5
     "@types/react": 18.2.6
     "@types/react-dom": 18.2.4
     "@types/react-fade-in": 2.0.2
