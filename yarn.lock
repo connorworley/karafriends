@@ -4457,13 +4457,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-relay@npm:14.1.4":
-  version: 14.1.4
-  resolution: "@types/react-relay@npm:14.1.4"
+"@types/react-relay@npm:16.0.6":
+  version: 16.0.6
+  resolution: "@types/react-relay@npm:16.0.6"
   dependencies:
     "@types/react": "*"
     "@types/relay-runtime": "*"
-  checksum: bff523a5fc0612eb862d6f0767b7a63f0733f56280ac9974905c0abce2647dc30b9e06138634cf1d514542ac6b721a14dfade5a7468be8d32f5a35a6f4785be5
+  checksum: 9c0850799015f57c3c21ede46ee5913114c4cf00fad8f21876b0c0feac2e00c79f644d5e1b3b07aeb66a47e46b1aa523ec728e7835a7639209624dfcfd16e339
   languageName: node
   linkType: hard
 
@@ -11558,7 +11558,7 @@ __metadata:
     "@types/react": 18.2.6
     "@types/react-dom": 18.2.25
     "@types/react-fade-in": 2.0.2
-    "@types/react-relay": 14.1.4
+    "@types/react-relay": 16.0.6
     "@types/react-router-dom": 5.3.3
     "@types/react-swipeable": 5.2.0
     "@types/relay-runtime": 14.1.10
@@ -11623,7 +11623,7 @@ __metadata:
     react-fade-in: 2.0.1
     react-icons: 5.1.0
     react-mobile-picker-scroll: 0.2.14
-    react-relay: 15.0.0
+    react-relay: 16.2.0
     react-router-dom: 6.22.3
     react-swipeable: 7.0.1
     regenerator-runtime: 0.14.1
@@ -14379,18 +14379,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-relay@npm:15.0.0":
-  version: 15.0.0
-  resolution: "react-relay@npm:15.0.0"
+"react-relay@npm:16.2.0":
+  version: 16.2.0
+  resolution: "react-relay@npm:16.2.0"
   dependencies:
     "@babel/runtime": ^7.0.0
     fbjs: ^3.0.2
     invariant: ^2.2.4
     nullthrows: ^1.1.1
-    relay-runtime: 15.0.0
+    relay-runtime: 16.2.0
   peerDependencies:
     react: ^16.9.0 || ^17 || ^18
-  checksum: d318c3b153f193e1b93fb5d8501426f7a9eb2e013407cbfadc1cbc17e319d99dad9c145147c0cea194eeb6ffbb4fc6d41914ad69db0d589808d4484e4a6fd718
+  checksum: fbe58972825ea1ba1d75598f1e85783282a39a9d692f3763ab450a8149a4ac276ff50468273ee1c5f9dc3099d83ed09e45eb79fb46078b9fa26f68f32c926a29
   languageName: node
   linkType: hard
 
@@ -14738,17 +14738,6 @@ __metadata:
   dependencies:
     cosmiconfig: ^5.0.5
   checksum: bad9578b1e2525dd21897cb35e89acbf21cc3a19852c916aec81baf3c5246493a1ac8c5c0f40736325a04116aa66129ec854dfe089b28eca65b79844788fd9d9
-  languageName: node
-  linkType: hard
-
-"relay-runtime@npm:15.0.0":
-  version: 15.0.0
-  resolution: "relay-runtime@npm:15.0.0"
-  dependencies:
-    "@babel/runtime": ^7.0.0
-    fbjs: ^3.0.2
-    invariant: ^2.2.4
-  checksum: ccf41ac4778b54560ea35901076a00eaa60597a89c908f6fb7b15812b76aad6aa57bfe81fe5af159dd6aaf716eb46208ec6e77cf8357c479d288af6f5a04698d
   languageName: node
   linkType: hard
 
