@@ -35,26 +35,36 @@ fn main() {
     // TODO: Launch karafriends here, or keep this downloader separate?
 }
 
-#[cfg(target_os = "macos")]
 fn download_ffmpeg(tools_dir: PathBuf) {
     info!("Downloading ffmpeg");
+
+    #[cfg(target_os = "macos")]
+    let url = "https://evermeet.cx/ffmpeg/get";
+    #[cfg(target_os = "windows")]
+    let url = "https://www.gyan.dev/ffmpeg/builds/ffmpeg-git-essentials.7z";
+
     // These people always recommend the snapshot build
-    let resp = reqwest::blocking::get("https://evermeet.cx/ffmpeg/get").unwrap();
+    let resp = reqwest::blocking::get(url).unwrap();
 
     let status = resp.status();
     let body = resp.bytes().unwrap();
     if !status.is_success() {
-        panic!("Response from evermeet.cx was not successful ({status}): {body:?}");
+        panic!("Response from {url} was not successful ({status}): {body:?}");
     }
 
     let body_cursor = std::io::Cursor::new(body);
 
     let mut ffmpeg_path = tools_dir.clone();
+
+    #[cfg(unix)]
     ffmpeg_path.push("ffmpeg");
+    #[cfg(windows)]
+    ffmpeg_path.push("ffmpeg.exe");
 
     info!("Decompressing ffmpeg");
     sevenz_rust::decompress(body_cursor, tools_dir).unwrap();
 
+    #[cfg(unix)]
     {
         use std::os::unix::fs::PermissionsExt;
         fs::set_permissions(&ffmpeg_path, fs::Permissions::from_mode(0o755)).unwrap();
@@ -68,13 +78,15 @@ fn download_ffmpeg(tools_dir: PathBuf) {
         .expect("Shows version");
 }
 
-#[cfg(target_os = "macos")]
 fn download_ytdlp(tools_dir: PathBuf) {
     info!("Downloading yt-dlp");
-    let resp = reqwest::blocking::get(
-        "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos",
-    )
-    .unwrap();
+
+    #[cfg(target_os = "macos")]
+    let url = "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos";
+    #[cfg(target_os = "windows")]
+    let url = "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_x86.exe";
+
+    let resp = reqwest::blocking::get(url).unwrap();
 
     let status = resp.status();
     let body = resp.bytes().unwrap();
@@ -83,13 +95,17 @@ fn download_ytdlp(tools_dir: PathBuf) {
     }
 
     let mut ytdlp_path = tools_dir;
+    #[cfg(unix)]
     ytdlp_path.push("yt-dlp");
+    #[cfg(windows)]
+    ytdlp_path.push("yt-dlp.exe");
 
     let mut ytdlp_fh = fs::File::create(&ytdlp_path).unwrap();
 
     let mut body_cursor = std::io::Cursor::new(body);
     io::copy(&mut body_cursor, &mut ytdlp_fh).unwrap();
 
+    #[cfg(unix)]
     {
         use std::os::unix::fs::PermissionsExt;
         fs::set_permissions(&ytdlp_path, fs::Permissions::from_mode(0o755)).unwrap();
