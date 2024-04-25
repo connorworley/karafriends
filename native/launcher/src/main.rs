@@ -52,7 +52,8 @@ fn download_ffmpeg(tools_dir: PathBuf) {
         panic!("Response from {url} was not successful ({status}): {body:?}");
     }
 
-    let body_cursor = std::io::Cursor::new(body);
+    let body_len = body.len() as u64;
+    let mut body_cursor = std::io::Cursor::new(body);
 
     let mut ffmpeg_path = tools_dir.clone();
 
@@ -62,20 +63,25 @@ fn download_ffmpeg(tools_dir: PathBuf) {
     ffmpeg_path.push("ffmpeg.exe");
 
     info!("Decompressing ffmpeg");
-    sevenz_rust::decompress(body_cursor, tools_dir).unwrap();
-
-    #[cfg(unix)]
-    {
-        use std::os::unix::fs::PermissionsExt;
-        fs::set_permissions(&ffmpeg_path, fs::Permissions::from_mode(0o755)).unwrap();
+    let archive = sevenz_rust::Archive::read(&mut body_cursor, body_len, &[]).unwrap();
+    for entry in &archive.files {
+        println!("{}", entry.name());
     }
 
-    // Can take a while on first invocation
-    info!("Testing ffmpeg");
-    Command::new(ffmpeg_path)
-        .arg("-version")
-        .status()
-        .expect("Shows version");
+    // sevenz_rust::decompress(body_cursor, tools_dir).unwrap();
+
+    // #[cfg(unix)]
+    // {
+    //     use std::os::unix::fs::PermissionsExt;
+    //     fs::set_permissions(&ffmpeg_path, fs::Permissions::from_mode(0o755)).unwrap();
+    // }
+
+    // // Can take a while on first invocation
+    // info!("Testing ffmpeg");
+    // Command::new(ffmpeg_path)
+    //     .arg("-version")
+    //     .status()
+    //     .expect("Shows version");
 }
 
 fn download_ytdlp(tools_dir: PathBuf) {
