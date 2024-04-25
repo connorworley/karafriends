@@ -38,10 +38,20 @@ fn main() {
 fn download_ffmpeg(tools_dir: PathBuf) {
     info!("Downloading ffmpeg");
 
+    let (url, match_filename, local_path);
+
     #[cfg(target_os = "macos")]
-    let url = "https://evermeet.cx/ffmpeg/get";
+    {
+        url = "https://evermeet.cx/ffmpeg/get";
+        match_filename = "ffmpeg";
+        local_path = "ffmpeg";
+    }
     #[cfg(target_os = "windows")]
-    let url = "https://www.gyan.dev/ffmpeg/builds/ffmpeg-git-essentials.7z";
+    {
+        url = "https://www.gyan.dev/ffmpeg/builds/ffmpeg-git-essentials.7z";
+        match_filename = "bin/ffmpeg.exe";
+        local_path = "ffmpeg.exe";
+    }
 
     // These people always recommend the snapshot build
     let resp = reqwest::blocking::get(url).unwrap();
@@ -52,45 +62,50 @@ fn download_ffmpeg(tools_dir: PathBuf) {
         panic!("Response from {url} was not successful ({status}): {body:?}");
     }
 
-    let body_len = body.len() as u64;
-    let mut body_cursor = std::io::Cursor::new(body);
-
+    let body_cursor = std::io::Cursor::new(body);
     let mut ffmpeg_path = tools_dir.clone();
 
-    #[cfg(unix)]
-    ffmpeg_path.push("ffmpeg");
-    #[cfg(windows)]
-    ffmpeg_path.push("ffmpeg.exe");
+    ffmpeg_path.push(local_path);
 
     info!("Decompressing ffmpeg");
-    let archive = sevenz_rust::Archive::read(&mut body_cursor, body_len, &[]).unwrap();
-    for entry in &archive.files {
-        println!("{}", entry.name());
+    sevenz_rust::decompress_with_extract_fn(
+        body_cursor,
+        tools_dir,
+        |entry, reader, _dest| {
+            if entry.name().ends_with(match_filename) {
+                let mut ffmpeg_fh = fs::File::create(&ffmpeg_path).unwrap();
+                io::copy(reader, &mut ffmpeg_fh).unwrap();
+            }
+            Ok(true)
+        },
+    ).unwrap();
+
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        fs::set_permissions(&ffmpeg_path, fs::Permissions::from_mode(0o755)).unwrap();
     }
 
-    // sevenz_rust::decompress(body_cursor, tools_dir).unwrap();
-
-    // #[cfg(unix)]
-    // {
-    //     use std::os::unix::fs::PermissionsExt;
-    //     fs::set_permissions(&ffmpeg_path, fs::Permissions::from_mode(0o755)).unwrap();
-    // }
-
-    // // Can take a while on first invocation
-    // info!("Testing ffmpeg");
-    // Command::new(ffmpeg_path)
-    //     .arg("-version")
-    //     .status()
-    //     .expect("Shows version");
+    // Can take a while on first invocation
+    info!("Testing ffmpeg");
+    Command::new(ffmpeg_path)
+        .arg("-version")
+        .status()
+        .expect("Shows version");
 }
 
 fn download_ytdlp(tools_dir: PathBuf) {
     info!("Downloading yt-dlp");
 
-    #[cfg(target_os = "macos")]
-    let url = "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos";
-    #[cfg(target_os = "windows")]
-    let url = "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_x86.exe";
+    let (url, local_path);
+    #[cfg(target_os = "macos")] {
+        url = "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos";
+        local_path = "yt-dlp";
+    }
+    #[cfg(target_os = "windows")] {
+        url = "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_x86.exe";
+        local_path = "yt-dlp.exe";
+    }
 
     let resp = reqwest::blocking::get(url).unwrap();
 
@@ -101,24 +116,22 @@ fn download_ytdlp(tools_dir: PathBuf) {
     }
 
     let mut ytdlp_path = tools_dir;
-    #[cfg(unix)]
-    ytdlp_path.push("yt-dlp");
-    #[cfg(windows)]
-    ytdlp_path.push("yt-dlp.exe");
+    ytdlp_path.push(local_path);
 
-    let mut ytdlp_fh = fs::File::create(&ytdlp_path).unwrap();
-
-    let mut body_cursor = std::io::Cursor::new(body);
-    io::copy(&mut body_cursor, &mut ytdlp_fh).unwrap();
-
-    #[cfg(unix)]
     {
-        use std::os::unix::fs::PermissionsExt;
-        fs::set_permissions(&ytdlp_path, fs::Permissions::from_mode(0o755)).unwrap();
+        let mut ytdlp_fh = fs::File::create(&ytdlp_path).unwrap();
+        let mut body_cursor = std::io::Cursor::new(body);
+        io::copy(&mut body_cursor, &mut ytdlp_fh).unwrap();
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            fs::set_permissions(&ytdlp_path, fs::Permissions::from_mode(0o755)).unwrap();
+        }
     }
 
     // Can take a while on first invocation
-    Command::new(ytdlp_path)
+    info!("Testing yt-dlp");
+    Command::new(ytdlp_path.clone())
         .arg("--version")
         .status()
         .expect("Shows version");
