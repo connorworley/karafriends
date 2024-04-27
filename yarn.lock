@@ -11724,7 +11724,7 @@ __metadata:
     wait-on: 7.2.0
     wanakana: 5.3.1
     wdio-electron-service: 6.4.1
-    webdriverio: 8.36.0
+    webdriverio: 8.36.1
     webpack: 5.91.0
     webpack-cli: 5.1.4
     webpack-merge: 5.10.0
