@@ -15,7 +15,7 @@ lazy_static = "1.4.0"
 neon = { version = "1.0.0-alpha.4", default-features = false, features = ["napi-8"] }
 num-traits = "0.2.18"
 realfft = "3.3.0"
-ringbuf = "0.3.3"
+ringbuf = "0.4.0"
 rubato = "0.15.0"
 
 [features]
