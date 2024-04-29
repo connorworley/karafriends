@@ -373,17 +373,17 @@ impl InputDevice {
         let mut resampler = rubato::SincFixedIn::<f32>::new(
             output_sample_rate as f64 / input_sample_rate as f64,
             1.0,
-            rubato::InterpolationParameters {
+            rubato::SincInterpolationParameters {
                 sinc_len: 256,
                 f_cutoff: 0.95,
-                interpolation: rubato::InterpolationType::Linear,
+                interpolation: rubato::SincInterpolationType::Linear,
                 oversampling_factor: 256,
                 window: rubato::WindowFunction::BlackmanHarris2,
             },
             resampler_chunk_size,
             1,
         )?;
-        let mut resampler_output = resampler.output_buffer_allocate();
+        let mut resampler_output = resampler.output_buffer_allocate(false);
 
         Ok(move |samples: &[Sample], _: &_| {
             let mono_samples: Vec<_> = samples
@@ -398,7 +398,7 @@ impl InputDevice {
             let mut echo_samples = vec![0.0; mono_samples.len()];
             echo_rx.pop_slice(echo_samples.as_mut_slice());
 
-            let output_samples: Vec<_> = mono_samples
+            let mut output_samples: Vec<_> = mono_samples
                 .iter()
                 .zip(echo_samples.iter().map(|sample| sample * ECHO_AMPLITUDE))
                 .map(|(incoming, echo)| incoming + echo)
@@ -425,12 +425,12 @@ impl InputDevice {
                     });
             } else {
                 let samples_written = output_tx.push_iter(
-                    &mut resampler_output[0]
+                    &mut output_samples
                         .iter_mut()
                         .flat_map(|sample| std::iter::repeat(*sample).take(output_channels)),
                 );
-                if samples_written < resampler_output[0].len() {
-                    eprintln!("output fell behind (with sample rate conversion)!");
+                if samples_written < output_samples.len() {
+                    eprintln!("output fell behind (without sample rate conversion)!");
                 }
             }
         })
