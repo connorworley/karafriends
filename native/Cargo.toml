@@ -3,3 +3,4 @@ members = [
     "karafriends-lib",
     "karafriends",
 ]
+resolver = "2"
