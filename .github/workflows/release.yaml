@@ -15,7 +15,7 @@ jobs:
           target: aarch64-apple-darwin
       - uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 22
       - name: Setup code signing cert
         env:
           MACOS_NOTARIZATION_API_KEY_BASE64: ${{ secrets.MACOS_NOTARIZATION_API_KEY_BASE64 }}
@@ -57,7 +57,7 @@ jobs:
           target: x86_64-apple-darwin
       - uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 22
       - name: Setup code signing cert
         env:
           MACOS_NOTARIZATION_API_KEY_BASE64: ${{ secrets.MACOS_NOTARIZATION_API_KEY_BASE64 }}
@@ -99,7 +99,7 @@ jobs:
           target: x86_64-pc-windows-msvc
       - uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 22
       - run: yarn install --immutable
       - run: yarn build-prod
         env:
@@ -118,7 +118,7 @@ jobs:
           target: x86_64-unknown-linux-gnu
       - uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 22
       - run: sudo apt-get update && sudo apt-get install -y libasound2-dev
       - run: yarn install --immutable
       - run: yarn build-prod

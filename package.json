@@ -169,5 +169,8 @@
   },
   "alias": {
     "process": false
+  },
+  "engines": {
+    "node": ">=22"
   }
 }
