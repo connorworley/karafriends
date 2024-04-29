@@ -12574,7 +12574,7 @@ __metadata:
     tslint: 6.1.3
     tslint-config-prettier: 1.18.0
     typescript: 5.4.5
-    user-agents: 1.1.186
+    user-agents: 1.1.189
     utf-8-validate: 6.0.3
     uuid: 9.0.1
     wait-on: 7.2.0
@@ -17808,12 +17808,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"user-agents@npm:1.1.186":
-  version: 1.1.186
-  resolution: "user-agents@npm:1.1.186"
+"user-agents@npm:1.1.189":
+  version: 1.1.189
+  resolution: "user-agents@npm:1.1.189"
   dependencies:
     lodash.clonedeep: ^4.5.0
-  checksum: cdc44d6940d93ef360fa7b6e5e3b9cdb7efe1ae58ac98c08da5aa9f19fc1d70538b3d681f0c1b1e7784c04a2421fe24aa3939a24a4b330499a3e3811f39df6b3
+  checksum: 9e8d7b1593a97506721d579e05f58f012abd5817c820db43a1d1546a992028b93bc4bc1085b0a0147cd25c611c7bf6d90970f8f809a0ad26f0694b3b49f6df22
   languageName: node
   linkType: hard
 
