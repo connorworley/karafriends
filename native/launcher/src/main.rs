@@ -46,15 +46,21 @@ fn download_ffmpeg(tools_dir: PathBuf) {
         match_filename = "ffmpeg";
         local_path = "ffmpeg";
     }
-    #[cfg(target_os = "windows")]
+    #[cfg(all(target_os = "windows", target_arch = "x86_64"))]
     {
         url = "https://www.gyan.dev/ffmpeg/builds/ffmpeg-git-essentials.7z";
         match_filename = "bin/ffmpeg.exe";
         local_path = "ffmpeg.exe";
     }
+    #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+    {
+        url = "https://johnvansickle.com/ffmpeg/builds/ffmpeg-git-amd64-static.tar.xz";
+        match_filename = "ffmpeg";
+        local_path = "ffmpeg";
+    }
 
     // These people always recommend the snapshot build
-    let resp = reqwest::blocking::get(url).unwrap();
+    let resp = reqwest::blocking::get::<&str>(url).unwrap();
 
     let status = resp.status();
     let body = resp.bytes().unwrap();
@@ -68,17 +74,14 @@ fn download_ffmpeg(tools_dir: PathBuf) {
     ffmpeg_path.push(local_path);
 
     info!("Decompressing ffmpeg");
-    sevenz_rust::decompress_with_extract_fn(
-        body_cursor,
-        tools_dir,
-        |entry, reader, _dest| {
-            if entry.name().ends_with(match_filename) {
-                let mut ffmpeg_fh = fs::File::create(&ffmpeg_path).unwrap();
-                io::copy(reader, &mut ffmpeg_fh).unwrap();
-            }
-            Ok(true)
-        },
-    ).unwrap();
+    sevenz_rust::decompress_with_extract_fn(body_cursor, tools_dir, |entry, reader, _dest| {
+        if entry.name().ends_with(match_filename) {
+            let mut ffmpeg_fh = fs::File::create(&ffmpeg_path).unwrap();
+            io::copy(reader, &mut ffmpeg_fh).unwrap();
+        }
+        Ok(true)
+    })
+    .unwrap();
 
     #[cfg(unix)]
     {
@@ -98,16 +101,23 @@ fn download_ytdlp(tools_dir: PathBuf) {
     info!("Downloading yt-dlp");
 
     let (url, local_path);
-    #[cfg(target_os = "macos")] {
+    #[cfg(target_os = "macos")]
+    {
         url = "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos";
         local_path = "yt-dlp";
     }
-    #[cfg(target_os = "windows")] {
+    #[cfg(all(target_os = "windows", target_arch = "x86_64"))]
+    {
         url = "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_x86.exe";
         local_path = "yt-dlp.exe";
     }
+    #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+    {
+        url = "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux";
+        local_path = "yt-dlp_linux";
+    }
 
-    let resp = reqwest::blocking::get(url).unwrap();
+    let resp = reqwest::blocking::get::<&str>(url).unwrap();
 
     let status = resp.status();
     let body = resp.bytes().unwrap();
