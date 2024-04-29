@@ -16,7 +16,7 @@ neon = { version = "1.0.0-alpha.4", default-features = false, features = ["napi-
 num-traits = "0.2.18"
 realfft = "3.3.0"
 ringbuf = "0.3.3"
-rubato = "0.12.0"
+rubato = "0.15.0"
 
 [features]
 asio = ["asio-sys", "cpal/asio"]
