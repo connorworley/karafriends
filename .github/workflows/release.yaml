@@ -89,10 +89,14 @@ jobs:
       - uses: softprops/action-gh-release@v2
         with:
           files: dist/karafriends-darwin-x64.zip
-  release-windows:
+  release-windows-x86_64:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: x86_64-pc-windows-msvc
       - uses: actions/setup-node@v4
         with:
           node-version: 16
@@ -104,10 +108,14 @@ jobs:
       - uses: softprops/action-gh-release@v2
         with:
           files: dist/karafriends-win32-x64.zip
-  release-linux:
+  release-linux-x86_64:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: x86_64-unknown-linux-gnu
       - uses: actions/setup-node@v4
         with:
           node-version: 16
