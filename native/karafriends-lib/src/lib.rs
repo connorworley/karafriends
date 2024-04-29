@@ -9,6 +9,7 @@ use std::sync::{Arc, Mutex};
 
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 use neon::prelude::Finalize;
+use ringbuf::traits::{Consumer, Observer, Producer, Split};
 use rubato::Resampler;
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync>>;
@@ -33,7 +34,7 @@ const ECHO_AMPLITUDE: f32 = 0.25;
 pub struct InputDevice {
     input_stream: Arc<Mutex<cpal::Stream>>,
     output_stream: Arc<Mutex<cpal::Stream>>,
-    pitch_rx: ringbuf::HeapConsumer<f32>,
+    pitch_rx: ringbuf::HeapCons<f32>,
     pitch_sample_count: usize,
     pitch_detector: pitch_detector::PitchDetector,
 }
@@ -345,8 +346,8 @@ impl InputDevice {
         input_config: &cpal::StreamConfig,
         output_config: &cpal::StreamConfig,
         channel_selection: usize,
-        mut pitch_tx: ringbuf::HeapProducer<f32>,
-        mut output_tx: ringbuf::HeapProducer<f32>,
+        mut pitch_tx: ringbuf::HeapProd<f32>,
+        mut output_tx: ringbuf::HeapProd<f32>,
     ) -> Result<impl FnMut(&[Sample], &cpal::InputCallbackInfo) + Send + 'static>
     where
         f32: cpal::FromSample<Sample>,
@@ -362,7 +363,7 @@ impl InputDevice {
 
         for _ in 0..latency_sample_count * output_channels {
             echo_tx
-                .push(0.0_f32)
+                .try_push(0.0_f32)
                 .map_err(|_| "Failed to push to echo buffer")?;
         }
 
@@ -373,17 +374,17 @@ impl InputDevice {
         let mut resampler = rubato::SincFixedIn::<f32>::new(
             output_sample_rate as f64 / input_sample_rate as f64,
             1.0,
-            rubato::InterpolationParameters {
+            rubato::SincInterpolationParameters {
                 sinc_len: 256,
                 f_cutoff: 0.95,
-                interpolation: rubato::InterpolationType::Linear,
+                interpolation: rubato::SincInterpolationType::Linear,
                 oversampling_factor: 256,
                 window: rubato::WindowFunction::BlackmanHarris2,
             },
             resampler_chunk_size,
             1,
         )?;
-        let mut resampler_output = resampler.output_buffer_allocate();
+        let mut resampler_output = resampler.output_buffer_allocate(false);
 
         Ok(move |samples: &[Sample], _: &_| {
             let mono_samples: Vec<_> = samples
@@ -398,7 +399,7 @@ impl InputDevice {
             let mut echo_samples = vec![0.0; mono_samples.len()];
             echo_rx.pop_slice(echo_samples.as_mut_slice());
 
-            let output_samples: Vec<_> = mono_samples
+            let mut output_samples: Vec<_> = mono_samples
                 .iter()
                 .zip(echo_samples.iter().map(|sample| sample * ECHO_AMPLITUDE))
                 .map(|(incoming, echo)| incoming + echo)
@@ -425,22 +426,22 @@ impl InputDevice {
                     });
             } else {
                 let samples_written = output_tx.push_iter(
-                    &mut resampler_output[0]
+                    &mut output_samples
                         .iter_mut()
                         .flat_map(|sample| std::iter::repeat(*sample).take(output_channels)),
                 );
-                if samples_written < resampler_output[0].len() {
-                    eprintln!("output fell behind (with sample rate conversion)!");
+                if samples_written < output_samples.len() {
+                    eprintln!("output fell behind (without sample rate conversion)!");
                 }
             }
         })
     }
 
     fn output_data_callback<Sample: cpal::Sample + cpal::FromSample<f32> + Send>(
-        mut output_rx: ringbuf::HeapConsumer<f32>,
+        mut output_rx: ringbuf::HeapCons<f32>,
     ) -> Result<impl FnMut(&mut [Sample], &cpal::OutputCallbackInfo) + Send + 'static> {
         Ok(move |samples: &mut [Sample], _: &_| {
-            if output_rx.len() < samples.len() {
+            if output_rx.occupied_len() < samples.len() {
                 eprintln!("input fell behind");
             }
             samples

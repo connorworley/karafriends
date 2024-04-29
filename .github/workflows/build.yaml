@@ -85,10 +85,14 @@ jobs:
           CARGO_ARGS: --target x86_64-apple-darwin
           CARGO_INCREMENTAL: false
           RUSTC_WRAPPER: sccache
-  build-windows:
+  build-windows-x86_64:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: x86_64-pc-windows-msvc
       - uses: actions/setup-node@v4
         with:
           node-version: 16
@@ -112,10 +116,14 @@ jobs:
           CARGO_INCREMENTAL: false
           RUSTC_WRAPPER: sccache.exe
           SCCACHE_GHA_ENABLED: true
-  build-linux:
+  build-linux-x86_64:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: x86_64-unknown-linux-gnu
       - uses: actions/setup-node@v4
         with:
           node-version: 16
