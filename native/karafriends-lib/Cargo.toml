@@ -13,7 +13,7 @@ asio-sys = { git = "https://github.com/RustAudio/cpal", rev = "d4ba28df733fbb5e5
 cpal = { git = "https://github.com/RustAudio/cpal", rev = "d4ba28df733fbb5e5a4d78f7a8fd789206a44cbe" }
 lazy_static = "1.4.0"
 neon = { version = "1.0.0-alpha.4", default-features = false, features = ["napi-8"] }
-num-traits = "0.2.18"
+num-traits = "0.2.19"
 realfft = "3.3.0"
 ringbuf = "0.4.0"
 rubato = "0.15.0"
