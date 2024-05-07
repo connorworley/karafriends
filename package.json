@@ -111,7 +111,7 @@
     "@types/react-dom": "18.2.25",
     "@types/react-relay": "16.0.6",
     "@types/react-router-dom": "5.3.3",
-    "@types/relay-runtime": "14.1.10",
+    "@types/relay-runtime": "14.1.23",
     "@types/uuid": "^9",
     "@types/webpack-env": "1.18.5",
     "@types/ws": "^8",

@@ -5529,10 +5529,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/relay-runtime@npm:*, @types/relay-runtime@npm:14.1.10":
+"@types/relay-runtime@npm:*":
   version: 14.1.10
   resolution: "@types/relay-runtime@npm:14.1.10"
   checksum: 498af0a8b6521edcf3c2945bbd126167ffe29d18505085527641ba5d617533e37f356af17ec8d1ea7192fa1d398da116b9457d5a5c054d9b2f9ea2542adec61d
+  languageName: node
+  linkType: hard
+
+"@types/relay-runtime@npm:14.1.23":
+  version: 14.1.23
+  resolution: "@types/relay-runtime@npm:14.1.23"
+  checksum: efaa3c8c769b31f66fc746bccb4ce77d4cc03be70957963c3161894f7adbfce25bf49fbd22e6d6b913081514bd0235bf258dfbcd41793b64c4e7f24705afa8bf
   languageName: node
   linkType: hard
 
@@ -12660,7 +12667,7 @@ __metadata:
     "@types/react-relay": 16.0.6
     "@types/react-router-dom": 5.3.3
     "@types/react-swipeable": 5.2.0
-    "@types/relay-runtime": 14.1.10
+    "@types/relay-runtime": 14.1.23
     "@types/user-agents": 1.0.4
     "@types/uuid": ^9
     "@types/webpack-env": 1.18.5
