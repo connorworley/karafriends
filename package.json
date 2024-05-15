@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@graphql-tools/schema": "10.0.3",
-    "@sentry/browser": "7.113.0",
+    "@sentry/browser": "8.0.0",
     "@sentry/node": "7.113.0",
     "@types/react-fade-in": "2.0.2",
     "@types/react-swipeable": "5.2.0",
