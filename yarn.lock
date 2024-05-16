@@ -4568,26 +4568,49 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry-internal/feedback@npm:7.113.0":
-  version: 7.113.0
-  resolution: "@sentry-internal/feedback@npm:7.113.0"
+"@sentry-internal/browser-utils@npm:8.1.0":
+  version: 8.1.0
+  resolution: "@sentry-internal/browser-utils@npm:8.1.0"
   dependencies:
-    "@sentry/core": 7.113.0
-    "@sentry/types": 7.113.0
-    "@sentry/utils": 7.113.0
-  checksum: 093c7683971455406db1c1d09ba2356d315dc5a8653aac5dd975e953cea2681a172e7bd47077b3e6e9a7ad7c1c063bee6c948e8c91a9ae077c07122284695357
+    "@sentry/core": 8.1.0
+    "@sentry/types": 8.1.0
+    "@sentry/utils": 8.1.0
+  checksum: a0bfa670d26ff94932f683dffad84317c68895dc05795e7ebdf175f814a37a6a0b757cf314966ed9ed530be2a7fc837a0583a907217b6fb31eaa38e9ba60f4c4
   languageName: node
   linkType: hard
 
-"@sentry-internal/replay-canvas@npm:7.113.0":
-  version: 7.113.0
-  resolution: "@sentry-internal/replay-canvas@npm:7.113.0"
+"@sentry-internal/feedback@npm:8.1.0":
+  version: 8.1.0
+  resolution: "@sentry-internal/feedback@npm:8.1.0"
   dependencies:
-    "@sentry/core": 7.113.0
-    "@sentry/replay": 7.113.0
-    "@sentry/types": 7.113.0
-    "@sentry/utils": 7.113.0
-  checksum: 6fda827b93d77bcb37c02cdeac094e8ad1a76fce41619bb8eedfa7cc275e5b84fa98866af2590783786a9848b4dd7a43b3408c02d50a6b83c44fcf66f8d5443b
+    "@sentry/core": 8.1.0
+    "@sentry/types": 8.1.0
+    "@sentry/utils": 8.1.0
+  checksum: 23b1fee35f3c0f9b418b8a029d30f60f87a4747bf90a8120f74cd37192d6a161de34a0713548211b5b4624ce6d2726ef92540289b528dee9c342d0fb33bf9704
+  languageName: node
+  linkType: hard
+
+"@sentry-internal/replay-canvas@npm:8.1.0":
+  version: 8.1.0
+  resolution: "@sentry-internal/replay-canvas@npm:8.1.0"
+  dependencies:
+    "@sentry-internal/replay": 8.1.0
+    "@sentry/core": 8.1.0
+    "@sentry/types": 8.1.0
+    "@sentry/utils": 8.1.0
+  checksum: 2ce04ca729de3728261a3cd47df282a85773718b55874c6a0f749f3e0e7223c9ac31e816904fcd916bb726302971cacd59c922175759e001d675a6446025ec18
+  languageName: node
+  linkType: hard
+
+"@sentry-internal/replay@npm:8.1.0":
+  version: 8.1.0
+  resolution: "@sentry-internal/replay@npm:8.1.0"
+  dependencies:
+    "@sentry-internal/browser-utils": 8.1.0
+    "@sentry/core": 8.1.0
+    "@sentry/types": 8.1.0
+    "@sentry/utils": 8.1.0
+  checksum: 3a2f4ba6d6c5565a8a47c731dd8362ea95e28bf9d608f75b51c936e84f15c0eab8c5a7eef6dc8d5a6652b4a287fec5bbbd271bb0915382f765debc68c8495152
   languageName: node
   linkType: hard
 
@@ -4602,19 +4625,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/browser@npm:7.113.0":
-  version: 7.113.0
-  resolution: "@sentry/browser@npm:7.113.0"
+"@sentry/browser@npm:8.1.0":
+  version: 8.1.0
+  resolution: "@sentry/browser@npm:8.1.0"
   dependencies:
-    "@sentry-internal/feedback": 7.113.0
-    "@sentry-internal/replay-canvas": 7.113.0
-    "@sentry-internal/tracing": 7.113.0
-    "@sentry/core": 7.113.0
-    "@sentry/integrations": 7.113.0
-    "@sentry/replay": 7.113.0
-    "@sentry/types": 7.113.0
-    "@sentry/utils": 7.113.0
-  checksum: ed0ac5468020b71680f59462d1787a87a340fc35b0a6dd71c4af586494c5d41c947eb59bc3c347582a597139b4292f0d3ece4334b39a3da08b28de7cf5098509
+    "@sentry-internal/browser-utils": 8.1.0
+    "@sentry-internal/feedback": 8.1.0
+    "@sentry-internal/replay": 8.1.0
+    "@sentry-internal/replay-canvas": 8.1.0
+    "@sentry/core": 8.1.0
+    "@sentry/types": 8.1.0
+    "@sentry/utils": 8.1.0
+  checksum: f5aa4ce91e26894559858ac82aa190edd7afab1c5eacebeb676b9c2e38a133aaf2253ae0cefae745a75304e2fb0754afb69109f9b6d1aa974e6b9766756ed58f
   languageName: node
   linkType: hard
 
@@ -4625,6 +4647,16 @@ __metadata:
     "@sentry/types": 7.113.0
     "@sentry/utils": 7.113.0
   checksum: b0f4bdb858bb57291b7f8af0557eceab30fa86c67fc25f6def75f9b5ab5f7dfe57a3776cae0d5287e27654761c463d28938bf225983a6229433733d74d182ff6
+  languageName: node
+  linkType: hard
+
+"@sentry/core@npm:8.1.0":
+  version: 8.1.0
+  resolution: "@sentry/core@npm:8.1.0"
+  dependencies:
+    "@sentry/types": 8.1.0
+    "@sentry/utils": 8.1.0
+  checksum: 81f40bcef0b33f84a959808200785723e235c0bd14fcbf1835e470b135eea097998cf4c4d32623277774c56a315bf977e78fd9b9ad7243bfb280a7479f647663
   languageName: node
   linkType: hard
 
@@ -4653,22 +4685,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/replay@npm:7.113.0":
-  version: 7.113.0
-  resolution: "@sentry/replay@npm:7.113.0"
-  dependencies:
-    "@sentry-internal/tracing": 7.113.0
-    "@sentry/core": 7.113.0
-    "@sentry/types": 7.113.0
-    "@sentry/utils": 7.113.0
-  checksum: 5e9aba418646c29256876521d3c704805261cf29b2ea8e37afcccd6b9101f0795cd99dcb726365dc9e31fe1117a1737b0206e14ab50d9b052ee03546c5e0f02f
-  languageName: node
-  linkType: hard
-
 "@sentry/types@npm:7.113.0":
   version: 7.113.0
   resolution: "@sentry/types@npm:7.113.0"
   checksum: 6131e776c274d02b54a261739850bd9f5db100f2616a79aed20e6e3523dc251445006287d5ada4cc50f752ff161e70682e9572b86caeab23e92a0ad6d0495802
+  languageName: node
+  linkType: hard
+
+"@sentry/types@npm:8.1.0":
+  version: 8.1.0
+  resolution: "@sentry/types@npm:8.1.0"
+  checksum: 1675321a1bc81c8d19f526a4dd902ba83ac365365e5dfb1bc6875ec814ca726d9b6fd4f8f40693841a6365458dabfd170b0bcbfd69af107bda360af1b2b02eba
   languageName: node
   linkType: hard
 
@@ -4678,6 +4705,15 @@ __metadata:
   dependencies:
     "@sentry/types": 7.113.0
   checksum: 248725dced72b18f02042362a17862ed5440140dd63775d7d4432dd3605de0b50d2ffc6d6d091878915b20697c476dd3b74b60c47294a90cbcd440af9d2a44f6
+  languageName: node
+  linkType: hard
+
+"@sentry/utils@npm:8.1.0":
+  version: 8.1.0
+  resolution: "@sentry/utils@npm:8.1.0"
+  dependencies:
+    "@sentry/types": 8.1.0
+  checksum: 59293f7d4101b75bb459504608ecf923ba156740bf5d35e0031f708bc0a3ee72447b0a29ea0f189bf6d5edc5e1630d9aa847825eb907df974885d820bf94bfc1
   languageName: node
   linkType: hard
 
@@ -12637,7 +12673,7 @@ __metadata:
     "@parcel/core": 2.12.0
     "@parcel/transformer-glsl": 2.12.0
     "@parcel/transformer-sass": 2.12.0
-    "@sentry/browser": 7.113.0
+    "@sentry/browser": 8.1.0
     "@sentry/node": 7.113.0
     "@types/audioworklet": 0.0.55
     "@types/babel__core": 7
