@@ -9711,16 +9711,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:30.0.6":
-  version: 30.0.6
-  resolution: "electron@npm:30.0.6"
+"electron@npm:31.0.1":
+  version: 31.0.1
+  resolution: "electron@npm:31.0.1"
   dependencies:
     "@electron/get": ^2.0.0
     "@types/node": ^20.9.0
     extract-zip: ^2.0.1
   bin:
     electron: cli.js
-  checksum: ac0ee83517e0306672ea6c6084f901f1bd1bec730384e833bf1fa3e2b6ceb8ee4a39341db7958803e457df4bbb7070c4f94f0c51a201addd95460cc5f8fc3dea
+  checksum: 9559d3530320467e37b3f13651183d693f6fe520f2acd8f7677325d8d06ea38b641606b6d6fac964266fc942b08bba68df0a0dd0e4979222376e2de3583db1c8
   languageName: node
   linkType: hard
 
@@ -13419,7 +13419,7 @@ __metadata:
     cross-env: 7.0.3
     cubic-spline: 3.0.3
     dataloader: 2.2.2
-    electron: 30.0.6
+    electron: 31.0.1
     electron-is-dev: 3.0.1
     electron-packager: 17.1.2
     express: 4.19.2
