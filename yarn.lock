@@ -11770,12 +11770,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"husky@npm:9.0.11":
-  version: 9.0.11
-  resolution: "husky@npm:9.0.11"
+"husky@npm:9.1.3":
+  version: 9.1.3
+  resolution: "husky@npm:9.1.3"
   bin:
-    husky: bin.mjs
-  checksum: 1aebc3334dc7ac6288ff5e1fb72cfb447cfa474e72cf7ba692e8c5698c573ab725c28c6a5088c9f8e6aca5f47d40fa7261beffbc07a4d307ca21656dc4571f07
+    husky: bin.js
+  checksum: 81103f34c8a796f5510c73c4d88af09671d9b559b0dd75975cc0891f24697d7076b6b57c8de03348f03c08da08246d254e6565f841f1c894cab91c23695c3ac6
   languageName: node
   linkType: hard
 
@@ -13431,7 +13431,7 @@ __metadata:
     graphql-subscriptions: 2.0.0
     graphql-ws: 5.16.0
     hls.js: 1.5.8
-    husky: 9.0.11
+    husky: 9.1.3
     kuromoji: 0.1.2
     kuroshiro: 1.2.0
     kuroshiro-analyzer-kuromoji: 1.1.0
