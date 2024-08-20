@@ -7595,14 +7595,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.6.1":
-  version: 1.6.8
-  resolution: "axios@npm:1.6.8"
+"axios@npm:^1.7.4":
+  version: 1.7.4
+  resolution: "axios@npm:1.7.4"
   dependencies:
     follow-redirects: ^1.15.6
     form-data: ^4.0.0
     proxy-from-env: ^1.1.0
-  checksum: bf007fa4b207d102459300698620b3b0873503c6d47bf5a8f6e43c0c64c90035a4f698b55027ca1958f61ab43723df2781c38a99711848d232cad7accbcdfcdd
+  checksum: 0c17039a9acfe6a566fca8431ba5c1b455c83d30ea6157fec68a6722878fcd30f3bd32d172f6bee0c51fe75ca98e6414ddcd968a87b5606b573731629440bfaf
   languageName: node
   linkType: hard
 
@@ -13160,16 +13160,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"joi@npm:^17.11.0":
-  version: 17.12.3
-  resolution: "joi@npm:17.12.3"
+"joi@npm:^17.13.3":
+  version: 17.13.3
+  resolution: "joi@npm:17.13.3"
   dependencies:
     "@hapi/hoek": ^9.3.0
     "@hapi/topo": ^5.1.0
     "@sideway/address": ^4.1.5
     "@sideway/formula": ^3.0.1
     "@sideway/pinpoint": ^2.0.0
-  checksum: 6fc74ad7561261a3500fecfcb2cab30928526286a4ee737cad4d41e8556263326561e4146f6c2c9429d0eef27a7d1ba93b919795ade1e766d6dbb797fb4f1b77
+  checksum: 66ed454fee3d8e8da1ce21657fd2c7d565d98f3e539d2c5c028767e5f38cbd6297ce54df8312d1d094e62eb38f9452ebb43da4ce87321df66cf5e3f128cbc400
   languageName: node
   linkType: hard
 
@@ -13474,7 +13474,7 @@ __metadata:
     user-agents: 1.1.206
     utf-8-validate: 6.0.3
     uuid: 9.0.1
-    wait-on: 7.2.0
+    wait-on: 8.0.0
     wanakana: 5.3.1
     wdio-electron-service: 6.5.0
     webdriverio: 8.36.1
@@ -19049,18 +19049,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"wait-on@npm:7.2.0":
-  version: 7.2.0
-  resolution: "wait-on@npm:7.2.0"
+"wait-on@npm:8.0.0":
+  version: 8.0.0
+  resolution: "wait-on@npm:8.0.0"
   dependencies:
-    axios: ^1.6.1
-    joi: ^17.11.0
+    axios: ^1.7.4
+    joi: ^17.13.3
     lodash: ^4.17.21
     minimist: ^1.2.8
     rxjs: ^7.8.1
   bin:
     wait-on: bin/wait-on
-  checksum: 69ec1432bb4479363fdd71f2f3f501a98aa356a562781108a4a89ef8fdf1e3d5fd0c2fd56c4cc5902abbb662065f1f22d4e436a1e6fc9331ce8b575eb023325e
+  checksum: a4894dd1aad71e1c1b0be599e070c848ed3b29c4ac5634553f09561fe17c38fd99906779840e7fbb739a9b943d2d3542af697ec8f856d6244f640895962cb477
   languageName: node
   linkType: hard
 
