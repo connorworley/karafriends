@@ -23,7 +23,7 @@ fn input_devices(mut cx: FunctionContext) -> JsResult<JsArray> {
         Ok(devices) => devices,
         Err(e) => return cx.throw_error(e.to_string()),
     };
-    let js_array = JsArray::new(&mut cx, input_devices.len() as u32);
+    let js_array = JsArray::new(&mut cx, input_devices.len());
     for (i, (name, config)) in input_devices.iter().enumerate() {
         let js_name = cx.string(name);
         let js_channel_count = cx.number(config.channels);

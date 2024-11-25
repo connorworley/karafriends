@@ -74,14 +74,14 @@ impl PitchDetector {
             if tau > 4 {
                 let period = tau - 3;
                 if (yin[period] < 0.15) && (yin[period] < yin[period + 1]) {
-                    return (
-                        if yin[period] > 0.0 {
-                            freq2midi(self.sample_rate / quadratic_peak_pos(&yin, period))
-                        } else {
-                            0.0
-                        },
-                        1.0 - yin[period],
-                    );
+                    return if yin[period] > -0.00001 {
+                        (
+                            freq2midi(self.sample_rate / quadratic_peak_pos(&yin, period)),
+                            1.0 - yin[period].max(0.0),
+                        )
+                    } else {
+                        (0.0, 0.0)
+                    };
                 }
             }
         }
@@ -92,18 +92,18 @@ impl PitchDetector {
             .min_by(|(_, a), (_, b)| a.partial_cmp(b).unwrap())
             .map(|(index, _)| index)
             .unwrap();
-        (
-            if yin[min_index] > 0.0 {
-                freq2midi(self.sample_rate / quadratic_peak_pos(&yin, min_index))
-            } else {
-                0.0
-            },
-            1.0 - yin[min_index],
-        )
+        if yin[min_index] > -0.00001 {
+            (
+                freq2midi(self.sample_rate / quadratic_peak_pos(&yin, min_index)),
+                1.0 - yin[min_index].max(0.0),
+            )
+        } else {
+            (0.0, 0.0)
+        }
     }
 }
 
-fn quadratic_peak_pos(x: &Vec<f32>, pos: usize) -> f32 {
+fn quadratic_peak_pos(x: &[f32], pos: usize) -> f32 {
     if pos == 0 || pos == x.len() - 1 {
         return 0.0;
     }
@@ -115,9 +115,34 @@ fn quadratic_peak_pos(x: &Vec<f32>, pos: usize) -> f32 {
     pos as f32 + 0.5 * (s0 - s2) / (s0 - 2.0 * s1 + s2)
 }
 
-fn freq2midi(freq: f32) -> f32 {
+pub fn freq2midi(freq: f32) -> f32 {
     if !(2.0..=100000.0).contains(&freq) {
         return 0.0;
     }
     (freq / 6.875).ln() / 2.0_f32.ln() * 12.0 - 3.0
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use wavegen::{sine, wf};
+
+    #[test]
+    fn test_simple_tones() {
+        let sample_rate = 44100_usize;
+        let sample_count = sample_rate.div_ceil(40);
+
+        let pd = PitchDetector::new(sample_rate as f32, sample_count);
+
+        for freq in 81..=1000 {
+            let samples = wf!(f32, sample_rate as f32, sine!(freq as f32))
+                .iter()
+                .take(sample_count)
+                .collect::<Vec<_>>();
+            let (midi_number, confidence) = pd.detect(samples);
+
+            assert_eq!(midi_number.round(), freq2midi(freq as f32).round());
+            assert!(confidence > 0.99);
+        }
+    }
 }

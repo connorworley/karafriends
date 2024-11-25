@@ -12,7 +12,11 @@ jobs:
     runs-on: [self-hosted, karafriends-integration]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions-rs/toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: nightly
+          target: aarch64-apple-darwin
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: stable
           target: aarch64-apple-darwin
@@ -44,6 +48,8 @@ jobs:
           CARGO_ARGS: --target aarch64-apple-darwin
           CARGO_INCREMENTAL: false
           RUSTC_WRAPPER: sccache
+      - run: cargo install cargo-careful
+      - run: yarn test:native
       - run: yarn test:wdio
       - run: |
           echo RENDERER_URL=$(curl -F "reqtype=fileupload" -F "fileToUpload=@renderer.png" https://catbox.moe/user/api.php) >> $GITHUB_ENV
@@ -66,7 +72,11 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions-rs/toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: nightly
+          target: x86_64-apple-darwin
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: stable
           target: x86_64-apple-darwin
@@ -86,11 +96,17 @@ jobs:
           CARGO_ARGS: --target x86_64-apple-darwin
           CARGO_INCREMENTAL: false
           RUSTC_WRAPPER: sccache
+      - run: cargo install cargo-careful
+      - run: yarn test:native
   build-windows-x86_64:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions-rs/toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: nightly
+          target: x86_64-pc-windows-msvc
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: stable
           target: x86_64-pc-windows-msvc
@@ -117,11 +133,17 @@ jobs:
           CARGO_INCREMENTAL: false
           RUSTC_WRAPPER: sccache.exe
           SCCACHE_GHA_ENABLED: true
+      - run: cargo install cargo-careful
+      - run: yarn test:native
   build-linux-x86_64:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions-rs/toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: nightly
+          target: x86_64-unknown-linux-gnu
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: stable
           target: x86_64-unknown-linux-gnu
@@ -148,3 +170,5 @@ jobs:
           CARGO_INCREMENTAL: false
           RUSTC_WRAPPER: sccache
           SCCACHE_GHA_ENABLED: true
+      - run: cargo install cargo-careful
+      - run: yarn test:native
