@@ -12,7 +12,11 @@ jobs:
     runs-on: [self-hosted, karafriends-integration]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions-rs/toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain
+        with:
+          toolchain: nightly
+          target: aarch64-apple-darwin
+      - uses: actions-rust-lang/setup-rust-toolchain
         with:
           toolchain: stable
           target: aarch64-apple-darwin
@@ -68,7 +72,11 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions-rs/toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain
+        with:
+          toolchain: nightly
+          target: x86_64-apple-darwin
+      - uses: actions-rust-lang/setup-rust-toolchain
         with:
           toolchain: stable
           target: x86_64-apple-darwin
@@ -94,7 +102,11 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions-rs/toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain
+        with:
+          toolchain: nightly
+          target: x86_64-pc-windows-msvc
+      - uses: actions-rust-lang/setup-rust-toolchain
         with:
           toolchain: stable
           target: x86_64-pc-windows-msvc
@@ -127,7 +139,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions-rs/toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain
+        with:
+          toolchain: nightly
+          target: x86_64-unknown-linux-gnu
+      - uses: actions-rust-lang/setup-rust-toolchain
         with:
           toolchain: stable
           target: x86_64-unknown-linux-gnu
