@@ -11,7 +11,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 karafriends-lib = { version = "0.1.0", path = "../karafriends-lib" }
-neon = { version = "1.0.0-alpha.4", default-features = false, features = ["napi-8"] }
+neon = { version = "1.0.0", default-features = false, features = ["napi-8"] }
 
 [target.'cfg(windows)'.dependencies]
 win32console = "0.1.5"
