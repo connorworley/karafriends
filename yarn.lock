@@ -13404,7 +13404,7 @@ __metadata:
     react-mobile-picker-scroll: 0.2.14
     react-relay: 16.2.0
     react-router-dom: 6.23.1
-    react-swipeable: 7.0.1
+    react-swipeable: 7.0.2
     regenerator-runtime: 0.14.1
     relay-compiler: 15.0.0
     relay-compiler-language-typescript: 15.0.1
@@ -16421,12 +16421,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-swipeable@npm:7.0.1":
-  version: 7.0.1
-  resolution: "react-swipeable@npm:7.0.1"
+"react-swipeable@npm:7.0.2":
+  version: 7.0.2
+  resolution: "react-swipeable@npm:7.0.2"
   peerDependencies:
-    react: ^16.8.3 || ^17 || ^18
-  checksum: 1cd19275c5608cb202ca7717afc73e336fb51d6ae4c9353ef409e1779dfb90f36ac4c06aa870d3d862f15fb439f82b96d41395738d04b8d2290aefc670fd6b5b
+    react: ^16.8.3 || ^17 || ^18 || ^19.0.0 || ^19.0.0-rc
+  checksum: 3bcc470427049c676d47e8b5fefc852f2fef8875ac78b91da0b025170f5161c422bc1cf78506e97e7b2bf705c4e3687b72bb5c1344f29d3890083a874bc6366c
   languageName: node
   linkType: hard
 
