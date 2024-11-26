@@ -5836,10 +5836,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:4.17.1":
-  version: 4.17.1
-  resolution: "@types/lodash@npm:4.17.1"
-  checksum: 01984d5b44c09ef45258f8ac6d0cf926900624064722d51a020ba179e5d4a293da0068fb278d87dc695586afe7ebd3362ec57f5c0e7c4f6c1fab9d04a80e77f5
+"@types/lodash@npm:4.17.13":
+  version: 4.17.13
+  resolution: "@types/lodash@npm:4.17.13"
+  checksum: d0bf8fbd950be71946e0076b30fd40d492293baea75f05931b6b5b906fd62583708c6229abdb95b30205ad24ce1ed2f48bc9d419364f682320edd03405cc0c7e
   languageName: node
   linkType: hard
 
@@ -13328,7 +13328,7 @@ __metadata:
     "@types/gl-vec2": 1.3.5
     "@types/hls.js": 1.0.0
     "@types/kuromoji": 0.1.3
-    "@types/lodash": 4.17.1
+    "@types/lodash": 4.17.13
     "@types/materialize-css": 1.0.14
     "@types/node": 20.12.12
     "@types/node-fetch": 2.6.11
