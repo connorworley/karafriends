@@ -62,7 +62,7 @@
     "polyline-normals": "2.0.2",
     "postcss": "8.4.38",
     "promise-retry": "2.0.1",
-    "qrcode": "1.5.3",
+    "qrcode": "1.5.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-fade-in": "2.0.1",
