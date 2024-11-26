@@ -5477,19 +5477,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/color-convert@npm:2.0.3":
-  version: 2.0.3
-  resolution: "@types/color-convert@npm:2.0.3"
+"@types/color-convert@npm:2.0.4":
+  version: 2.0.4
+  resolution: "@types/color-convert@npm:2.0.4"
   dependencies:
-    "@types/color-name": "*"
-  checksum: bb6649b49a9da85435c0076c0b00183b972ee2ccbebb7f2f20e58843f081616bba054280fad96fe19e8bb998b3494a3f4c105dea6fef31147f92097f2c08f1ca
+    "@types/color-name": ^1.1.0
+  checksum: 694141a03d6dbddbe57dea71a45db89799a0a352516bbafbcc54dff6321734c6838f60672119e1d586043a9d1fcd220226ea9db7f296c1c08ffdaa04d613a83b
   languageName: node
   linkType: hard
 
-"@types/color-name@npm:*":
-  version: 1.1.1
-  resolution: "@types/color-name@npm:1.1.1"
-  checksum: b71fcad728cc68abcba1d405742134410c8f8eb3c2ef18113b047afca158ad23a4f2c229bcf71a38f4a818dead375c45b20db121d0e69259c2d81e97a740daa6
+"@types/color-name@npm:^1.1.0":
+  version: 1.1.5
+  resolution: "@types/color-name@npm:1.1.5"
+  checksum: ea889762fb0fbe1df5931d2b058316b2ad1209257dc8b9a3871c554fdf2f2ad28b610f5362d9dc449f699495e83206cd2889dfcbdc10bbf7fd84cc51c4b3c5be
   languageName: node
   linkType: hard
 
@@ -13321,7 +13321,7 @@ __metadata:
     "@sentry/node": 8.2.1
     "@types/audioworklet": 0.0.55
     "@types/babel__core": 7
-    "@types/color-convert": 2.0.3
+    "@types/color-convert": 2.0.4
     "@types/compression": ^1
     "@types/express": 4.17.21
     "@types/format-duration": 1.0.3
