@@ -1955,6 +1955,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/runtime@npm:^7.25.0":
+  version: 7.26.0
+  resolution: "@babel/runtime@npm:7.26.0"
+  dependencies:
+    regenerator-runtime: ^0.14.0
+  checksum: c8e2c0504ab271b3467a261a8f119bf2603eb857a0d71e37791f4e3fae00f681365073cc79f141ddaa90c6077c60ba56448004ad5429d07ac73532be9f7cf28a
+  languageName: node
+  linkType: hard
+
 "@babel/template@npm:^7.20.7, @babel/template@npm:^7.3.3":
   version: 7.20.7
   resolution: "@babel/template@npm:7.20.7"
@@ -13863,7 +13872,7 @@ __metadata:
     react-fade-in: 2.0.1
     react-icons: 5.2.1
     react-mobile-picker-scroll: 0.2.14
-    react-relay: 16.2.0
+    react-relay: 18.2.0
     react-router-dom: 6.23.1
     react-swipeable: 7.0.2
     regenerator-runtime: 0.14.1
@@ -16914,18 +16923,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-relay@npm:16.2.0":
-  version: 16.2.0
-  resolution: "react-relay@npm:16.2.0"
+"react-relay@npm:18.2.0":
+  version: 18.2.0
+  resolution: "react-relay@npm:18.2.0"
   dependencies:
-    "@babel/runtime": ^7.0.0
+    "@babel/runtime": ^7.25.0
     fbjs: ^3.0.2
     invariant: ^2.2.4
     nullthrows: ^1.1.1
-    relay-runtime: 16.2.0
+    relay-runtime: 18.2.0
   peerDependencies:
     react: ^16.9.0 || ^17 || ^18
-  checksum: fbe58972825ea1ba1d75598f1e85783282a39a9d692f3763ab450a8149a4ac276ff50468273ee1c5f9dc3099d83ed09e45eb79fb46078b9fa26f68f32c926a29
+  checksum: 0f52226b150e172ccfcb3d77d1302cbe84ea19d11f99b089663c0a080407bdbe5f99d74d496718aa2d1f2ba2806cf3bee35ef195e3e2609caa1d7c42d49aa366
   languageName: node
   linkType: hard
 
@@ -17284,6 +17293,17 @@ __metadata:
     fbjs: ^3.0.2
     invariant: ^2.2.4
   checksum: 7a6378b48495d014404bf08ba3ed4afa07838727800141ead3cd1b908c61556ef56d1ae7756f4b72134fd4e62b916b9522e65fde4144806feed29aecf57d3bfc
+  languageName: node
+  linkType: hard
+
+"relay-runtime@npm:18.2.0":
+  version: 18.2.0
+  resolution: "relay-runtime@npm:18.2.0"
+  dependencies:
+    "@babel/runtime": ^7.25.0
+    fbjs: ^3.0.2
+    invariant: ^2.2.4
+  checksum: 725fb975221a74be660c17631fbd69f29f4c1f7cf409f9e6b4a082358317e91665f8633140ac491bac7c0c638d004b93ea7786d62a9f752589d7ded19efc2ef1
   languageName: node
   linkType: hard
 
