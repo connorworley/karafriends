@@ -99,6 +99,7 @@ function Player(props: {
         mutation: popSongMutation,
         variables: {},
         onCompleted: ({ popSong }) => {
+          if (!popSong) return;
           if (!videoRef.current) return;
           if (trackRef?.current) {
             trackRef.current.default = false;
@@ -127,7 +128,7 @@ function Player(props: {
                   hls = new Hls({ maxBufferLength: 90 /* seconds */ });
                   hls.attachMedia(videoRef.current);
                   hls.loadSource(
-                    popSong.streamingUrls[popSong.streamingUrlIdx].url
+                    popSong.streamingUrls[popSong.streamingUrlIdx].url,
                   );
                 };
 
@@ -143,7 +144,7 @@ function Player(props: {
                     } else {
                       // Maybe it's not done downloading yet, or predownload is disabled
                       console.log(
-                        `Local file for ${popSong.songId} doesn't seem available, using remote`
+                        `Local file for ${popSong.songId} doesn't seem available, using remote`,
                       );
                       loadRemote();
                     }
@@ -159,7 +160,7 @@ function Player(props: {
                   .catch((error) => {
                     // This throws if the file doesn't exist (as karafriends:// is a file:// passthrough protocol)
                     console.log(
-                      `Local file for ${popSong.songId} doesn't seem available, using remote`
+                      `Local file for ${popSong.songId} doesn't seem available, using remote`,
                     );
                     console.error(error);
 
@@ -219,7 +220,7 @@ function Player(props: {
                 }
 
                 console.log(
-                  `Using ${popSong.gainValue} for gain on Youtube queue item`
+                  `Using ${popSong.gainValue} for gain on Youtube queue item`,
                 );
                 props.audio.gain(popSong.gainValue);
 
@@ -303,7 +304,7 @@ function Player(props: {
 
       audioCtx.current = props.audio.audioContext;
       videoAudioSrc.current = audioCtx.current.createMediaElementSource(
-        videoRef.current
+        videoRef.current,
       );
       videoAudioSrc.current.connect(props.audio.sink());
     }

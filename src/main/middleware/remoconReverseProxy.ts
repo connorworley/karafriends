@@ -14,7 +14,9 @@ function remoconReverseProxy(devPort: number) {
       }
       fetch(
         `http://127.0.0.1:${devPort}/${
-          !req.path.startsWith("/remocon") ? "remocon" : ""
+          !req.path.startsWith("/remocon") && !req.path.startsWith("/renderer")
+            ? "remocon"
+            : ""
         }${req.originalUrl}`,
         {
           method: req.method,
