@@ -44,7 +44,7 @@ exports.config = {
           "create",
           "karafriendsIntegrationDevice",
           "com.apple.CoreSimulator.SimDeviceType.iPhone-15",
-          "com.apple.CoreSimulator.SimRuntime.iOS-17-4",
+          "com.apple.CoreSimulator.SimRuntime.iOS-18-1",
         ],
         { encoding: "utf-8" },
       ).trim();
