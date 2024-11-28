@@ -5653,10 +5653,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/format-duration@npm:1.0.3":
-  version: 1.0.3
-  resolution: "@types/format-duration@npm:1.0.3"
-  checksum: 76e1498fbf5eef38ca34480b1bfe3eeaf7b556e8b2f3150a9cef4a5bda251fa93396fdc36cf23eddde1bda8635fdaf5307eba9595b7fc793b72633b40b8b0f9a
+"@types/format-duration@npm:3.0.0":
+  version: 3.0.0
+  resolution: "@types/format-duration@npm:3.0.0"
+  checksum: d782976a9bbc01aa4f86950c38c3557b0f628638ed1907bc52be18cce6459acb0ca6cd73c1c1006a31ae66d5bd006df74188af5070310bff557ca1a633a6d617
   languageName: node
   linkType: hard
 
@@ -13324,7 +13324,7 @@ __metadata:
     "@types/color-convert": 2.0.3
     "@types/compression": ^1
     "@types/express": 4.17.21
-    "@types/format-duration": 1.0.3
+    "@types/format-duration": 3.0.0
     "@types/gl-vec2": 1.3.5
     "@types/hls.js": 1.0.0
     "@types/kuromoji": 0.1.3
