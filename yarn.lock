@@ -13721,7 +13721,7 @@ __metadata:
     mv: 2.1.1
     niconico: 1.2.0
     node-fetch: 3.3.2
-    node-loader: 2.0.0
+    node-loader: 2.1.0
     parcel: 2.8.3
     parcel-reporter-static-files-copy: 1.5.3
     path-browserify: ^1.0.0
@@ -14185,7 +14185,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"loader-utils@npm:^2.0.0":
+"loader-utils@npm:^2.0.0, loader-utils@npm:^2.0.3":
   version: 2.0.4
   resolution: "loader-utils@npm:2.0.4"
   dependencies:
@@ -15303,14 +15303,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-loader@npm:2.0.0":
-  version: 2.0.0
-  resolution: "node-loader@npm:2.0.0"
+"node-loader@npm:2.1.0":
+  version: 2.1.0
+  resolution: "node-loader@npm:2.1.0"
   dependencies:
-    loader-utils: ^2.0.0
+    loader-utils: ^2.0.3
   peerDependencies:
     webpack: ^5.0.0
-  checksum: 9252a92b226c0e6fdd29fef92d9853d6c389a4c65119a32306dc12cee7886f2ab4dde333dda5e37df92283c34bd0267e98c384be6d548dbe69676e3343f549ea
+  checksum: c86312b510f49c001df1908437f3327314d29c7282c2a87cfb7067d6e35f255a0c67b5852a19ced9861c67fa109bab129ff3fe42d8e4d5cdbad39b6c35f09023
   languageName: node
   linkType: hard
 
