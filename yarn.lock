@@ -12416,14 +12416,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql-subscriptions@npm:2.0.0":
-  version: 2.0.0
-  resolution: "graphql-subscriptions@npm:2.0.0"
-  dependencies:
-    iterall: ^1.3.0
+"graphql-subscriptions@npm:3.0.0":
+  version: 3.0.0
+  resolution: "graphql-subscriptions@npm:3.0.0"
   peerDependencies:
     graphql: ^15.7.2 || ^16.0.0
-  checksum: 4735ef86462967bca2f549c5e5e30ca63fb6ddde19a81d8601f38fb12f8bda2b5f1203b33df8fd8d1154ffa3eadc2820d407e64b8fda73e319559256c508af21
+  checksum: 2a0ca4d1505db39775afae680a2bc9ebf4ab8cd301aef6c1df0bae2aefd57d04ffcf5e84270eac4ac9e5b6d2d70360ea9df1ea09ca1a55432d6a89b09b68a4d2
   languageName: node
   linkType: hard
 
@@ -13648,13 +13646,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"iterall@npm:^1.3.0":
-  version: 1.3.0
-  resolution: "iterall@npm:1.3.0"
-  checksum: c78b99678f8c99be488cca7f33e4acca9b72c1326e050afbaf023f086e55619ee466af0464af94a0cb3f292e60cb5bac53a8fd86bd4249ecad26e09f17bb158b
-  languageName: node
-  linkType: hard
-
 "jackspeak@npm:^2.0.3":
   version: 2.2.0
   resolution: "jackspeak@npm:2.2.0"
@@ -14515,7 +14506,7 @@ __metadata:
     gl-vec2: 1.3.0
     glob: 11.0.0
     graphql: 16.9.0
-    graphql-subscriptions: 2.0.0
+    graphql-subscriptions: 3.0.0
     graphql-ws: 5.16.0
     hls.js: 1.5.17
     husky: 9.1.7
