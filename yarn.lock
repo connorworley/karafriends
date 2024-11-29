@@ -1809,21 +1809,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.4":
-  version: 7.21.5
-  resolution: "@babel/runtime@npm:7.21.5"
-  dependencies:
-    regenerator-runtime: ^0.13.11
-  checksum: 358f2779d3187f5c67ad302e8f8d435412925d0b991d133c7d4a7b1ddd5a3fda1b6f34537cb64628dfd96a27ae46df105bed3895b8d754b88cacdded8d1129dd
-  languageName: node
-  linkType: hard
-
 "@babel/runtime@npm:^7.14.0":
   version: 7.22.3
   resolution: "@babel/runtime@npm:7.22.3"
   dependencies:
     regenerator-runtime: ^0.13.11
   checksum: 8fc50785ca4cba749fed90bffca7e6fd52d4709755654e95b8d2a945fc034b56fb8c2e8a0183fea7c4abb86bf5fa77678c0ea35163b6920649833d180c34c234
+  languageName: node
+  linkType: hard
+
+"@babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.4":
+  version: 7.21.5
+  resolution: "@babel/runtime@npm:7.21.5"
+  dependencies:
+    regenerator-runtime: ^0.13.11
+  checksum: 358f2779d3187f5c67ad302e8f8d435412925d0b991d133c7d4a7b1ddd5a3fda1b6f34537cb64628dfd96a27ae46df105bed3895b8d754b88cacdded8d1129dd
   languageName: node
   linkType: hard
 
@@ -6585,10 +6585,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/relay-runtime@npm:*, @types/relay-runtime@npm:14.1.10":
+"@types/relay-runtime@npm:*":
   version: 14.1.10
   resolution: "@types/relay-runtime@npm:14.1.10"
   checksum: 498af0a8b6521edcf3c2945bbd126167ffe29d18505085527641ba5d617533e37f356af17ec8d1ea7192fa1d398da116b9457d5a5c054d9b2f9ea2542adec61d
+  languageName: node
+  linkType: hard
+
+"@types/relay-runtime@npm:18.1.1":
+  version: 18.1.1
+  resolution: "@types/relay-runtime@npm:18.1.1"
+  checksum: 5a59f682448b5ce31fbffb7180ed894bf22deee1f669d6651236c191c6aa4f2f4f9363a10a5df68e4e144c01b7714cfbb4737bbf8b0834b74c2aa3718255265e
   languageName: node
   linkType: hard
 
@@ -14444,7 +14451,7 @@ __metadata:
     "@types/react-fade-in": 2.0.2
     "@types/react-relay": 16.0.6
     "@types/react-swipeable": 5.2.0
-    "@types/relay-runtime": 14.1.10
+    "@types/relay-runtime": 18.1.1
     "@types/user-agents": 1.0.4
     "@types/uuid": ^9
     "@types/webpack-env": 1.18.5
@@ -14513,7 +14520,7 @@ __metadata:
     relay-compiler: 18.0.0
     relay-compiler-language-typescript: 15.0.1
     relay-config: 12.0.1
-    relay-runtime: 16.2.0
+    relay-runtime: 18.2.0
     supports-color: 9.4.0
     ts-invariant: 0.10.3
     ts-loader: 9.5.1
@@ -18115,17 +18122,6 @@ __metadata:
   dependencies:
     cosmiconfig: ^5.0.5
   checksum: bad9578b1e2525dd21897cb35e89acbf21cc3a19852c916aec81baf3c5246493a1ac8c5c0f40736325a04116aa66129ec854dfe089b28eca65b79844788fd9d9
-  languageName: node
-  linkType: hard
-
-"relay-runtime@npm:16.2.0":
-  version: 16.2.0
-  resolution: "relay-runtime@npm:16.2.0"
-  dependencies:
-    "@babel/runtime": ^7.0.0
-    fbjs: ^3.0.2
-    invariant: ^2.2.4
-  checksum: 7a6378b48495d014404bf08ba3ed4afa07838727800141ead3cd1b908c61556ef56d1ae7756f4b72134fd4e62b916b9522e65fde4144806feed29aecf57d3bfc
   languageName: node
   linkType: hard
 
