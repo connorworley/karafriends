@@ -1,3 +1,5 @@
+const { setupBrowser } = require("@testing-library/webdriverio");
+
 async function isAlertOpenSafari(browser) {
   try {
     await browser.getAlertText();
@@ -9,8 +11,9 @@ async function isAlertOpenSafari(browser) {
 
 describe("Electron tests", () => {
   it("Remocon screenshot", async () => {
+    const { getByText } = setupBrowser(browser);
     await browser.url(
-      `http://localhost:${process.env.KARAFRIENDS_DEV_PORT}/remocon/`,
+      `http://localhost:${process.env.KARAFRIENDS_REMOCON_PORT}/#/search/song/Lemon`,
     );
     await browser.waitUntil(
       browser.isAlertOpen || (() => isAlertOpenSafari(browser)),
@@ -18,6 +21,17 @@ describe("Electron tests", () => {
     );
     await browser.sendAlertText("wdio");
     await browser.acceptAlert();
+    await browser.waitUntil(
+      async () => {
+        try {
+          await getByText("yonezukenshi");
+          return true;
+        } catch {
+          return false;
+        }
+      },
+      { timeout: 60 * 1000 },
+    );
     await browser.saveScreenshot(
       `remocon-${browser.capabilities.browserName}.png`,
     );

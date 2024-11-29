@@ -1,7 +1,7 @@
 import { app } from "electron"; // tslint:disable-line:no-implicit-dependencies
 import fs from "fs";
 import path from "path";
-import { parse } from "yaml";
+import { parse, stringify } from "yaml";
 
 export interface KarafriendsConfig {
   // Whether to use the low bitrate URLs for DAM songs
@@ -57,12 +57,16 @@ const DEFAULT_CONFIG: KarafriendsConfig = {
 function applyEnvironmentOverrides(config: KarafriendsConfig) {
   if (process.env.KARAFRIENDS_DEV_PORT)
     config.devPort = parseInt(process.env.KARAFRIENDS_DEV_PORT, 10);
+  if (process.env.KARAFRIENDS_REMOCON_PORT)
+    config.remoconPort = parseInt(process.env.KARAFRIENDS_REMOCON_PORT, 10);
   return config;
 }
 
 function getConfig(): KarafriendsConfig {
   // Refer to https://www.electronjs.org/docs/latest/api/app#appgetpathname
   // for where the config file should be placed. On Windows, it should be %APPDATA%/karafriends/config.yaml
+  let config = DEFAULT_CONFIG;
+
   const configFilepath: string = path.join(
     app.getPath("userData"),
     "config.yaml",
@@ -75,14 +79,16 @@ function getConfig(): KarafriendsConfig {
     const localConfig: KarafriendsConfig = parse(
       fs.readFileSync(configFilepath, { encoding: "utf8", flag: "r" }),
     );
-    return applyEnvironmentOverrides({
-      ...DEFAULT_CONFIG,
-      ...localConfig,
-    });
+    config = { ...DEFAULT_CONFIG, ...localConfig };
+  } else {
+    console.log("No local configs found. Using default.");
   }
 
-  console.log("No local configs found. Using default.");
-  return applyEnvironmentOverrides(DEFAULT_CONFIG);
+  // write back defaults
+  fs.mkdirSync(path.dirname(configFilepath), { recursive: true });
+  fs.writeFileSync(configFilepath, stringify(config));
+
+  return applyEnvironmentOverrides(config);
 }
 
 const karafriendsConfig: KarafriendsConfig = getConfig();
