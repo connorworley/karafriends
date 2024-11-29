@@ -99,6 +99,7 @@ function Player(props: {
         mutation: popSongMutation,
         variables: {},
         onCompleted: ({ popSong }) => {
+          if (!popSong) return;
           if (!videoRef.current) return;
           if (trackRef?.current) {
             trackRef.current.default = false;
