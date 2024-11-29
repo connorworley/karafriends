@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { graphql, useLazyLoadQuery } from "react-relay";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import YouTubePlayer from "youtube-player";
 
 import useUserIdentity from "../../hooks/useUserIdentity";
@@ -49,12 +49,12 @@ const YouTubeInfo = ({ videoId }: Props) => {
   > | null> = useRef(null);
   const [adhocSongLyrics, setAdhocSongLyrics] = useState<string | null>(null);
   const [selectedCaption, setSelectedCaption] = useState<string | undefined>(
-    undefined
+    undefined,
   );
 
   const videoData = useLazyLoadQuery<YouTubeInfoVideoInfoQuery>(
     youTubeInfoVideoInfoQuery,
-    { videoId }
+    { videoId },
   );
 
   useEffect(() => {

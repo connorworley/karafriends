@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 import { ListItem } from "../List";
 import * as styles from "./JoysoundArtistSearchResults.module.scss";

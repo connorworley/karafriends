@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { graphql, useLazyLoadQuery, useMutation } from "react-relay";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import invariant from "ts-invariant";
 
 import useNowPlaying from "../../hooks/useNowPlaying";
@@ -47,10 +47,10 @@ function AdhocLyricsControls({ id }: Props) {
 
   const { adhocLyrics } = useLazyLoadQuery<AdhocLyricsControlsLyricsQuery>(
     adhocLyricsControlsLyricsQuery,
-    { id }
+    { id },
   );
   const [pushLyrics] = useMutation<AdhocLyricsControlsPushLyricsMutation>(
-    adhocLyricsControlsPushLyricsMutation
+    adhocLyricsControlsPushLyricsMutation,
   );
 
   if (

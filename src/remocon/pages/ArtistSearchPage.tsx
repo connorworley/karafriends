@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 
 import ArtistSearchResults from "../components/ArtistSearchResults";
 import DebouncedInput from "../components/DebouncedInput";

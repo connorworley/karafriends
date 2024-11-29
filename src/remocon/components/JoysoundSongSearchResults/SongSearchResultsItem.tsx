@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 import { ListItem } from "../List";
 import { JoysoundSongSearchResults_joysoundSongsByKeyword$data } from "./__generated__/JoysoundSongSearchResults_joysoundSongsByKeyword.graphql";

@@ -1,6 +1,6 @@
 import React from "react";
 import { graphql, useLazyLoadQuery, usePaginationFragment } from "react-relay";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 import Button from "../Button";
 import { List } from "../List";
@@ -49,7 +49,7 @@ const SongSearchResults = ({ query }: Props) => {
 
   const queryData = useLazyLoadQuery<JoysoundSongSearchResultsViewQuery>(
     joysoundSongSearchResultsViewQuery,
-    { keyword: query }
+    { keyword: query },
   );
 
   const { data, hasNext, loadNext, isLoadingNext } = usePaginationFragment<

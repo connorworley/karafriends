@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 
 import Button from "../components/Button";
 import NiconicoInfo from "../components/NiconicoInfo";
