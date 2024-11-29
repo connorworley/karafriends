@@ -1924,7 +1924,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.4":
+"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.4":
   version: 7.21.5
   resolution: "@babel/runtime@npm:7.21.5"
   dependencies:
@@ -9480,23 +9480,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"concurrently@npm:8.2.2":
-  version: 8.2.2
-  resolution: "concurrently@npm:8.2.2"
+"concurrently@npm:9.1.0":
+  version: 9.1.0
+  resolution: "concurrently@npm:9.1.0"
   dependencies:
     chalk: ^4.1.2
-    date-fns: ^2.30.0
     lodash: ^4.17.21
     rxjs: ^7.8.1
     shell-quote: ^1.8.1
-    spawn-command: 0.0.2
     supports-color: ^8.1.1
     tree-kill: ^1.2.2
     yargs: ^17.7.2
   bin:
     conc: dist/bin/concurrently.js
     concurrently: dist/bin/concurrently.js
-  checksum: 8ac774df06869773438f1bf91025180c52d5b53139bc86cf47659136c0d97461d0579c515d848d1e945d4e3e0cafe646b2ea18af8d74259b46abddcfe39b2c6c
+  checksum: 17d554f7e8f839fe023f673b63847d7b4895c6917e29d161ba17e3335a73dc66e1469486e5cfc3e90890ac2ba8c951a0d1dc297cf7b589c0cd9a89689a8ab6fb
   languageName: node
   linkType: hard
 
@@ -9860,15 +9858,6 @@ __metadata:
   version: 2.2.2
   resolution: "dataloader@npm:2.2.2"
   checksum: 4dabd247089c29f194e94d5434d504f99156c5c214a03463c20f3f17f40398d7e179edee69a27c16e315519ac8739042a810090087ae26449a0e685156a02c65
-  languageName: node
-  linkType: hard
-
-"date-fns@npm:^2.30.0":
-  version: 2.30.0
-  resolution: "date-fns@npm:2.30.0"
-  dependencies:
-    "@babel/runtime": ^7.21.0
-  checksum: f7be01523282e9bb06c0cd2693d34f245247a29098527d4420628966a2d9aad154bd0e90a6b1cf66d37adcb769cd108cf8a7bd49d76db0fb119af5cdd13644f4
   languageName: node
   linkType: hard
 
@@ -14428,7 +14417,7 @@ __metadata:
     classnames: 2.5.1
     color-convert: 2.0.1
     compression: 1.7.5
-    concurrently: 8.2.2
+    concurrently: 9.1.0
     cross-env: 7.0.3
     cubic-spline: 3.0.3
     dataloader: 2.2.2
@@ -18994,13 +18983,6 @@ __metadata:
   version: 0.11.59
   resolution: "spacetrim@npm:0.11.59"
   checksum: aa76ff32ac33487bbac4028e63d997b86fffc339f22a74dfb2300d52fc7b64357351c92b82b2a7b9d83a42d82647e1ad6db3e2d72c06aa84d4dc808c8b660131
-  languageName: node
-  linkType: hard
-
-"spawn-command@npm:0.0.2":
-  version: 0.0.2
-  resolution: "spawn-command@npm:0.0.2"
-  checksum: e35c5d28177b4d461d33c88cc11f6f3a5079e2b132c11e1746453bbb7a0c0b8a634f07541a2a234fa4758239d88203b758def509161b651e81958894c0b4b64b
   languageName: node
   linkType: hard
 
