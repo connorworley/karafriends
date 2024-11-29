@@ -1,7 +1,7 @@
 import { invariant } from "ts-invariant";
 
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 
 import useNowPlaying from "../hooks/useNowPlaying";
 import useUserIdentity from "../hooks/useUserIdentity";
@@ -30,7 +30,7 @@ export function getVideoId(videoQuery: string): string | null {
 export function isYouTubeVideoWithLyricsPlaying(
   currentSong: useNowPlayingQuery$data["currentSong"] | null | undefined,
   videoId: string,
-  nickname: string
+  nickname: string,
 ): boolean {
   if (!currentSong || currentSong.__typename !== "YoutubeQueueItem") {
     return false;
@@ -73,7 +73,7 @@ const YouTubePage = () => {
     isYouTubeVideoWithLyricsPlaying(
       currentSong,
       videoId || params.videoId || "",
-      nickname
+      nickname,
     )
   ) {
     navigate(`/adhocLyrics/${videoId || params.videoId || ""}`);

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 
 import DebouncedInput from "../components/DebouncedInput";
 import JoysoundArtistSearchResults from "../components/JoysoundArtistSearchResults";
@@ -24,7 +24,7 @@ const JoysoundArtistSearchPage = () => {
           history.replaceState(
             {},
             "",
-            `#/search/joysoundArtist/${e.target.value}`
+            `#/search/joysoundArtist/${e.target.value}`,
           );
         }}
         defaultValue={params.query}

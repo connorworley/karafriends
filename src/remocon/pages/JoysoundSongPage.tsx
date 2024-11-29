@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { graphql, useLazyLoadQuery } from "react-relay";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router";
 
 import Button from "../components/Button";
 import JoysoundQueueButtons from "../components/JoysoundQueueButtons";
@@ -39,7 +39,7 @@ const JoysoundSongPage = () => {
   const song = data.joysoundSongDetail;
 
   const [youtubeVideoId, setYoutubeVideoId] = useState<string>(
-    params.youtubeVideoId || ""
+    params.youtubeVideoId || "",
   );
   const [validatedYoutubeId, setValidatedYoutubeVideoId] = useState<string>("");
   const [waitForVideoIdInput, setWaitForVideoIdInput] =
@@ -59,7 +59,7 @@ const JoysoundSongPage = () => {
       history.replaceState(
         {},
         "",
-        `#/joysoundSong/${song.id}/${newYoutubeVideoId}`
+        `#/joysoundSong/${song.id}/${newYoutubeVideoId}`,
       );
     }
   };

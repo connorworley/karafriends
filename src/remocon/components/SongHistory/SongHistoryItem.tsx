@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { invariant } from "ts-invariant";
 
 import { ListItem } from "../List";

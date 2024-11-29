@@ -8,7 +8,7 @@ import { FaYoutube } from "react-icons/fa";
 import { MdMusicVideo } from "react-icons/md";
 // tslint:disable-next-line:no-submodule-imports
 import { SiNiconico } from "react-icons/si";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 import * as styles from "./SearchMethodGrid.module.scss";
 

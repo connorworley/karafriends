@@ -1,6 +1,6 @@
 import React from "react";
 import { graphql, useLazyLoadQuery } from "react-relay";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router";
 
 import DamQueueButtons from "../components/DamQueueButtons";
 import { withLoader } from "../components/Loader";

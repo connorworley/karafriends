@@ -7,7 +7,7 @@ import { MdClose, MdMusicVideo } from "react-icons/md";
 // tslint:disable-next-line:no-submodule-imports
 import { SiNiconico } from "react-icons/si";
 import { graphql, useMutation } from "react-relay";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 import { cyrb53 } from "../../../common/hash";
 import { useQueueQueueQuery$data } from "../../../common/hooks/__generated__/useQueueQueueQuery.graphql";

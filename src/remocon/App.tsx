@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { HashRouter, Route, Routes } from "react-router-dom";
+import { HashRouter, Route, Routes } from "react-router";
 
 import ControlBar from "./components/ControlBar";
 import NavBar from "./components/NavBar";
