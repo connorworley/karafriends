@@ -48,7 +48,7 @@ jobs:
           CARGO_ARGS: --target aarch64-apple-darwin
           CARGO_INCREMENTAL: false
           RUSTC_WRAPPER: sccache
-      - run: cargo install cargo-careful
+      - run: cargo install --force cargo-careful
       - run: yarn test:native
       - run: yarn test:wdio
       - run: |
