@@ -11,12 +11,14 @@ export default class KarafriendsAudio {
 
     this.vocoderNode = null;
     this.audioContext.audioWorklet
-      .addModule(new URL("./audio/phazeAudioWorklet.ts", import.meta.url))
+      .addModule(
+        new URL("worklet:./audio/phazeAudioWorklet.ts", import.meta.url),
+      )
       .then(
         () => {
           this.vocoderNode = new AudioWorkletNode(
             this.audioContext,
-            "phase-vocoder"
+            "phase-vocoder",
           );
           this.gainNode.disconnect();
           this.gainNode.connect(this.vocoderNode);
@@ -25,9 +27,9 @@ export default class KarafriendsAudio {
         (e) => {
           console.log(
             "could not load pitch shift audio worklet, pitch shift will not work",
-            e
+            e,
           );
-        }
+        },
       );
   }
 
@@ -36,7 +38,7 @@ export default class KarafriendsAudio {
       // @ts-expect-error i swear there's a .get method on this object.
       this.vocoderNode.parameters.get("pitchFactor").value = Math.pow(
         2,
-        semitones / 12
+        semitones / 12,
       );
     }
   }
