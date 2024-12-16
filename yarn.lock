@@ -5225,14 +5225,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@parcel/transformer-sass@npm:2.12.0":
-  version: 2.12.0
-  resolution: "@parcel/transformer-sass@npm:2.12.0"
+"@parcel/transformer-sass@npm:2.13.2":
+  version: 2.13.2
+  resolution: "@parcel/transformer-sass@npm:2.13.2"
   dependencies:
-    "@parcel/plugin": 2.12.0
+    "@parcel/plugin": 2.13.2
     "@parcel/source-map": ^2.1.1
     sass: ^1.38.0
-  checksum: ce6b4d329b60dd4766a47b064cb10d18406ce569488b7f7c6fe561e9180786b813194935d9679bbe4b9afa43877a034d57a4b61e1166a2801af3889196a1e3d8
+  checksum: 3a11426a7be8cef8b987ee5840c3f23ac06e3c90a1725609b0921ff794a52b97aa5d455d091d733ec6b7b16793451f54159b36810934c8acb38516c5ac2571f9
   languageName: node
   linkType: hard
 
@@ -14574,7 +14574,7 @@ __metadata:
     "@parcel/core": 2.12.0
     "@parcel/transformer-glsl": 2.12.0
     "@parcel/transformer-react-refresh-wrap": 2.13.2
-    "@parcel/transformer-sass": 2.12.0
+    "@parcel/transformer-sass": 2.13.2
     "@parcel/transformer-worklet": 2.12.0
     "@sentry/browser": 8.41.0
     "@sentry/node": 8.41.0
