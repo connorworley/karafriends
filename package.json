@@ -40,7 +40,7 @@
     "color-convert": "2.0.1",
     "compression": "1.7.5",
     "cubic-spline": "3.0.3",
-    "dataloader": "2.2.2",
+    "dataloader": "2.2.3",
     "electron-is-dev": "3.0.1",
     "express": "4.21.1",
     "fft.js": "4.0.4",
