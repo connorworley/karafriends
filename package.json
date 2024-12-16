@@ -91,7 +91,7 @@
     "@babel/preset-react": "7.25.9",
     "@babel/runtime": "7.26.0",
     "@parcel/config-default": "2.12.0",
-    "@parcel/core": "2.12.0",
+    "@parcel/core": "2.13.2",
     "@parcel/transformer-glsl": "2.12.0",
     "@parcel/transformer-sass": "2.12.0",
     "@parcel/transformer-worklet": "2.12.0",
