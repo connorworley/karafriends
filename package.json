@@ -114,7 +114,7 @@
     "@types/qrcode": "1.5.5",
     "@types/react": "18.2.6",
     "@types/react-dom": "18.3.1",
-    "@types/react-relay": "16.0.6",
+    "@types/react-relay": "18.2.0",
     "@types/relay-runtime": "14.1.10",
     "@types/uuid": "^9",
     "@types/webpack-env": "1.18.5",
