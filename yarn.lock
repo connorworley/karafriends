@@ -6728,14 +6728,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:18.2.6":
-  version: 18.2.6
-  resolution: "@types/react@npm:18.2.6"
+"@types/react@npm:19.0.1":
+  version: 19.0.1
+  resolution: "@types/react@npm:19.0.1"
   dependencies:
-    "@types/prop-types": "*"
-    "@types/scheduler": "*"
     csstype: ^3.0.2
-  checksum: dea9d232d8df7ac357367a69dcb557711ab3d5501807ffa77cebeee73d49ee94d095f298e36853c63ed47cce097eee4c7eae2aaa8c02fac3f0171ec1b523a819
+  checksum: e5e05cdf5fc53804e94548ca4e139102fffaab95d4c19be821d30d81dbab75ca3e30b72f2e2e750b90fcb535058cb694c4403402f14eb8a19a1282629c8222d8
   languageName: node
   linkType: hard
 
@@ -14595,7 +14593,7 @@ __metadata:
     "@types/node-fetch": 2.6.12
     "@types/promise-retry": 1.1.6
     "@types/qrcode": 1.5.5
-    "@types/react": 18.2.6
+    "@types/react": 19.0.1
     "@types/react-dom": 18.3.1
     "@types/react-fade-in": 2.0.2
     "@types/react-relay": 16.0.6
@@ -14657,7 +14655,7 @@ __metadata:
     promise-retry: 2.0.1
     qrcode: 1.5.4
     raw-loader: 4.0.2
-    react: 18.2.0
+    react: 19.0.0
     react-dom: 18.3.1
     react-fade-in: 2.0.1
     react-icons: 5.3.0
@@ -17928,12 +17926,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:18.2.0":
-  version: 18.2.0
-  resolution: "react@npm:18.2.0"
-  dependencies:
-    loose-envify: ^1.1.0
-  checksum: 88e38092da8839b830cda6feef2e8505dec8ace60579e46aa5490fc3dc9bba0bd50336507dc166f43e3afc1c42939c09fe33b25fae889d6f402721dcd78fca1b
+"react@npm:19.0.0":
+  version: 19.0.0
+  resolution: "react@npm:19.0.0"
+  checksum: 86de15d85b2465feb40297a90319c325cb07cf27191a361d47bcfe8c6126c973d660125aa67b8f4cbbe39f15a2f32efd0c814e98196d8e5b68c567ba40a399c6
   languageName: node
   linkType: hard
 
