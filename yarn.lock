@@ -14663,7 +14663,7 @@ __metadata:
     react-icons: 5.3.0
     react-mobile-picker-scroll: 0.2.14
     react-relay: 18.2.0
-    react-router: 7.0.1
+    react-router: 7.0.2
     react-swipeable: 7.0.2
     regenerator-runtime: 0.14.1
     relay-compiler: 18.0.0
@@ -17892,9 +17892,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router@npm:7.0.1":
-  version: 7.0.1
-  resolution: "react-router@npm:7.0.1"
+"react-router@npm:7.0.2":
+  version: 7.0.2
+  resolution: "react-router@npm:7.0.2"
   dependencies:
     "@types/cookie": ^0.6.0
     cookie: ^1.0.1
@@ -17906,7 +17906,7 @@ __metadata:
   peerDependenciesMeta:
     react-dom:
       optional: true
-  checksum: 13110d762ce07062b3cfd7097bc2625bfd7df4485836d281338182dd0066517ceb9e9da6bf5dd1070e18fe593f8975031207995c277a4b6fc404b62ba51c91cc
+  checksum: a3b42f25fa345bfc51abf608f14ded463f5a32345de8519b7beb35e713f09032e0a2af265e40c51ba9cde5d75c534697cded6f1c7988a1197b1392f2e32225ef
   languageName: node
   linkType: hard
 
