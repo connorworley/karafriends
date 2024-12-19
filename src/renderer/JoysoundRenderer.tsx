@@ -130,7 +130,7 @@ function createShader(
   type:
     | WebGLRenderingContextBase["VERTEX_SHADER"]
     | WebGLRenderingContextBase["FRAGMENT_SHADER"],
-  source: string
+  source: string,
 ) {
   const shader = gl.createShader(type);
   invariant(shader);
@@ -144,7 +144,7 @@ function createShader(
 function createProgram(
   gl: WebGL2RenderingContext,
   vertexShader: WebGLShader,
-  fragmentShader: WebGLShader
+  fragmentShader: WebGLShader,
 ) {
   const program = gl.createProgram();
   invariant(program);
@@ -160,14 +160,14 @@ function quadToTriangles(
   x0: number,
   y0: number,
   x1: number,
-  y1: number
+  y1: number,
 ): number[] {
   return [x0, y0, x1, y0, x0, y1, x0, y1, x1, y0, x1, y1];
 }
 
 function createTextureFromImage(
   gl: WebGL2RenderingContext,
-  bitmap: HTMLCanvasElement
+  bitmap: HTMLCanvasElement,
 ): WebGLTexture {
   const texture = gl.createTexture();
   invariant(texture);
@@ -187,7 +187,7 @@ function createTextureFromImage(
 function getLyricsBlockWidth(lyricsBlock: JoysoundLyricsBlock): number {
   const mainBlockWidth = lyricsBlock.chars.reduce(
     (acc, curr) => acc + curr.width,
-    0
+    0,
   );
 
   const rightmostFuriganaBlock =
@@ -219,7 +219,7 @@ function setupTextCanvas(
   textCtx: CanvasRenderingContext2D,
   lyricsBlock: JoysoundLyricsBlock,
   fillColor: number[],
-  strokeColor: number[]
+  strokeColor: number[],
 ): void {
   textCtx.canvas.width = getLyricsBlockWidth(lyricsBlock) * EXPAND_RATE_X;
   textCtx.canvas.height = getLyricsBlockHeight(lyricsBlock) * EXPAND_RATE_Y;
@@ -245,7 +245,7 @@ function setupTitleCanvas(textCtx: CanvasRenderingContext2D): void {
 function createTitleRows(
   textCtx: CanvasRenderingContext2D,
   fontStroke: number,
-  title: string
+  title: string,
 ): JoysoundTitleRow[] {
   const titleRows = [];
 
@@ -279,7 +279,7 @@ function drawTitleRowsToCanvas(
   titleRows: JoysoundTitleRow[],
   fontSize: number,
   fontStroke: number,
-  yPos: number
+  yPos: number,
 ) {
   for (const titleRow of titleRows) {
     const titleRowPaddedWidth =
@@ -287,7 +287,7 @@ function drawTitleRowsToCanvas(
 
     const xPos = Math.max(
       0,
-      (SCREEN_WIDTH * EXPAND_RATE_X - titleRowPaddedWidth) / 2 / EXPAND_RATE_X
+      (SCREEN_WIDTH * EXPAND_RATE_X - titleRowPaddedWidth) / 2 / EXPAND_RATE_X,
     );
 
     drawTextToCanvas(textCtx, fontSize, fontStroke, xPos, yPos, titleRow.text);
@@ -299,7 +299,7 @@ function drawTitleRowsToCanvas(
 function createTitleTexture(
   gl: WebGL2RenderingContext,
   metadata: JoysoundMetadata,
-  isRomaji: boolean
+  isRomaji: boolean,
 ): WebGLTexture {
   const textCtx = document.createElement("canvas").getContext("2d");
   invariant(textCtx);
@@ -315,7 +315,7 @@ function createTitleTexture(
   const titleRows = createTitleRows(
     textCtx,
     titleFontStroke,
-    metadata.musicName
+    metadata.musicName,
   );
   const titleHeight =
     (titleFontSize + TITLE_FONT_STROKE * 2) * titleRows.length * EXPAND_RATE_Y;
@@ -330,7 +330,7 @@ function createTitleTexture(
   const artistRows = createTitleRows(
     textCtx,
     artistFontStroke,
-    "♪ " + metadata.artistName
+    "♪ " + metadata.artistName,
   );
   const artistHeight =
     (artistFontSize + ARTIST_FONT_STROKE * 2) *
@@ -372,14 +372,14 @@ function createTitleTexture(
     titleRows,
     titleFontSize,
     TITLE_FONT_STROKE,
-    titleYPos
+    titleYPos,
   );
   drawTitleRowsToCanvas(
     textCtx,
     artistRows,
     artistFontSize,
     ARTIST_FONT_STROKE,
-    artistYPos
+    artistYPos,
   );
 
   drawTextToCanvas(
@@ -388,7 +388,7 @@ function createTitleTexture(
     METADATA_FONT_STROKE,
     48 - TEXT_PADDING,
     lyricistYPos,
-    lyricistText
+    lyricistText,
   );
 
   drawTextToCanvas(
@@ -397,7 +397,7 @@ function createTitleTexture(
     METADATA_FONT_STROKE,
     48 - TEXT_PADDING,
     composerYPos,
-    composerText
+    composerText,
   );
 
   const result = createTextureFromImage(gl, textCtx.canvas);
@@ -413,7 +413,7 @@ function createLyricsBlockTexture(
   lyricsBlock: JoysoundLyricsBlock,
   fillColor: number[],
   strokeColor: number[],
-  isRomaji: boolean
+  isRomaji: boolean,
 ): WebGLTexture {
   setupTextCanvas(textCtx, lyricsBlock, fillColor, strokeColor);
 
@@ -431,7 +431,7 @@ function createLyricsBlockTexture(
 function getTextOffset(
   textCtx: CanvasRenderingContext2D,
   text: string,
-  charWidth: number
+  charWidth: number,
 ): number {
   const measure = textCtx.measureText(text);
 
@@ -488,7 +488,7 @@ function getTextOffset(
 function getRomajiTextOffset(
   textCtx: CanvasRenderingContext2D,
   text: string,
-  sourceWidth: number
+  sourceWidth: number,
 ): number {
   const measure = textCtx.measureText(text);
 
@@ -502,7 +502,7 @@ function drawTextToCanvas(
   xPos: number,
   yPos: number,
   text: string,
-  fontCode: number = 0
+  fontCode: number = 0,
 ): void {
   textCtx.font = `${fontSize * EXPAND_RATE}px ${getFontFace(fontCode)}`;
   textCtx.lineWidth = fontStroke * 2 * EXPAND_RATE;
@@ -510,19 +510,19 @@ function drawTextToCanvas(
   textCtx.strokeText(
     text,
     (xPos + fontStroke + TEXT_PADDING) * EXPAND_RATE_X,
-    (yPos + fontStroke + TEXT_PADDING) * EXPAND_RATE_Y
+    (yPos + fontStroke + TEXT_PADDING) * EXPAND_RATE_Y,
   );
 
   textCtx.fillText(
     text,
     (xPos + fontStroke + TEXT_PADDING) * EXPAND_RATE_X,
-    (yPos + fontStroke + TEXT_PADDING) * EXPAND_RATE_Y
+    (yPos + fontStroke + TEXT_PADDING) * EXPAND_RATE_Y,
   );
 }
 
 function drawMainTextToCanvas(
   textCtx: CanvasRenderingContext2D,
-  lyricsBlock: JoysoundLyricsBlock
+  lyricsBlock: JoysoundLyricsBlock,
 ): void {
   let currX = 0;
 
@@ -530,7 +530,7 @@ function drawMainTextToCanvas(
     const text = decodeJoysoundText(
       glyphChar.charCode,
       glyphChar.font,
-      lyricsBlock.flags
+      lyricsBlock.flags,
     );
 
     textCtx.font = `${MAIN_FONT_SIZE}px ${getFontFace(glyphChar.font)}`;
@@ -545,7 +545,7 @@ function drawMainTextToCanvas(
       xPos,
       RUBY_FONT_SIZE + RUBY_FONT_STROKE * 2,
       text,
-      glyphChar.font
+      glyphChar.font,
     );
 
     currX += glyphChar.width;
@@ -554,7 +554,7 @@ function drawMainTextToCanvas(
 
 function drawFuriganaTextToCanvas(
   textCtx: CanvasRenderingContext2D,
-  lyricsBlock: JoysoundLyricsBlock
+  lyricsBlock: JoysoundLyricsBlock,
 ): void {
   for (const furiganaBlock of lyricsBlock.furigana) {
     let currX = furiganaBlock.xPos;
@@ -568,7 +568,7 @@ function drawFuriganaTextToCanvas(
         RUBY_FONT_STROKE,
         currX,
         0,
-        unicodeChar
+        unicodeChar,
       );
 
       currX += RUBY_FONT_SIZE + RUBY_FONT_STROKE;
@@ -578,7 +578,7 @@ function drawFuriganaTextToCanvas(
 
 function drawRomajiTextToCanvas(
   textCtx: CanvasRenderingContext2D,
-  lyricsBlock: JoysoundLyricsBlock
+  lyricsBlock: JoysoundLyricsBlock,
 ): void {
   const sortedRomaji = lyricsBlock.romaji.sort((a, b) => a.xPos - b.xPos);
 
@@ -590,7 +590,7 @@ function drawRomajiTextToCanvas(
     const xOff = getRomajiTextOffset(
       textCtx,
       romajiBlock.phrase,
-      romajiBlock.sourceWidth
+      romajiBlock.sourceWidth,
     );
 
     drawTextToCanvas(
@@ -599,7 +599,7 @@ function drawRomajiTextToCanvas(
       ROMAJI_FONT_STROKE,
       xPos + xOff,
       0,
-      romajiBlock.phrase
+      romajiBlock.phrase,
     );
   }
 }
@@ -607,7 +607,7 @@ function drawRomajiTextToCanvas(
 function createLyricsBlockTextures(
   gl: WebGL2RenderingContext,
   lyricsData: JoysoundLyricsBlock[],
-  isRomaji: boolean
+  isRomaji: boolean,
 ): LyricsBlockTextures[] {
   const textCtx = document.createElement("canvas").getContext("2d");
   invariant(textCtx);
@@ -621,7 +621,7 @@ function createLyricsBlockTextures(
       lyricsBlock,
       lyricsBlock.preFill.rgb,
       lyricsBlock.preBorder.rgb,
-      isRomaji
+      isRomaji,
     );
 
     const postTexture = createLyricsBlockTexture(
@@ -630,7 +630,7 @@ function createLyricsBlockTextures(
       lyricsBlock,
       lyricsBlock.postFill.rgb,
       lyricsBlock.postBorder.rgb,
-      isRomaji
+      isRomaji,
     );
 
     lyricsBlockTextures.push({ preTexture, postTexture });
@@ -643,7 +643,7 @@ function createLyricsBlockTextures(
 
 function getScrollXPos(
   lyricsBlock: JoysoundLyricsBlock,
-  refreshTime: number
+  refreshTime: number,
 ): number {
   let xOff = 0;
 
@@ -685,7 +685,7 @@ function getScrollXPos(
 function drawTitle(
   gl: WebGL2RenderingContext,
   glBuffers: JoysoundDisplayBuffers,
-  titleTexture: WebGLTexture
+  titleTexture: WebGLTexture,
 ): void {
   const scrollArray = new Float32Array(Array(6).fill(0));
 
@@ -693,7 +693,7 @@ function drawTitle(
     0,
     0,
     SCREEN_WIDTH * EXPAND_RATE_X,
-    SCREEN_HEIGHT * EXPAND_RATE_Y
+    SCREEN_HEIGHT * EXPAND_RATE_Y,
   );
 
   drawLyricsTexture(gl, glBuffers, titleTexture, positions, scrollArray, false);
@@ -705,13 +705,13 @@ function drawLyricsTexture(
   texture: WebGLTexture,
   positions: number[],
   scrollArray: Float32Array,
-  isPostTexture: boolean
+  isPostTexture: boolean,
 ) {
   gl.bindBuffer(gl.ARRAY_BUFFER, glBuffers.scroll);
   gl.bufferData(gl.ARRAY_BUFFER, scrollArray, gl.STATIC_DRAW);
 
   const scrollTypeArray = new Float32Array(
-    Array(6).fill(isPostTexture ? 1.0 : 0.0)
+    Array(6).fill(isPostTexture ? 1.0 : 0.0),
   );
 
   gl.bindBuffer(gl.ARRAY_BUFFER, glBuffers.scrollType);
@@ -736,12 +736,12 @@ function drawLyricsBlock(
   lyricsBlock: JoysoundLyricsBlock,
   lyricsBlockTextures: LyricsBlockTextures[],
   index: number,
-  refreshTime: number
+  refreshTime: number,
 ) {
   const scrollXPos = Math.floor(getScrollXPos(lyricsBlock, refreshTime));
 
   const scrollArray = new Float32Array(
-    Array(6).fill(scrollXPos * EXPAND_RATE_X)
+    Array(6).fill(scrollXPos * EXPAND_RATE_X),
   );
 
   const currX = lyricsBlock.xPos;
@@ -754,7 +754,7 @@ function drawLyricsBlock(
     (currX - TEXT_PADDING) * EXPAND_RATE_X,
     (currY - TEXT_PADDING) * EXPAND_RATE_Y,
     (currX + rectWidth - TEXT_PADDING) * EXPAND_RATE_X,
-    (currY + rectHeight - TEXT_PADDING) * EXPAND_RATE_Y
+    (currY + rectHeight - TEXT_PADDING) * EXPAND_RATE_Y,
   );
 
   if (scrollXPos <= currX + rectWidth) {
@@ -764,7 +764,7 @@ function drawLyricsBlock(
       lyricsBlockTextures[index].preTexture,
       positions,
       scrollArray,
-      false
+      false,
     );
   }
 
@@ -775,14 +775,14 @@ function drawLyricsBlock(
       lyricsBlockTextures[index].postTexture,
       positions,
       scrollArray,
-      true
+      true,
     );
   }
 }
 
 export default function JoysoundRenderer(props: {
   telop: ArrayBuffer;
-  videoRef: React.RefObject<HTMLVideoElement>;
+  videoRef: React.RefObject<HTMLVideoElement | null>;
   kuroshiro: KuroshiroSingleton;
   isRomaji: boolean;
 }) {
@@ -799,7 +799,7 @@ export default function JoysoundRenderer(props: {
     // XXX: Global variables but it works
     EXPAND_RATE = Math.min(
       canvasElement.width / SCREEN_WIDTH,
-      canvasElement.height / SCREEN_HEIGHT
+      canvasElement.height / SCREEN_HEIGHT,
     );
 
     EXPAND_RATE_X = canvasElement.width / SCREEN_WIDTH;
@@ -822,7 +822,7 @@ export default function JoysoundRenderer(props: {
       // Yeah we parse the data on each re-render, ffuck it
       const joysoundData = await parseJoysoundData(
         props.telop,
-        props.kuroshiro
+        props.kuroshiro,
       );
 
       const metadata = joysoundData.metadata;
@@ -840,7 +840,7 @@ export default function JoysoundRenderer(props: {
       const lyricsBlockTextures = createLyricsBlockTextures(
         gl,
         lyricsData,
-        props.isRomaji
+        props.isRomaji,
       );
 
       const vertexShader = createShader(gl, gl.VERTEX_SHADER, vsSource);
@@ -850,14 +850,14 @@ export default function JoysoundRenderer(props: {
 
       const positionAttributeLocation = gl.getAttribLocation(
         program,
-        "a_position"
+        "a_position",
       );
       const texCoordLocation = gl.getAttribLocation(program, "a_texCoord");
       const scrollLocation = gl.getAttribLocation(program, "a_scroll");
       const scrollTypeLocation = gl.getAttribLocation(program, "a_scrollType");
       const resolutionUniformLocation = gl.getUniformLocation(
         program,
-        "u_resolution"
+        "u_resolution",
       );
 
       const positionBuffer = gl.createBuffer();
@@ -893,7 +893,7 @@ export default function JoysoundRenderer(props: {
           gl.SRC_ALPHA,
           gl.ONE_MINUS_SRC_ALPHA,
           gl.ONE,
-          gl.ONE_MINUS_SRC_ALPHA
+          gl.ONE_MINUS_SRC_ALPHA,
         );
 
         gl.useProgram(program);
@@ -906,7 +906,7 @@ export default function JoysoundRenderer(props: {
           gl.FLOAT,
           false,
           0,
-          0
+          0,
         );
 
         gl.enableVertexAttribArray(texCoordLocation);
@@ -924,7 +924,7 @@ export default function JoysoundRenderer(props: {
         gl.uniform2f(
           resolutionUniformLocation,
           gl.canvas.width,
-          gl.canvas.height
+          gl.canvas.height,
         );
 
         if (refreshTime < metadata.fadeoutTime) {
@@ -944,7 +944,7 @@ export default function JoysoundRenderer(props: {
               lyricsBlock,
               lyricsBlockTextures,
               i,
-              refreshTime
+              refreshTime,
             );
           }
         }
