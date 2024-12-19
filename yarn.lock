@@ -12793,10 +12793,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql@npm:16.9.0":
-  version: 16.9.0
-  resolution: "graphql@npm:16.9.0"
-  checksum: 8cb3d54100e9227310383ce7f791ca48d12f15ed9f2021f23f8735f1121aafe4e5e611a853081dd935ce221724ea1ae4638faef5d2921fb1ad7c26b5f46611e9
+"graphql@npm:16.10.0":
+  version: 16.10.0
+  resolution: "graphql@npm:16.10.0"
+  checksum: 969c2d1061d69ad6fe08a7fe642428212b0b8485a2f9b5d8650203eb6c3221479e81ec6a757708f849d84b85afcb3ebc5a8ff2f71778bb66c5e4850f051c170e
   languageName: node
   linkType: hard
 
@@ -14847,7 +14847,7 @@ __metadata:
     format-duration: 3.0.2
     gl-vec2: 1.3.0
     glob: 11.0.0
-    graphql: 16.9.0
+    graphql: 16.10.0
     graphql-subscriptions: 3.0.0
     graphql-ws: 5.16.0
     hls.js: 1.5.17
