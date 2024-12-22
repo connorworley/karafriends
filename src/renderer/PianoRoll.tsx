@@ -22,7 +22,7 @@ function loadShader(
   type:
     | WebGLRenderingContextBase["VERTEX_SHADER"]
     | WebGLRenderingContextBase["FRAGMENT_SHADER"],
-  source: string
+  source: string,
 ) {
   const shader = gl.createShader(type)!;
   gl.shaderSource(shader, source);
@@ -93,7 +93,7 @@ abstract class ShaderProgram<T extends unknown[]> {
     shaders: WebGLShader[],
     attributeNames: string[],
     uniformNames: string[],
-    bufferNames: string[]
+    bufferNames: string[],
   ) {
     this.gl = gl;
     this.program = gl.createProgram()!;
@@ -103,16 +103,16 @@ abstract class ShaderProgram<T extends unknown[]> {
       attributeNames.map((name) => [
         name,
         gl.getAttribLocation(this.program, name),
-      ])
+      ]),
     );
     this.uniformLocations = Object.fromEntries(
       uniformNames.map((name) => [
         name,
         gl.getUniformLocation(this.program, name)!,
-      ])
+      ]),
     );
     this.buffers = Object.fromEntries(
-      bufferNames.map((name) => [name, gl.createBuffer()!])
+      bufferNames.map((name) => [name, gl.createBuffer()!]),
     );
   }
 
@@ -131,7 +131,7 @@ class NoteProgram extends ShaderProgram<[number, number]> {
       ],
       ["position"],
       ["time", "timeWidth", "canvasWidth"],
-      ["positions"]
+      ["positions"],
     );
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.positions);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
@@ -148,7 +148,7 @@ class NoteProgram extends ShaderProgram<[number, number]> {
         this.gl.FLOAT,
         false,
         0,
-        0
+        0,
       );
       this.gl.enableVertexAttribArray(this.attributeLocations.position);
       this.gl.uniform1f(this.uniformLocations.timeWidth, TIME_WIDTH_SECS);
@@ -173,7 +173,7 @@ class SeekProgram extends ShaderProgram<[number]> {
       ],
       ["position"],
       ["time", "timeWidth", "color"],
-      ["positions"]
+      ["positions"],
     );
     const positions = quadToTriangles(-1.005, 1.0, -0.995, -1.0);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.positions);
@@ -191,7 +191,7 @@ class SeekProgram extends ShaderProgram<[number]> {
         this.gl.FLOAT,
         false,
         0,
-        0
+        0,
       );
       this.gl.enableVertexAttribArray(this.attributeLocations.position);
       this.gl.uniform1f(this.uniformLocations.timeWidth, TIME_WIDTH_SECS);
@@ -216,7 +216,7 @@ class PitchProgram extends ShaderProgram<[number, number, number[]]> {
       ],
       ["position"],
       ["time", "timeWidth", "color"],
-      ["positions"]
+      ["positions"],
     );
     this.color = color;
   }
@@ -231,7 +231,7 @@ class PitchProgram extends ShaderProgram<[number, number, number[]]> {
         this.gl.FLOAT,
         false,
         0,
-        0
+        0,
       );
       this.gl.enableVertexAttribArray(this.attributeLocations.position);
       this.gl.uniform1f(this.uniformLocations.timeWidth, TIME_WIDTH_SECS);
@@ -244,7 +244,7 @@ class PitchProgram extends ShaderProgram<[number, number, number[]]> {
     this.gl.bufferData(
       this.gl.ARRAY_BUFFER,
       new Float32Array(positions),
-      this.gl.DYNAMIC_DRAW
+      this.gl.DYNAMIC_DRAW,
     );
     this.gl.drawArrays(this.gl.TRIANGLES, 0, positions.length / 2);
   }
@@ -262,7 +262,7 @@ class FreeTimeProgram extends ShaderProgram<[number, number]> {
       ],
       ["position"],
       ["time", "timeWidth", "canvasWidth", "color"],
-      ["positions"]
+      ["positions"],
     );
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.positions);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
@@ -279,7 +279,7 @@ class FreeTimeProgram extends ShaderProgram<[number, number]> {
         this.gl.FLOAT,
         false,
         0,
-        0
+        0,
       );
       this.gl.enableVertexAttribArray(this.attributeLocations.position);
       this.gl.uniform1f(this.uniformLocations.timeWidth, TIME_WIDTH_SECS);
@@ -302,11 +302,11 @@ class PitchDetectionBuffer {
     pitchMidiNumber: number,
     medianMidiNumber: number,
     currentMidiNumber: number,
-    time: number
+    time: number,
   ) {
     this.pitchOffset +=
       Math.round(
-        (currentMidiNumber - (pitchMidiNumber + this.pitchOffset)) / 12
+        (currentMidiNumber - (pitchMidiNumber + this.pitchOffset)) / 12,
       ) * 12;
 
     const pitchMidiNumberOffset = pitchMidiNumber + this.pitchOffset;
@@ -342,14 +342,14 @@ class PitchDetectionBuffer {
 
         pitchGap = Math.max(
           Math.abs(
-            this.buffer[lastIndex].value - this.buffer[lastIndex - 1].value
+            this.buffer[lastIndex].value - this.buffer[lastIndex - 1].value,
           ),
           Math.abs(
-            this.buffer[lastIndex - 1].value - this.buffer[lastIndex - 2].value
+            this.buffer[lastIndex - 1].value - this.buffer[lastIndex - 2].value,
           ),
           Math.abs(
-            this.buffer[lastIndex].value - this.buffer[lastIndex - 2].value
-          )
+            this.buffer[lastIndex].value - this.buffer[lastIndex - 2].value,
+          ),
         );
       }
 
@@ -360,7 +360,7 @@ class PitchDetectionBuffer {
           this.buffer[lastIndex].time - 0.025,
           this.buffer[lastIndex].value - STROKE_WIDTH / 2,
           this.buffer[lastIndex].time,
-          this.buffer[lastIndex].value + STROKE_WIDTH / 2
+          this.buffer[lastIndex].value + STROKE_WIDTH / 2,
         );
 
         for (let i = 0; i < PITCH_RESOLUTION - 1; i++) {
@@ -376,8 +376,8 @@ class PitchDetectionBuffer {
       const spline = new Spline(
         bufferSlice.map((obj) => obj.time),
         bufferSlice.map((obj) =>
-          midiNumberToYCoord(obj.value, medianMidiNumber)
-        )
+          midiNumberToYCoord(obj.value, medianMidiNumber),
+        ),
       );
 
       for (let i = 0; i < PITCH_RESOLUTION; i++) {
@@ -432,7 +432,7 @@ function midiNumberToYCoord(midiNumber: number, medianMidiNumber: number) {
 
 export default function PianoRoll(props: {
   scoringData: readonly number[];
-  videoRef: React.RefObject<HTMLVideoElement>;
+  videoRef: React.RefObject<HTMLVideoElement | null>;
   mics: InputDevice[];
   pitchShiftSemis: number;
 }) {
@@ -471,8 +471,8 @@ export default function PianoRoll(props: {
           note.startTime,
           midiNumberToYCoord(note.midiNumber + 1, medianMidiNumber),
           note.endTime,
-          midiNumberToYCoord(note.midiNumber - 1, medianMidiNumber)
-        )
+          midiNumberToYCoord(note.midiNumber - 1, medianMidiNumber),
+        ),
       )
       .flat();
 
@@ -501,7 +501,7 @@ export default function PianoRoll(props: {
           return acc.concat([cur]);
         }
       },
-      []
+      [],
     );
     const [freeTimeIntervals, lastLyricsIntervalEnd] =
       combinedLyricsIntervals.reduce<[[number, number][], number]>(
@@ -510,7 +510,7 @@ export default function PianoRoll(props: {
           const [curStart, curEnd] = cur;
           return [intervals.concat([[prevEnd, curStart]]), curEnd];
         },
-        [[], 0]
+        [[], 0],
       );
     freeTimeIntervals.push([lastLyricsIntervalEnd, 9999]);
     const freeTimePositions = freeTimeIntervals
@@ -551,7 +551,7 @@ export default function PianoRoll(props: {
           midiNumber,
           medianMidiNumber,
           currentMidiNumber,
-          props.videoRef.current.currentTime
+          props.videoRef.current.currentTime,
         );
       }
     }
@@ -570,7 +570,7 @@ export default function PianoRoll(props: {
             gl,
             convert.hsv
               .rgb([(360 / props.mics.length) * i, 30, 100])
-              .map((channel) => channel / 255) as [number, number, number]
+              .map((channel) => channel / 255) as [number, number, number],
           ),
           setInterval(() => pollPitch(mic, buffer), 25),
         ];
@@ -608,7 +608,7 @@ export default function PianoRoll(props: {
 
       canvasRef.current.classList.toggle(
         "pianoRollPog",
-        pogIntervals.some(([start, end]) => time >= start - 1 && time <= end)
+        pogIntervals.some(([start, end]) => time >= start - 1 && time <= end),
       );
 
       animationFrameRequestRef.current = window.requestAnimationFrame(draw);
@@ -635,7 +635,7 @@ export default function PianoRoll(props: {
 
     props.videoRef.current.addEventListener(
       "seeked",
-      clearPitchDetectionBuffers
+      clearPitchDetectionBuffers,
     );
 
     return () => {
@@ -645,7 +645,7 @@ export default function PianoRoll(props: {
       if (props.videoRef.current) {
         props.videoRef.current.removeEventListener(
           "seeked",
-          clearPitchDetectionBuffers
+          clearPitchDetectionBuffers,
         );
       }
     };

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { JSX, useEffect, useRef, useState } from "react";
 import { graphql, requestSubscription } from "react-relay";
 import invariant from "ts-invariant";
 
@@ -31,16 +31,16 @@ function AdhocLyrics() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   function handleNewLyrics(
-    response: AdhocLyricsCurrentLyricsSubscription$data
+    response: AdhocLyricsCurrentLyricsSubscription$data,
   ) {
     setLyricLines((prevLyricLines) => {
       const newLyricsLineCount = response.currentSongAdhocLyricsChanged.length;
       const newLyricIndices = response.currentSongAdhocLyricsChanged.map(
-        (lyricEntry) => lyricEntry.lyricIndex
+        (lyricEntry) => lyricEntry.lyricIndex,
       );
 
       const currentLyricIndices = prevLyricLines.map(
-        (lyricEntry) => lyricEntry.lyricIndex
+        (lyricEntry) => lyricEntry.lyricIndex,
       );
 
       const newLyricEntry: LyricEntry[] =
@@ -48,7 +48,7 @@ function AdhocLyrics() {
           const height = getTextHeight(
             lyricEntry.lyric,
             // This must match the width specified in AdhocLyrics.css
-            "4vw sans-serif"
+            "4vw sans-serif",
           );
 
           return {
