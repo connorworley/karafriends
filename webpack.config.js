@@ -47,7 +47,7 @@ module.exports = (env, argv) => [
         __dirname,
         "build",
         argv.mode === "production" ? "prod" : "dev",
-        "main"
+        "main",
       ),
     },
     externals: {
@@ -55,18 +55,6 @@ module.exports = (env, argv) => [
       // But we don't actually need canvas
       // https://github.com/jsdom/jsdom/issues/1708
       canvas: "{}",
-    },
-  }),
-  merge(COMMON_CONFIG, {
-    target: "electron-preload",
-    entry: "./src/preload/index.ts",
-    output: {
-      path: path.resolve(
-        __dirname,
-        "build",
-        argv.mode === "production" ? "prod" : "dev",
-        "preload"
-      ),
     },
   }),
 ];

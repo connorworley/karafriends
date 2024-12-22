@@ -159,11 +159,17 @@
   },
   "packageManager": "yarn@3.5.1",
   "targets": {
+    "preload": {
+      "source": "src/preload/index.ts",
+      "context": "electron-renderer"
+    },
     "renderer": {
-      "source": "src/renderer/index.html"
+      "source": "src/renderer/index.html",
+      "context": "browser"
     },
     "remocon": {
-      "source": "src/remocon/index.html"
+      "source": "src/remocon/index.html",
+      "context": "browser"
     }
   },
   "relay": {
