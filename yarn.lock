@@ -12254,7 +12254,7 @@ __metadata:
     tslint-config-prettier: 1.18.0
     typescript: 5.7.2
     user-agents: 1.1.394
-    utf-8-validate: 6.0.3
+    utf-8-validate: 6.0.5
     uuid: 11.0.3
     wait-on: 8.0.1
     wanakana: 5.3.1
@@ -17484,13 +17484,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"utf-8-validate@npm:6.0.3":
-  version: 6.0.3
-  resolution: "utf-8-validate@npm:6.0.3"
+"utf-8-validate@npm:6.0.5":
+  version: 6.0.5
+  resolution: "utf-8-validate@npm:6.0.5"
   dependencies:
     node-gyp: latest
     node-gyp-build: ^4.3.0
-  checksum: 5e21383c81ff7469c1912119ca69d07202d944c73ddd8a54b84dddcc546b939054e5101c78c294e494d206fe93bd43428adc635a0660816b3ec9c8ec89286ac4
+  checksum: ab6bd5b0db2241a990a9e1c434a29194900f9f8f715158b56d591306634cdd4f748e91b965d91a32fd459c86b082ec0a35d369bbc4efbb243b48f593c14448e8
   languageName: node
   linkType: hard
 
