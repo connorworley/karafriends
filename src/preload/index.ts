@@ -4,7 +4,9 @@ import { memoize } from "lodash";
 import { KarafriendsConfig } from "../common/config";
 import ipAddresses from "../common/ipAddresses";
 
-const nativeAudio = require("../../native"); // tslint:disable-line:no-var-requires
+// tslint:disable-next-line:no-submodule-imports no-implicit-dependencies
+import { default as nativeAudioUrl } from "url:../../native/index.node";
+const nativeAudio = require(new URL(nativeAudioUrl).pathname); // tslint:disable-line:no-var-requires
 
 let inputDeviceCount = 0;
 const inputDevices: { [deviceId: number]: any } = {};
@@ -29,11 +31,11 @@ contextBridge.exposeInMainWorld("karafriends", {
     outputDevices: nativeAudio.outputDevices,
     inputDevice_new(name: string, channelSelection: number) {
       console.debug(
-        `preload: creating input device ${inputDeviceCount}: ${name}`
+        `preload: creating input device ${inputDeviceCount}: ${name}`,
       );
       inputDevices[inputDeviceCount++] = nativeAudio.inputDevice_new(
         name,
-        channelSelection
+        channelSelection,
       );
       return inputDeviceCount - 1;
     },

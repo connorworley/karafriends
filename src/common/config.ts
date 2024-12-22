@@ -28,8 +28,10 @@ export interface KarafriendsConfig {
   supervisedMode: boolean;
   // Whether to use a HTTP proxy (for outgoing connections)
   proxyEnable: boolean;
-  // URL (host:port) of the HTTP proxy to use
-  proxyURL: string;
+  // hostname or address of the HTTP proxy to use
+  proxyHost: string;
+  // port of the HTTP proxy to use
+  proxyPort: number;
   // HTTP Basic username of the HTTP proxy to use
   proxyUser: string;
   // HTTP Basic password of the HTTP proxy to use
