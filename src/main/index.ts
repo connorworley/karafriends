@@ -1,11 +1,3 @@
-function handleError(err: unknown) {
-  console.error(err);
-  process.exit(1); // TODO: emit to sentry
-}
-
-process.on("uncaughtException", handleError);
-process.on("unhandledRejection", handleError);
-
 // tslint:disable-next-line:no-submodule-imports no-implicit-dependencies
 import { default as nativeAudioUrl } from "url:../../native/index.node";
 const nativeAudio = require(new URL(nativeAudioUrl).pathname); // tslint:disable-line:no-var-requires
@@ -16,6 +8,15 @@ Sentry.init({
   dsn: "https://80cbda8ca4af42d9b95c60eb1f00566f@sentry.io/6728669",
   debug: true,
 });
+
+async function handleError(err: unknown) {
+  console.error("Fatal error:", err);
+  Sentry.captureException(err);
+  await Sentry.close(10 * 1000);
+  process.exit(1);
+}
+
+process.on("uncaughtException", handleError);
 
 import inspector from "inspector";
 

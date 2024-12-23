@@ -8,7 +8,7 @@
     "build-native-prod": "cargo-cp-artifact --npm cdylib native/index.node -- cross-env-shell \"cargo build --message-format json-render-diagnostics --manifest-path native/Cargo.toml --release ${CARGO_ARGS:-}\"",
     "build-relay-dev": "relay-compiler",
     "build-relay-prod": "relay-compiler",
-    "build-parcel-dev": "parcel build --dist-dir build/dev --no-optimize --no-scope-hoist",
+    "build-parcel-dev": "parcel build --dist-dir build/dev --no-optimize",
     "build-parcel-prod": "parcel build --dist-dir build/prod --no-source-maps",
     "build-dev": "concurrently \"yarn get-external-resources && yarn build-native-dev\" \"yarn build-relay-dev\" && yarn build-parcel-dev",
     "build-prod": "concurrently \"yarn get-external-resources && yarn build-native-prod\" \"yarn build-relay-prod\" && yarn build-parcel-prod",
