@@ -5805,7 +5805,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@webpack-cli/configtest@npm:^3.0.0":
+"@webpack-cli/configtest@npm:^3.0.1":
   version: 3.0.1
   resolution: "@webpack-cli/configtest@npm:3.0.1"
   peerDependencies:
@@ -5815,7 +5815,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@webpack-cli/info@npm:^3.0.0":
+"@webpack-cli/info@npm:^3.0.1":
   version: 3.0.1
   resolution: "@webpack-cli/info@npm:3.0.1"
   peerDependencies:
@@ -5825,7 +5825,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@webpack-cli/serve@npm:^3.0.0":
+"@webpack-cli/serve@npm:^3.0.1":
   version: 3.0.1
   resolution: "@webpack-cli/serve@npm:3.0.1"
   peerDependencies:
@@ -12261,7 +12261,7 @@ __metadata:
     wdio-electron-service: 7.3.1
     webdriverio: 9.4.5
     webpack: 5.97.1
-    webpack-cli: 6.0.0
+    webpack-cli: 6.0.1
     webpack-merge: 6.0.1
     ws: 8.18.0
     yaml: 2.6.1
@@ -17834,14 +17834,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack-cli@npm:6.0.0":
-  version: 6.0.0
-  resolution: "webpack-cli@npm:6.0.0"
+"webpack-cli@npm:6.0.1":
+  version: 6.0.1
+  resolution: "webpack-cli@npm:6.0.1"
   dependencies:
     "@discoveryjs/json-ext": ^0.6.1
-    "@webpack-cli/configtest": ^3.0.0
-    "@webpack-cli/info": ^3.0.0
-    "@webpack-cli/serve": ^3.0.0
+    "@webpack-cli/configtest": ^3.0.1
+    "@webpack-cli/info": ^3.0.1
+    "@webpack-cli/serve": ^3.0.1
     colorette: ^2.0.14
     commander: ^12.1.0
     cross-spawn: ^7.0.3
@@ -17860,7 +17860,7 @@ __metadata:
       optional: true
   bin:
     webpack-cli: ./bin/cli.js
-  checksum: 90943812ccbce965503b1a5df6ddccb7544e0bfb00a0ea11b2fb801dc63a9647f0123f1e6a2c28570011827db94d118aa5444c4260eee2b72a308c2636b391b9
+  checksum: 1418d0e48c58b4a223472d1a34aee74b497cd8b8fc7f0508da86983e6bbc0b2f20e85459d89fb7169309a6f0409e3a27c1b688e645fa705806195884855434fc
   languageName: node
   linkType: hard
 
