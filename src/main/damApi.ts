@@ -1,8 +1,13 @@
 /* tslint:disable:max-classes-per-file */
 
-import { Response, RESTDataSource } from "apollo-datasource-rest";
+import {
+  AugmentedRequest,
+  CacheOptions,
+  DataSourceConfig,
+  RESTDataSource,
+} from "@apollo/datasource-rest";
+import type { KeyValueCache } from "@apollo/utils.keyvaluecache";
 import DataLoader from "dataloader";
-import fetch from "node-fetch";
 import promiseRetry from "promise-retry";
 
 const BASE_MINSEI_REQUEST = {
@@ -46,11 +51,14 @@ interface MinseiStreamingUrls extends MinseiResponse {
 }
 
 export class MinseiAPI extends RESTDataSource {
+  override baseURL = "https://csgw.clubdam.com";
   credsProvider: MinseiCredentialsProvider;
 
-  constructor(credsProvider: MinseiCredentialsProvider) {
-    super();
-    this.baseURL = "https://csgw.clubdam.com/cwa/win/minsei";
+  constructor(
+    credsProvider: MinseiCredentialsProvider,
+    options: DataSourceConfig,
+  ) {
+    super(options);
     this.credsProvider = credsProvider;
   }
 
@@ -62,9 +70,10 @@ export class MinseiAPI extends RESTDataSource {
       .map(([k, v]) => `${k}=${v}`)
       .join("&");
     console.debug(
-      `[minsei] curl ${this.baseURL}${url} -d '${JSON.stringify(body)}'`
+      `[minsei] curl ${this.baseURL}${url} -d '${JSON.stringify(body)}'`,
     );
-    return super.post(url, body, {
+    return super.post(url, {
+      body,
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
@@ -89,14 +98,14 @@ export class MinseiAPI extends RESTDataSource {
 
   static login(loginId: string, password: string) {
     return fetch(
-      "https://csgw.clubdam.com/cwa/win/minsei/auth/LoginByDamtomoMemberId.api",
+      `https://csgw.clubdam.com/cwa/win/minsei/auth/LoginByDamtomoMemberId.api`,
       {
         method: "POST",
         body: `loginId=${loginId}&password=${password}&format=json`,
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
-      }
+      },
     )
       .then((data) => data.json() as Promise<MinseiLogin>)
       .then((data) => MinseiAPI.checkError(data));
@@ -108,12 +117,15 @@ export class MinseiAPI extends RESTDataSource {
       this.credsProvider()
         .then((creds) =>
           this.post<MinseiStreamingUrls>(
-            "/music/playLog/GetMusicStreamingURL.api",
-            { requestNo, ...creds }
-          )
+            "/cwa/win/minsei/music/playLog/GetMusicStreamingURL.api",
+            { requestNo, ...creds },
+          ),
         )
         .then(MinseiAPI.checkError)
-        .catch(retry)
+        .catch((err) => {
+          console.error(err);
+          return retry(err);
+        }),
     );
   }
 
@@ -123,19 +135,22 @@ export class MinseiAPI extends RESTDataSource {
       this.credsProvider()
         .then((creds) =>
           this.post<object | ArrayBuffer>(
-            "/scoring/GetScoringReferenceData.api",
-            { requestNo, ...creds }
-          )
+            "/cwa/win/minsei/scoring/GetScoringReferenceData.api",
+            { requestNo, ...creds },
+          ),
         )
         .then((body) => {
           if (!(body instanceof ArrayBuffer)) {
             return Promise.reject(
-              "Scoring data was not returned in binary format"
+              "Scoring data was not returned in binary format",
             );
           }
           return body;
         })
-        .catch(retry)
+        .catch((err) => {
+          console.error(err);
+          return retry(err);
+        }),
     );
   }
 }
@@ -229,18 +244,18 @@ interface GetMusicListByArtistResponse extends DkwebsysReponse {
 }
 
 export class DkwebsysAPI extends RESTDataSource {
-  constructor() {
-    super();
-    this.baseURL = "https://csgw.clubdam.com/dkwebsys";
-  }
+  override baseURL = "https://csgw.clubdam.com";
 
   post<T>(url: string, data: object): Promise<T> {
-    console.debug(
-      `[dkwebsys] curl ${this.baseURL}${url} -d '${JSON.stringify(data)}'`
-    );
-    return super.post(url, {
+    const body = {
       ...BASE_DKWEBSYS_REQUEST,
       ...data,
+    };
+    console.debug(
+      `[dkwebsys] curl ${this.baseURL}${url} --json '${JSON.stringify(body)}'`,
+    );
+    return super.post(url, {
+      body,
     });
   }
 
@@ -255,11 +270,11 @@ export class DkwebsysAPI extends RESTDataSource {
     Promise.all(
       requestNos.map((requestNo) =>
         this.post<GetMusicDetailInfoResponse>(
-          "/search-api/GetMusicDetailInfoApi",
-          { requestNo }
-        ).then(this.checkError)
-      )
-    )
+          "/dkwebsys/search-api/GetMusicDetailInfoApi",
+          { requestNo },
+        ).then(this.checkError),
+      ),
+    ),
   );
 
   getMusicDetailsInfo(requestNo: string) {
@@ -271,16 +286,16 @@ export class DkwebsysAPI extends RESTDataSource {
       Promise.all(
         keys.map((key) =>
           this.post<SearchMusicByKeywordResponse>(
-            "https://csgw.clubdam.com/dkwebsys/search-api/SearchMusicByKeywordApi",
+            "/dkwebsys/search-api/SearchMusicByKeywordApi",
             {
               keyword: key.keyword,
               sort: "2",
               pageNo: key.pageNo.toString(),
               dispCount: "30",
-            }
-          ).then(this.checkError)
-        )
-      )
+            },
+          ).then(this.checkError),
+        ),
+      ),
   );
 
   getMusicByKeyword(keyword: string, first: number, after: number) {
@@ -292,14 +307,14 @@ export class DkwebsysAPI extends RESTDataSource {
         this.musicByKeywordLoader.load({
           keyword,
           pageNo: firstPage + pageOffset,
-        })
-      )
+        }),
+      ),
     )
       .then((results) =>
         results.reduce((acc, cur) => {
           acc.list = acc.list.concat(cur.list);
           return acc;
-        })
+        }),
       )
       .then((result) => ({
         data: result.data,
@@ -312,16 +327,16 @@ export class DkwebsysAPI extends RESTDataSource {
       Promise.all(
         keys.map((key) =>
           this.post<SearchArtistByKeywordResponse>(
-            "https://csgw.clubdam.com/dkwebsys/search-api/SearchArtistByKeywordApi",
+            "/dkwebsys/search-api/SearchArtistByKeywordApi",
             {
               keyword: key.keyword,
               sort: "2",
               pageNo: key.pageNo.toString(),
               dispCount: "30",
-            }
-          ).then(this.checkError)
-        )
-      )
+            },
+          ).then(this.checkError),
+        ),
+      ),
   );
 
   getArtistByKeyword(keyword: string, first: number, after: number) {
@@ -333,14 +348,14 @@ export class DkwebsysAPI extends RESTDataSource {
         this.artistByKeywordLoader.load({
           keyword,
           pageNo: firstPage + pageOffset,
-        })
-      )
+        }),
+      ),
     )
       .then((results) =>
         results.reduce((acc, cur) => {
           acc.list = acc.list.concat(cur.list);
           return acc;
-        })
+        }),
       )
       .then((result) => ({
         data: result.data,
@@ -353,16 +368,16 @@ export class DkwebsysAPI extends RESTDataSource {
       Promise.all(
         keys.map((key) =>
           this.post<GetMusicListByArtistResponse>(
-            "https://csgw.clubdam.com/dkwebsys/search-api/GetMusicListByArtistApi",
+            "/dkwebsys/search-api/GetMusicListByArtistApi",
             {
               artistCode: key.artistCode,
               sort: "2",
               pageNo: key.pageNo.toString(),
               dispCount: "30",
-            }
-          ).then(this.checkError)
-        )
-      )
+            },
+          ).then(this.checkError),
+        ),
+      ),
   );
 
   getMusicListByArtist(artistCode: string, first: number, after: number) {
@@ -374,14 +389,14 @@ export class DkwebsysAPI extends RESTDataSource {
         this.musicListByArtistLoader.load({
           artistCode,
           pageNo: firstPage + pageOffset,
-        })
-      )
+        }),
+      ),
     )
       .then((results) =>
         results.reduce((acc, cur) => {
           acc.list = acc.list.concat(cur.list);
           return acc;
-        })
+        }),
       )
       .then((result) => ({
         data: result.data,

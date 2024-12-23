@@ -1,6 +1,7 @@
 /* tslint:disable:max-classes-per-file */
 
-import { RESTDataSource } from "apollo-datasource-rest";
+import { DataSourceConfig, RESTDataSource } from "@apollo/datasource-rest";
+import type { KeyValueCache } from "@apollo/utils.keyvaluecache";
 import UserAgent from "user-agents";
 
 // "Public" Innertube API Key
@@ -30,7 +31,7 @@ interface GetVideoInfoResponse {
           };
           vssId: string;
           languageCode: string;
-        }
+        },
       ];
     };
   };
@@ -56,34 +57,29 @@ interface GetVideoInfoResponse {
 }
 
 export class YoutubeAPI extends RESTDataSource {
+  override baseURL = "https://www.youtube.com";
   userAgent: string;
 
-  constructor() {
-    super();
-    this.baseURL = "https://www.youtube.com/youtubei/v1";
+  constructor(options: DataSourceConfig) {
+    super(options);
     this.userAgent = new UserAgent({ deviceCategory: "desktop" }).toString();
   }
 
   post<T>(url: string, data: object): Promise<T> {
-    return super.post(
-      `${url}?key=${INNERTUBE_API_KEY}`,
-      {
+    return super.post(`${url}?key=${INNERTUBE_API_KEY}`, {
+      body: {
         ...BASE_INNERTUBE_REQUEST,
         ...data,
       },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Host: "www.youtube.com",
-          "User-Agent": this.userAgent,
-        },
-      }
-    );
+      headers: {
+        "User-Agent": this.userAgent,
+      },
+    });
   }
 
   getVideoInfo(videoId: string) {
-    return this.post<GetVideoInfoResponse>("/player", { videoId }).then(
-      (body) => body
-    );
+    return this.post<GetVideoInfoResponse>("/youtubei/v1/player", {
+      videoId,
+    }).then((body) => body);
   }
 }

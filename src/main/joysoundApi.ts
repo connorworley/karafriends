@@ -1,5 +1,5 @@
-import { RESTDataSource } from "apollo-datasource-rest";
-import fetch from "node-fetch";
+import { DataSourceConfig, RESTDataSource } from "@apollo/datasource-rest";
+import type { KeyValueCache } from "@apollo/utils.keyvaluecache";
 import invariant from "ts-invariant";
 
 const COOKIE_IDS: string[] = ["AWSALB", "AWSALBCORS", "JSESSIONID"];
@@ -115,12 +115,14 @@ function unescapeJoysoundString(str: string) {
 }
 
 export class JoysoundAPI extends RESTDataSource {
+  override baseURL = "https://www.sound-cafe.jp";
   credsProvider: JoysoundCredentialsProvider;
 
-  constructor(credsProvider: JoysoundCredentialsProvider) {
-    super();
-
-    this.baseURL = "https://www.sound-cafe.jp";
+  constructor(
+    credsProvider: JoysoundCredentialsProvider,
+    options: DataSourceConfig,
+  ) {
+    super(options);
     this.credsProvider = credsProvider;
   }
 
@@ -139,7 +141,8 @@ export class JoysoundAPI extends RESTDataSource {
       )}" -H "X-CSRF-TOKEN: ${creds.csrfToken}"`,
     );
 
-    return super.post(url, body, {
+    return super.post(url, {
+      body,
       headers: {
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
         Cookie: generateCookieString(creds.cookies),

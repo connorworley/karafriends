@@ -2,7 +2,6 @@ import path from "path";
 
 import isDev from "electron-is-dev";
 import express, { Request, Response } from "express";
-import fetch from "node-fetch";
 
 function remoconReverseProxy(devPort: number) {
   if (isDev) {

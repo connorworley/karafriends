@@ -1,9 +1,23 @@
+// tslint:disable-next-line:no-submodule-imports no-implicit-dependencies
+import { default as nativeAudioUrl } from "url:../../native/index.node";
+const nativeAudio = require(new URL(nativeAudioUrl).pathname); // tslint:disable-line:no-var-requires
+
 import * as Sentry from "@sentry/node";
 
 Sentry.init({
   dsn: "https://80cbda8ca4af42d9b95c60eb1f00566f@sentry.io/6728669",
   debug: true,
 });
+
+async function handleError(err: unknown) {
+  console.error("Fatal error:", err);
+  Sentry.captureException(err);
+  await Sentry.close(10 * 1000);
+  process.exit(1);
+}
+
+process.on("uncaughtException", handleError);
+process.on("unhandledRejection", handleError);
 
 import inspector from "inspector";
 
@@ -34,7 +48,8 @@ import setupMdns from "./mdns";
 import remoconReverseProxy from "./middleware/remoconReverseProxy";
 import remoconServiceWorkerAllowed from "./middleware/remoconServiceWorkerAllowed";
 
-const nativeAudio = require("../../native"); // tslint:disable-line:no-var-requires
+// tslint:disable-next-line:no-submodule-imports no-implicit-dependencies
+import { default as preloadUrl } from "url:../preload";
 
 try {
   nativeAudio.allocConsole();
@@ -83,7 +98,7 @@ function createWindow() {
       nodeIntegration: false,
       nodeIntegrationInSubFrames: false,
       nodeIntegrationInWorker: false,
-      preload: path.join(__dirname, "..", "preload", "main.js"),
+      preload: new URL(preloadUrl).pathname,
       sandbox: false,
       webSecurity: true,
     },
@@ -119,7 +134,7 @@ function createWindow() {
 
   if (karafriendsConfig.proxyEnable) {
     session.setProxy({
-      proxyRules: karafriendsConfig.proxyURL,
+      proxyRules: `${karafriendsConfig.proxyHost}:${karafriendsConfig.proxyPort}`,
       proxyBypassRules: "<local>,192.168.0.0/16,172.16.0.0/12,10.0.0.0/8",
     });
     // Technically should await this promise
@@ -200,10 +215,9 @@ app.on("login", (event, webContents, request, authInfo, callback) => {
     `login event received: authinfo=${authInfo} callback=${callback}`,
   );
   if (karafriendsConfig.proxyEnable) {
-    const { proxyURL, proxyUser, proxyPass } = karafriendsConfig;
-    console.log(`Time to login to ${proxyURL}`);
+    const { proxyHost, proxyPort, proxyUser, proxyPass } = karafriendsConfig;
+    console.log(`Time to login to ${proxyURL}:${proxyPort}`);
     callback(proxyUser, proxyPass);
-    process.env.http_proxy = `http://${proxyUser}:${proxyPass}@${proxyURL}`;
     event.preventDefault();
   } else {
     // Well that's strange...

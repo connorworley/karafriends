@@ -284,7 +284,8 @@ function Player(props: {
         setPlaybackState("PLAYING");
         break;
       case "SKIPPING":
-        videoRef.current.currentTime = videoRef.current.duration;
+        if (isFinite(videoRef.current.duration))
+          videoRef.current.currentTime = videoRef.current.duration;
         videoRef.current.play();
         break;
     }
