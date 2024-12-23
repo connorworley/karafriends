@@ -17,6 +17,7 @@ async function handleError(err: unknown) {
 }
 
 process.on("uncaughtException", handleError);
+process.on("unhandledRejection", handleError);
 
 import inspector from "inspector";
 

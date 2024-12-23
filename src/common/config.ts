@@ -51,7 +51,8 @@ const DEFAULT_CONFIG: KarafriendsConfig = {
   adminDeviceIds: [],
   supervisedMode: false,
   proxyEnable: false,
-  proxyURL: "PROXY_URL_HERE",
+  proxyHost: "PROXY_HOST_HERE",
+  proxyPort: 1234,
   proxyUser: "PROXY_USER_HERE",
   proxyPass: "PROXY_PASS_HERE",
 };

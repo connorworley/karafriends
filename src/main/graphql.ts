@@ -3,11 +3,18 @@ import { createServer } from "http";
 import path from "path";
 import { WebSocketServer } from "ws";
 
-import { ApolloServer } from '@apollo/server'; // tslint:disable-line:no-submodule-imports
+import { ApolloServer } from "@apollo/server"; // tslint:disable-line:no-submodule-imports
 // tslint:disable-next-line:no-submodule-imports
-import { expressMiddleware } from '@apollo/server/express4';
+import { expressMiddleware } from "@apollo/server/express4";
+import {
+  ApolloServerPluginCacheControlDisabled,
+  ApolloServerPluginInlineTraceDisabled,
+  ApolloServerPluginLandingPageDisabled,
+  ApolloServerPluginSchemaReportingDisabled,
+  ApolloServerPluginUsageReportingDisabled,
+} from "@apollo/server/plugin/disabled"; // tslint:disable-line:no-submodule-imports
 // tslint:disable-next-line:no-submodule-imports
-import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import { type FetcherRequestInit } from "@apollo/utils.fetcher";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import isDev from "electron-is-dev";
@@ -953,7 +960,7 @@ const resolvers = {
             ? selectedIndex.lowBitrateUrl
             : selectedIndex.highBitrateUrl;
           downloadDamVideo(url, queueItem.songId, queueItem.streamingUrlIdx);
-        })
+        });
 
       return pushSongToQueue(queueItem, pushToHead);
     },
@@ -1194,7 +1201,14 @@ export function applyGraphQLMiddleware(
 
   const server = new ApolloServer<IDataSources>({
     schema,
-    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+    plugins: [
+      ApolloServerPluginDrainHttpServer({ httpServer }),
+      ApolloServerPluginCacheControlDisabled(),
+      ApolloServerPluginInlineTraceDisabled(),
+      ApolloServerPluginLandingPageDisabled(),
+      ApolloServerPluginSchemaReportingDisabled(),
+      ApolloServerPluginUsageReportingDisabled(),
+    ],
   });
 
   if (isDev) {
@@ -1209,35 +1223,40 @@ export function applyGraphQLMiddleware(
     });
   }
 
-  const tunnelAgent = karafriendsConfig.proxyEnable ? tunnel.httpsOverHttp({
-    proxy: {
-      host: karafriendsConfig.proxyHost,
-      port: karafriendsConfig.proxyPort,
-      proxyAuth: `${karafriendsConfig.proxyUser}:${karafriendsConfig.proxyPass}`
-    },
-  }) : undefined;
+  const tunnelAgent = karafriendsConfig.proxyEnable
+    ? tunnel.httpsOverHttp({
+        proxy: {
+          host: karafriendsConfig.proxyHost,
+          port: karafriendsConfig.proxyPort,
+          proxyAuth: `${karafriendsConfig.proxyUser}:${karafriendsConfig.proxyPass}`,
+        },
+      })
+    : undefined;
 
   const fetcher = async (url: string, init?: FetcherRequestInit) => {
-    return nodeFetch(url, {...init, agent: tunnelAgent});
+    return nodeFetch(url, { ...init, agent: tunnelAgent });
   };
 
   server.start().then(() => {
     app.use(
       "/graphql",
       express.json(),
-      expressMiddleware(
-        server,
-        {
-          context: async () => ({
-            dataSources: {
-              minsei: new MinseiAPI(minseiCredsProvider, { cache: server.cache, fetch: fetcher }),
-              joysound: new JoysoundAPI(joysoundCredsProvider, { cache: server.cache, fetch: fetcher }),
-              dkwebsys: new DkwebsysAPI({ cache: server.cache, fetch: fetcher }),
-              youtube: new YoutubeAPI({ cache: server.cache, fetch: fetcher }),
-            },
-          }),
-        },
-      ),
+      expressMiddleware(server, {
+        context: async () => ({
+          dataSources: {
+            minsei: new MinseiAPI(minseiCredsProvider, {
+              cache: server.cache,
+              fetch: fetcher,
+            }),
+            joysound: new JoysoundAPI(joysoundCredsProvider, {
+              cache: server.cache,
+              fetch: fetcher,
+            }),
+            dkwebsys: new DkwebsysAPI({ cache: server.cache, fetch: fetcher }),
+            youtube: new YoutubeAPI({ cache: server.cache, fetch: fetcher }),
+          },
+        }),
+      }),
     );
     httpServer.listen(karafriendsConfig.remoconPort, () => {
       console.log(
