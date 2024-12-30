@@ -7036,13 +7036,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bufferutil@npm:4.0.8":
-  version: 4.0.8
-  resolution: "bufferutil@npm:4.0.8"
+"bufferutil@npm:4.0.9":
+  version: 4.0.9
+  resolution: "bufferutil@npm:4.0.9"
   dependencies:
     node-gyp: latest
     node-gyp-build: ^4.3.0
-  checksum: 7e9a46f1867dca72fda350966eb468eca77f4d623407b0650913fadf73d5750d883147d6e5e21c56f9d3b0bdc35d5474e80a600b9f31ec781315b4d2469ef087
+  checksum: 51ce9ee19bc4b72c2eb9f9a231dd95e786ca5a00a6bdfcae83f1d5cd8169301c79245ce96913066a5a1bbe45c44e95bc5a1761a18798b835585c1a05af65b209
   languageName: node
   linkType: hard
 
@@ -12192,7 +12192,7 @@ __metadata:
     apollo-server-express: 3.13.0
     babel-loader: 9.2.1
     babel-plugin-relay: 18.2.0
-    bufferutil: 4.0.8
+    bufferutil: 4.0.9
     cargo-cp-artifact: 0.1.9
     classnames: 2.5.1
     color-convert: 2.0.1
