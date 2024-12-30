@@ -35,7 +35,7 @@
     "@types/youtube-player": "5.5.11",
     "apollo-datasource-rest": "3.7.0",
     "apollo-server-express": "3.13.0",
-    "bufferutil": "4.0.8",
+    "bufferutil": "4.0.9",
     "classnames": "2.5.1",
     "color-convert": "2.0.1",
     "compression": "1.7.5",
