@@ -1892,15 +1892,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/merge@npm:^9.0.15":
-  version: 9.0.15
-  resolution: "@graphql-tools/merge@npm:9.0.15"
+"@graphql-tools/merge@npm:^9.0.16":
+  version: 9.0.16
+  resolution: "@graphql-tools/merge@npm:9.0.16"
   dependencies:
-    "@graphql-tools/utils": ^10.7.0
+    "@graphql-tools/utils": ^10.7.1
     tslib: ^2.4.0
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 933051a4030e1c2bc86ef20b103fa21c9d7a50dedaf33058ecd2e82d7b5bdd0762f5d765bc6d48cdcb1429e4fbc1adb6e03ec909c4d526580d441c2818f70790
+  checksum: ccc791135e7f73e35fed94252db336c3e41a1b9e6d789ca4b3cc01a4d381ba84a0c665ee11bae9807f2b87d1e6acefec68e604ff6fbcd1615fca42bb196a6da6
   languageName: node
   linkType: hard
 
@@ -1918,17 +1918,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/schema@npm:10.0.14":
-  version: 10.0.14
-  resolution: "@graphql-tools/schema@npm:10.0.14"
+"@graphql-tools/schema@npm:10.0.15":
+  version: 10.0.15
+  resolution: "@graphql-tools/schema@npm:10.0.15"
   dependencies:
-    "@graphql-tools/merge": ^9.0.15
-    "@graphql-tools/utils": ^10.7.0
+    "@graphql-tools/merge": ^9.0.16
+    "@graphql-tools/utils": ^10.7.1
     tslib: ^2.4.0
     value-or-promise: ^1.0.12
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 41c90e470146ca0065dcdf6e72aab3bb68b9c91c3d1090b5b37a8193366931a70d7ad6ac94786eb2363f2aa3480a1a8fdde02274085001ca78a80cf37e9603e7
+  checksum: 57d05c97929051591bf513a529a9d0667003b176e09199d12641f2b117cdfb18513880fc27b82d1559ceee8f6a539d641c563d908815aa2682d9712dc972cf12
   languageName: node
   linkType: hard
 
@@ -1971,9 +1971,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/utils@npm:^10.7.0":
-  version: 10.7.0
-  resolution: "@graphql-tools/utils@npm:10.7.0"
+"@graphql-tools/utils@npm:^10.7.1":
+  version: 10.7.1
+  resolution: "@graphql-tools/utils@npm:10.7.1"
   dependencies:
     "@graphql-typed-document-node/core": ^3.1.1
     cross-inspect: 1.0.1
@@ -1981,7 +1981,7 @@ __metadata:
     tslib: ^2.4.0
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: da6002cdf7fd201053e8f5fef702c597dcd3a64dac4a89c1ae0d62142ca449cd0786112431bca4de596f4263395a016faffdffdff7d6a393c719ecc9fadfd987
+  checksum: 037ee6968facbb7a99330222e10f3bb443b9579d7be2770a1cf8d9516eec119c66f76589e1e3e716711be8d29069582f3096047648ec87355866f02251753b04
   languageName: node
   linkType: hard
 
@@ -12146,7 +12146,7 @@ __metadata:
     "@babel/preset-env": 7.26.0
     "@babel/preset-react": 7.26.3
     "@babel/runtime": 7.26.0
-    "@graphql-tools/schema": 10.0.14
+    "@graphql-tools/schema": 10.0.15
     "@parcel/config-default": 2.13.3
     "@parcel/core": 2.13.3
     "@parcel/transformer-glsl": 2.13.3
