@@ -5134,12 +5134,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:19.0.2":
+"@types/react@npm:*":
   version: 19.0.2
   resolution: "@types/react@npm:19.0.2"
   dependencies:
     csstype: ^3.0.2
   checksum: 2f12c2a84b778283884d41560c723d815153d88c56cacf25c0166329e9099c35c82c602a21d8831a381e2ef5574434ebd7bf09a636fe073558919474b0b3c9ed
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:19.0.3":
+  version: 19.0.3
+  resolution: "@types/react@npm:19.0.3"
+  dependencies:
+    csstype: ^3.0.2
+  checksum: a6c2bcd032522f5c041601a0df1c56288ad66c7973fa672b6c375334dd93295a4d1bfebf9c3498bafb86525f1fd8f4d58175267ed41ef5534b64ba28bd274bb6
   languageName: node
   linkType: hard
 
@@ -12172,7 +12181,7 @@ __metadata:
     "@types/node-fetch": 2.6.12
     "@types/promise-retry": 1.1.6
     "@types/qrcode": 1.5.5
-    "@types/react": 19.0.2
+    "@types/react": 19.0.3
     "@types/react-dom": 19.0.2
     "@types/react-fade-in": 2.0.2
     "@types/react-relay": 18.2.0
