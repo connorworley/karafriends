@@ -12255,7 +12255,7 @@ __metadata:
     typescript: 5.7.2
     user-agents: 1.1.394
     utf-8-validate: 6.0.5
-    uuid: 11.0.3
+    uuid: 11.0.4
     wait-on: 8.0.1
     wanakana: 5.3.1
     wdio-electron-service: 7.3.1
@@ -17515,12 +17515,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:11.0.3":
-  version: 11.0.3
-  resolution: "uuid@npm:11.0.3"
+"uuid@npm:11.0.4":
+  version: 11.0.4
+  resolution: "uuid@npm:11.0.4"
   bin:
     uuid: dist/esm/bin/uuid
-  checksum: 646181c77e8b8df9bd07254faa703943e1c4d5ccde7d080312edf12f443f6c5750801fd9b27bf2e628594182165e6b1b880c0382538f7eca00b26622203741dc
+  checksum: 88860d20dafa648642581b2e7bb364588149df50d41c812100839aec095593fcc8548fde6929605efd42f556455cf5683e3bad9e9e311f4b62d7efbb68598d3e
   languageName: node
   linkType: hard
 
