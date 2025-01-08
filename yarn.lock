@@ -4226,9 +4226,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/node@npm:8.47.0":
-  version: 8.47.0
-  resolution: "@sentry/node@npm:8.47.0"
+"@sentry/core@npm:8.48.0":
+  version: 8.48.0
+  resolution: "@sentry/core@npm:8.48.0"
+  checksum: cacf69792b20676f27aaa481fd30292c1824db0e3da457789699d60a21bb6c4f5bb91ae0b5b2f3b0382b93683c1a4d5e1cdd3355108126f265987284c823ea87
+  languageName: node
+  linkType: hard
+
+"@sentry/node@npm:8.48.0":
+  version: 8.48.0
+  resolution: "@sentry/node@npm:8.48.0"
   dependencies:
     "@opentelemetry/api": ^1.9.0
     "@opentelemetry/context-async-hooks": ^1.29.0
@@ -4262,25 +4269,25 @@ __metadata:
     "@opentelemetry/sdk-trace-base": ^1.29.0
     "@opentelemetry/semantic-conventions": ^1.28.0
     "@prisma/instrumentation": 5.22.0
-    "@sentry/core": 8.47.0
-    "@sentry/opentelemetry": 8.47.0
+    "@sentry/core": 8.48.0
+    "@sentry/opentelemetry": 8.48.0
     import-in-the-middle: ^1.11.2
-  checksum: 5c226bc0af4fbd3a8900160cf98ebf6da59e5ddc0f7ce313f750a16eb08d6b721ad8fef6d8ca63d5609ff702f499b3799f6137a855e82e11c5c44933ff6a7b36
+  checksum: a60d97d899269c7cc92b15963b3845bbad4650442e654f93c16f9cdf607883bf29dbfb3da0024e2616a8944820848b6329be2ba0c8f2a8dc1967fae696470e08
   languageName: node
   linkType: hard
 
-"@sentry/opentelemetry@npm:8.47.0":
-  version: 8.47.0
-  resolution: "@sentry/opentelemetry@npm:8.47.0"
+"@sentry/opentelemetry@npm:8.48.0":
+  version: 8.48.0
+  resolution: "@sentry/opentelemetry@npm:8.48.0"
   dependencies:
-    "@sentry/core": 8.47.0
+    "@sentry/core": 8.48.0
   peerDependencies:
     "@opentelemetry/api": ^1.9.0
     "@opentelemetry/core": ^1.29.0
     "@opentelemetry/instrumentation": ^0.56.0
     "@opentelemetry/sdk-trace-base": ^1.29.0
     "@opentelemetry/semantic-conventions": ^1.28.0
-  checksum: a26239093b13e107ac17066a514267fd974a969d1cc00b753b337bf7c408af8d2a2760c269186790d80e7e41b50563e2e37669c197fbdb81177df679f1558157
+  checksum: 96ea4d874de8c623f51fdda021fa78b4558f6374bd8bd7f3fa4576b90e1c54ba4d33f4e5151c4274092529660c67cbaecdddeeff5a03c7936ac0d3d43469febe
   languageName: node
   linkType: hard
 
@@ -12154,7 +12161,7 @@ __metadata:
     "@parcel/transformer-sass": 2.13.3
     "@parcel/transformer-worklet": 2.13.3
     "@sentry/browser": 8.47.0
-    "@sentry/node": 8.47.0
+    "@sentry/node": 8.48.0
     "@testing-library/dom": 10.4.0
     "@testing-library/webdriverio": 3.2.1
     "@types/audioworklet": 0.0.65
