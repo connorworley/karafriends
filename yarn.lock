@@ -10303,12 +10303,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql-ws@npm:5.16.0":
-  version: 5.16.0
-  resolution: "graphql-ws@npm:5.16.0"
+"graphql-ws@npm:5.16.1":
+  version: 5.16.1
+  resolution: "graphql-ws@npm:5.16.1"
   peerDependencies:
     graphql: ">=0.11 <=16"
-  checksum: e3e077ec187a92be3fd5dfae49e23af11a82711d3537064384f6861c2b5ceb339f60dc1871d0026b47ff05e4ed3c941404812a8086347e454688e0e6ef0e69f3
+  checksum: 24647a5cbc85e3d801f36587eb57f4d8d5f71fca84ff6f4eef4fb647c48d24a5f79da33c1cd405f48802581bba5f42538c10348b288f3b9e19762d22d2af2608
   languageName: node
   linkType: hard
 
@@ -12211,7 +12211,7 @@ __metadata:
     glob: 11.0.0
     graphql: 16.10.0
     graphql-subscriptions: 3.0.0
-    graphql-ws: 5.16.0
+    graphql-ws: 5.16.1
     hls.js: 1.5.18
     husky: 9.1.7
     kuromoji: 0.1.2
