@@ -130,7 +130,7 @@
     "cross-env": "7.0.3",
     "electron": "33.2.1",
     "electron-packager": "17.1.2",
-    "glob": "11.0.0",
+    "glob": "11.0.1",
     "husky": "9.1.7",
     "lint-staged": "15.2.11",
     "node-loader": "2.1.0",
