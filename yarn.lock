@@ -4979,12 +4979,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:22.10.2, @types/node@npm:^22.5.5":
+"@types/node@npm:*, @types/node@npm:^22.5.5":
   version: 22.10.2
   resolution: "@types/node@npm:22.10.2"
   dependencies:
     undici-types: ~6.20.0
   checksum: b22401e6e7d1484e437d802c72f5560e18100b1257b9ad0574d6fe05bebe4dbcb620ea68627d1f1406775070d29ace8b6b51f57e7b1c7b8bafafe6da7f29c843
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:22.10.9":
+  version: 22.10.9
+  resolution: "@types/node@npm:22.10.9"
+  dependencies:
+    undici-types: ~6.20.0
+  checksum: bd9a94fe5de516dcf13b4e9268696a99be3ba7146322c92b5ca3ea5368846cbb851843e2dda7030636653738405ea67e7bd972c630733420f84e199ad2c440ec
   languageName: node
   linkType: hard
 
@@ -12168,7 +12177,7 @@ __metadata:
     "@types/kuromoji": 0.1.3
     "@types/lodash": 4.17.13
     "@types/materialize-css": 1.0.14
-    "@types/node": 22.10.2
+    "@types/node": 22.10.9
     "@types/node-fetch": 2.6.12
     "@types/promise-retry": 1.1.6
     "@types/qrcode": 1.5.5
