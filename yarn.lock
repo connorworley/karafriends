@@ -281,7 +281,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.10.4, @babel/code-frame@npm:^7.12.13, @babel/code-frame@npm:^7.21.4, @babel/code-frame@npm:^7.22.13, @babel/code-frame@npm:^7.25.9, @babel/code-frame@npm:^7.26.0, @babel/code-frame@npm:^7.26.2":
+"@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.10.4, @babel/code-frame@npm:^7.12.13, @babel/code-frame@npm:^7.21.4, @babel/code-frame@npm:^7.22.13, @babel/code-frame@npm:^7.25.9, @babel/code-frame@npm:^7.26.2":
   version: 7.26.2
   resolution: "@babel/code-frame@npm:7.26.2"
   dependencies:
@@ -299,30 +299,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:7.26.0":
-  version: 7.26.0
-  resolution: "@babel/core@npm:7.26.0"
-  dependencies:
-    "@ampproject/remapping": "npm:^2.2.0"
-    "@babel/code-frame": "npm:^7.26.0"
-    "@babel/generator": "npm:^7.26.0"
-    "@babel/helper-compilation-targets": "npm:^7.25.9"
-    "@babel/helper-module-transforms": "npm:^7.26.0"
-    "@babel/helpers": "npm:^7.26.0"
-    "@babel/parser": "npm:^7.26.0"
-    "@babel/template": "npm:^7.25.9"
-    "@babel/traverse": "npm:^7.25.9"
-    "@babel/types": "npm:^7.26.0"
-    convert-source-map: "npm:^2.0.0"
-    debug: "npm:^4.1.0"
-    gensync: "npm:^1.0.0-beta.2"
-    json5: "npm:^2.2.3"
-    semver: "npm:^6.3.1"
-  checksum: 10/65767bfdb1f02e80d3af4f138066670ef8fdd12293de85ef151758a901c191c797e86d2e99b11c4cdfca33c72385ecaf38bbd7fa692791ec44c77763496b9b93
-  languageName: node
-  linkType: hard
-
-"@babel/core@npm:^7.1.0, @babel/core@npm:^7.12.3, @babel/core@npm:^7.7.5":
+"@babel/core@npm:7.26.7, @babel/core@npm:^7.1.0, @babel/core@npm:^7.12.3, @babel/core@npm:^7.7.5":
   version: 7.26.7
   resolution: "@babel/core@npm:7.26.7"
   dependencies:
@@ -345,7 +322,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/generator@npm:^7.26.0, @babel/generator@npm:^7.26.5":
+"@babel/generator@npm:^7.26.5":
   version: 7.26.5
   resolution: "@babel/generator@npm:7.26.5"
   dependencies:
@@ -542,7 +519,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helpers@npm:^7.26.0, @babel/helpers@npm:^7.26.7":
+"@babel/helpers@npm:^7.26.7":
   version: 7.26.7
   resolution: "@babel/helpers@npm:7.26.7"
   dependencies:
@@ -552,7 +529,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/parser@npm:^7.1.0, @babel/parser@npm:^7.14.7, @babel/parser@npm:^7.20.7, @babel/parser@npm:^7.25.9, @babel/parser@npm:^7.26.0, @babel/parser@npm:^7.26.5, @babel/parser@npm:^7.26.7":
+"@babel/parser@npm:^7.1.0, @babel/parser@npm:^7.14.7, @babel/parser@npm:^7.20.7, @babel/parser@npm:^7.25.9, @babel/parser@npm:^7.26.5, @babel/parser@npm:^7.26.7":
   version: 7.26.7
   resolution: "@babel/parser@npm:7.26.7"
   dependencies:
@@ -1609,7 +1586,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/types@npm:^7.0.0, @babel/types@npm:^7.20.7, @babel/types@npm:^7.25.9, @babel/types@npm:^7.26.0, @babel/types@npm:^7.26.5, @babel/types@npm:^7.26.7, @babel/types@npm:^7.3.3, @babel/types@npm:^7.4.4":
+"@babel/types@npm:^7.0.0, @babel/types@npm:^7.20.7, @babel/types@npm:^7.25.9, @babel/types@npm:^7.26.5, @babel/types@npm:^7.26.7, @babel/types@npm:^7.3.3, @babel/types@npm:^7.4.4":
   version: 7.26.7
   resolution: "@babel/types@npm:7.26.7"
   dependencies:
@@ -11216,7 +11193,7 @@ __metadata:
     "@apollo/server": "npm:4.11.2"
     "@apollo/utils.fetcher": "npm:3.1.0"
     "@apollo/utils.keyvaluecache": "npm:3.1.0"
-    "@babel/core": "npm:7.26.0"
+    "@babel/core": "npm:7.26.7"
     "@babel/preset-env": "npm:7.26.7"
     "@babel/preset-react": "npm:7.26.3"
     "@babel/runtime": "npm:7.26.7"
