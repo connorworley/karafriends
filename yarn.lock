@@ -4638,17 +4638,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/relay-runtime@npm:*":
+"@types/relay-runtime@npm:*, @types/relay-runtime@npm:18.2.5":
   version: 18.2.5
   resolution: "@types/relay-runtime@npm:18.2.5"
   checksum: 10/c456fefb763363e0605c77f80bb32f23ce75471e57d539a0ca7990926f888b804e12f41dfa11cd5e3ffa472fcd87554c4b3b7d431c9ba8eaaff464faf6094173
-  languageName: node
-  linkType: hard
-
-"@types/relay-runtime@npm:18.2.3":
-  version: 18.2.3
-  resolution: "@types/relay-runtime@npm:18.2.3"
-  checksum: 10/606c03b7e00863b881ded5af908e234e2eb1a97b0aad2d2cd18cf5d1fd00f2ca3d860867bdd1a72eb60ea803f36df7256c03ccc5a23670207c9d563cdc9d7e7c
   languageName: node
   linkType: hard
 
@@ -11267,7 +11260,7 @@ __metadata:
     "@types/react-fade-in": "npm:2.0.2"
     "@types/react-relay": "npm:18.2.0"
     "@types/react-swipeable": "npm:5.2.0"
-    "@types/relay-runtime": "npm:18.2.3"
+    "@types/relay-runtime": "npm:18.2.5"
     "@types/tunnel": "npm:^0"
     "@types/user-agents": "npm:1.0.4"
     "@types/uuid": "npm:^10"
