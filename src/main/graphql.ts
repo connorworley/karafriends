@@ -3,16 +3,31 @@ import { createServer } from "http";
 import path from "path";
 import { WebSocketServer } from "ws";
 
+import { ApolloServer } from "@apollo/server"; // tslint:disable-line:no-submodule-imports
+// tslint:disable-next-line:no-submodule-imports
+import { expressMiddleware } from "@apollo/server/express4";
+import {
+  ApolloServerPluginCacheControlDisabled,
+  ApolloServerPluginInlineTraceDisabled,
+  ApolloServerPluginLandingPageDisabled,
+  ApolloServerPluginSchemaReportingDisabled,
+  ApolloServerPluginUsageReportingDisabled,
+} from "@apollo/server/plugin/disabled"; // tslint:disable-line:no-submodule-imports
+// tslint:disable-next-line:no-submodule-imports
+import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
+import { type FetcherRequestInit } from "@apollo/utils.fetcher";
 import { makeExecutableSchema } from "@graphql-tools/schema";
-import { ApolloServer } from "apollo-server-express";
 import isDev from "electron-is-dev";
-import { Application } from "express";
+import express, { Application } from "express";
 import { PubSub } from "graphql-subscriptions";
 import { useServer } from "graphql-ws/lib/use/ws"; // tslint:disable-line:no-submodule-imports
 import { Nicovideo } from "niconico";
+import nodeFetch from "node-fetch";
+import tunnel from "tunnel";
 
-import karafriendsConfig from "../common/config";
-import rawSchema from "../common/schema.graphql";
+// tslint:disable-next-line:no-submodule-imports no-implicit-dependencies
+import rawSchema from "inline-string:../common/schema.graphql";
+import karafriendsConfig, { KarafriendsConfig } from "../common/config";
 import {
   downloadDamVideo,
   downloadJoysoundData,
@@ -26,6 +41,7 @@ import { YoutubeAPI } from "./youtubeApi";
 
 import { JoysoundAPI, JoysoundCredentialsProvider } from "./joysoundApi";
 
+import { memoize } from "lodash";
 import "regenerator-runtime/runtime"; // tslint:disable-line:no-submodule-imports
 
 export interface IDataSources {
@@ -897,7 +913,7 @@ const resolvers = {
 
       const pushToHead =
         args.tryHeadOfQueue && canPushToHeadOfQueue(queueItem.userIdentity);
-      console.log(`queueDamSong: pushToHead=${pushToHead}`);
+      console.log(`queueJoysoundSong: pushToHead=${pushToHead}`);
 
       downloadJoysoundData(
         db.downloadQueue,
@@ -1168,11 +1184,24 @@ const schema = makeExecutableSchema({
   resolvers,
 });
 
-export function applyGraphQLMiddleware(
-  app: Application,
-  minseiCredsProvider: MinseiCredentialsProvider,
-  joysoundCredsProvider: JoysoundCredentialsProvider,
-) {
+export const minseiCredentialsProvider = memoize(async () => {
+  const { damUsername, damPassword } = karafriendsConfig;
+  const minseiLoginResult = await MinseiAPI.login(damUsername, damPassword);
+  return {
+    userCode: damUsername,
+    authToken: minseiLoginResult.data.authToken,
+  };
+});
+
+export const joysoundCredentialsProvider = memoize(async () => {
+  const joysoundEmail = encodeURIComponent(karafriendsConfig.joysoundEmail);
+  const joysoundPassword = encodeURIComponent(
+    karafriendsConfig.joysoundPassword,
+  );
+  return JoysoundAPI.login(joysoundEmail, joysoundPassword);
+});
+
+export function applyGraphQLMiddleware(app: Application) {
   const httpServer = createServer(app);
 
   const wsServer = new WebSocketServer({
@@ -1184,24 +1213,15 @@ export function applyGraphQLMiddleware(
 
   db = loadDb();
 
-  const server = new ApolloServer({
-    dataSources: () => ({
-      minsei: new MinseiAPI(minseiCredsProvider),
-      joysound: new JoysoundAPI(joysoundCredsProvider),
-      dkwebsys: new DkwebsysAPI(),
-      youtube: new YoutubeAPI(),
-    }),
+  const server = new ApolloServer<IDataSources>({
     schema,
     plugins: [
-      {
-        async serverWillStart() {
-          return {
-            async drainServer() {
-              await serverCleanup.dispose();
-            },
-          };
-        },
-      },
+      ApolloServerPluginDrainHttpServer({ httpServer }),
+      ApolloServerPluginCacheControlDisabled(),
+      ApolloServerPluginInlineTraceDisabled(),
+      ApolloServerPluginLandingPageDisabled(),
+      ApolloServerPluginSchemaReportingDisabled(),
+      ApolloServerPluginUsageReportingDisabled(),
     ],
   });
 
@@ -1217,8 +1237,41 @@ export function applyGraphQLMiddleware(
     });
   }
 
+  const tunnelAgent = karafriendsConfig.proxyEnable
+    ? tunnel.httpsOverHttp({
+        proxy: {
+          host: karafriendsConfig.proxyHost,
+          port: karafriendsConfig.proxyPort,
+          proxyAuth: `${karafriendsConfig.proxyUser}:${karafriendsConfig.proxyPass}`,
+        },
+      })
+    : undefined;
+
+  const fetcher = async (url: string, init?: FetcherRequestInit) => {
+    return nodeFetch(url, { ...init, agent: tunnelAgent });
+  };
+
   server.start().then(() => {
-    server.applyMiddleware({ app });
+    app.use(
+      "/graphql",
+      express.json(),
+      expressMiddleware(server, {
+        context: async () => ({
+          dataSources: {
+            minsei: new MinseiAPI(minseiCredentialsProvider, {
+              cache: server.cache,
+              fetch: fetcher,
+            }),
+            joysound: new JoysoundAPI(joysoundCredentialsProvider, {
+              cache: server.cache,
+              fetch: fetcher,
+            }),
+            dkwebsys: new DkwebsysAPI({ cache: server.cache, fetch: fetcher }),
+            youtube: new YoutubeAPI({ cache: server.cache, fetch: fetcher }),
+          },
+        }),
+      }),
+    );
     httpServer.listen(karafriendsConfig.remoconPort, () => {
       console.log(
         `Server is now running on http://localhost:${karafriendsConfig.remoconPort}`,

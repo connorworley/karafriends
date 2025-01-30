@@ -10,8 +10,8 @@ spawnSync(
   {
     env: {
       ...process.env,
-      NODE_OPTIONS: `'--require=${resolve(__dirname, ".pnp.cjs")}'`,
+      NODE_OPTIONS: `--enable-source-maps '--require=${resolve(__dirname, ".pnp.cjs")}'`,
     },
     stdio: "inherit",
-  }
+  },
 );
