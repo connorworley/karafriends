@@ -1,12 +1,12 @@
+// tslint:disable-next-line:no-submodule-imports no-implicit-dependencies
+import { default as nativeAudioUrl } from "url:../../native/index.node";
+const nativeAudio = require(new URL(nativeAudioUrl).pathname); // tslint:disable-line:no-var-requires
+
 import { contextBridge, ipcRenderer } from "electron"; // tslint:disable-line:no-implicit-dependencies
 import { memoize } from "lodash";
 
 import { KarafriendsConfig } from "../common/config";
 import ipAddresses from "../common/ipAddresses";
-
-// tslint:disable-next-line:no-submodule-imports no-implicit-dependencies
-import { default as nativeAudioUrl } from "url:../../native/index.node";
-const nativeAudio = require(new URL(nativeAudioUrl).pathname); // tslint:disable-line:no-var-requires
 
 let inputDeviceCount = 0;
 const inputDevices: { [deviceId: number]: any } = {};

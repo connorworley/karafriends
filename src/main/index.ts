@@ -37,7 +37,6 @@ import {
 } from "electron"; // tslint:disable-line:no-implicit-dependencies
 import isDev from "electron-is-dev";
 import express from "express";
-import { memoize } from "lodash";
 
 import karafriendsConfig from "../common/config";
 import { TEMP_FOLDER } from "./../common/videoDownloader";
@@ -68,23 +67,6 @@ protocol.registerSchemesAsPrivileged([
     },
   },
 ]);
-
-async function minseiCredentialsProvider() {
-  const { damUsername, damPassword } = karafriendsConfig;
-  const minseiLoginResult = await MinseiAPI.login(damUsername, damPassword);
-  return {
-    userCode: damUsername,
-    authToken: minseiLoginResult.data.authToken,
-  };
-}
-
-async function joysoundCredentialsProvider() {
-  const joysoundEmail = encodeURIComponent(karafriendsConfig.joysoundEmail);
-  const joysoundPassword = encodeURIComponent(
-    karafriendsConfig.joysoundPassword,
-  );
-  return JoysoundAPI.login(joysoundEmail, joysoundPassword);
-}
 
 let rendererWindow: BrowserWindow | null;
 
@@ -150,11 +132,7 @@ function createWindow() {
 
   expressApp.use(compression());
 
-  applyGraphQLMiddleware(
-    expressApp,
-    memoize(minseiCredentialsProvider),
-    memoize(joysoundCredentialsProvider),
-  );
+  applyGraphQLMiddleware(expressApp);
 
   expressApp.use(remoconServiceWorkerAllowed());
 

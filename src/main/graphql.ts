@@ -41,6 +41,7 @@ import { YoutubeAPI } from "./youtubeApi";
 
 import { JoysoundAPI, JoysoundCredentialsProvider } from "./joysoundApi";
 
+import { memoize } from "lodash";
 import "regenerator-runtime/runtime"; // tslint:disable-line:no-submodule-imports
 
 export interface IDataSources {
@@ -1183,11 +1184,24 @@ const schema = makeExecutableSchema({
   resolvers,
 });
 
-export function applyGraphQLMiddleware(
-  app: Application,
-  minseiCredsProvider: MinseiCredentialsProvider,
-  joysoundCredsProvider: JoysoundCredentialsProvider,
-) {
+export const minseiCredentialsProvider = memoize(async () => {
+  const { damUsername, damPassword } = karafriendsConfig;
+  const minseiLoginResult = await MinseiAPI.login(damUsername, damPassword);
+  return {
+    userCode: damUsername,
+    authToken: minseiLoginResult.data.authToken,
+  };
+});
+
+export const joysoundCredentialsProvider = memoize(async () => {
+  const joysoundEmail = encodeURIComponent(karafriendsConfig.joysoundEmail);
+  const joysoundPassword = encodeURIComponent(
+    karafriendsConfig.joysoundPassword,
+  );
+  return JoysoundAPI.login(joysoundEmail, joysoundPassword);
+});
+
+export function applyGraphQLMiddleware(app: Application) {
   const httpServer = createServer(app);
 
   const wsServer = new WebSocketServer({
@@ -1244,11 +1258,11 @@ export function applyGraphQLMiddleware(
       expressMiddleware(server, {
         context: async () => ({
           dataSources: {
-            minsei: new MinseiAPI(minseiCredsProvider, {
+            minsei: new MinseiAPI(minseiCredentialsProvider, {
               cache: server.cache,
               fetch: fetcher,
             }),
-            joysound: new JoysoundAPI(joysoundCredsProvider, {
+            joysound: new JoysoundAPI(joysoundCredentialsProvider, {
               cache: server.cache,
               fetch: fetcher,
             }),
