@@ -1,10 +1,5 @@
-import { dirname, resolve } from "path";
-import { fileURLToPath } from "url";
-
-import { execFile, execFileSync } from "child_process";
+import { execFileSync } from "child_process";
 import "fs";
-
-const repoRoot = dirname(fileURLToPath(import.meta.url));
 
 console.log(
   `Dev port: ${process.env.KARAFRIENDS_DEV_PORT}, remocon port: ${process.env.KARAFRIENDS_REMOCON_PORT}`,
@@ -28,14 +23,16 @@ export const config = {
         },
       },
     },
-    ...(process.platform === "darwin" && [
-      {
-        browserName: "Safari",
-        platformName: "iOS",
-        "safari:deviceType": "iPhone",
-        "safari:useSimulator": true,
-      },
-    ]),
+    ...(process.platform === "darwin"
+      ? [
+          {
+            browserName: "Safari",
+            platformName: "iOS",
+            "safari:deviceType": "iPhone",
+            "safari:useSimulator": true,
+          },
+        ]
+      : []),
   ],
   connectionRetryTimeout: 10 * 60 * 1000,
   framework: "mocha",
@@ -45,10 +42,6 @@ export const config = {
   runner: "local",
   specs: ["tests/wdio/remocon/**"],
   beforeSession: (_config, caps, _specs) => {
-    execFile(resolve(repoRoot, "electron.js"), [
-      resolve(repoRoot, "build", "dev", "main_", "index.js"),
-    ]);
-
     if (caps["safari:useSimulator"] === true) {
       const udid = execFileSync(
         "xcrun",
