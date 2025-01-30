@@ -12339,7 +12339,7 @@ __metadata:
     wait-on: 8.0.1
     wanakana: 5.3.1
     wdio-electron-service: 7.3.1
-    webdriverio: 9.4.5
+    webdriverio: 9.7.2
     webpack: 5.97.1
     webpack-cli: 6.0.1
     webpack-merge: 6.0.1
