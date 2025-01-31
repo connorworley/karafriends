@@ -133,7 +133,7 @@
     "babel-loader": "9.2.1",
     "babel-plugin-relay": "18.2.0",
     "cargo-cp-artifact": "0.1.9",
-    "concurrently": "9.1.0",
+    "concurrently": "9.1.2",
     "cross-env": "7.0.3",
     "electron": "34.0.2",
     "electron-packager": "17.1.2",
