@@ -5760,7 +5760,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.7.7":
+"axios@npm:^1.7.9":
   version: 1.7.9
   resolution: "axios@npm:1.7.9"
   dependencies:
@@ -11333,7 +11333,7 @@ __metadata:
     user-agents: "npm:1.1.435"
     utf-8-validate: "npm:6.0.5"
     uuid: "npm:11.0.5"
-    wait-on: "npm:8.0.1"
+    wait-on: "npm:8.0.2"
     wanakana: "npm:5.3.1"
     wdio-electron-service: "npm:7.3.1"
     webdriverio: "npm:9.7.2"
@@ -16456,18 +16456,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"wait-on@npm:8.0.1":
-  version: 8.0.1
-  resolution: "wait-on@npm:8.0.1"
+"wait-on@npm:8.0.2":
+  version: 8.0.2
+  resolution: "wait-on@npm:8.0.2"
   dependencies:
-    axios: "npm:^1.7.7"
+    axios: "npm:^1.7.9"
     joi: "npm:^17.13.3"
     lodash: "npm:^4.17.21"
     minimist: "npm:^1.2.8"
     rxjs: "npm:^7.8.1"
   bin:
     wait-on: bin/wait-on
-  checksum: 10/41f933031b994718dfb50af35bb843f7f7017d601ef22927e92c211736fadd21808fdbf7ae367e998bcaf995cb9c05cf6160552dc655db9082aeecc346bc926d
+  checksum: 10/be688f1f0512ed4d57d3361d6ab1ed7dd22c0a2146c9e77c2ad4d64660e87959ce75e4e375a2bd2d17c58b1b0a65ac88f9ad2097e16bc12424a3b2895611c817
   languageName: node
   linkType: hard
 
