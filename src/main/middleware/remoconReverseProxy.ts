@@ -34,7 +34,9 @@ function remoconReverseProxy(devPort: number) {
     };
   } else {
     // On prod, we can just serve up the built remocon bundle
-    return express.static(path.join(__dirname, "..", "remocon"));
+    return express.static(
+      path.join(__dirname, "..", "..", "..", "build", "prod", "remocon"),
+    );
   }
 }
 
