@@ -143,7 +143,7 @@ function createWindow() {
     rendererWindow.loadURL(
       isDev
         ? `http://localhost:${karafriendsConfig.devPort}/renderer/`
-        : `file://${path.join(__dirname, "..", "renderer", "index.html")}`,
+        : `file://${path.join(__dirname, "..", "..", "build", "prod", "renderer", "index.html")}`,
     );
 
   ipcMain.on("config", (event: IpcMainEvent) => {

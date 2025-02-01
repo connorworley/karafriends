@@ -1,3 +1,4 @@
+#!/usr/bin/env yarn node
 const { spawnSync } = require("child_process");
 
 const sevenBin = require("7zip-bin");
