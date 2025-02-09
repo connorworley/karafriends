@@ -42,6 +42,11 @@ jobs:
           path: |
             extraResources
           key: ${{ runner.os }}-resources-${{ hashFiles('scripts/getExternalResources.mjs') }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+          cache: pip
+      - run: pip install ephemeral-port-reserve
       - run: yarn install --immutable
       - run: yarn build-dev
         env:
@@ -74,6 +79,11 @@ jobs:
           path: |
             extraResources
           key: ${{ runner.os }}-resources-${{ hashFiles('scripts/getExternalResources.mjs') }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+          cache: pip
+      - run: pip install ephemeral-port-reserve
       - run: yarn install --immutable
       - run: yarn build-dev
         env:
@@ -112,6 +122,11 @@ jobs:
             buildResources
             extraResources
           key: ${{ runner.os }}-resources-${{ hashFiles('scripts/getExternalResources.mjs') }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+          cache: pip
+      - run: pip install ephemeral-port-reserve
       - run: yarn install --immutable
       - run: yarn build-dev
         env:
@@ -151,6 +166,11 @@ jobs:
             buildResources
             extraResources
           key: ${{ runner.os }}-resources-${{ hashFiles('scripts/getExternalResources.mjs') }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+          cache: pip
+      - run: pip install ephemeral-port-reserve
       - run: sudo apt-get update && sudo apt-get install -y libasound2-dev
       - run: yarn install --immutable
       - run: yarn build-dev
