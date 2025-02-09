@@ -1,6 +1,6 @@
 [workspace]
 members = [
     "karafriends-lib",
-    "karafriends", "ephemeral-port-reserve",
+    "karafriends",
 ]
 resolver = "2"
