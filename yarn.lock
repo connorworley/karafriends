@@ -12,61 +12,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apm-js-collab/code-transformer-bundler-plugins@npm:^0.7.3":
-  version: 0.7.4
-  resolution: "@apm-js-collab/code-transformer-bundler-plugins@npm:0.7.4"
-  dependencies:
-    "@apm-js-collab/code-transformer": "npm:^0.18.1"
-    es-module-lexer: "npm:^2.1.0"
-    magic-string: "npm:^0.30.21"
-    module-details-from-path: "npm:^1.0.4"
-  checksum: 10/cb3d85584bdce93ffff95a48de4f2460d8080d8041c76649cea9268923f14c63087dbf495337414a4b7415956f8c46ac3932140ea619d07d32231ccad4a86f69
-  languageName: node
-  linkType: hard
-
-"@apm-js-collab/code-transformer@npm:^0.18.0":
-  version: 0.18.0
-  resolution: "@apm-js-collab/code-transformer@npm:0.18.0"
-  dependencies:
-    "@types/estree": "npm:^1.0.8"
-    astring: "npm:^1.9.0"
-    esquery: "npm:^1.7.0"
-    meriyah: "npm:^6.1.4"
-    semifies: "npm:^1.0.0"
-    source-map: "npm:^0.6.0"
-  bin:
-    code-transformer: cli.js
-  checksum: 10/b1d6fac6e7b395398b88f7448787f9d4839ae395cd1c0b83252e7440017dbf0f165fc104644af52ae5967d18fdd917c7e970d87bd488cc4b34038c896a729eaa
-  languageName: node
-  linkType: hard
-
-"@apm-js-collab/code-transformer@npm:^0.18.1":
-  version: 0.18.1
-  resolution: "@apm-js-collab/code-transformer@npm:0.18.1"
-  dependencies:
-    "@types/estree": "npm:^1.0.8"
-    astring: "npm:^1.9.0"
-    esquery: "npm:^1.7.0"
-    meriyah: "npm:^6.1.4"
-    semifies: "npm:^1.0.0"
-    source-map: "npm:^0.6.0"
-  bin:
-    code-transformer: cli.js
-  checksum: 10/891307a02578f7c358e80619bb071e6c883cd8b0a10c41e2945a3dea80b7fbf5527262cefac67ba6960b37b51f75694dad9630a5d40c378c01e73fffdbfd584c
-  languageName: node
-  linkType: hard
-
-"@apm-js-collab/tracing-hooks@npm:^0.13.0":
-  version: 0.13.0
-  resolution: "@apm-js-collab/tracing-hooks@npm:0.13.0"
-  dependencies:
-    "@apm-js-collab/code-transformer": "npm:^0.18.0"
-    debug: "npm:^4.4.1"
-    module-details-from-path: "npm:^1.0.4"
-  checksum: 10/8c91f20c18024fd1fe971bb552099404e0e671b4f9a89c2818184c4065ab3b88f6ddbb6fde2dd78399ae72a7c42228e1ff4d81390df37596523fb430bbe57206
-  languageName: node
-  linkType: hard
-
 "@apollo/cache-control-types@npm:^1.0.3":
   version: 1.0.3
   resolution: "@apollo/cache-control-types@npm:1.0.3"
@@ -4893,6 +4838,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sentry/core@npm:10.73.0":
+  version: 10.73.0
+  resolution: "@sentry/core@npm:10.73.0"
+  dependencies:
+    "@sentry/conventions": "npm:^0.16.0"
+  checksum: 10/19cb1b1cd3b55b5c759336d41f7561d8102a44747d13d0ce5f5127476e8bc7ef903714f3d4f84f989f82209d4f106482fe413fc022eef1c13a1c47ebe65443ac
+  languageName: node
+  linkType: hard
+
 "@sentry/feedback@npm:10.70.0":
   version: 10.70.0
   resolution: "@sentry/feedback@npm:10.70.0"
@@ -4902,13 +4856,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/node-core@npm:10.70.0":
-  version: 10.70.0
-  resolution: "@sentry/node-core@npm:10.70.0"
+"@sentry/node-core@npm:10.73.0":
+  version: 10.73.0
+  resolution: "@sentry/node-core@npm:10.73.0"
   dependencies:
     "@sentry/conventions": "npm:^0.16.0"
-    "@sentry/core": "npm:10.70.0"
-    "@sentry/opentelemetry": "npm:10.70.0"
+    "@sentry/core": "npm:10.73.0"
+    "@sentry/opentelemetry": "npm:10.73.0"
     import-in-the-middle: "npm:^3.0.0"
   peerDependencies:
     "@opentelemetry/api": ^1.9.0
@@ -4927,38 +4881,38 @@ __metadata:
       optional: true
     "@opentelemetry/sdk-trace-base":
       optional: true
-  checksum: 10/41015e38af68e14563386b785a0b206a33afaac822acc36cd4684490f2bb0fcfbf6276abe2e0dc1dc342f122a27d059c62a9ba4ba81ee7a90a1df6c1354b8ee3
+  checksum: 10/f6c5dbe149506460fdff54eac43b65bf8feef0fc2fa24702accc4708c11f6fbe57d176bd15d0bd0bc0b3656364fd3f64c25dcda83321fcc11fd12434e0a97dea
   languageName: node
   linkType: hard
 
-"@sentry/node@npm:10.70.0":
-  version: 10.70.0
-  resolution: "@sentry/node@npm:10.70.0"
+"@sentry/node@npm:10.73.0":
+  version: 10.73.0
+  resolution: "@sentry/node@npm:10.73.0"
   dependencies:
     "@opentelemetry/api": "npm:^1.9.1"
     "@opentelemetry/instrumentation": "npm:^0.220.0"
     "@opentelemetry/sdk-trace-base": "npm:^2.9.0"
     "@sentry/conventions": "npm:^0.16.0"
-    "@sentry/core": "npm:10.70.0"
-    "@sentry/node-core": "npm:10.70.0"
-    "@sentry/opentelemetry": "npm:10.70.0"
-    "@sentry/server-utils": "npm:10.70.0"
+    "@sentry/core": "npm:10.73.0"
+    "@sentry/node-core": "npm:10.73.0"
+    "@sentry/opentelemetry": "npm:10.73.0"
+    "@sentry/server-utils": "npm:10.73.0"
     import-in-the-middle: "npm:^3.0.0"
-  checksum: 10/735369f74bd21f82abe8d5e865ac808908fe2d0d47a76b09bd83d49975f3bb0b804d427bb30b8faff4e998a80fb969b8b955d769eafd927c6a31376a24d70a64
+  checksum: 10/a37d020d09265a6a32a6030fbb1bae22ba02e65cff26271fc82519719f0bb6c4b2c397ff3ea62d740a0d7349aed2437fbdf5e6be0add755c15138cfa577a2a0d
   languageName: node
   linkType: hard
 
-"@sentry/opentelemetry@npm:10.70.0":
-  version: 10.70.0
-  resolution: "@sentry/opentelemetry@npm:10.70.0"
+"@sentry/opentelemetry@npm:10.73.0":
+  version: 10.73.0
+  resolution: "@sentry/opentelemetry@npm:10.73.0"
   dependencies:
     "@sentry/conventions": "npm:^0.16.0"
-    "@sentry/core": "npm:10.70.0"
+    "@sentry/core": "npm:10.73.0"
   peerDependencies:
     "@opentelemetry/api": ^1.9.0
     "@opentelemetry/core": ^1.30.1 || ^2.1.0
     "@opentelemetry/sdk-trace-base": ^1.30.1 || ^2.1.0
-  checksum: 10/d12ba729d17241c26a775565d608e139509c1a7541adf3c49fc856787f40d4f4b7310f4c9fb93805ee4df4200da194152a3058c9d8b7ddf16e0423b9f162b90c
+  checksum: 10/467bf1644ec457904133f01c90fb79b93d76d689222c37d7da221bc40cac9a0452d124953710f226ba2a247891b8c127fb2e1b6d6933ec9653d11d448aa0c22c
   languageName: node
   linkType: hard
 
@@ -4982,16 +4936,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/server-utils@npm:10.70.0":
-  version: 10.70.0
-  resolution: "@sentry/server-utils@npm:10.70.0"
+"@sentry/server-utils@npm:10.73.0":
+  version: 10.73.0
+  resolution: "@sentry/server-utils@npm:10.73.0"
   dependencies:
-    "@apm-js-collab/code-transformer-bundler-plugins": "npm:^0.7.3"
-    "@apm-js-collab/tracing-hooks": "npm:^0.13.0"
     "@sentry/conventions": "npm:^0.16.0"
-    "@sentry/core": "npm:10.70.0"
-    meriyah: "npm:^6.1.4"
-  checksum: 10/3e90c14f15acf63d797bb5fb9668261158291db7fb1f891c90dcd964385840b96323aad0239340f8b913c01fd278d01833f60071f4ba656db042a36a5e9393d2
+    "@sentry/core": "npm:10.73.0"
+  checksum: 10/7ad97d0ed1fbbef9074c894fd24ad117332a0cbbfd30b58fea8844a8a972106f72d983ef6431c4895e87e178ae16bb9f43509a8e4d61f0f956b6f7c591595b05
   languageName: node
   linkType: hard
 
@@ -5375,13 +5326,6 @@ __metadata:
   version: 1.40.0
   resolution: "@types/emscripten@npm:1.40.0"
   checksum: 10/bf53d5890c9a8cac03679f35c9d9ecd32bb540e4f2559ea7907334a2b701eb82d44f4622d5e61eff989fcfc25ee2407184af7f4d8f2bf57362fce3927a8510fd
-  languageName: node
-  linkType: hard
-
-"@types/estree@npm:^1.0.8":
-  version: 1.0.9
-  resolution: "@types/estree@npm:1.0.9"
-  checksum: 10/16aabfa703b5bdac83f719b07ce92a11b2d3c9b8628eacc92889d8af46cab2d78fc45c7b5378de383d0500585cea5c2f79125eeddfe5fbc6bd6a27eb0c8ccee5
   languageName: node
   linkType: hard
 
@@ -6797,15 +6741,6 @@ __metadata:
   dependencies:
     tslib: "npm:^2.0.1"
   checksum: 10/f569b475eb1c8cb93888cb6e7b7e36dc43fa19a77e4eb132cbff6e3eb1598ca60f850db6e60b070e5a0ee8c1559fca921dac0916e576f2f104e198793b0bdd8d
-  languageName: node
-  linkType: hard
-
-"astring@npm:^1.9.0":
-  version: 1.9.0
-  resolution: "astring@npm:1.9.0"
-  bin:
-    astring: bin/astring
-  checksum: 10/ee88f71d8534557b27993d6d035ae85d78488d8dbc6429cd8e8fdfcafec3c65928a3bdc518cf69767a1298d3361490559a4819cd4b314007edae1e94cf1f9e4c
   languageName: node
   linkType: hard
 
@@ -8431,7 +8366,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:4, debug@npm:^4.0.1, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.1, debug@npm:^4.3.4, debug@npm:^4.3.5, debug@npm:^4.3.6, debug@npm:^4.4.0, debug@npm:^4.4.1, debug@npm:^4.4.3":
+"debug@npm:4, debug@npm:^4.0.1, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.1, debug@npm:^4.3.4, debug@npm:^4.3.5, debug@npm:^4.3.6, debug@npm:^4.4.0, debug@npm:^4.4.3":
   version: 4.4.3
   resolution: "debug@npm:4.4.3"
   dependencies:
@@ -9098,7 +9033,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"es-module-lexer@npm:^2.1.0, es-module-lexer@npm:^2.2.0":
+"es-module-lexer@npm:^2.2.0":
   version: 2.3.1
   resolution: "es-module-lexer@npm:2.3.1"
   checksum: 10/15bd9f6d70ec7f046a308b7fbeb56a1fd4bde09e6a46df0015caee58bd5888fc114029754e922ca68577b761890ac95cc450683424209464530cfe54f69b8566
@@ -9386,16 +9321,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esquery@npm:^1.7.0":
-  version: 1.7.0
-  resolution: "esquery@npm:1.7.0"
-  dependencies:
-    estraverse: "npm:^5.1.0"
-  checksum: 10/4afaf3089367e1f5885caa116ef386dffd8bfd64da21fd3d0e56e938d2667cfb2e5400ab4a825aa70e799bb3741e5b5d63c0b94d86e2d4cf3095c9e64b2f5a15
-  languageName: node
-  linkType: hard
-
-"estraverse@npm:^5.1.0, estraverse@npm:^5.2.0":
+"estraverse@npm:^5.2.0":
   version: 5.3.0
   resolution: "estraverse@npm:5.3.0"
   checksum: 10/37cbe6e9a68014d34dbdc039f90d0baf72436809d02edffcc06ba3c2a12eb298048f877511353b130153e532aac8d68ba78430c0dd2f44806ebc7c014b01585e
@@ -12552,7 +12478,7 @@ __metadata:
     "@parcel/transformer-sass": "npm:2.16.4"
     "@parcel/transformer-worklet": "npm:2.16.4"
     "@sentry/browser": "npm:10.70.0"
-    "@sentry/node": "npm:10.70.0"
+    "@sentry/node": "npm:10.73.0"
     "@testing-library/dom": "npm:10.4.1"
     "@testing-library/webdriverio": "npm:3.2.1"
     "@types/audioworklet": "npm:0.0.100"
@@ -13352,13 +13278,6 @@ __metadata:
   version: 1.4.1
   resolution: "merge2@npm:1.4.1"
   checksum: 10/7268db63ed5169466540b6fb947aec313200bcf6d40c5ab722c22e242f651994619bcd85601602972d3c85bd2cc45a358a4c61937e9f11a061919a1da569b0c2
-  languageName: node
-  linkType: hard
-
-"meriyah@npm:^6.1.4":
-  version: 6.1.4
-  resolution: "meriyah@npm:6.1.4"
-  checksum: 10/16b841b9bf7cd6a815864f7054958207cacaa61a4a879477da38210132d30449d83accad822919c4c6f26697e113c9f6ced3620b4c5a1703c315ee183fe0bfc0
   languageName: node
   linkType: hard
 
@@ -16089,13 +16008,6 @@ __metadata:
     ajv: "npm:^6.12.5"
     ajv-keywords: "npm:^3.5.2"
   checksum: 10/2c7bbb1da967fdfd320e6cea538949006ec6e8c13ea560a4f94ff2c56809a8486fa5ec419e023452501a6befe1ca381e409c2798c24f4993c7c4094d97fdb258
-  languageName: node
-  linkType: hard
-
-"semifies@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "semifies@npm:1.0.0"
-  checksum: 10/b26788144816ec45e4f9964bee3b308890154a16ea09974eb080b39ce987fb7c4f86424d79a4a1ec7ef007a71f6e4a7be75583b56feaf2b46efa1f5c386073af
   languageName: node
   linkType: hard
 
