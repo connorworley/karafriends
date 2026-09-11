@@ -136,7 +136,7 @@ const RAW_RUNTIME_STATE =
           ["parcel-reporter-static-files-copy", "npm:1.5.3"],\
           ["path-browserify", "npm:1.0.1"],\
           ["polyline-normals", "npm:2.0.2"],\
-          ["postcss", "npm:8.5.26"],\
+          ["postcss", "npm:8.5.28"],\
           ["prettier", "npm:3.9.6"],\
           ["process", "npm:0.11.10"],\
           ["promise-retry", "npm:2.0.1"],\
@@ -15622,7 +15622,7 @@ const RAW_RUNTIME_STATE =
           ["parcel-reporter-static-files-copy", "npm:1.5.3"],\
           ["path-browserify", "npm:1.0.1"],\
           ["polyline-normals", "npm:2.0.2"],\
-          ["postcss", "npm:8.5.26"],\
+          ["postcss", "npm:8.5.28"],\
           ["prettier", "npm:3.9.6"],\
           ["process", "npm:0.11.10"],\
           ["promise-retry", "npm:2.0.1"],\
@@ -16814,10 +16814,10 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["nanoid", [\
-      ["npm:3.3.18", {\
-        "packageLocation": "./.yarn/cache/nanoid-npm-3.3.18-3dd24ff2e6-1b3b4fdac8.zip/node_modules/nanoid/",\
+      ["npm:3.3.19", {\
+        "packageLocation": "./.yarn/cache/nanoid-npm-3.3.19-b508bd6b51-a330adb28d.zip/node_modules/nanoid/",\
         "packageDependencies": [\
-          ["nanoid", "npm:3.3.18"]\
+          ["nanoid", "npm:3.3.19"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -17989,11 +17989,11 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["postcss", [\
-      ["npm:8.5.26", {\
-        "packageLocation": "./.yarn/cache/postcss-npm-8.5.26-b0fc538b49-842a624f82.zip/node_modules/postcss/",\
+      ["npm:8.5.28", {\
+        "packageLocation": "./.yarn/cache/postcss-npm-8.5.28-5a200e589f-c34814c1da.zip/node_modules/postcss/",\
         "packageDependencies": [\
-          ["postcss", "npm:8.5.26"],\
-          ["nanoid", "npm:3.3.18"],\
+          ["postcss", "npm:8.5.28"],\
+          ["nanoid", "npm:3.3.19"],\
           ["picocolors", "npm:1.1.1"],\
           ["source-map-js", "npm:1.2.1"]\
         ],\
