@@ -6154,17 +6154,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wdio/mocha-framework@npm:9.31.2":
-  version: 9.31.2
-  resolution: "@wdio/mocha-framework@npm:9.31.2"
+"@wdio/mocha-framework@npm:9.31.6":
+  version: 9.31.6
+  resolution: "@wdio/mocha-framework@npm:9.31.6"
   dependencies:
     "@types/mocha": "npm:^10.0.6"
     "@types/node": "npm:^20.11.28"
     "@wdio/logger": "npm:9.29.1"
     "@wdio/types": "npm:9.31.2"
-    "@wdio/utils": "npm:9.31.2"
+    "@wdio/utils": "npm:9.31.6"
     mocha: "npm:^10.3.0"
-  checksum: 10/dab33c7797b734cafdc9b965ec2cc028dd5165e84377b42c7e7338da09f68030e0a9e2319f0637a364217b9e8ec0159b7df866e2113fc961a628eeda2fd7ab9a
+  checksum: 10/417df146742f7ca26fe5d3912f12bced7f064bbb84e540599152e94c690dc6ba5190766b484c4814e584866898b5353f47e1c3635afe77abdda3f04ecc44cbaf
   languageName: node
   linkType: hard
 
@@ -6289,6 +6289,28 @@ __metadata:
     split2: "npm:^4.2.0"
     wait-port: "npm:^1.1.0"
   checksum: 10/a644c281a2828df1e05b2c577e3bf46de7d1b09e621bbb0d38e092672d0330bd3c8dae5d467ac2bc3f170d08ebc09f73aa3ce852ebb0f958404904ff89cdb1c9
+  languageName: node
+  linkType: hard
+
+"@wdio/utils@npm:9.31.6":
+  version: 9.31.6
+  resolution: "@wdio/utils@npm:9.31.6"
+  dependencies:
+    "@puppeteer/browsers": "npm:^2.2.0"
+    "@wdio/logger": "npm:9.29.1"
+    "@wdio/types": "npm:9.31.2"
+    decamelize: "npm:^6.0.0"
+    deepmerge-ts: "npm:^8.0.0"
+    edgedriver: "npm:^6.1.2"
+    geckodriver: "npm:^6.1.1"
+    get-port: "npm:^7.0.0"
+    import-meta-resolve: "npm:^4.0.0"
+    locate-app: "npm:^2.2.24"
+    mitt: "npm:^3.0.1"
+    safaridriver: "npm:^1.0.0"
+    split2: "npm:^4.2.0"
+    wait-port: "npm:^1.1.0"
+  checksum: 10/0680dc9c689545a019f8853edc0d1ea6e355a9d06c27d55d96a1cef13d5dc9951cf90ae730b146ac08aa69126ebda17bae7584cd5e1b20c99041385a8e3904ba
   languageName: node
   linkType: hard
 
@@ -8533,6 +8555,13 @@ __metadata:
   version: 7.1.4
   resolution: "deepmerge-ts@npm:7.1.4"
   checksum: 10/3cdad1ebff79e02a7a106c3dce3dea9311592e841e5bb4eebc8636b23d3a5790bea1ebcf1f52f749270c32b9d21774740fc7a4b40ecd73053d08aed380cd645e
+  languageName: node
+  linkType: hard
+
+"deepmerge-ts@npm:^8.0.0":
+  version: 8.0.2
+  resolution: "deepmerge-ts@npm:8.0.2"
+  checksum: 10/43c1ae06c0b203e1bb8776e5607ea17803e2c1e8808efd806559f7d103370f6c7ca90fcd637c07aafb96bf8f16b8c9fdf693f28c6170352b17de1c9b5e6b3731
   languageName: node
   linkType: hard
 
@@ -12586,7 +12615,7 @@ __metadata:
     "@wdio/cli": "npm:9.31.4"
     "@wdio/globals": "npm:9.31.3"
     "@wdio/local-runner": "npm:9.31.4"
-    "@wdio/mocha-framework": "npm:9.31.2"
+    "@wdio/mocha-framework": "npm:9.31.6"
     "@yarnpkg/pnpify": "npm:4.1.7"
     babel-loader: "npm:10.1.1"
     babel-plugin-relay: "npm:21.0.1"
