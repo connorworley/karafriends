@@ -5716,12 +5716,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:19.2.17":
-  version: 19.2.17
-  resolution: "@types/react@npm:19.2.17"
+"@types/react@npm:19.3.0":
+  version: 19.3.0
+  resolution: "@types/react@npm:19.3.0"
   dependencies:
     csstype: "npm:^3.2.2"
-  checksum: 10/8debb092bd0bb9c99176a31824c7587c27c775a6526b60060e7b9e8dc2af53aee2ffadc7a1e3845953792437db5699d34a9054e198c9d4e54a74728ff47c6725
+  checksum: 10/2f4589222fd9c512e1ef78e65f334ade8777400add8ec0803fcc3a044761679b7984ba8410a890af24255383c3251a568bb692b60acfa22397ba0a64b2e032bf
   languageName: node
   linkType: hard
 
@@ -12571,7 +12571,7 @@ __metadata:
     "@types/node-fetch": "npm:2.6.13"
     "@types/promise-retry": "npm:1.1.6"
     "@types/qrcode": "npm:1.5.6"
-    "@types/react": "npm:19.2.17"
+    "@types/react": "npm:19.3.0"
     "@types/react-dom": "npm:19.2.3"
     "@types/react-fade-in": "npm:2.0.2"
     "@types/react-relay": "npm:18.2.1"
@@ -12636,7 +12636,7 @@ __metadata:
     puppeteer-core: "npm:25.9.0"
     qrcode: "npm:1.5.4"
     raw-loader: "npm:4.0.2"
-    react: "npm:19.2.7"
+    react: "npm:19.3.0"
     react-dom: "npm:19.2.7"
     react-fade-in: "npm:2.0.1"
     react-icons: "npm:5.7.0"
@@ -15293,10 +15293,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:19.2.7":
-  version: 19.2.7
-  resolution: "react@npm:19.2.7"
-  checksum: 10/2939997e87d7f0ee0d9d2bb556866b616b999dfb7916283647034eda867a045a39c4f7a736c8ea6beffffcd78397fc30f63a7a3aaf8425b683c3060670859560
+"react@npm:19.3.0":
+  version: 19.3.0
+  resolution: "react@npm:19.3.0"
+  checksum: 10/e98669f09750c41abb1bf020af67cc847e018c91a8c5413d3f40ddd737e3daef6e419bcd1521b113fda73fd667ae82d5f0e9d9e3ff462faeb82059c09e7f04b1
   languageName: node
   linkType: hard
 
