@@ -60,7 +60,7 @@ const RAW_RUNTIME_STATE =
           ["@parcel/transformer-worklet", "npm:2.16.4"],\
           ["@sentry/browser", "npm:10.70.0"],\
           ["@sentry/node", "npm:10.70.0"],\
-          ["@testing-library/dom", "npm:10.4.1"],\
+          ["@testing-library/dom", "npm:10.4.2"],\
           ["@testing-library/webdriverio", "virtual:1cb46121cac5c3b5fcafbbc2f2be3dbc61042f1d39014468aceb7329098980d765a877a7dd0cc051cfbceff2442aaf5c8fca8d7fe23fd2660746643d17e013bc#npm:3.2.1"],\
           ["@types/audioworklet", "npm:0.0.100"],\
           ["@types/babel__core", "npm:7.20.5"],\
@@ -7376,10 +7376,10 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["@testing-library/dom", [\
-      ["npm:10.4.1", {\
-        "packageLocation": "./.yarn/cache/@testing-library-dom-npm-10.4.1-928d6cd2a7-7f93e09ea0.zip/node_modules/@testing-library/dom/",\
+      ["npm:10.4.2", {\
+        "packageLocation": "./.yarn/cache/@testing-library-dom-npm-10.4.2-3edc020ffc-3ac24b320a.zip/node_modules/@testing-library/dom/",\
         "packageDependencies": [\
-          ["@testing-library/dom", "npm:10.4.1"],\
+          ["@testing-library/dom", "npm:10.4.2"],\
           ["@babel/code-frame", "npm:7.27.1"],\
           ["@babel/runtime", "npm:7.28.4"],\
           ["@types/aria-query", "npm:5.0.4"],\
@@ -15546,7 +15546,7 @@ const RAW_RUNTIME_STATE =
           ["@parcel/transformer-worklet", "npm:2.16.4"],\
           ["@sentry/browser", "npm:10.70.0"],\
           ["@sentry/node", "npm:10.70.0"],\
-          ["@testing-library/dom", "npm:10.4.1"],\
+          ["@testing-library/dom", "npm:10.4.2"],\
           ["@testing-library/webdriverio", "virtual:1cb46121cac5c3b5fcafbbc2f2be3dbc61042f1d39014468aceb7329098980d765a877a7dd0cc051cfbceff2442aaf5c8fca8d7fe23fd2660746643d17e013bc#npm:3.2.1"],\
           ["@types/audioworklet", "npm:0.0.100"],\
           ["@types/babel__core", "npm:7.20.5"],\
