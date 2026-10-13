@@ -12615,7 +12615,7 @@ __metadata:
     hls.js: "npm:1.7.1"
     husky: "npm:9.1.7"
     kuromoji: "npm:0.1.2"
-    kuroshiro: "npm:1.2.0"
+    kuroshiro: "npm:1.2.1"
     kuroshiro-analyzer-kuromoji: "npm:1.1.0"
     lint-staged: "npm:17.4.1"
     lodash: "npm:4.18.1"
@@ -12736,12 +12736,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"kuroshiro@npm:1.2.0":
-  version: 1.2.0
-  resolution: "kuroshiro@npm:1.2.0"
+"kuroshiro@npm:1.2.1":
+  version: 1.2.1
+  resolution: "kuroshiro@npm:1.2.1"
   dependencies:
     "@babel/runtime": "npm:^7.14.0"
-  checksum: 10/c4e7848de3e0c68b379557cc9bbd1b398417877f452198ab516228167be19ab28f4f9fccfbac867c13482fda0c8631ff10f05e58d2923ff483c4c84caf3b7ebb
+  checksum: 10/f940b1c757138e2de7f75c200a7e74660de0e8ee6897707d1a288f5ae6633e5e7c071ec5865d9d5032f3c2f439e26b22be4d41f485745dccf8956895355e2e7c
   languageName: node
   linkType: hard
 
