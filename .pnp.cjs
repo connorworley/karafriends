@@ -122,7 +122,7 @@ const RAW_RUNTIME_STATE =
           ["hls.js", "npm:1.7.1"],\
           ["husky", "npm:9.1.7"],\
           ["kuromoji", "npm:0.1.2"],\
-          ["kuroshiro", "npm:1.2.0"],\
+          ["kuroshiro", "npm:1.2.1"],\
           ["kuroshiro-analyzer-kuromoji", "npm:1.1.0"],\
           ["lint-staged", "npm:17.4.1"],\
           ["lodash", "npm:4.18.1"],\
@@ -15608,7 +15608,7 @@ const RAW_RUNTIME_STATE =
           ["hls.js", "npm:1.7.1"],\
           ["husky", "npm:9.1.7"],\
           ["kuromoji", "npm:0.1.2"],\
-          ["kuroshiro", "npm:1.2.0"],\
+          ["kuroshiro", "npm:1.2.1"],\
           ["kuroshiro-analyzer-kuromoji", "npm:1.1.0"],\
           ["lint-staged", "npm:17.4.1"],\
           ["lodash", "npm:4.18.1"],\
@@ -15721,10 +15721,10 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["kuroshiro", [\
-      ["npm:1.2.0", {\
-        "packageLocation": "./.yarn/cache/kuroshiro-npm-1.2.0-4e7a9300f9-c4e7848de3.zip/node_modules/kuroshiro/",\
+      ["npm:1.2.1", {\
+        "packageLocation": "./.yarn/cache/kuroshiro-npm-1.2.1-fc2c858a71-f940b1c757.zip/node_modules/kuroshiro/",\
         "packageDependencies": [\
-          ["kuroshiro", "npm:1.2.0"],\
+          ["kuroshiro", "npm:1.2.1"],\
           ["@babel/runtime", "npm:7.28.4"]\
         ],\
         "linkType": "HARD"\
