@@ -10660,12 +10660,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql-ws@npm:6.2.1":
-  version: 6.2.1
-  resolution: "graphql-ws@npm:6.2.1"
+"graphql-ws@npm:6.4.0":
+  version: 6.4.0
+  resolution: "graphql-ws@npm:6.4.0"
   peerDependencies:
     "@fastify/websocket": ^10 || ^11
-    crossws: ~0.3
+    crossws: ~0.3 || ~0.4
     graphql: ^15.10.1 || ^16 || ^17
     ws: ^8
   peerDependenciesMeta:
@@ -10675,7 +10675,7 @@ __metadata:
       optional: true
     ws:
       optional: true
-  checksum: 10/ec73d011ca7e19ce24d27fe01e1be9efb5fca82ddbc25fa43325f8d8b13037a22aed1393d29aefb5a9a5fbef7fc2817f9a5102ccefab25e64e6774a938ffac56
+  checksum: 10/f6170f3bbc45037d8cbcb489f877b1c95958d915b874f740e3f2cbfd6b7cfa9ff8be06dcf50cc118a7be019369d5ae3229ae1307dd27b28fee2762283b61ef93
   languageName: node
   linkType: hard
 
@@ -12611,7 +12611,7 @@ __metadata:
     glob: "npm:13.0.6"
     graphql: "npm:17.0.2"
     graphql-subscriptions: "npm:3.0.0"
-    graphql-ws: "npm:6.2.1"
+    graphql-ws: "npm:6.4.0"
     hls.js: "npm:1.7.1"
     husky: "npm:9.1.7"
     kuromoji: "npm:0.1.2"
